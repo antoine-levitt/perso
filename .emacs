@@ -64,10 +64,6 @@
 (require 'uniquify)
 (setq uniquify-buffer-name-style 'post-forward)
 
-;;easily paste text
-(require 'pastie)
-(defalias 'paste 'pastie-region)
-
 ;; amazing new variable in e23. No need to worry about longlines any more
 (setq-default word-wrap t)
 ;; no right fringe
@@ -116,14 +112,8 @@
 ;;toggle paredit with f6
 (global-set-key (kbd "<f6>") 'paredit-mode)
 
-;;increment/decrement. Not very useful, but handy in macros
-(require 'integers)
-
 ;;indent yanked code in programming languages modes
 (load-library "yank-indent")
-
-;;cscope to navigate in C files : C-c s in C-mode
-(require 'xcscope)
 
 ;;dired
 ;;clean dired default view
@@ -358,11 +348,6 @@
 (add-hook 'matlab-mode-hook (lambda ()
 			      (local-set-key (kbd "M-q") 'backward-kill-word)))
 
-;;sql
-(require 'sqlplus)
-;;association automatique avec les fichiers .sqp
-(add-to-list 'auto-mode-alist '("\\.sqp\\'" . sqlplus-mode))
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;major mode customisations
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -397,36 +382,6 @@
 			     (auto-fill-mode 1)
 			     (TeX-PDF-mode 1)
 			     ))
-
-;;ruby mode
-(autoload 'ruby-mode "ruby-mode"
-  "Mode for editing ruby source files" t)
-(setq auto-mode-alist
-      (append '(("\\.rb$" . ruby-mode)) auto-mode-alist))
-(setq interpreter-mode-alist (append '(("ruby" . ruby-mode))
-				     interpreter-mode-alist))
-(autoload 'run-ruby "inf-ruby"
-  "Run an inferior Ruby process")
-(autoload 'inf-ruby-keys "inf-ruby"
-  "Set local key defs for inf-ruby in ruby-mode")
-(require 'ruby-electric)
-(setq ruby-electric-expand-delimiters-list '())
-(add-hook 'ruby-mode-hook
-	  (lambda ()
-	    (inf-ruby-keys)
-	    (defun ruby-send-buffer () (interactive)
-	      "Send buffer to ruby"
-	      (ruby-send-region (point-min)
-				(point-max)))
-	    (defun ruby-save-buffer-and-send () (interactive)
-	      "Save buffer, then send it to the inferior process"
-	      (save-buffer)
-	      (ruby-send-buffer))
-	    (local-set-key (kbd "C-c C-a") 'ruby-send-buffer)
-	    (local-set-key (kbd "C-c C-s") 'ruby-save-buffer-and-send)
-	    (local-set-key (kbd "s-s") 'ruby-save-buffer-and-send)
-	    (local-set-key (kbd "C-m") 'ruby-reindent-then-newline-and-indent)
-	    (ruby-electric-mode 1)))
 
 ;;shell
 (setq-default comint-scroll-to-bottom-on-input 'all

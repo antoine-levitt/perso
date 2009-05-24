@@ -25,8 +25,19 @@ alias reco='sudo ethtool -s eth0 autoneg off speed 10 duplex half'
 alias wake='wakeonlan -i 82.233.220.106 00:0a:e6:1d:3e:ef'
 alias tray_daemon='rm /tmp/tray_daemon_control; mkfifo /tmp/tray_daemon_control; killall tray_daemon; cd ~/bin; ./tray_daemon&'
 alias o='gnome-open'
+#git
+alias gb='git branch'
+alias gba='git branch -a'
+alias gc='git commit -v'
+alias gd='git diff'
+alias gl='git pull'
+alias gp='git push'
+alias gst='git status | less'
+
 #env var
 export PATH=~/bin:$PATH
+
+
 
 #oui, je veux les core dumps, merci beaucoup
 ulimit -c unlimited >/dev/null 2>&1
