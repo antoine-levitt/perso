@@ -326,15 +326,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;language-specific major modes
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;maple
-(autoload 'maplev-mode "maplev" "Maple editing mode" t)
-;;C#
-(autoload 'csharp-mode "csharp-mode-0.7.0" "C# editing mode" t)
-(setq auto-mode-alist (cons '("\\.cs$" . csharp-mode) auto-mode-alist))
-;;scilab
-(autoload 'scilab-mode "scilab" "Scilab editing mode" t)
-(setq auto-mode-alist (cons '("\\(\\.sci$\\|\\.sce$\\)" . scilab-mode)
-			    auto-mode-alist))
 ;;matlab
 (autoload 'matlab-mode "matlab" "Enter MATLAB mode." t)
 (setq auto-mode-alist (cons '("\\.m\\'" . matlab-mode) auto-mode-alist))
