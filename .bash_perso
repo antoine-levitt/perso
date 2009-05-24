@@ -1,0 +1,50 @@
+#!/bin/bash
+# User specific aliases and functions
+#alias ssh
+alias bm='ssh levitta@ensibm.imag.fr'
+alias bull='ssh levitta@ensibull.imag.fr'
+alias bob='ssh smeuuh@82.233.220.106'
+alias bmredir='screen -d -m autossh levitta@ensibm.imag.fr -R 4242:localhost:22'
+#alias d'éditeurs
+alias e='emacs'
+alias enw='emacs -nw'
+alias ec='emacsclient --no-wait -a emacs'
+alias re='emacsclient -t'
+alias d='svn diff | less'
+alias gdb='gdb --args'
+export EDITOR='emacsclient -a emacs'
+#alias autres
+alias less='less -m'
+alias proc='ps aux | grep'
+alias c='cd ..'
+alias ls='ls --color=auto'
+alias coin='play /usr/share/gnubiff/coin.wav'
+alias w='w | sort | uniq -w 4 | grep -v USER | grep -v "load average"'
+#alias internet
+alias reco='sudo ethtool -s eth0 autoneg off speed 10 duplex half'
+alias wake='wakeonlan -i 82.233.220.106 00:0a:e6:1d:3e:ef'
+alias tray_daemon='rm /tmp/tray_daemon_control; mkfifo /tmp/tray_daemon_control; killall tray_daemon; cd ~/bin; ./tray_daemon&'
+alias o='gnome-open'
+#env var
+export PATH=~/bin:$PATH
+
+#oui, je veux les core dumps, merci beaucoup
+ulimit -c unlimited >/dev/null 2>&1
+
+#M-q = delete backward
+bind '"\eq":backward-kill-word'
+export HISTIGNORE="&:ls:[bf]g:cd:c"
+export HISTSIZE=2000
+export HISTFILESIZE=2000
+
+# cd does a ls after a cd
+cd() {
+builtin cd "$@" && ls
+}
+
+alias boot='sudo /etc/init.d/bitlbee restart && reco && AUTOSSH_GATETIME=0 bmredir && sudo cpufreq-set -u 1Ghz && tray_daemon'
+alias apt-up='sudo apt-get update && sudo apt-get dist-upgrade'
+alias rsync='rsync -vahr --partial --progress'
+recup() {
+    rsync 82.233.220.106:~/"$@" .
+}
