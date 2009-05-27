@@ -20,17 +20,11 @@
   (server-start)
   (desktop-save-mode 1))
 
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
 (custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
+  ;; custom-set-variables was added by Custom.
+  ;; If you edit it by hand, you could mess it up, so be careful.
+  ;; Your init file should contain only one such instance.
+  ;; If there is more than one, they won't work right.
  '(inhibit-startup-echo-area-message (user-login-name))
  '(inhibit-startup-screen t)
  '(initial-scratch-message nil)
@@ -145,6 +139,10 @@
 ;;default to a clean view.
 (setq svn-status-hide-unknown t)
 (setq svn-status-hide-unmodified t)
+
+(setq egg-buffer-hide-help-on-start (quote (egg-status-buffer-mode egg-log-buffer-mode egg-file-log-buffer-mode egg-reflog-buffer-mode egg-diff-buffer-mode egg-commit-buffer-mode))
+      egg-buffer-hide-section-type-on-start (quote ((egg-status-buffer-mode . :diff))))
+
 
 
 ;;indentation automatique avec entrée
