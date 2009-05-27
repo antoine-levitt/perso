@@ -140,6 +140,7 @@
 (setq svn-status-hide-unknown t)
 (setq svn-status-hide-unmodified t)
 
+(require 'egg)
 (setq egg-buffer-hide-help-on-start (quote (egg-status-buffer-mode egg-log-buffer-mode egg-file-log-buffer-mode egg-reflog-buffer-mode egg-diff-buffer-mode egg-commit-buffer-mode))
       egg-buffer-hide-section-type-on-start (quote ((egg-status-buffer-mode . :diff))))
 
