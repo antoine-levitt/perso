@@ -21,10 +21,10 @@
   (desktop-save-mode 1))
 
 (custom-set-variables
-  ;; custom-set-variables was added by Custom.
-  ;; If you edit it by hand, you could mess it up, so be careful.
-  ;; Your init file should contain only one such instance.
-  ;; If there is more than one, they won't work right.
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
  '(inhibit-startup-echo-area-message (user-login-name))
  '(inhibit-startup-screen t)
  '(initial-scratch-message nil)
@@ -144,7 +144,6 @@
 (setq egg-buffer-hide-help-on-start (quote (egg-status-buffer-mode egg-log-buffer-mode egg-file-log-buffer-mode egg-reflog-buffer-mode egg-diff-buffer-mode egg-commit-buffer-mode))
       egg-buffer-hide-section-type-on-start (quote ((egg-status-buffer-mode . :diff)))
       egg-confirm-next-action nil)
-
 
 
 ;;indentation automatique avec entrée
@@ -434,8 +433,8 @@
 (defun my-keyboard-quit()
   "Escape the minibuffer or cancel region consistently using 'Control-g'.
 Normally if the minibuffer is active but we lost focus (say, we clicked away or set the cursor into another buffer)
-we can quit by pressing 'ESC' three times. This function handles it more conveniently, as it checks for the condition 
-of not beign in the minibuffer but having it active. Otherwise simply doing the ESC or (keyboard-escape-quit) would 
+we can quit by pressing 'ESC' three times. This function handles it more conveniently, as it checks for the condition
+of not being in the minibuffer but having it active. Otherwise simply doing the ESC or (keyboard-escape-quit) would
 brake whatever split of windows we might have in the frame."
   (interactive)
   (if (not(window-minibuffer-p (selected-window)))
@@ -604,16 +603,16 @@ Ignores CHAR at point."
 (defun switch-to-nth-buffer (n arg)
   "Switches to nth most recent buffer. Ignores erc buffers unless switch-include-erc is non-nil."
   (catch 'tag
-      (mapcar (lambda (b)
-		(if (or switch-include-erc
-			(not (eq (buffer-local-value 'major-mode b) 'erc-mode)))
-		    (unless (minibufferp b)
-		      (if (= n 1)
-			  (progn
-			    (switch-to-buffer b)
-			    (throw 'tag nil))
-			(setq n (- n 1))))))
-	      (cdr (buffer-list)))))
+    (mapcar (lambda (b)
+	      (if (or switch-include-erc
+		      (not (eq (buffer-local-value 'major-mode b) 'erc-mode)))
+		  (unless (minibufferp b)
+		    (if (= n 1)
+			(progn
+			  (switch-to-buffer b)
+			  (throw 'tag nil))
+		      (setq n (- n 1))))))
+	    (cdr (buffer-list)))))
 
 (defun switch-to-most-recent-buffer (&optional arg)
   (interactive "P")
