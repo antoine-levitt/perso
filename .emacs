@@ -32,6 +32,9 @@
  '(scroll-bar-mode nil)
  '(tool-bar-mode nil))
 
+(require 'zenburn)
+(zenburn)
+
 ;; general use functions
 (defun toggle-variable (symb)
   (set symb (not (eval symb))))
