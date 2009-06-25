@@ -369,7 +369,8 @@
 ;;always preview using gnome-open
 (setq TeX-output-view-style
       '(
-	("." "." "gnome-open %o")
+	("pdf" "." "gnome-open %o")
+	("dvi" "." "dvipdf %o && gnome-open $(basename %o dvi)pdf")
 	))
 (add-hook 'LaTeX-mode-hook (lambda ()
 			     (auto-fill-mode 1)
