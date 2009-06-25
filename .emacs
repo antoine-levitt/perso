@@ -451,8 +451,10 @@ brake whatever split of windows we might have in the frame."
 (global-set-key (kbd "<C-return>") 'ffap)
 ;;I just want C-x k to kill the buffer instead of just prompting me
 ;;for it like ido does
-(global-set-key (kbd "C-x k") (lambda ()
-				(interactive) (kill-buffer (current-buffer))))
+(defun kill-current-buffer ()
+  (interactive)
+  (kill-buffer (current-buffer)))
+(global-set-key (kbd "C-x k") 'kill-current-buffer)
 ;;undo on C-z, because it's useless by default
 (global-set-key (kbd "C-z") 'undo)
 ;;like C-x k, but nicer :-)
