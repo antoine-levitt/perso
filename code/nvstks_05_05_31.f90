@@ -66,20 +66,20 @@ program nvstks
 
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-  
+
   integer,dimension(:),allocatable::numat,ptmat
   integer,dimension(:),allocatable::renum,denum
   integer,dimension(:),allocatable::nuv,ptv,ptd
 
   real(kind=8),dimension(:,:,:),allocatable::aa,dd,aaf,&
-                                             aa1,dd1
+       aa1,dd1
   real(kind=8),dimension(:,:),allocatable::bb
   real(kind=8),dimension(:),allocatable::ui,rri,r0,vi,pi,aux1,aux2
 
   real(kind=8)::lambda
 
   real(kind=8)::norm1,norm2,norm3,norm4
-  
+
   integer::itbcgs,nordre1
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -125,9 +125,9 @@ program nvstks
 !!$                   if (k0>0) then
 !!$                      iter2 : do l=ptvois(k0)+1,ptvois(k0+1) !recherche de la connexion reciproque
 !!$                         l0=nuvois(l)
-!!$                         if (l0==i) then !connexion rÈciproque  trouvÈe              
+!!$                         if (l0==i) then !connexion r√©ciproque  trouv√©e
 !!$                            As(l)=0
-!!$                            exit iter2             
+!!$                            exit iter2
 !!$                         end if
 !!$                      end do iter2
 !!$                   end if
@@ -155,34 +155,34 @@ program nvstks
   coefdt=1         !1._8/pr
   coefb=ra*pr      !ra/pr
 
-  
-    
-  !###################################################################  
-  !RenumÈrotation + dÈfinition des largeurs de bande
+
+
+  !###################################################################
+  !Renum√©rotation + d√©finition des largeurs de bande
   !l_bg : largeur bande gauche
   !l_bd : largeur bande droite
   !pt_d : pointeur du terme diagonal
-  !###################################################################  
+  !###################################################################
   nlin=neq*ncv
 
 
 
-  !###################################################################  
+  !###################################################################
   !Avance temporelle
-  !################################################################### 
+  !###################################################################
 
 
 
 
 
-!  allocate(aa(laa),bb(nlin))
+  !  allocate(aa(laa),bb(nlin))
   if (reprise==0) allocate(vx(ncv),vy(ncv),tp(ncv),p(ncv))
   allocate(vxd(ncv),vyd(ncv),tpd(ncv))
   allocate(sx(ncv),sy(ncv),sp(ncv),st(ncv))
-!  allocate(press(ncv))
+  !  allocate(press(ncv))
 
 
-!Sauvegarde mes macromailles
+  !Sauvegarde mes macromailles
   echelle=6000.
   decalage=10.
   open(unit=15, file="macro.fig", status="unknown")
@@ -213,23 +213,23 @@ program nvstks
            if (jj==-2) then
               coul=1
            end if
-           if (jj==-3) then 
+           if (jj==-3) then
               coul=3
            end if
-           if (jj==-4) then 
+           if (jj==-4) then
               coul=2 !vert
            end if
            if (As(j)<=0) call line( xs(i0),ys(i0),xs(i1),ys(i1),decalage,echelle,coul)
-        
+
         case default
            if (As(j)<=0) call line( xs(i0),ys(i0),xs(i1),ys(i1),decalage,echelle,coul)
         end select
-        
+
         i0=i1
      end do
   end do
   close(15)
-!Fin Sauvegarde mes macromailles
+  !Fin Sauvegarde mes macromailles
 
 
 
@@ -239,9 +239,9 @@ program nvstks
   else
      nordre1=nordre
      write(*,*)"******BCGS*******"
-     write(*,*)"Ordre de la factorisation incomplËte :",nordre1
-     write(*,*)"RÈsidu/(RÈsidu initial)=",test
-     write(*,*)"Nombre d'itÈrations maximal :",itbcgsmax
+     write(*,*)"Ordre de la factorisation incompl√®te :",nordre1
+     write(*,*)"R√©sidu/(R√©sidu initial)=",test
+     write(*,*)"Nombre d'it√©rations maximal :",itbcgsmax
      write(*,*)"*****************"
      call preilu(nordre1)
   end if
@@ -259,7 +259,7 @@ program nvstks
      tp(:)=0._8
      p(:)=0._8
   end if
-  
+
   t=0._8
   delobj=delpourc !??????????,
   ucentt=1._8/centt
@@ -268,12 +268,12 @@ program nvstks
      write(*,*)"==========================="
      write(*,*)"=======INSTATIONNAIRE======"
      write(*,*)"==========================="
-     
+
      dt_i=dt
 
      x_pos(1)=.01_8
      y_pos(1)=.5_8
-     
+
      x_pos(2)=.25_8/2._8
      y_pos(2)=.5_8
 
@@ -302,26 +302,26 @@ program nvstks
      do while (cvgce==0)
         iter=iter+1
         if (iter>10) then
-           write(*,*)"Pas de convergence en 10 itÈrations"
+           write(*,*)"Pas de convergence en 10 it√©rations"
            goto 100
-        end if  
+        end if
 
         call calculsl(&
-       xcv,ycv,mcv,xs,ys,A,bx,by,&
-       vxd,vyd,tpd,vx,vy,p,tp,&
-       ptvois,nuvois,nusom,&
-       ncv,&
-       ucentt,dt,&
-       aa,bb,dd,&
-       nutest,vtest,&
-       comu,&
-       diffusion,&
-       coefdt,coefdu,coefb,&
-       eta)
+             xcv,ycv,mcv,xs,ys,A,bx,by,&
+             vxd,vyd,tpd,vx,vy,p,tp,&
+             ptvois,nuvois,nusom,&
+             ncv,&
+             ucentt,dt,&
+             aa,bb,dd,&
+             nutest,vtest,&
+             comu,&
+             diffusion,&
+             coefdt,coefdu,coefb,&
+             eta)
 
         if (direct) then
            call resdir(residu)
-           
+
         else
            call bicgstab(itbcgs,nordre1,residu,residu_old)
         end if
@@ -354,7 +354,7 @@ program nvstks
         if (aff==1) write(*,10)residu,theta,diffusion,itbcgs
      end do
 10   format("Residu : ",1pe6.0," theta : ",1pe6.0," diffusion : ",1pe8.1," (ItBcgs=",i3,&
-        ")")
+          ")")
 
 !!$     do i=1,ncv
 !!$        press(i)=p(i)-.5_8*(vx(i)*vx(i)+vy(i)*vy(i))
@@ -371,7 +371,7 @@ program nvstks
         if (abs(vx(i)-vxd(i))>delobtu) delobtu=abs(vx(i)-vxd(i))
         if (abs(vy(i)-vyd(i))>delobtu) delobtu=abs(vy(i)-vyd(i))
      end do
-     
+
 
 
      write(*,20)t/duree*100,t,dt,iter,&
@@ -389,13 +389,13 @@ program nvstks
 !!$       eta,&
 !!$       nui,nuo)
 
-     
+
      write(10,*)t,tp(i_pos(1)),vx(i_pos(1)),vy(i_pos(1)), nui,nuo
      write(11,*)t,tp(i_pos(2)),vx(i_pos(2)),vy(i_pos(2)), nui,nuo
      write(12,*)t,tp(i_pos(3)),vx(i_pos(3)),vy(i_pos(3)), nui,nuo
 
   end do
-  
+
 !!!!!!!!!!!!!!!
   !Stationnaire
 !!!!!!!!!!!!!!!
@@ -403,29 +403,29 @@ program nvstks
   iter=0
   cvgce=0
   if (duree<=0) then
-     write(*,*)"==========================="  
+     write(*,*)"==========================="
      write(*,*)"=======STATIONNAIRE========"
      write(*,*)"==========================="
   end if
   do while (cvgce==0)
      iter=iter+1
      if (iter>1000) then
-        write(*,*)"Pas de convergence en 1000 itÈrations"
+        write(*,*)"Pas de convergence en 1000 it√©rations"
         stop
      end if
 
      call calculsl(&
-       xcv,ycv,mcv,xs,ys,A,bx,by,&
-       vxd,vyd,tpd,vx,vy,p,tp,&
-       ptvois,nuvois,nusom,&
-       ncv,&
-       ucentt,dt,&
-       aa,bb,dd,&
-       nutest,vtest,&
-       comu,&
-       diffusion,&
-       coefdt,coefdu,coefb,&
-       eta)
+          xcv,ycv,mcv,xs,ys,A,bx,by,&
+          vxd,vyd,tpd,vx,vy,p,tp,&
+          ptvois,nuvois,nusom,&
+          ncv,&
+          ucentt,dt,&
+          aa,bb,dd,&
+          nutest,vtest,&
+          comu,&
+          diffusion,&
+          coefdt,coefdu,coefb,&
+          eta)
 
      if (direct) then
         residu_old=1D40
@@ -433,7 +433,7 @@ program nvstks
      else
         call bicgstab(itbcgs,nordre1,residu,residu_old)
      end if
-    
+
      !Remise dans les tableaux naturels
      do i=1,ncv
         st(i)=bb(i,4)
@@ -441,44 +441,44 @@ program nvstks
         sy(i)=bb(i,2)
         sx(i)=bb(i,1)
      end do
-     
+
      vxnorme=maxval(abs(vx(:)))
      vynorme=maxval(abs(vy(:)))
      vnorme=max(vxnorme,vynorme)
      tnorme=maxval(abs(tp(:)))
-     
+
      theta=residobj/residu
      if (theta>thetamax) theta=thetamax !
      tp(:)=tp(:)+st(:)*theta
      vx(:)=vx(:)+sx(:)*theta
      vy(:)=vy(:)+sy(:)*theta
      p(:) =p(:) +sp(:)*theta
-    
+
 
      if (residu < (vnorme+tnorme)*epsilon_newton) then
         cvgce=1
      else
-           cvgce=0
-        end if
+        cvgce=0
+     end if
      write(*,30)iter,residu,theta,diffusion,itbcgs
   end do
 
-        vnorme=0._8
-        tnorme=0._8
-        do i=1,ncv
-           if (abs(vx(i))>vnorme) vnorme=abs(vx(i)) !max des composantes de vitesse
-           if (abs(vy(i))>vnorme) vnorme=abs(vy(i))
-           if (abs(tp(i))>tnorme) tnorme=abs(tp(i))
-        end do
-       
-        write(*,*)"Max(u)=",maxval(abs(vx))
-        write(*,*)"Max(v)=",maxval(abs(vy))
-        write(*,*)"Max(T)=",tnorme
+  vnorme=0._8
+  tnorme=0._8
+  do i=1,ncv
+     if (abs(vx(i))>vnorme) vnorme=abs(vx(i)) !max des composantes de vitesse
+     if (abs(vy(i))>vnorme) vnorme=abs(vy(i))
+     if (abs(tp(i))>tnorme) tnorme=abs(tp(i))
+  end do
+
+  write(*,*)"Max(u)=",maxval(abs(vx))
+  write(*,*)"Max(v)=",maxval(abs(vy))
+  write(*,*)"Max(T)=",tnorme
 
 
 
 30 format("Iter=",i3," Residu : ",1pe8.2," theta : ",1pe8.2," diffusion : ",1pe9.2," (ItBcgs=",i3,&
-        ")")
+       ")")
 !!$  if (duree<=0) then
 !!$     do i=1,ncv
 !!$        press(i)=p(i)-.5_8*(vx(i)*vx(i)+vy(i)*vy(i))
@@ -490,7 +490,7 @@ program nvstks
 !!!!!!!!!!!!!!!
 
 
-100     call ligncour(&
+100 call ligncour(&
        mcv,A,bx,by,&
        xs,ys,&
        vx,vy,p,&
@@ -507,7 +507,7 @@ program nvstks
        nutest,&
        eta,&
        nui,nuo)
-  
+
   call sortie(&
        vx,vy,p,tp,mcv,&
        potent,&
@@ -516,7 +516,7 @@ program nvstks
        ncv,nbsom,nptvois)
 
 
-contains  
+contains
 
 
   !###################################################################
@@ -528,7 +528,7 @@ contains
   !Variables (p,u,v)
   !*******************************
 
-  !################################################################### 
+  !###################################################################
   !
   subroutine calculsl(&
        xcv,ycv,mcv,xs,ys,A,bx,by,&
@@ -564,9 +564,9 @@ contains
          ipress,ipresslocal
     real(kind=8)::xxi,xxj
     integer::flagu,flagv,flagt
-    
+
     real(kind=8)::test_maille,pe_maille,re_maille,coef,erx,ery,y
-   
+
     diffusion=0
     ipress=0
     ipresslocal=0
@@ -591,14 +591,14 @@ contains
 
        bb(i,4)=bb(i,4)+mcv(i)*(-ucentt*(tp(i)-tpd(i))/dt)
        dd(i,4,4)=dd(i,4,4)+ucentt*mcv(i)/dt
-       
+
 
        i0=nusom(ptvois(i+1))
        do j=ptvois(i)+1,ptvois(i+1)
           jj=nuvois(j)
           i1=nusom(j)
           !calcul des flux diffusifs
-          if (nuvois(j)<=0) then !Bord           
+          if (nuvois(j)<=0) then !Bord
              call testsol(&
                   u_lim,v_lim,p_lim,t_lim,&
                   sx_lim,sy_lim,st_lim,&
@@ -613,41 +613,41 @@ contains
                 debit_in=debit_in+abs(xs(i1)-xs(i0))*v_lim
              end if
 
-!!$UX                  
+!!$UX
              flagu=1-neumann_u
              bb(i,1)=bb(i,1)+A(j)*(u_lim-vx(i))*coefdu*flagu
              dd(i,1,1)=dd(i,1,1)+A(j)*coefdu*flagu
-                  
-!!$UY 
+
+!!$UY
              flagv=1-neumann_v
              bb(i,2)=bb(i,2)+A(j)*(v_lim-vy(i))*coefdu*flagv
              dd(i,2,2)=dd(i,2,2)+A(j)*coefdu*flagv
-                     
-!!$DIV            
+
+!!$DIV
              !**L
-              bb(i,3)=bb(i,3)-bx(j)*u_lim*flagu-by(j)*v_lim*flagv
-                          
+             bb(i,3)=bb(i,3)-bx(j)*u_lim*flagu-by(j)*v_lim*flagv
+
              if (neumann_p==0) then
-                !PÈnalisation par le laplacien
+                !P√©nalisation par le laplacien
                 ipress=1
                 ipresslocal=1
              end if
-             
+
 !!$TEMP
              flagt=1-neumann_t
              bb(i,4)=bb(i,4)+A(j)*(t_lim-tp(i))*coefdt*flagt+&
-                             t_lim*coefdt*neumann_t
-             dd(i,4,4)=dd(i,4,4)+A(j)*coefdt*flagt 
+                  t_lim*coefdt*neumann_t
+             dd(i,4,4)=dd(i,4,4)+A(j)*coefdt*flagt
 
-          else !intÈrieur
+          else !int√©rieur
              k=ptmat(i)+1
              do while (jj/=numat(k))
                 k=k+1
              end do
-             
+
              xxi=bx(j)*(vx(i)+vx(jj))+by(j)*(vy(i)+vy(jj))-As(j)*(p(jj)-p(i))
 
-             !Calcul PÈclet et Reynolds de maille
+             !Calcul P√©clet et Reynolds de maille
              test_maille=xxi/A(j)
              pe_maille=max(pe_maille,test_maille/coefdt)
              re_maille=max(re_maille,test_maille/coefdu)
@@ -661,12 +661,12 @@ contains
              bb(i,1)=bb(i,1)+A(j)*(vx(jj)-vx(i))*coefdu
              dd(i,1,1)=dd(i,1,1)+A(j)*coefdu
              aa(k,1,1)=aa(k,1,1)-A(j)*coefdu
-             !Termes en pression pour les aretes intÈrieures
+             !Termes en pression pour les aretes int√©rieures
              bb(i,1)=bb(i,1)-bx(j)*(p(jj)-p(i))
              dd(i,1,3)=dd(i,1,3)-bx(j)
              aa(k,1,3)=aa(k,1,3)+bx(j)
              !**NL
-             !ajout des termes non-linÈaires de transport
+             !ajout des termes non-lin√©aires de transport
              xxj=(vx(jj)-vx(i))*.5_8
              bb(i,1)=bb(i,1)-xxi*xxj
              dd(i,1,1)=dd(i,1,1)+bx(j)*xxj-xxi*.5_8
@@ -680,12 +680,12 @@ contains
              bb(i,2)=bb(i,2)+A(j)*(vy(jj)-vy(i))*coefdu
              dd(i,2,2)=dd(i,2,2)+A(j)*coefdu
              aa(k,2,2)=aa(k,2,2)-A(j)*coefdu
-             !Termes en pression pour les aretes intÈrieures
+             !Termes en pression pour les aretes int√©rieures
              bb(i,2)=bb(i,2)-by(j)*(p(jj)-p(i))
              dd(i,2,3)=dd(i,2,3)-by(j)
              aa(k,2,3)=aa(k,2,3)+by(j)
              !**NL
-             !ajout des termes non-linÈaires de transport
+             !ajout des termes non-lin√©aires de transport
              xxj=(vy(jj)-vy(i))*.5_8
              bb(i,2)=bb(i,2)-xxi*xxj
              dd(i,2,2)=dd(i,2,2)+by(j)*xxj-xxi*.5_8
@@ -701,7 +701,7 @@ contains
              dd(i,4,4)=dd(i,4,4)+A(j)*coefdt
              aa(k,4,4)=aa(k,4,4)-A(j)*coefdt
              !**NL
-             !ajout des termes non-linÈaires de transport
+             !ajout des termes non-lin√©aires de transport
              xxj=(tp(jj)-tp(i))*.5_8
              bb(i,4)=bb(i,4)-xxi*xxj
              dd(i,4,1)=dd(i,4,1)+bx(j)*xxj
@@ -716,7 +716,7 @@ contains
 
 
 
-!!$DIV 
+!!$DIV
              !**L
              bb(i,3)=bb(i,3)-xxi
 
@@ -724,11 +724,11 @@ contains
              dd(i,3,2)=dd(i,3,2)+by(j)
              aa(k,3,1)=aa(k,3,1)+bx(j)
              aa(k,3,2)=aa(k,3,2)+by(j)
-             !PÈnalisation par le laplacien
+             !P√©nalisation par le laplacien
              dd(i,3,3)=dd(i,3,3)+As(j)
              aa(k,3,3)=aa(k,3,3)-As(j)
 
-             
+
 !!$DIFFUSION
 !!$             xxi=.5_8*((bx(j)*(vx(i)+vx(jj))+by(j)*(vy(i)+vy(jj)))-As(j)*(p(jj)-p(i)) )
 !!$             diffusion=diffusion+xxi*( vx(jj)*vx(i)+vy(jj)*vy(i) )
@@ -741,20 +741,20 @@ contains
 
 
 
-!ipresslocal=1
+    !ipresslocal=1
 
     if (nutest>=100) ipresslocal=1
 
     if (ipresslocal==0) then
-print*,'ipresslocal=',ipresslocal
-!stop
+       print*,'ipresslocal=',ipresslocal
+       !stop
        i=ncv/2
        do k=ptmat(i)+1,ptmat(i+1)
-             aa(k,3,1)=0
-             aa(k,3,2)=0
-             aa(k,3,3)=0
-             aa(k,3,4)=0
-          end do
+          aa(k,3,1)=0
+          aa(k,3,2)=0
+          aa(k,3,3)=0
+          aa(k,3,4)=0
+       end do
        dd(i,3,1)=0
        dd(i,3,2)=0
        dd(i,3,3)=1
@@ -764,45 +764,45 @@ print*,'ipresslocal=',ipresslocal
 
 
     if (dt<=0)    then
-       print*,'PÈclet de Maille :',pe_maille
+       print*,'P√©clet de Maille :',pe_maille
        print*,'Reynolds de Maille :',pe_maille
     end if
-   if (nutest>=100) then
-      if (dt<=0)  print*,'DÈbit sortant :',debit_out,'      DÈbit entrant :',debit_in
-!!$      print*,'DÈbit entrant',debit_in
-!!$      print*,'NUSSELT maximal (flux imposÈ) :',1/maxval(tp)
-      debit=debit_out
-   end if
+    if (nutest>=100) then
+       if (dt<=0)  print*,'D√©bit sortant :',debit_out,'      D√©bit entrant :',debit_in
+!!$      print*,'D√©bit entrant',debit_in
+!!$      print*,'NUSSELT maximal (flux impos√©) :',1/maxval(tp)
+       debit=debit_out
+    end if
   end subroutine calculsl
 
 
 
 
 
-  !6969696969696969696969696969696969696969696969696969696969696969696969  
-  !6969696969696969696969696969696969696969696969696969696969696969696969  
-  !6969696969696969696969696969696969696969696969696969696969696969696969  
-  !69696969696969696969                   9696969696969696969696969696969  
-  !6969696969696969696   Routine gÈnÈrales  96969696969696969696969696969  
-  !69696969696969696969                   9696969696969696969696969696969  
-  !6969696969696969696969696969696969696969696969696969696969696969696969  
-  !6969696969696969696969696969696969696969696969696969696969696969696969  
-  !6969696969696969696969696969696969696969696969696969696969696969696969  
-  !6969696969696969696969696969696969696969696969696969696969696969696969  
-  
-  
-  !###################################################################  
+  !6969696969696969696969696969696969696969696969696969696969696969696969
+  !6969696969696969696969696969696969696969696969696969696969696969696969
+  !6969696969696969696969696969696969696969696969696969696969696969696969
+  !69696969696969696969                   9696969696969696969696969696969
+  !6969696969696969696   Routine g√©n√©rales  96969696969696969696969696969
+  !69696969696969696969                   9696969696969696969696969696969
+  !6969696969696969696969696969696969696969696969696969696969696969696969
+  !6969696969696969696969696969696969696969696969696969696969696969696969
+  !6969696969696969696969696969696969696969696969696969696969696969696969
+  !6969696969696969696969696969696969696969696969696969696969696969696969
+
+
+  !###################################################################
   !***************
-  !Calcul du facteur de rÈgularitÈ et de l'aire des volumes
-  !Facteur de rÈgularitÈ = d(centre volume, centre arete) / lg de l'arete
-  !(triangle rectangle : 0.5) 
+  !Calcul du facteur de r√©gularit√© et de l'aire des volumes
+  !Facteur de r√©gularit√© = d(centre volume, centre arete) / lg de l'arete
+  !(triangle rectangle : 0.5)
   !***************
   subroutine regularite(&
        xs,ys,xcv,ycv,ptvois,nusom,ncv,&
        mcv&
        )
     implicit none
-    
+
     real(kind=8),dimension(:),intent(in)::xs,ys,xcv,ycv
     integer,dimension(:),intent(in)::ptvois,nusom
     integer,intent(in)::ncv
@@ -812,14 +812,14 @@ print*,'ipresslocal=',ipresslocal
     real(kind=8)::a11,a12,a21,a22,aire,ax,ay,diam,xx
     real(kind=8)::zeta
     integer::i,i1,i2,j
-    
+
     zeta=1._8
     do i=1,ncv
        mcv(i)=0._8
        i1=nusom(ptvois(i+1)) !pointe sur le dernier noeud du triangle i
        a11=xs(i1)-xcv(i)
        a12=ys(i1)-ycv(i)
-       do j=ptvois(i)+1,ptvois(i+1) !boucle sur tous les 3 noeuds consÈcutifs
+       do j=ptvois(i)+1,ptvois(i+1) !boucle sur tous les 3 noeuds cons√©cutifs
           i2=nusom(j)
           a21=xs(i2)-xcv(i)
           a22=ys(i2)-ycv(i)
@@ -831,124 +831,124 @@ print*,'ipresslocal=',ipresslocal
           xx=aire/diam
           if (aire<0) then
              if (diam>1e-8)&
-                  write(*,*)"Aire nÈgative : aire=0 !!!!, diam=",diam
+                  write(*,*)"Aire n√©gative : aire=0 !!!!, diam=",diam
              aire=0
              xx=1
              stop
           end if
-          if (xx<zeta) zeta=xx ! recherche du rapport le plus petit (facteur de rÈgularitÈ)
-          mcv(i)=mcv(i)+aire*0.5_8 !contribution ‡ l'aire du triangle
-          !on modifie le noeud de dÈpart I1
+          if (xx<zeta) zeta=xx ! recherche du rapport le plus petit (facteur de r√©gularit√©)
+          mcv(i)=mcv(i)+aire*0.5_8 !contribution √† l'aire du triangle
+          !on modifie le noeud de d√©part I1
           i1=i2
           a11=a21
           a12=a22
        end do
     end do
-    write(*,*)"Facteur de rÈgularitÈ : ",zeta
+    write(*,*)"Facteur de r√©gularit√© : ",zeta
   end subroutine regularite
-  !###################################################################  
+  !###################################################################
   !***************
   !Calcul des pointeurs
   !ptsc : pointeur contenant le cumul du nombre des aretes
-  !nusc : numÈro sommet de l'arete dans un tableau cumulÈ
+  !nusc : num√©ro sommet de l'arete dans un tableau cumul√©
   !***************
   subroutine pointeur(&
        ptvois,ncv,nbsom,nusom,&
        ptsc&
        )
     implicit none
-    
+
     integer,dimension(:),intent(in)::ptvois,nusom
     integer::ncv,nbsom
     integer,dimension(:),intent(inout)::ptsc
 
     integer::i,j,k,is,js,nbc,i0
-    
 
-    !comptage du nombre maximum de sommets connectÈs pour chaque noeud
+
+    !comptage du nombre maximum de sommets connect√©s pour chaque noeud
     do i=1,ncv
        do j=ptvois(i)+1,ptvois(i+1)
           is=nusom(j)
-          ptsc(is)=ptsc(is)+2 ! dÈcompte par noeud des sommets connectÈs
+          ptsc(is)=ptsc(is)+2 ! d√©compte par noeud des sommets connect√©s
        end do
     end do
-    
+
     nbc=0
     do i=1,nbsom
        j=ptsc(i)
-       ptsc(i)=ptsc(i)+nbc !ptcs(i) cumul le nb de sommets connectÈs
-       nbc=nbc+j !calcul du nombre total de sommets connectÈs
+       ptsc(i)=ptsc(i)+nbc !ptcs(i) cumul le nb de sommets connect√©s
+       nbc=nbc+j !calcul du nombre total de sommets connect√©s
     end do
     ptsc(nbsom+1)=nbc+1
 
   end subroutine pointeur
 
 
-  !###################################################################  
+  !###################################################################
   !***************
   !Calcul des pointeurs
   !ptsc : pointeur contenant le cumul du nombre des aretes
-  !nusc : numÈro sommet de l'arete dans un tableau cumulÈ
+  !nusc : num√©ro sommet de l'arete dans un tableau cumul√©
   !***************
   subroutine pre_num_voisin_volume(&
        ptvois,nusom,ncv,nbsom,nusc,&
        ptsc&
        )
     implicit none
-    
+
     integer,dimension(:),intent(in)::ptvois,nusom
     integer,intent(in)::ncv,nbsom
     integer,dimension(:),intent(inout)::ptsc
     integer,dimension(:),intent(out)::nusc
 
     integer::i,j,k,is,js,nbc,i0
-    
 
-    !dÈfinition du numÈro de l'arete : mÍme numÈro que le noeud connectÈ
+
+    !d√©finition du num√©ro de l'arete : m√™me num√©ro que le noeud connect√©
     do i=1,ncv
-       is=nusom(ptvois(i+1)) ! pointe sur 3iËme noeud du triangle i
+       is=nusom(ptvois(i+1)) ! pointe sur 3i√®me noeud du triangle i
        do j=ptvois(i)+1,ptvois(i+1) !boucle sur tous les noeuds du triangle i
-          js=nusom(j) !numÈro du sommet          nusc(ptsc(is))=js !numÈro de l'arete = noeud connectÈ
-          nusc(ptsc(is))=js ! le pointer pointe sur le sommet connectÈ (au noeud is) prÈcÈdent
+          js=nusom(j) !num√©ro du sommet          nusc(ptsc(is))=js !num√©ro de l'arete = noeud connect√©
+          nusc(ptsc(is))=js ! le pointer pointe sur le sommet connect√© (au noeud is) pr√©c√©dent
           ptsc(is)=ptsc(is)-1
           nusc(ptsc(js))=is
-          ptsc(js)=ptsc(js)-1! pour le noeud is, un sommet connectÈ traitÈ : 
-          is=js !noeuds suivants pour dÈcrire tous les noeuds du triangle.
+          ptsc(js)=ptsc(js)-1! pour le noeud is, un sommet connect√© trait√© :
+          is=js !noeuds suivants pour d√©crire tous les noeuds du triangle.
        end do
     end do
-    
-    !remise des pointeurs au dÈbut de chaque sÈquence de sommets connectÈs
+
+    !remise des pointeurs au d√©but de chaque s√©quence de sommets connect√©s
     do i=1,nbsom
        ptsc(i)=ptsc(i)+1 !ajout de 1 sinon ptsc(1)=0 !!!!
     end do
-    
-    !remise dans l'ordre des numÈros des aretes
+
+    !remise dans l'ordre des num√©ros des aretes
     do i=1,nbsom
        call trie(nusc(ptsc(i):ptsc(i+1)-1) , ptsc(i+1)-ptsc(i) ) !ptsc(i+1)-ptsc(i)= nb aretes
     end do
-    
-    !Elimination des aretes en doublon (de part et d'autre d'une arete commune ‡ 2 triangles)
+
+    !Elimination des aretes en doublon (de part et d'autre d'une arete commune √† 2 triangles)
     !et
     !Modification du pointeur
     nbc=1
     do i=1,nbsom
-       i0=ptsc(i) !pointe sur le nombre de sommets connectÈs
-       ptsc(i)=nbc !nouveau pointeur   
-!!$     if (ptsc(i+1)>ptsc(i)) then !le nombre de sommets connectÈ au noeud i : ptsc(i+1)-ptsc(i)
+       i0=ptsc(i) !pointe sur le nombre de sommets connect√©s
+       ptsc(i)=nbc !nouveau pointeur
+!!$     if (ptsc(i+1)>ptsc(i)) then !le nombre de sommets connect√© au noeud i : ptsc(i+1)-ptsc(i)
        !
        !
        !
-!!$       if (ptsc(i+1)>i0) then !le nombre de sommets connectÈ au noeud i : ptsc(i+1)-ptsc(i)
-       if (ptsc(i+1)>ptsc(i)) then !le nombre de sommets connectÈ au noeud i : ptsc(i+1)-ptsc(i)
+!!$       if (ptsc(i+1)>i0) then !le nombre de sommets connect√© au noeud i : ptsc(i+1)-ptsc(i)
+       if (ptsc(i+1)>ptsc(i)) then !le nombre de sommets connect√© au noeud i : ptsc(i+1)-ptsc(i)
           !
           !
           !
           k=nusc(i0)
-          nusc(nbc)=k !stock le numÈro arete
+          nusc(nbc)=k !stock le num√©ro arete
           nbc=nbc+1
           do j=i0+1, ptsc(i+1)-1
-             !si le numÈro de l'arete (classÈ) est diffÈrent du prÈcÈdent, on conserve
-             if (nusc(j) /= k) then 
+             !si le num√©ro de l'arete (class√©) est diff√©rent du pr√©c√©dent, on conserve
+             if (nusc(j) /= k) then
                 k=nusc(j)
                 nusc(nbc)=k
                 nbc=nbc+1
@@ -958,14 +958,14 @@ print*,'ipresslocal=',ipresslocal
     end do
 
     ptsc(nbsom+1)=nbc
-    
-    nbc=nbc-1   
+
+    nbc=nbc-1
   end subroutine pre_num_voisin_volume
 
   !###################################################################
-  !DÈtermination des voisins :
-  !voisind,voising dÈfinis sur la base des pointeurs
-  !nuvois(i)=k correspond aux numÈros entre voisins : arete nunero i voisine droite triangle k
+  !D√©termination des voisins :
+  !voisind,voising d√©finis sur la base des pointeurs
+  !nuvois(i)=k correspond aux num√©ros entre voisins : arete nunero i voisine droite triangle k
   !*******************************
   subroutine num_voisin_volume(&
        ncv,nusom,ptsc,nusc,&
@@ -981,8 +981,8 @@ print*,'ipresslocal=',ipresslocal
     integer,dimension(:),allocatable::voisind,voising
 
     integer::i,j,k,is,js,nbc
-    
-    !preparation des voisin ‡ l'aide du pointeur
+
+    !preparation des voisin √† l'aide du pointeur
     nbc=ptsc(nbsom+1)-1
     allocate(voisind(nbc),voising(nbc))
     voisind=0
@@ -991,23 +991,23 @@ print*,'ipresslocal=',ipresslocal
        is=nusom(ptvois(i+1))
        do j=ptvois(i)+1,ptvois(i+1)
           js=nusom(j)
-          !recherche du numÈro de l'arete (le numÈro correspond au noeud connectÈ)
+          !recherche du num√©ro de l'arete (le num√©ro correspond au noeud connect√©)
           k=ptsc(is)
-          do while (nusc(k)<js) !tant que le numÈro de l'arete est infÈrieure au numÈro du sommet
+          do while (nusc(k)<js) !tant que le num√©ro de l'arete est inf√©rieure au num√©ro du sommet
              k=k+1 !arete suivante
           end do
           if (nusc(k)/=js) then
-             write(*,*)"ProblËme dans les voisins js"
+             write(*,*)"Probl√®me dans les voisins js"
              stop
           end if
           voising(k)=i ! voisin gauche de l'arete nusc(k) : triangle i
-          !recherche du numÈro de l'arete
+          !recherche du num√©ro de l'arete
           k=ptsc(js)
           do while (nusc(k)<is)
              k=k+1
           end do
           if (nusc(k)/=is) then
-             write(*,*)"ProblËme dans les voisins is"
+             write(*,*)"Probl√®me dans les voisins is"
              stop
           end if
           voisind(k)=i
@@ -1015,7 +1015,7 @@ print*,'ipresslocal=',ipresslocal
        end do
     end do
 
-    !Fabrication du tableau des voisins de chaque numÈro d'arete j :
+    !Fabrication du tableau des voisins de chaque num√©ro d'arete j :
     do i=1,ncv
        is=nusom(ptvois(i+1))
        do j=ptvois(i)+1,ptvois(i+1)
@@ -1025,7 +1025,7 @@ print*,'ipresslocal=',ipresslocal
           do while (nusc(k)/=js)
              k=k+1
           end do
-          nuvois(j)=voisind(k) 
+          nuvois(j)=voisind(k)
 !!$          print*,'volume=',i,' arete=',js,' triangle  voisin : ',nuvois(j)
           is=js
        end do
@@ -1037,7 +1037,7 @@ print*,'ipresslocal=',ipresslocal
   !###################################################################
   !Calcul des coefficients A
   !coef vitesse-vitesse
-  !longueur de l'arete divisÈe par la distance entre les centres des mailles
+  !longueur de l'arete divis√©e par la distance entre les centres des mailles
   !VOIR ARTICLE
   !*******************************
   subroutine calcul_coef(&
@@ -1058,9 +1058,9 @@ print*,'ipresslocal=',ipresslocal
 
     integer,parameter::macromaille=2
     integer::n_cluster,n_som_in,&
-             n_maille_a_rattacher,n_maille_rattacher,n_maille_attacher
+         n_maille_a_rattacher,n_maille_rattacher,n_maille_attacher
     integer,dimension(:),allocatable::pt_som,num_maille_par_sommet,&
-                                      cluster,maille_utilise,nb_attach_clus
+         cluster,maille_utilise,nb_attach_clus
 
     logical,dimension(:),allocatable::sommet_utilise
 
@@ -1077,21 +1077,21 @@ print*,'ipresslocal=',ipresslocal
           a11=xs(i1)-xs(i0) !I0I1
           a12=ys(i1)-ys(i0)
           if (nuvois(j)<=0) then !Triangle droit absent (bord du domaine)
-             !I=insection(mÈdiane,cotÈ)
-             !(I0IC.I0I1) =  d(I0,I) x d(IOI1) 
+             !I=insection(m√©diane,cot√©)
+             !(I0IC.I0I1) =  d(I0,I) x d(IOI1)
              b0=((xcv(i)-xs(i0))*a11+(ycv(i)-ys(i0))*a12)/(a11*a11+a12*a12) !(I0IC.I0I1)/(I0I1.I0I1)
-             x_lim=xs(i0)+b0*a11 ! coordonnÈe de l'intersection (mÈdiane,cotÈ) I 
+             x_lim=xs(i0)+b0*a11 ! coordonn√©e de l'intersection (m√©diane,cot√©) I
              y_lim=ys(i0)+b0*a12
              a21=xcv(i)-x_lim !IIIC
              a22=ycv(i)-y_lim
-             
+
              diam=a11*a11+a12*a12
              if (diam<1e-10) then
                 ic=ic+1
                 !print*,"La maille ",i," a deux sommets identiques sur le bord"
                 A(j)=0
-                bx(j)=0 
-                by(j)=0 
+                bx(j)=0
+                by(j)=0
              else
                 A(j)=(a11*a11+a12*a12)/(a11*a22-a12*a21) ! d(I0,I1)/d(C,I)
                 bx(j)=-A(j)*a21 !-d(I1,I0)IIIC =d(I1,I0)ICII
@@ -1105,8 +1105,8 @@ print*,'ipresslocal=',ipresslocal
                 icc=icc+1
                 !print*,"La maille ",i," a deux sommets identiques sur le bord"
                 A(j)=0
-                bx(j)=0 
-                by(j)=0 
+                bx(j)=0
+                by(j)=0
              else
                 A(j)=(a11*a11+a12*a12)/(a11*a22-a12*a21) ! d(I0,I1)/d(C,I)
                 bx(j)=-A(j)*a21*.5_8 !
@@ -1120,8 +1120,8 @@ print*,'ipresslocal=',ipresslocal
           i0=i1
        end do
     end do
-    print*,"Nombre de bords ÈliminÈs : ",ic
-    print*,"Nombre de faces ÈliminÈes : ",icc/2
+    print*,"Nombre de bords √©limin√©s : ",ic
+    print*,"Nombre de faces √©limin√©es : ",icc/2
 
 
     if (macromaille==1) then
@@ -1129,15 +1129,15 @@ print*,'ipresslocal=',ipresslocal
        write(*,*)"Macro-mailles par mailles, macromaille=",macromaille
 !!!
 !!!Amas de mailles par blocs contigus
-!!!    
+!!!
        k=0 !compteur des macro-mailles
        allocate(denlcv(ncv))
        denlcv(:)=0
        As=0
-       
+
        !Constitution des amas de base
        do i=1,ncv
-          !recherche si les voisins de i appartiennent‡ une macro-maille
+          !recherche si les voisins de i appartiennent√† une macro-maille
           jjj=denlcv(i)
           do j=ptvois(i)+1,ptvois(i+1)
              i1=nuvois(j)
@@ -1145,16 +1145,16 @@ print*,'ipresslocal=',ipresslocal
                 if (denlcv(i1)/=0) jjj=1
              end if
           end do
-          
-          !Si les voisins n'appartiennent pas ‡ une macro maille
+
+          !Si les voisins n'appartiennent pas √† une macro maille
           if (jjj==0) then
              k=k+1
-             denlcv(i)=k !la maille i appartient ‡ la macro-maille k
+             denlcv(i)=k !la maille i appartient √† la macro-maille k
              do j=ptvois(i)+1,ptvois(i+1)
                 i1=nuvois(j)
                 if (i1>0) then
                    As(j)=As(j)+A(j)*lambda
-                   denlcv(i1)=k !la maille i1 appartient ‡ la macro-maille k
+                   denlcv(i1)=k !la maille i1 appartient √† la macro-maille k
                    !recherche de la face vue par i1 (et non par i)
                    j1=ptvois(i1)+1
                    do while (nuvois(j1)/=i)
@@ -1167,8 +1167,8 @@ print*,'ipresslocal=',ipresslocal
        end do
 
        write(*,*)"Nombre de macro-mailles :",k
-       
-       !accrochage virtuel des mailles isolÈes aux macro-mailles dÈj‡ constituÈes
+
+       !accrochage virtuel des mailles isol√©es aux macro-mailles d√©j√† constitu√©es
        do i=1,ncv
           if (denlcv(i)==0) then
              do j=ptvois(i)+1,ptvois(i+1)
@@ -1176,7 +1176,7 @@ print*,'ipresslocal=',ipresslocal
                 if (i1>0) then
                    if (denlcv(i)==0) then !Raccrochement d'une face
                       if (denlcv(i1)>0) then !une macro-maille voisine
-                         denlcv(i)=-denlcv(i1) !valeur nÈgative temporaire pour Èviter des rattachement abusifs
+                         denlcv(i)=-denlcv(i1) !valeur n√©gative temporaire pour √©viter des rattachement abusifs
                          As(j)=As(j)+A(j)*lambda
                          j1=ptvois(i1)+1
                          do while (nuvois(j1)/=i)
@@ -1184,8 +1184,8 @@ print*,'ipresslocal=',ipresslocal
                          end do
                          As(j1)=As(j)
                       end if
-                   else 
-                      if (denlcv(i1)==-denlcv(i)) then !Raccrochement des autres faces ‡ la mÍme macro-maille (si nÈcessaire)
+                   else
+                      if (denlcv(i1)==-denlcv(i)) then !Raccrochement des autres faces √† la m√™me macro-maille (si n√©cessaire)
                          As(j)=As(j)+A(j)*lambda
                          j1=ptvois(i1)+1
                          do while (nuvois(j1)/=i)
@@ -1196,28 +1196,28 @@ print*,'ipresslocal=',ipresslocal
                    end if
                 end if
              end do
-             
-             if (denlcv(i)==0) then !la raccrochement a ÈchouÈ !!!!
-                write(*,*)"ProblËme dans la construction des macro-mailles : mailles isolÈes !!!"
+
+             if (denlcv(i)==0) then !la raccrochement a √©chou√© !!!!
+                write(*,*)"Probl√®me dans la construction des macro-mailles : mailles isol√©es !!!"
                 stop
              end if
           end if
        end do
-       
-       !Accrochage effectif des mailles isolÈes
+
+       !Accrochage effectif des mailles isol√©es
        do i=1,ncv
           if (denlcv(i)<0) denlcv(i)=-denlcv(i)
        end do
-       
+
        deallocate(denlcv)
 
 
-       
+
     elseif (macromaille==2) then
        write(*,*)"Macro-mailles par sommets, macromaille=",macromaille
 
 
-       !DÈcompte des sommets intÈrieurs 
+       !D√©compte des sommets int√©rieurs
        allocate(sommet_utilise(nbsom))
        sommet_utilise(:)=.false.
        l=0
@@ -1225,7 +1225,7 @@ print*,'ipresslocal=',ipresslocal
           j0=ptvois(i+1)
           do j=ptvois(i)+1,ptvois(i+1)
              k0=nusom(j0)
-             if (nuvois(j0)>0.and.nuvois(j)>0.and.(.not.sommet_utilise(k0))) then 
+             if (nuvois(j0)>0.and.nuvois(j)>0.and.(.not.sommet_utilise(k0))) then
                 sommet_utilise(k0)=.true.
                 l=l+1
              end if
@@ -1234,13 +1234,13 @@ print*,'ipresslocal=',ipresslocal
        end do
 
        n_som_in=l
-       write(*,*)"Nombre de sommets intÈrieurs :",n_som_in
+       write(*,*)"Nombre de sommets int√©rieurs :",n_som_in
 
 
        allocate(pt_som(nbsom+1))
-       
+
 !!!
-!!!comptage du nombre de mailles par sommet intÈrieur
+!!!comptage du nombre de mailles par sommet int√©rieur
 !!!
        pt_som(1:nbsom+1)=0
        do i=1,ncv
@@ -1270,7 +1270,7 @@ print*,'ipresslocal=',ipresslocal
        end do
 
 !!!
-!!!Construction des clusters de base : contient les numÈros des noeuds
+!!!Construction des clusters de base : contient les num√©ros des noeuds
 !!!
        allocate(maille_utilise(ncv))
        maille_utilise(:)=0
@@ -1281,7 +1281,7 @@ print*,'ipresslocal=',ipresslocal
              do j=pt_som(i)+1,pt_som(i+1)
                 j0=num_maille_par_sommet(j)
                 if (maille_utilise(j0)/=0) then
-                   k=1 !La maille appartient deja ‡ un cluster
+                   k=1 !La maille appartient deja √† un cluster
                    exit
                 end if
              end do
@@ -1290,7 +1290,7 @@ print*,'ipresslocal=',ipresslocal
                 do j=pt_som(i)+1,pt_som(i+1)
                    j0=num_maille_par_sommet(j)
                    maille_utilise(j0)=n_cluster
-                end do                
+                end do
              end if
           end if
        end do
@@ -1306,7 +1306,7 @@ print*,'ipresslocal=',ipresslocal
              do j=pt_som(i)+1,pt_som(i+1)
                 j0=num_maille_par_sommet(j)
                 if (maille_utilise(j0)/=0) then
-                   k=1 !La maille appartient deja ‡ un cluster
+                   k=1 !La maille appartient deja √† un cluster
                    exit
                 end if
              end do
@@ -1331,7 +1331,7 @@ print*,'ipresslocal=',ipresslocal
 
        do i=1,n_cluster !Pour tous les cluster
           do j=pt_som(cluster(i))+1,pt_som(cluster(i)+1)
-             j0=num_maille_par_sommet(j) !On Ètudie la maille j0 du cluster i
+             j0=num_maille_par_sommet(j) !On √©tudie la maille j0 du cluster i
              do k=ptvois(j0)+1,ptvois(j0+1) !on regarde les voisins de j0
                 k0=nuvois(k)
                 do l=pt_som(cluster(i))+1,pt_som(cluster(i)+1) !si voisin dans cluster i
@@ -1346,39 +1346,39 @@ print*,'ipresslocal=',ipresslocal
        end do
 
 !!!
-!!!Mailles isolÈes
+!!!Mailles isol√©es
 !!!
 
        n_maille_a_rattacher=0
        n_maille_rattacher=0
        n_maille_attacher=0
        do i=1,ncv
-          if (maille_utilise(i)==0) then !Rattachement ‡ un cluster !!!
+          if (maille_utilise(i)==0) then !Rattachement √† un cluster !!!
              n_maille_a_rattacher=n_maille_a_rattacher+1
-             
-             boucle0 : do j=ptvois(i)+1,ptvois(i+1) !voisin de la maille ‡ rattacher
+
+             boucle0 : do j=ptvois(i)+1,ptvois(i+1) !voisin de la maille √† rattacher
                 j0=nuvois(j)
                 if (j0>0) then
                    !Definition du Rattachement principal
-                   if (maille_utilise(j0)>0) then !si le voisin appartient ‡ un cluster de base, on rattache au cluster
+                   if (maille_utilise(j0)>0) then !si le voisin appartient √† un cluster de base, on rattache au cluster
                       maille_utilise(i)=-maille_utilise(j0)
                       n_maille_rattacher=n_maille_rattacher+1
                       exit boucle0
                    end if
                 end if
              end do boucle0
-             
-             if (maille_utilise(i)/=0) then !Si la maille est rattachÈe ...
+
+             if (maille_utilise(i)/=0) then !Si la maille est rattach√©e ...
                 boucle1 : do j=ptvois(i)+1,ptvois(i+1) !Construction des connexions au cluster de base
                    j0=nuvois(j)
-                   if (j0>0) then 
-                      if (abs(maille_utilise(j0))==-maille_utilise(i)) then !recherche des connexions ‡ effectuer dans le cluster
+                   if (j0>0) then
+                      if (abs(maille_utilise(j0))==-maille_utilise(i)) then !recherche des connexions √† effectuer dans le cluster
                          As(j)=As(j)+A(j)*lambda
                          boucle2 : do k=ptvois(j0)+1,ptvois(j0+1) !recherche de la connexion reciproque
                             k0=nuvois(k)
-                            if (k0==i) then !connexion rÈciproque  trouvÈe              
+                            if (k0==i) then !connexion r√©ciproque  trouv√©e
                                As(k)=As(k)+A(k)*lambda
-                               exit boucle2             
+                               exit boucle2
                             end if
                          end do boucle2
                       end if
@@ -1390,18 +1390,18 @@ print*,'ipresslocal=',ipresslocal
           end if
        end do
 
-       write(*,*)"Nombre de mailles ‡ rattacher :",n_maille_a_rattacher
-       write(*,*)"Nombre de mailles rattachÈes :",n_maille_rattacher
-       write(*,*)"Nombre de mailles attachÈes :",n_maille_attacher
+       write(*,*)"Nombre de mailles √† rattacher :",n_maille_a_rattacher
+       write(*,*)"Nombre de mailles rattach√©es :",n_maille_rattacher
+       write(*,*)"Nombre de mailles attach√©es :",n_maille_attacher
        if (n_maille_rattacher+n_maille_attacher/=ncv) then
-          write(*,*)"Toutes les mailles ne sont pas attachÈes !!!"
-          stop 
+          write(*,*)"Toutes les mailles ne sont pas attach√©es !!!"
+          stop
        end if
     elseif (macromaille==3) then
        write(*,*)"Macro-mailles par sommets, macromaille=",macromaille
-       
-       
-       !DÈcompte des sommets intÈrieurs 
+
+
+       !D√©compte des sommets int√©rieurs
        allocate(sommet_utilise(nbsom))
        sommet_utilise(:)=.false.
        l=0
@@ -1409,7 +1409,7 @@ print*,'ipresslocal=',ipresslocal
           j0=ptvois(i+1)
           do j=ptvois(i)+1,ptvois(i+1)
              k0=nusom(j0)
-             if (nuvois(j0)>0.and.nuvois(j)>0.and.(.not.sommet_utilise(k0))) then 
+             if (nuvois(j0)>0.and.nuvois(j)>0.and.(.not.sommet_utilise(k0))) then
                 sommet_utilise(k0)=.true.
                 l=l+1
              end if
@@ -1418,13 +1418,13 @@ print*,'ipresslocal=',ipresslocal
        end do
 
        n_som_in=l
-       write(*,*)"Nombre de sommets intÈrieurs :",n_som_in
+       write(*,*)"Nombre de sommets int√©rieurs :",n_som_in
 
 
        allocate(pt_som(nbsom+1))
-       
+
 !!!
-!!!comptage du nombre de mailles par sommet intÈrieur
+!!!comptage du nombre de mailles par sommet int√©rieur
 !!!
        pt_som(1:nbsom+1)=0
        do i=1,ncv
@@ -1454,7 +1454,7 @@ print*,'ipresslocal=',ipresslocal
        end do
 
 !!!
-!!!Construction des clusters de base : contient les numÈros des noeuds
+!!!Construction des clusters de base : contient les num√©ros des noeuds
 !!!
        allocate(maille_utilise(ncv))
        maille_utilise(:)=0
@@ -1465,7 +1465,7 @@ print*,'ipresslocal=',ipresslocal
              do j=pt_som(i)+1,pt_som(i+1)
                 j0=num_maille_par_sommet(j)
                 if (maille_utilise(j0)/=0) then
-                   k=1 !La maille appartient deja ‡ un cluster
+                   k=1 !La maille appartient deja √† un cluster
                    exit
                 end if
              end do
@@ -1474,7 +1474,7 @@ print*,'ipresslocal=',ipresslocal
                 do j=pt_som(i)+1,pt_som(i+1)
                    j0=num_maille_par_sommet(j)
                    maille_utilise(j0)=n_cluster
-                end do                
+                end do
              end if
           end if
        end do
@@ -1490,7 +1490,7 @@ print*,'ipresslocal=',ipresslocal
              do j=pt_som(i)+1,pt_som(i+1)
                 j0=num_maille_par_sommet(j)
                 if (maille_utilise(j0)/=0) then
-                   k=1 !La maille appartient deja ‡ un cluster
+                   k=1 !La maille appartient deja √† un cluster
                    exit
                 end if
              end do
@@ -1515,7 +1515,7 @@ print*,'ipresslocal=',ipresslocal
 
        do i=1,n_cluster !Pour tous les cluster
           do j=pt_som(cluster(i))+1,pt_som(cluster(i)+1)
-             j0=num_maille_par_sommet(j) !On Ètudie la maille j0 du cluster i
+             j0=num_maille_par_sommet(j) !On √©tudie la maille j0 du cluster i
              do k=ptvois(j0)+1,ptvois(j0+1) !on regarde les voisins de j0
                 k0=nuvois(k)
                 do l=pt_som(cluster(i))+1,pt_som(cluster(i)+1) !si voisin dans cluster i
@@ -1530,22 +1530,22 @@ print*,'ipresslocal=',ipresslocal
        end do
 
 !!!
-!!!Mailles isolÈes
+!!!Mailles isol√©es
 !!!
 
        n_maille_a_rattacher=0
        n_maille_rattacher=0
        n_maille_attacher=0
        do i=1,ncv
-          if (maille_utilise(i)==0) then !Rattachement ‡ un cluster !!!
+          if (maille_utilise(i)==0) then !Rattachement √† un cluster !!!
              n_maille_a_rattacher=n_maille_a_rattacher+1
              allocate(nb_attach_clus(ptvois(i+1)-ptvois(i)))
              nb_attach_clus=0
-             do j=ptvois(i)+1,ptvois(i+1) !voisin de la maille ‡ rattacher
+             do j=ptvois(i)+1,ptvois(i+1) !voisin de la maille √† rattacher
                 j0=nuvois(j)
                 if (j0>0) then
                    !Definition du Rattachement principal
-                   if (maille_utilise(j0)>0) then !si le voisin appartient ‡ un cluster de base, on rattache au cluster
+                   if (maille_utilise(j0)>0) then !si le voisin appartient √† un cluster de base, on rattache au cluster
                       nb_attach_clus(j-ptvois(i))=nb_attach_clus(j-ptvois(i))+1
                    end if
                 end if
@@ -1554,18 +1554,18 @@ print*,'ipresslocal=',ipresslocal
              deallocate(nb_attach_clus)
              maille_utilise(i)=-maille_utilise(j0)
              n_maille_rattacher=n_maille_rattacher+1
-          
-             if (maille_utilise(i)/=0) then !Si la maille est rattachÈe ...
+
+             if (maille_utilise(i)/=0) then !Si la maille est rattach√©e ...
                 boucle1b : do j=ptvois(i)+1,ptvois(i+1) !Construction des connexions au cluster de base
                    j0=nuvois(j)
-                   if (j0>0) then 
-                      if (abs(maille_utilise(j0))==-maille_utilise(i)) then !recherche des connexions ‡ effectuer dans le cluster
+                   if (j0>0) then
+                      if (abs(maille_utilise(j0))==-maille_utilise(i)) then !recherche des connexions √† effectuer dans le cluster
                          As(j)=As(j)+A(j)*lambda
                          boucle2b : do k=ptvois(j0)+1,ptvois(j0+1) !recherche de la connexion reciproque
                             k0=nuvois(k)
-                            if (k0==i) then !connexion rÈciproque  trouvÈe              
+                            if (k0==i) then !connexion r√©ciproque  trouv√©e
                                As(k)=As(k)+A(k)*lambda
-                               exit boucle2b           
+                               exit boucle2b
                             end if
                          end do boucle2b
                       end if
@@ -1577,26 +1577,26 @@ print*,'ipresslocal=',ipresslocal
           end if
        end do
 
-       write(*,*)"Nombre de mailles ‡ rattacher :",n_maille_a_rattacher
-       write(*,*)"Nombre de mailles rattachÈes :",n_maille_rattacher
-       write(*,*)"Nombre de mailles attachÈes :",n_maille_attacher
+       write(*,*)"Nombre de mailles √† rattacher :",n_maille_a_rattacher
+       write(*,*)"Nombre de mailles rattach√©es :",n_maille_rattacher
+       write(*,*)"Nombre de mailles attach√©es :",n_maille_attacher
        if (n_maille_rattacher+n_maille_attacher/=ncv) then
-          write(*,*)"Toutes les mailles ne sont pas attachÈes !!!"
+          write(*,*)"Toutes les mailles ne sont pas attach√©es !!!"
           stop
        end if
     end if
 
   end subroutine calcul_coef
 
-  !################################################################### 
-  !Trie ‡ bulles
+  !###################################################################
+  !Trie √† bulles
   subroutine trie(numer,long)
     implicit none
     integer,intent(in)::long
     integer,dimension(long),intent(inout)::numer
 
     integer::i,ip,j,k
-    
+
     do j=long,2,-1
        do i=1,j-1
           ip=i+1
@@ -1609,19 +1609,19 @@ print*,'ipresslocal=',ipresslocal
        end do
     end do
   end subroutine trie
-  
+
 
   !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  !~~~~~~~~~~~~~~       ROUTINES DE RÈSOLUTION    ~~~~~~~~~~~~~~~~~~~~~
+  !~~~~~~~~~~~~~~       ROUTINES DE R√©SOLUTION    ~~~~~~~~~~~~~~~~~~~~~
   !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  !################################################################### 
+  !###################################################################
   subroutine preilu(nordre1)
     implicit none
 
@@ -1631,11 +1631,11 @@ print*,'ipresslocal=',ipresslocal
     integer::iord
 
     integer,dimension(:),allocatable::ptvp,nuvp,denlcv,renlcv
-    
+
 
 
 !!!
-!!!renumÈrotation
+!!!renum√©rotation
 !!!
 
     if (.not.allocated(ptmat)) then
@@ -1652,22 +1652,22 @@ print*,'ipresslocal=',ipresslocal
           ptmat(i+1)=k
           call trie(numat(ptmat(i)+1:ptmat(i+1)),ptmat(i+1)-ptmat(i))
        end do
-       
+
        ncvv=ptmat(ncv+1)
-       
+
        allocate(aa(ncvv,neq,neq),bb(ncv,neq),dd(ncv,neq,neq))
-       
-!!$       allocate(aa1(ncvv,3:4,3:3),dd1(ncvv,3:4,3:3))    
+
+!!$       allocate(aa1(ncvv,3:4,3:3),dd1(ncvv,3:4,3:3))
     end if
-    
- 
+
+
     allocate(renum(ncv),denum(ncv))
     renum(:)=0
- 
+
     renum(1)=1
     denum(1)=1
-    j=0 !nouvelle numÈrotation
-    i=1 !nouvelle numÈrotation
+    j=0 !nouvelle num√©rotation
+    i=1 !nouvelle num√©rotation
     do while (j<ncv)
        j=j+1
        icv=denum(j)
@@ -1682,18 +1682,18 @@ print*,'ipresslocal=',ipresslocal
           end if
        end do
     end do
-    
+
     if (i/=ncv) then
-       write(*,*)"ProblËme dans la renumÈrotation (subroutine preilu)",i,ncv
+       write(*,*)"Probl√®me dans la renum√©rotation (subroutine preilu)",i,ncv
        stop
     end if
-       
 
-!!! 
+
+!!!
 !!!Initialisation de nuv et ptv et ptd
-!!!      nuv=numÈro du bloc dans la nouvelle numÈrotation
-!!!      ptv=pointeur de bloc dans la nouvelle numÈrotation
-!!!      ptd=pointeur de bloc diagonal dans la nouvelle numÈrotation
+!!!      nuv=num√©ro du bloc dans la nouvelle num√©rotation
+!!!      ptv=pointeur de bloc dans la nouvelle num√©rotation
+!!!      ptd=pointeur de bloc diagonal dans la nouvelle num√©rotation
 !!!
     ncvv=ptmat(ncv+1)
     nnuv=ncvv+ncv !on ajoute la diagonale, donc ncv termes
@@ -1708,10 +1708,10 @@ print*,'ipresslocal=',ipresslocal
           nuv(j+k)=renum(numat(k))
        end do
        ptv(i+1)=ptv(i+1)+1 !ajout de la diagonale
-       nuv(ptv(i+1))=i !numÈro du bloc diagonal pour la maille i
+       nuv(ptv(i+1))=i !num√©ro du bloc diagonal pour la maille i
        call trie(nuv(ptv(i)+1:ptv(i+1)),ptv(i+1)-ptv(i))
 
-       !Recherche du terme diagonal aprËs la renumÈrotation
+       !Recherche du terme diagonal apr√®s la renum√©rotation
        k=ptv(i)+1
        do while (nuv(k)<i)
           k=k+1
@@ -1732,12 +1732,12 @@ print*,'ipresslocal=',ipresslocal
        allocate(ptvp(ncv+1))
        denlcv=0
 
-       !Decompte des blocs explorÈs pour chaque maille 
-       !si denlcv(n∞ bloc)=1, dÈj‡ comptÈ
-       !renlcv(dÈcompte bloc)=n∞ bloc       
+       !Decompte des blocs explor√©s pour chaque maille
+       !si denlcv(n¬∞ bloc)=1, d√©j√† compt√©
+       !renlcv(d√©compte bloc)=n¬∞ bloc
        do i=1,ncv
-       
-          !dÈcompte nombre de blocs sur une ligne
+
+          !d√©compte nombre de blocs sur une ligne
           kcompt=0
           do j=ptv(i)+1,ptv(i+1)
              kk=nuv(j)
@@ -1746,12 +1746,12 @@ print*,'ipresslocal=',ipresslocal
              renlcv(kcompt)=kk
           end do
 
-          !Ajout des voisins des voisins (dÈcomposition LU)
+          !Ajout des voisins des voisins (d√©composition LU)
           do j=ptv(i)+1,ptd(i)-1
              jj=nuv(j)
              do k=ptd(jj)+1,ptv(jj+1)
                 kk=nuv(k)
-                if (denlcv(kk)==0) then !bloc non encore considÈrÈ
+                if (denlcv(kk)==0) then !bloc non encore consid√©r√©
                    kcompt=kcompt+1
                    denlcv(kk)=1
                    renlcv(kcompt)=kk
@@ -1759,9 +1759,9 @@ print*,'ipresslocal=',ipresslocal
              end do
           end do
 
-          ptvp(i)=kcompt !nouveau pointeur de dÈcomposition iLU
-         
-          do kk=1,kcompt !remise ‡ zÈro du pointeur de bloc de dÈcompte
+          ptvp(i)=kcompt !nouveau pointeur de d√©composition iLU
+
+          do kk=1,kcompt !remise √† z√©ro du pointeur de bloc de d√©compte
              denlcv(renlcv(kk))=0
           end do
 
@@ -1775,7 +1775,7 @@ print*,'ipresslocal=',ipresslocal
        ptvp(ncv+1)=nnuvp
 
        !
-       ! Allocation et construction des pointeurs d'Èlimination
+       ! Allocation et construction des pointeurs d'√©limination
        !
        allocate(nuvp(nnuvp))
 
@@ -1789,12 +1789,12 @@ print*,'ipresslocal=',ipresslocal
              denlcv(kk)=1
              renlcv(kcompt)=kk
           end do
-       
+
           do j=ptv(i)+1,ptd(i)-1
              jj=nuv(j)
              do k=ptd(jj)+1,ptv(jj+1)
                 kk=nuv(k)
-                if (denlcv(kk)==0) then !bloc non encore considÈrÈ
+                if (denlcv(kk)==0) then !bloc non encore consid√©r√©
                    nuvp(ptvp(i))=kk
                    ptvp(i)=ptvp(i)-1
                    kcompt=kcompt+1
@@ -1804,20 +1804,20 @@ print*,'ipresslocal=',ipresslocal
              end do
           end do
 
-          do kk=1,kcompt !remise ‡ zÈro du pointeur de bloc de dÈcompte
+          do kk=1,kcompt !remise √† z√©ro du pointeur de bloc de d√©compte
              denlcv(renlcv(kk))=0
           end do
 
        end do
-             
+
        !
-       !Classement, recherche du pointeur diagonal et recopie des tableaux pour une nouvelle dÈcomposition LU
+       !Classement, recherche du pointeur diagonal et recopie des tableaux pour une nouvelle d√©composition LU
        !
        k=0
        do i=1,ncv
           call trie(nuvp(ptvp(i)+1:ptvp(i+1)),ptvp(i+1)-ptvp(i))
           ptv(i+1)=ptvp(i+1)
-          
+
           j=ptv(i)+1
           do while (nuvp(j)<i)
              j=j+1
@@ -1844,7 +1844,7 @@ print*,'ipresslocal=',ipresslocal
 
   end subroutine preilu
 
-!################################################################### 
+  !###################################################################
   subroutine bicgstab(it,nordre1,residu,residu_old)
     implicit none
 
@@ -1857,7 +1857,7 @@ print*,'ipresslocal=',ipresslocal
          residu1,residu2
 
     real(kind=8),dimension(:,:),allocatable::bb_old
-    
+
 
     test1=test
     allocate(bb_old(ncv,4))
@@ -1867,81 +1867,81 @@ print*,'ipresslocal=',ipresslocal
 !!$       if (residu_old>1) then
 !!$          call normal
 !!$       else
-          norm1=1
-          norm2=1
-          norm3=1
-          norm4=1
+       norm1=1
+       norm2=1
+       norm3=1
+       norm4=1
 !!$       end if
 
-!print*,norm1,norm2,norm3,norm4
+       !print*,norm1,norm2,norm3,norm4
 
 
 
        call facilu
 
-       ui(1:nlin)=0 
+       ui(1:nlin)=0
        call residilu(ui,r0)
 
-      
+
 
        call derilu(r0)
-       
+
        resini=maxval(abs(r0(1:nlin)))
 
 !!$       write(*,*)"resi(u,v)",maxval(abs(r0(1:2*ncv)))
 !!$       write(*,*)"resi(p)",maxval(abs(r0(2*ncv+1:3*ncv)))
 !!$       write(*,*)"resi(T)",maxval(abs(r0(3*ncv+1:4*ncv)))
 !!$    write(*,*)"Residu initial :",resini
-       
+
        rri(1:nlin)=r0(1:nlin)
        vi(1:nlin)=0
        pi(1:nlin)=0
-       
+
        rho=1
        alpha=1
        omega=1
-       
+
 !!!
-!!!Demarrage des itÈrations
+!!!Demarrage des it√©rations
 !!!
        iterations : do it=1,itbcgsmax
           rhom1=rho
-          
+
           rho=dot_product(r0(1:nlin),rri(1:nlin))
           beta=(rho/rhom1)*(alpha/omega)
           pi(1:nlin)=rri(1:nlin)+beta*(pi(1:nlin)-omega*vi(1:nlin))
-          
+
           call promat(pi,aux1)
           call derilu(aux1)
-          
+
           vi(1:nlin)=aux1(1:nlin)
-          
+
           psca=dot_product(r0(1:nlin),vi(1:nlin))
           alpha=rho/psca
 
           aux1(1:nlin)=rri(1:nlin)-alpha*vi(1:nlin)
-          
+
           call promat(aux1,aux2)
           call derilu(aux2)
-          
+
           omega=dot_product(aux1(1:nlin),aux2(1:nlin))
           psca=dot_product(aux2(1:nlin),aux2(1:nlin))
           omega=omega/psca
           ui(1:nlin)=ui(1:nlin)+alpha*pi(1:nlin)+omega*aux1(1:nlin)
           rri(1:nlin)=aux1(1:nlin)-omega*aux2(1:nlin)
-          
+
           psca=maxval(abs(rri(1:nlin)))
           psca=psca/resini
-          
+
           if (mod(it,100)==0) write(*,*)"It=",it," psca=",psca," rho=",rho
-          
+
           if (psca<=test1.and.it/=1) exit iterations
        end do iterations
 
 !!!
-!!!Remise ‡ l'Èchelle
+!!!Remise √† l'√©chelle
 !!!
-    
+
        do ii=1,ncv
           jj=renum(ii)
           k1=jj
@@ -1954,30 +1954,30 @@ print*,'ipresslocal=',ipresslocal
           bb(ii,4)=ui(k1)*norm4
        end do
        if (neq/=4) then
-          write(*,*)"Calcul prÈvu pour neq=4 !!!"
+          write(*,*)"Calcul pr√©vu pour neq=4 !!!"
           stop
        end if
-       
+
 
        residu1=maxval(abs(bb(:,1:2)))
        residu2=maxval(abs(bb(:,4)))
        residu=max(residu1,residu2)
 
-       if (residu/residu_old>1) then 
+       if (residu/residu_old>1) then
 
-!!$          if (it<10) then 
+!!$          if (it<10) then
 !!$             test1=test1/10
-!!$             write(*,*)"Nombre d'itÈrations insuffisant :",it
-!!$             write(*,*)"critËre d'arrÍt abaissÈ : test=",test1
+!!$             write(*,*)"Nombre d'it√©rations insuffisant :",it
+!!$             write(*,*)"crit√®re d'arr√™t abaiss√© : test=",test1
 !!$             cycle retour
 !!$          end if
 
- !!$         if (it<10.or.it>itbcgsmax) then
+!!$         if (it<10.or.it>itbcgsmax) then
           if (it>itbcgsmax) then
              nordre1=nordre1+1
              write(*,*)"residu_old=",residu_old
              write(*,*)"residu=",residu
-             write(*,*)"Le rÈsidu augmente !!!  Ordre iLU=",nordre1
+             write(*,*)"Le r√©sidu augmente !!!  Ordre iLU=",nordre1
              deallocate(renum)
              deallocate(aaf)
              deallocate(nuv,ptv,ptd)
@@ -1993,11 +1993,11 @@ print*,'ipresslocal=',ipresslocal
 
     residu_old=residu
     deallocate(bb_old)
-   
-    
+
+
   end subroutine bicgstab
 
-!################################################################### 
+  !###################################################################
   subroutine normal
     implicit none
 
@@ -2010,7 +2010,7 @@ print*,'ipresslocal=',ipresslocal
 !!!
 
     do i=1,ncv
-!!!Matrice U, de diagonale unitÈ
+!!!Matrice U, de diagonale unit√©
        dd(i,1,1)=1._8/dd(i,1,1)
        dd(i,1,2)=dd(i,1,2)*dd(i,1,1)
        dd(i,1,3)=dd(i,1,3)*dd(i,1,1)
@@ -2027,7 +2027,7 @@ print*,'ipresslocal=',ipresslocal
        dd(i,4,2)=dd(i,4,2)-dd(i,4,1)*dd(i,1,2)
        dd(i,4,3)=dd(i,4,3)-dd(i,4,1)*dd(i,1,3)-dd(i,4,2)*dd(i,2,3)
        dd(i,4,4)=1._8/(dd(i,4,4)-dd(i,4,1)*dd(i,1,4)-dd(i,4,2)*dd(i,2,4)-dd(i,4,3)*dd(i,3,4))
-!!!Construction puis rÈsolution : d^{-1}b
+!!!Construction puis r√©solution : d^{-1}b
        bb(i,1)=bb(i,1)*dd(i,1,1)
        bb(i,2)=(bb(i,2)-dd(i,2,1)*bb(i,1))*dd(i,2,2)
        bb(i,3)=(bb(i,3)-dd(i,3,1)*bb(i,1)-dd(i,3,2)*bb(i,2))*dd(i,3,3)
@@ -2036,12 +2036,12 @@ print*,'ipresslocal=',ipresslocal
        bb(i,3)=bb(i,3)-dd(i,3,4)*bb(i,4)
        bb(i,2)=bb(i,2)-dd(i,2,4)*bb(i,4)-dd(i,2,3)*bb(i,3)
        bb(i,1)=bb(i,1)-dd(i,1,4)*bb(i,4)-dd(i,1,3)*bb(i,3)-dd(i,1,2)*bb(i,2)
-!!!Construction puis rÈsolution : d^{-1}a
+!!!Construction puis r√©solution : d^{-1}a
        do j=ptmat(i)+1,ptmat(i+1)
           aa(j,1,1)=aa(j,1,1)                                                              *dd(i,1,1)
           aa(j,2,1)=(aa(j,2,1)-dd(i,2,1)*aa(j,1,1))                                        *dd(i,2,2)
           aa(j,3,1)=(aa(j,3,1)-dd(i,3,1)*aa(j,1,1)-dd(i,3,2)*aa(j,2,1))                    *dd(i,3,3)
-          aa(j,4,1)=(aa(j,4,1)-dd(i,4,1)*aa(j,1,1)-dd(i,4,2)*aa(j,2,1)-dd(i,4,3)*aa(j,3,1))*dd(i,4,4)      
+          aa(j,4,1)=(aa(j,4,1)-dd(i,4,1)*aa(j,1,1)-dd(i,4,2)*aa(j,2,1)-dd(i,4,3)*aa(j,3,1))*dd(i,4,4)
           aa(j,3,1)=aa(j,3,1)-dd(i,3,4)*aa(j,4,1)
           aa(j,2,1)=aa(j,2,1)-dd(i,2,4)*aa(j,4,1)-dd(i,2,3)*aa(j,3,1)
           aa(j,1,1)=aa(j,1,1)-dd(i,1,4)*aa(j,4,1)-dd(i,1,3)*aa(j,3,1)-dd(i,1,2)*aa(j,2,1)
@@ -2101,7 +2101,7 @@ print*,'ipresslocal=',ipresslocal
        dd(i,4,3)=0
        dd(i,4,4)=1
 
-!Changement d'Èchelle des inconnues
+       !Changement d'√©chelle des inconnues
        bb(i,1)=bb(i,1)*unorm1
        bb(i,2)=bb(i,2)*unorm2
        bb(i,3)=bb(i,3)*unorm3
@@ -2122,12 +2122,12 @@ print*,'ipresslocal=',ipresslocal
           aa(j,4,3)=aa(j,4,3)*unorm4*norm3
        end do
     end do
-    
+
     write(*,*)"norme1=",norm1," norme2=",norm2," norme3=",norm3," norme4=",norm4
 
   end subroutine normal
 
-!################################################################### 
+  !###################################################################
   subroutine facilu
     implicit none
 
@@ -2196,44 +2196,44 @@ print*,'ipresslocal=',ipresslocal
        do j=ptv(i)+1,ptd(i)-1
           jj=nuv(j)
           do k=ptd(jj)+1,ptv(jj+1) !voisins des voisins
-             ii=nuv(k) !numÈro du bloc candidat ‡ la combinaison linÈaire d'Èlimination
-             kk=j+1 !pointeur  des termes ‡ Èliminer 
-             do while (nuv(kk)<ii.and.kk<ptv(i+1)) !recherche des bloc utilisÈs dans la dÈcomposition  iLU
-                kk=kk+1 
+             ii=nuv(k) !num√©ro du bloc candidat √† la combinaison lin√©aire d'√©limination
+             kk=j+1 !pointeur  des termes √† √©liminer
+             do while (nuv(kk)<ii.and.kk<ptv(i+1)) !recherche des bloc utilis√©s dans la d√©composition  iLU
+                kk=kk+1
              end do
              if (nuv(kk)==ii) then
                 aaf(kk,1,1)=aaf(kk,1,1)-aaf(j,1,1)*aaf(k,1,1)-aaf(j,1,2)*aaf(k,2,1)-&
-                                        aaf(j,1,3)*aaf(k,3,1)-aaf(j,1,4)*aaf(k,4,1)
+                     aaf(j,1,3)*aaf(k,3,1)-aaf(j,1,4)*aaf(k,4,1)
                 aaf(kk,2,1)=aaf(kk,2,1)-aaf(j,2,1)*aaf(k,1,1)-aaf(j,2,2)*aaf(k,2,1)-&
-                                        aaf(j,2,3)*aaf(k,3,1)-aaf(j,2,4)*aaf(k,4,1)
+                     aaf(j,2,3)*aaf(k,3,1)-aaf(j,2,4)*aaf(k,4,1)
                 aaf(kk,3,1)=aaf(kk,3,1)-aaf(j,3,1)*aaf(k,1,1)-aaf(j,3,2)*aaf(k,2,1)-&
-                                        aaf(j,3,3)*aaf(k,3,1)-aaf(j,3,4)*aaf(k,4,1)
+                     aaf(j,3,3)*aaf(k,3,1)-aaf(j,3,4)*aaf(k,4,1)
                 aaf(kk,4,1)=aaf(kk,4,1)-aaf(j,4,1)*aaf(k,1,1)-aaf(j,4,2)*aaf(k,2,1)-&
-                                        aaf(j,4,3)*aaf(k,3,1)-aaf(j,4,4)*aaf(k,4,1)
+                     aaf(j,4,3)*aaf(k,3,1)-aaf(j,4,4)*aaf(k,4,1)
                 aaf(kk,1,2)=aaf(kk,1,2)-aaf(j,1,1)*aaf(k,1,2)-aaf(j,1,2)*aaf(k,2,2)-&
-                                        aaf(j,1,3)*aaf(k,3,2)-aaf(j,1,4)*aaf(k,4,2)
+                     aaf(j,1,3)*aaf(k,3,2)-aaf(j,1,4)*aaf(k,4,2)
                 aaf(kk,2,2)=aaf(kk,2,2)-aaf(j,2,1)*aaf(k,1,2)-aaf(j,2,2)*aaf(k,2,2)-&
-                                        aaf(j,2,3)*aaf(k,3,2)-aaf(j,2,4)*aaf(k,4,2)
+                     aaf(j,2,3)*aaf(k,3,2)-aaf(j,2,4)*aaf(k,4,2)
                 aaf(kk,3,2)=aaf(kk,3,2)-aaf(j,3,1)*aaf(k,1,2)-aaf(j,3,2)*aaf(k,2,2)-&
-                                        aaf(j,3,3)*aaf(k,3,2)-aaf(j,3,4)*aaf(k,4,2)
+                     aaf(j,3,3)*aaf(k,3,2)-aaf(j,3,4)*aaf(k,4,2)
                 aaf(kk,4,2)=aaf(kk,4,2)-aaf(j,4,1)*aaf(k,1,2)-aaf(j,4,2)*aaf(k,2,2)-&
-                                        aaf(j,4,3)*aaf(k,3,2)-aaf(j,4,4)*aaf(k,4,2)
+                     aaf(j,4,3)*aaf(k,3,2)-aaf(j,4,4)*aaf(k,4,2)
                 aaf(kk,1,3)=aaf(kk,1,3)-aaf(j,1,1)*aaf(k,1,3)-aaf(j,1,2)*aaf(k,2,3)-&
-                                        aaf(j,1,3)*aaf(k,3,3)-aaf(j,1,4)*aaf(k,4,3)
+                     aaf(j,1,3)*aaf(k,3,3)-aaf(j,1,4)*aaf(k,4,3)
                 aaf(kk,2,3)=aaf(kk,2,3)-aaf(j,2,1)*aaf(k,1,3)-aaf(j,2,2)*aaf(k,2,3)-&
-                                        aaf(j,2,3)*aaf(k,3,3)-aaf(j,2,4)*aaf(k,4,3)
+                     aaf(j,2,3)*aaf(k,3,3)-aaf(j,2,4)*aaf(k,4,3)
                 aaf(kk,3,3)=aaf(kk,3,3)-aaf(j,3,1)*aaf(k,1,3)-aaf(j,3,2)*aaf(k,2,3)-&
-                                        aaf(j,3,3)*aaf(k,3,3)-aaf(j,3,4)*aaf(k,4,3)
+                     aaf(j,3,3)*aaf(k,3,3)-aaf(j,3,4)*aaf(k,4,3)
                 aaf(kk,4,3)=aaf(kk,4,3)-aaf(j,4,1)*aaf(k,1,3)-aaf(j,4,2)*aaf(k,2,3)-&
-                                        aaf(j,4,3)*aaf(k,3,3)-aaf(j,4,4)*aaf(k,4,3)
+                     aaf(j,4,3)*aaf(k,3,3)-aaf(j,4,4)*aaf(k,4,3)
                 aaf(kk,1,4)=aaf(kk,1,4)-aaf(j,1,1)*aaf(k,1,4)-aaf(j,1,2)*aaf(k,2,4)-&
-                                        aaf(j,1,3)*aaf(k,3,4)-aaf(j,1,4)*aaf(k,4,4)
+                     aaf(j,1,3)*aaf(k,3,4)-aaf(j,1,4)*aaf(k,4,4)
                 aaf(kk,2,4)=aaf(kk,2,4)-aaf(j,2,1)*aaf(k,1,4)-aaf(j,2,2)*aaf(k,2,4)-&
-                                        aaf(j,2,3)*aaf(k,3,4)-aaf(j,2,4)*aaf(k,4,4)
+                     aaf(j,2,3)*aaf(k,3,4)-aaf(j,2,4)*aaf(k,4,4)
                 aaf(kk,3,4)=aaf(kk,3,4)-aaf(j,3,1)*aaf(k,1,4)-aaf(j,3,2)*aaf(k,2,4)-&
-                                        aaf(j,3,3)*aaf(k,3,4)-aaf(j,3,4)*aaf(k,4,4)
+                     aaf(j,3,3)*aaf(k,3,4)-aaf(j,3,4)*aaf(k,4,4)
                 aaf(kk,4,4)=aaf(kk,4,4)-aaf(j,4,1)*aaf(k,1,4)-aaf(j,4,2)*aaf(k,2,4)-&
-                                        aaf(j,4,3)*aaf(k,3,4)-aaf(j,4,4)*aaf(k,4,4)
+                     aaf(j,4,3)*aaf(k,3,4)-aaf(j,4,4)*aaf(k,4,4)
              end if
           end do
        end do
@@ -2268,7 +2268,7 @@ print*,'ipresslocal=',ipresslocal
           aaf(j,3,1)=aaf(j,3,1)-aaf(k,3,4)*aaf(j,4,1)
           aaf(j,2,1)=aaf(j,2,1)-aaf(k,2,4)*aaf(j,4,1)-aaf(k,2,3)*aaf(j,3,1)
           aaf(j,1,1)=aaf(j,1,1)-aaf(k,1,4)*aaf(j,4,1)-aaf(k,1,3)*aaf(j,3,1)-aaf(k,1,2)*aaf(j,2,1)
-!
+          !
           aaf(j,1,2)=aaf(j,1,2)*aaf(k,1,1)
           aaf(j,2,2)=(aaf(j,2,2)-aaf(k,2,1)*aaf(j,1,2))*aaf(k,2,2)
           aaf(j,3,2)=(aaf(j,3,2)-aaf(k,3,1)*aaf(j,1,2)-aaf(k,3,2)*aaf(j,2,2))*aaf(k,3,3)
@@ -2297,7 +2297,7 @@ print*,'ipresslocal=',ipresslocal
   end subroutine facilu
 
 
-!################################################################### 
+  !###################################################################
   subroutine promat(xxx,yyy)
     implicit none
 
@@ -2323,10 +2323,10 @@ print*,'ipresslocal=',ipresslocal
     !write(*,*)"fin promat"
   end subroutine promat
 
-!################################################################### 
+  !###################################################################
   subroutine derilu(bbb)
     implicit none
-    
+
     real(kind=8),dimension(ncv,4),intent(inout)::bbb
 
     integer::i,j,jj
@@ -2357,7 +2357,7 @@ print*,'ipresslocal=',ipresslocal
     end do
 
 !!!
-!!!RemontÈ
+!!!Remont√©
 !!!
     do i=ncv,1,-1
        do j=ptd(i)+1,ptv(i+1)
@@ -2371,7 +2371,7 @@ print*,'ipresslocal=',ipresslocal
 
   end subroutine derilu
 
-!################################################################### 
+  !###################################################################
   subroutine residilu(xxx,yyy)
     implicit none
 
@@ -2379,7 +2379,7 @@ print*,'ipresslocal=',ipresslocal
     real(kind=8),dimension(ncv,4),intent(out)::yyy
 
     integer::i,ii,j
-    
+
 
 
     do i=1,ncv
@@ -2390,22 +2390,22 @@ print*,'ipresslocal=',ipresslocal
        yyy(ii,4)=bb(i,4)-dd(i,4,1)*xxx(ii,1)-dd(i,4,2)*xxx(ii,2)-dd(i,4,3)*xxx(ii,3)-dd(i,4,4)*xxx(ii,4)
        do j=ptmat(i)+1,ptmat(i+1)
           jj=renum(numat(j))
-           yyy(ii,1)= yyy(ii,1)-aa(j,1,1)*xxx(jj,1)-aa(j,1,2)*xxx(jj,2)-aa(j,1,3)*xxx(jj,3)-aa(j,1,4)*xxx(jj,4)
-           yyy(ii,2)= yyy(ii,2)-aa(j,2,1)*xxx(jj,1)-aa(j,2,2)*xxx(jj,2)-aa(j,2,3)*xxx(jj,3)-aa(j,2,4)*xxx(jj,4)
-           yyy(ii,3)= yyy(ii,3)-aa(j,3,1)*xxx(jj,1)-aa(j,3,2)*xxx(jj,2)-aa(j,3,3)*xxx(jj,3)-aa(j,3,4)*xxx(jj,4)
-           yyy(ii,4)= yyy(ii,4)-aa(j,4,1)*xxx(jj,1)-aa(j,4,2)*xxx(jj,2)-aa(j,4,3)*xxx(jj,3)-aa(j,4,4)*xxx(jj,4)
-        end do
-     end do
-   end subroutine residilu
+          yyy(ii,1)= yyy(ii,1)-aa(j,1,1)*xxx(jj,1)-aa(j,1,2)*xxx(jj,2)-aa(j,1,3)*xxx(jj,3)-aa(j,1,4)*xxx(jj,4)
+          yyy(ii,2)= yyy(ii,2)-aa(j,2,1)*xxx(jj,1)-aa(j,2,2)*xxx(jj,2)-aa(j,2,3)*xxx(jj,3)-aa(j,2,4)*xxx(jj,4)
+          yyy(ii,3)= yyy(ii,3)-aa(j,3,1)*xxx(jj,1)-aa(j,3,2)*xxx(jj,2)-aa(j,3,3)*xxx(jj,3)-aa(j,3,4)*xxx(jj,4)
+          yyy(ii,4)= yyy(ii,4)-aa(j,4,1)*xxx(jj,1)-aa(j,4,2)*xxx(jj,2)-aa(j,4,3)*xxx(jj,3)-aa(j,4,4)*xxx(jj,4)
+       end do
+    end do
+  end subroutine residilu
 
-!################################################################### 
+  !###################################################################
   subroutine predir
     implicit none
 
     integer::i,j,k,ncvv,icv,jcv,jj,jjj,lmax,laa,i0
 
 
-    !renumÈrotation
+    !renum√©rotation
     allocate(ptmat(ncv+1),numat(ptvois(ncv+1)))
 
     k=0
@@ -2471,7 +2471,7 @@ print*,'ipresslocal=',ipresslocal
        end do
     end do
 !!!
-!!!On ajuste la ligne de ciel pour eviter des l_bd non-concordantes lors de l'Èlimination
+!!!On ajuste la ligne de ciel pour eviter des l_bd non-concordantes lors de l'√©limination
 !!!
     k=0
     lmax=0
@@ -2507,7 +2507,7 @@ print*,'ipresslocal=',ipresslocal
 
   end subroutine predir
 
-!################################################################### 
+  !###################################################################
   subroutine resdir(residu)
     implicit none
 
@@ -2520,12 +2520,12 @@ print*,'ipresslocal=',ipresslocal
 
 
 !!!
-!!!MÈthode de Gauss
+!!!M√©thode de Gauss
 !!!
 
     do i=1,ncv
        icv=denum(i)
-       
+
        bbf(i,1)=bb(icv,1)
        bbf(i,2)=bb(icv,2)
        bbf(i,3)=bb(icv,3)
@@ -2551,54 +2551,54 @@ print*,'ipresslocal=',ipresslocal
           jdia=kdia-k
 
           bbf(i,1)=bbf(i,1)-aal(jdia,1,1)*bbf(j,1)-aal(jdia,1,2)*bbf(j,2)&
-                           -aal(jdia,1,3)*bbf(j,3)-aal(jdia,1,4)*bbf(j,4)
+               -aal(jdia,1,3)*bbf(j,3)-aal(jdia,1,4)*bbf(j,4)
           bbf(i,2)=bbf(i,2)-aal(jdia,2,1)*bbf(j,1)-aal(jdia,2,2)*bbf(j,2)&
-                           -aal(jdia,2,3)*bbf(j,3)-aal(jdia,2,4)*bbf(j,4)
+               -aal(jdia,2,3)*bbf(j,3)-aal(jdia,2,4)*bbf(j,4)
           bbf(i,3)=bbf(i,3)-aal(jdia,3,1)*bbf(j,1)-aal(jdia,3,2)*bbf(j,2)&
-                           -aal(jdia,3,3)*bbf(j,3)-aal(jdia,3,4)*bbf(j,4)
+               -aal(jdia,3,3)*bbf(j,3)-aal(jdia,3,4)*bbf(j,4)
           bbf(i,4)=bbf(i,4)-aal(jdia,4,1)*bbf(j,1)-aal(jdia,4,2)*bbf(j,2)&
-                           -aal(jdia,4,3)*bbf(j,3)-aal(jdia,4,4)*bbf(j,4)
+               -aal(jdia,4,3)*bbf(j,3)-aal(jdia,4,4)*bbf(j,4)
 
           kd=pt_d(j)-jdia
           do kk=jdia+1,jdia+l_bd(j)
              kkk=kk+kd
-             
-             aal(kk,1,1)=aal(kk,1,1)-aal(jdia,1,1)*aaf(kkk,1,1)-aal(jdia,1,2)*aaf(kkk,2,1)&
-                                    -aal(jdia,1,3)*aaf(kkk,3,1)-aal(jdia,1,4)*aaf(kkk,4,1)
-             aal(kk,2,1)=aal(kk,2,1)-aal(jdia,2,1)*aaf(kkk,1,1)-aal(jdia,2,2)*aaf(kkk,2,1)&
-                                    -aal(jdia,2,3)*aaf(kkk,3,1)-aal(jdia,2,4)*aaf(kkk,4,1)
-             aal(kk,3,1)=aal(kk,3,1)-aal(jdia,3,1)*aaf(kkk,1,1)-aal(jdia,3,2)*aaf(kkk,2,1)&
-                                    -aal(jdia,3,3)*aaf(kkk,3,1)-aal(jdia,3,4)*aaf(kkk,4,1)
-             aal(kk,4,1)=aal(kk,4,1)-aal(jdia,4,1)*aaf(kkk,1,1)-aal(jdia,4,2)*aaf(kkk,2,1)&
-                                    -aal(jdia,4,3)*aaf(kkk,3,1)-aal(jdia,4,4)*aaf(kkk,4,1)
 
-             
+             aal(kk,1,1)=aal(kk,1,1)-aal(jdia,1,1)*aaf(kkk,1,1)-aal(jdia,1,2)*aaf(kkk,2,1)&
+                  -aal(jdia,1,3)*aaf(kkk,3,1)-aal(jdia,1,4)*aaf(kkk,4,1)
+             aal(kk,2,1)=aal(kk,2,1)-aal(jdia,2,1)*aaf(kkk,1,1)-aal(jdia,2,2)*aaf(kkk,2,1)&
+                  -aal(jdia,2,3)*aaf(kkk,3,1)-aal(jdia,2,4)*aaf(kkk,4,1)
+             aal(kk,3,1)=aal(kk,3,1)-aal(jdia,3,1)*aaf(kkk,1,1)-aal(jdia,3,2)*aaf(kkk,2,1)&
+                  -aal(jdia,3,3)*aaf(kkk,3,1)-aal(jdia,3,4)*aaf(kkk,4,1)
+             aal(kk,4,1)=aal(kk,4,1)-aal(jdia,4,1)*aaf(kkk,1,1)-aal(jdia,4,2)*aaf(kkk,2,1)&
+                  -aal(jdia,4,3)*aaf(kkk,3,1)-aal(jdia,4,4)*aaf(kkk,4,1)
+
+
              aal(kk,1,2)=aal(kk,1,2)-aal(jdia,1,1)*aaf(kkk,1,2)-aal(jdia,1,2)*aaf(kkk,2,2)&
-                                    -aal(jdia,1,3)*aaf(kkk,3,2)-aal(jdia,1,4)*aaf(kkk,4,2)
+                  -aal(jdia,1,3)*aaf(kkk,3,2)-aal(jdia,1,4)*aaf(kkk,4,2)
              aal(kk,2,2)=aal(kk,2,2)-aal(jdia,2,1)*aaf(kkk,1,2)-aal(jdia,2,2)*aaf(kkk,2,2)&
-                                    -aal(jdia,2,3)*aaf(kkk,3,2)-aal(jdia,2,4)*aaf(kkk,4,2)
+                  -aal(jdia,2,3)*aaf(kkk,3,2)-aal(jdia,2,4)*aaf(kkk,4,2)
              aal(kk,3,2)=aal(kk,3,2)-aal(jdia,3,1)*aaf(kkk,1,2)-aal(jdia,3,2)*aaf(kkk,2,2)&
-                                    -aal(jdia,3,3)*aaf(kkk,3,2)-aal(jdia,3,4)*aaf(kkk,4,2)
+                  -aal(jdia,3,3)*aaf(kkk,3,2)-aal(jdia,3,4)*aaf(kkk,4,2)
              aal(kk,4,2)=aal(kk,4,2)-aal(jdia,4,1)*aaf(kkk,1,2)-aal(jdia,4,2)*aaf(kkk,2,2)&
-                                    -aal(jdia,4,3)*aaf(kkk,3,2)-aal(jdia,4,4)*aaf(kkk,4,2)
+                  -aal(jdia,4,3)*aaf(kkk,3,2)-aal(jdia,4,4)*aaf(kkk,4,2)
 
              aal(kk,1,3)=aal(kk,1,3)-aal(jdia,1,1)*aaf(kkk,1,3)-aal(jdia,1,2)*aaf(kkk,2,3)&
-                                    -aal(jdia,1,3)*aaf(kkk,3,3)-aal(jdia,1,4)*aaf(kkk,4,3)
+                  -aal(jdia,1,3)*aaf(kkk,3,3)-aal(jdia,1,4)*aaf(kkk,4,3)
              aal(kk,2,3)=aal(kk,2,3)-aal(jdia,2,1)*aaf(kkk,1,3)-aal(jdia,2,2)*aaf(kkk,2,3)&
-                                    -aal(jdia,2,3)*aaf(kkk,3,3)-aal(jdia,2,4)*aaf(kkk,4,3)
+                  -aal(jdia,2,3)*aaf(kkk,3,3)-aal(jdia,2,4)*aaf(kkk,4,3)
              aal(kk,3,3)=aal(kk,3,3)-aal(jdia,3,1)*aaf(kkk,1,3)-aal(jdia,3,2)*aaf(kkk,2,3)&
-                                    -aal(jdia,3,3)*aaf(kkk,3,3)-aal(jdia,3,4)*aaf(kkk,4,3)
+                  -aal(jdia,3,3)*aaf(kkk,3,3)-aal(jdia,3,4)*aaf(kkk,4,3)
              aal(kk,4,3)=aal(kk,4,3)-aal(jdia,4,1)*aaf(kkk,1,3)-aal(jdia,4,2)*aaf(kkk,2,3)&
-                                    -aal(jdia,4,3)*aaf(kkk,3,3)-aal(jdia,4,4)*aaf(kkk,4,3)
+                  -aal(jdia,4,3)*aaf(kkk,3,3)-aal(jdia,4,4)*aaf(kkk,4,3)
 
              aal(kk,1,4)=aal(kk,1,4)-aal(jdia,1,1)*aaf(kkk,1,4)-aal(jdia,1,2)*aaf(kkk,2,4)&
-                                    -aal(jdia,1,3)*aaf(kkk,3,4)-aal(jdia,1,4)*aaf(kkk,4,4)
+                  -aal(jdia,1,3)*aaf(kkk,3,4)-aal(jdia,1,4)*aaf(kkk,4,4)
              aal(kk,2,4)=aal(kk,2,4)-aal(jdia,2,1)*aaf(kkk,1,4)-aal(jdia,2,2)*aaf(kkk,2,4)&
-                                    -aal(jdia,2,3)*aaf(kkk,3,4)-aal(jdia,2,4)*aaf(kkk,4,4)
+                  -aal(jdia,2,3)*aaf(kkk,3,4)-aal(jdia,2,4)*aaf(kkk,4,4)
              aal(kk,3,4)=aal(kk,3,4)-aal(jdia,3,1)*aaf(kkk,1,4)-aal(jdia,3,2)*aaf(kkk,2,4)&
-                                    -aal(jdia,3,3)*aaf(kkk,3,4)-aal(jdia,3,4)*aaf(kkk,4,4)
+                  -aal(jdia,3,3)*aaf(kkk,3,4)-aal(jdia,3,4)*aaf(kkk,4,4)
              aal(kk,4,4)=aal(kk,4,4)-aal(jdia,4,1)*aaf(kkk,1,4)-aal(jdia,4,2)*aaf(kkk,2,4)&
-                                    -aal(jdia,4,3)*aaf(kkk,3,4)-aal(jdia,4,4)*aaf(kkk,4,4)
+                  -aal(jdia,4,3)*aaf(kkk,3,4)-aal(jdia,4,4)*aaf(kkk,4,4)
 
           end do
        end do
@@ -2672,7 +2672,7 @@ print*,'ipresslocal=',ipresslocal
     end do
 
 !!!
-!!!RemontÈ
+!!!Remont√©
 !!!
     do i=ncv,1,-1
        kd=pt_d(i)-i
@@ -2688,71 +2688,71 @@ print*,'ipresslocal=',ipresslocal
     end do
 
 
-       residu1=maxval(abs(bb(:,1:2)))
-       residu2=maxval(abs(bb(:,4)))
-       residu=max(residu1,residu2)
+    residu1=maxval(abs(bb(:,1:2)))
+    residu2=maxval(abs(bb(:,4)))
+    residu=max(residu1,residu2)
 
   end subroutine resdir
 
-  !6969696969696969696969696969696969696969696969696969696969696969696969  
-  !6969696969696969696969696969696969696969696969696969696969696969696969  
-  !6969696969696969696969696969696969696969696969696969696969696969696969  
-  !69696969                               9696969696969696969696969696969  
-  !69696969   FIN        Routine gÈnÈrales  96969696969696969696969696969  
-  !69696969                               9696969696969696969696969696969  
-  !6969696969696969696969696969696969696969696969696969696969696969696969  
-  !6969696969696969696969696969696969696969696969696969696969696969696969  
-  !6969696969696969696969696969696969696969696969696969696969696969696969  
-  !6969696969696969696969696969696969696969696969696969696969696969696969 
+  !6969696969696969696969696969696969696969696969696969696969696969696969
+  !6969696969696969696969696969696969696969696969696969696969696969696969
+  !6969696969696969696969696969696969696969696969696969696969696969696969
+  !69696969                               9696969696969696969696969696969
+  !69696969   FIN        Routine g√©n√©rales  96969696969696969696969696969
+  !69696969                               9696969696969696969696969696969
+  !6969696969696969696969696969696969696969696969696969696969696969696969
+  !6969696969696969696969696969696969696969696969696969696969696969696969
+  !6969696969696969696969696969696969696969696969696969696969696969696969
+  !6969696969696969696969696969696969696969696969696969696969696969696969
 
 
 
   !###################################################################
   !###################################################################
-  !################################################################### 
+  !###################################################################
   !GEOMETRIE
-  !################################################################### 
+  !###################################################################
   !###################################################################
   !###################################################################
   subroutine geometrie
     implicit none
-    
-    !###################################################################  
-    !Calcul du facteur de rÈgularitÈ et de l'aire des volumes
-    !###################################################################  
+
+    !###################################################################
+    !Calcul du facteur de r√©gularit√© et de l'aire des volumes
+    !###################################################################
     allocate(mcv(ncv))
 
-       call regularite(&
+    call regularite(&
          xs,ys,xcv,ycv,ptvois,nusom,ncv,&
          mcv&
-         )  
-    !###################################################################  
-    !DÈfinition du pointeur
-    !################################################################### 
-    allocate(ptsc(nbsom+1)) !pointeur du nombre de sommet connectÈ cumulÈ
+         )
+    !###################################################################
+    !D√©finition du pointeur
+    !###################################################################
+    allocate(ptsc(nbsom+1)) !pointeur du nombre de sommet connect√© cumul√©
     ptsc=0
     call pointeur(&
          ptvois,ncv,nbsom,nusom,&
          ptsc&
          )
 
-    
-    !###################################################################  
-    !DÈtermination des sommets connectÈ
-    !NumÈrotation des aretes
-    !###################################################################   
+
+    !###################################################################
+    !D√©termination des sommets connect√©
+    !Num√©rotation des aretes
+    !###################################################################
     nbc=ptsc(nbsom+1)-1
-    allocate(nusc(nbc)) !numÈro des sommets cumulÈs=numero sommet connectÈ
+    allocate(nusc(nbc)) !num√©ro des sommets cumul√©s=numero sommet connect√©
     call pre_num_voisin_volume(&
          ptvois,nusom,ncv,nbsom,nusc,&
          ptsc&
          )
-    !###################################################################  
-    !DÈtermination des voisins :
-    !voisind,voising dÈfinis sur la base des pointeurs
-    !nuvois(i)=k correspond aux numÈros entre voisins : arete nunero i voisine droite triangle k
-    !###################################################################  
-    nbc=ptsc(nbsom+1)-1 ! le nombre d'aretes difÈrentes
+    !###################################################################
+    !D√©termination des voisins :
+    !voisind,voising d√©finis sur la base des pointeurs
+    !nuvois(i)=k correspond aux num√©ros entre voisins : arete nunero i voisine droite triangle k
+    !###################################################################
+    nbc=ptsc(nbsom+1)-1 ! le nombre d'aretes dif√©rentes
     allocate(nuvois(nptvois))
     nuvois=0
     call num_voisin_volume(&
@@ -2761,21 +2761,21 @@ print*,'ipresslocal=',ipresslocal
          nuvois,&
          nbsom)
     deallocate(nusc,ptsc)
-    !  
-    !Impression avant la renumÈrotation
-    !  
+    !
+    !Impression avant la renum√©rotation
+    !
     if (.true.) then
        call imprime(&
             ptvois,nusom,xs,ys,xcv,ycv,ncv,&
             neq)
     end if
-    
-    !###################################################################  
+
+    !###################################################################
     !Article Robert Eymart:
-    !                      A  = \tau          
-    !                      bx = A(k,l) selon x 
-    !                      by = A(k,l) selon y 
-    !###################################################################  
+    !                      A  = \tau
+    !                      bx = A(k,l) selon x
+    !                      by = A(k,l) selon y
+    !###################################################################
     allocate(A(nptvois),bx(nptvois),by(nptvois),As(nptvois))
 !!$    allocate(Ass(nptvois))
     call calcul_coef(&
@@ -2786,29 +2786,29 @@ print*,'ipresslocal=',ipresslocal
 
   end subroutine geometrie
 
-!################################################################### 
-!################################################################### 
-!################################################################### 
+  !###################################################################
+  !###################################################################
+  !###################################################################
   !MAILLAGE TRIANGULAIRE
-!################################################################### 
-!################################################################### 
-!################################################################### 
+  !###################################################################
+  !###################################################################
+  !###################################################################
   subroutine triangle_element
     implicit none
 
 
     !##############################################################
     !division de triangles : nvc0->ncv
-    !crÈation des nouveaux noeuds : nbsom0->nbsom
-    !dÈfinitions des numÈros : nusom
-    !dÈfinition des coordonnÈe : (xs,ys)
+    !cr√©ation des nouveaux noeuds : nbsom0->nbsom
+    !d√©finitions des num√©ros : nusom
+    !d√©finition des coordonn√©e : (xs,ys)
     !##############################################################
-    !calcul du nombre exacte de triangle aprËs subdivision
-    ncv=ncv0*ndiv*ndiv !calcul du nombre exacte de triangle aprËs subdivision
+    !calcul du nombre exacte de triangle apr√®s subdivision
+    ncv=ncv0*ndiv*ndiv !calcul du nombre exacte de triangle apr√®s subdivision
     nptvois=3*ncv ! nombre total de points pour tous les triangles
     allocate(nusom(nptvois),ptvois(ncv+1))
     do k=1,ncv+1
-       ptvois(k)=3*k-3   !pointe sur les 3 points voisins au triangle k : ptvoisin(k)+1 ‡ ptvoisin(k+1)
+       ptvois(k)=3*k-3   !pointe sur les 3 points voisins au triangle k : ptvoisin(k)+1 √† ptvoisin(k+1)
     end do
     nbsom=ncv0*(ndiv+1)*(ndiv+2)/2 ! nombre de sommet apres division (vrai pour chaque triangle)
     allocate(xs(nbsom),ys(nbsom))
@@ -2818,24 +2818,24 @@ print*,'ipresslocal=',ipresslocal
          ndiv)
     deallocate(xs0,ys0,nusom0)
 
-    !###################################################################  
-    !DÈtermination des centres des volumes : xcv et ycv
-    !################################################################### 
+    !###################################################################
+    !D√©termination des centres des volumes : xcv et ycv
+    !###################################################################
     allocate(xcv(ncv),ycv(ncv))
     call centre_volume(&
          xcv,ycv,&
          nusom,xs,ys,ncv&
          )
-    
+
   end subroutine triangle_element
 
 
 
-  !################################################################### 
+  !###################################################################
   !division de triangles : nvc0->ncv
-  !crÈation des nouveaux noeuds : nbsom0->nbsom
-  !dÈfinitions des numÈro : nusom
-  !dÈfinition des coordonnÈe : (xs,ys)
+  !cr√©ation des nouveaux noeuds : nbsom0->nbsom
+  !d√©finitions des num√©ro : nusom
+  !d√©finition des coordonn√©e : (xs,ys)
   subroutine div_triangle(&
        nusom ,xs ,ys ,nbsom ,ncv ,&
        nusom0,xs0,ys0,nbsom0,ncv0,&
@@ -2856,7 +2856,7 @@ print*,'ipresslocal=',ipresslocal
     real(kind=8)::cf0,cf1,a0,a1,a2,ds
     integer::is,icv,i0,i1,i2
     integer::i,j,k
-    
+
 
     !compteur du nombre de noeuds
     is=nbsom0
@@ -2864,7 +2864,7 @@ print*,'ipresslocal=',ipresslocal
     icv=ncv0
     !Allocation maxi
     allocate(arete0(nbsom0,nbsom0,ndiv+1),lim(ndiv+1),lip(ndiv+1))
-    !CrÈation des nouveau sommets sur les aretes principales
+    !Cr√©ation des nouveau sommets sur les aretes principales
     arete0=0._8
     !Initialisation des sommets par le maillage de base
     xs(1:nbsom0)=xs0(1:nbsom0)
@@ -2884,74 +2884,74 @@ print*,'ipresslocal=',ipresslocal
              do k=1,ndiv-1
                 cf0=dfloat(k)/dfloat(ndiv)
                 cf1=1._8-cf0
-                !coordonnÈes des nouveaux noeuds
+                !coordonn√©es des nouveaux noeuds
                 is=is+1
                 xs(is)=cf0*xs0(i0)+cf1*xs0(i1)
                 ys(is)=cf0*ys0(i0)+cf1*ys0(i1)
-!!$                !****DÈpalcement du noeud alÈatoire
+!!$                !****D√©palcement du noeud al√©atoire
 !!$                call random_number(ds)
 !!$                xs(is)=xs(is)*(1._8+5e-2_8*(ds-.5_8))
 !!$                ys(is)=ys(is)*(1._8+5e-2_8*(ds-.5_8))
 !!$                !****
-                !dÈfinition des noeuds de l'arete (numÈro de i1 vers i0)
+                !d√©finition des noeuds de l'arete (num√©ro de i1 vers i0)
                 arete0(i1,i0,k+1)=is
                 arete0(i0,i1,ndiv-k+1)=is
              end do
           end if
        end do
     end do
-    !crÈation des triangles internes par subdivision
-    do i=1,ncv0 !dÈfinition numÈro des sommets du triangle i
+    !cr√©ation des triangles internes par subdivision
+    do i=1,ncv0 !d√©finition num√©ro des sommets du triangle i
        i0=nusom0(i,1)
        i1=nusom0(i,2)
        i2=nusom0(i,3)
-       !parcours des bandes de triangles entre 2 lignes parallËles
-       !lim : tableau des sommets de la ligne infÈrieure
-       !lip :  tableau des sommets de la ligne supÈrieure
-       !Initialisation de lim sur cotÈ 1-2
+       !parcours des bandes de triangles entre 2 lignes parall√®les
+       !lim : tableau des sommets de la ligne inf√©rieure
+       !lip :  tableau des sommets de la ligne sup√©rieure
+       !Initialisation de lim sur cot√© 1-2
        do j=1,ndiv+1
           lim(j)=arete0(i2,i1,j)
        end do
        do j=1,ndiv-1
-          !initialisation des extrÈmitÈ de lip (parallËle ‡ 1-2)
+          !initialisation des extr√©mit√© de lip (parall√®le √† 1-2)
           lip(1)       =arete0(i2,i0,j+1)
           lip(ndiv-j+1)=arete0(i1,i0,j+1)
-          a0=float(j)/float(ndiv) !valeur du pas sur le cotÈ I2I0
-          do k=1,ndiv-j-1 ! nombre de division sur la parallËle j
-             a1=dfloat(k)/dfloat(ndiv) !pas sur la parallËle j
+          a0=float(j)/float(ndiv) !valeur du pas sur le cot√© I2I0
+          do k=1,ndiv-j-1 ! nombre de division sur la parall√®le j
+             a1=dfloat(k)/dfloat(ndiv) !pas sur la parall√®le j
              a2=1._8-a0-a1
              is=is+1
              xs(is)=a0*xs0(i0)+a1*xs0(i1)+a2*xs0(i2) !somme vecteur a0*I2I0 +a1*I2I1 (origine en I2)
              ys(is)=a0*ys0(i0)+a1*ys0(i1)+a2*ys0(i2) ! (suite)
-             !****DÈpalcement du noeud alÈatoire
+             !****D√©palcement du noeud al√©atoire
 !!$             call random_number(ds)
 !!$             xs(is)=xs(is)+0.e-2_8*(ds-.5_8)
 !!$             ys(is)=ys(is)+0.e-2_8*(ds-.5_8)
              !****
-             lip(k+1)=is ! numÈro du nouveau noeud
+             lip(k+1)=is ! num√©ro du nouveau noeud
           end do
-          !crÈation des triangles pointe en haut
-          !numÈrotation consÈcutive des 3 sommets des triangles
+          !cr√©ation des triangles pointe en haut
+          !num√©rotation cons√©cutive des 3 sommets des triangles
           do k=1,ndiv-j+1
              icv=icv+1 !nouveau triangle
              nusom(3*icv-2)=lim(k)
              nusom(3*icv-1)=lip(k)
              nusom(3*icv)  =lim(k+1)
           enddo
-          !crÈation des triangles pointe en bas
+          !cr√©ation des triangles pointe en bas
           do k=1,ndiv-j ! 1 de moins que le nombre triangles hauts
              icv=icv+1 !nouveau triangle
              nusom(3*icv-2)=lip(k)
              nusom(3*icv-1)=lip(k+1)
              nusom(3*icv)  =lim(k+1)
           enddo
-          !passage ‡ la parallËle suivante
+          !passage √† la parall√®le suivante
           !recopie de lip dans lim
           do k=1,ndiv-j+1
              lim(k)=lip(k)
           end do
        end do
-       !NumÈrotation du dernier triangle
+       !Num√©rotation du dernier triangle
        nusom(3*i-2)=lim(1)
        nusom(3*i-1)=i0
        nusom(3*i)  =lim(2)
@@ -2969,9 +2969,9 @@ print*,'ipresslocal=',ipresslocal
     deallocate(lip)
   end subroutine div_triangle
 
-  !###################################################################  
-  !DÈtermination des centres des volumes : xcv et ycv
-  !2 Èquations ‡ deux inconnues (2 produits scalaires) :
+  !###################################################################
+  !D√©termination des centres des volumes : xcv et ycv
+  !2 √©quations √† deux inconnues (2 produits scalaires) :
   !             [Milieu(I0I1)X].IOI1=0
   !             [Milieu(I0I2)X].IOI2=0
   !***************
@@ -2989,7 +2989,7 @@ print*,'ipresslocal=',ipresslocal
     integer::i,i0,i1,i2
     real(kind=8)::a11,a12,a21,a22,b1,b2
     real(kind=8)::aire,deter
-    
+
     do i=1,ncv
        i0=nusom(3*i-2)
        i1=nusom(3*i-1)
@@ -2999,36 +2999,36 @@ print*,'ipresslocal=',ipresslocal
        a21=xs(i2)-xs(i0) !Vecteur I0I2
        a22=ys(i2)-ys(i0) ! (suite)
        b1=a11*(xs(i0)+xs(i1))+a12*(ys(i0)+ys(i1))
-       b2=a21*(xs(i0)+xs(i2))+a22*(ys(i0)+ys(i2))   
+       b2=a21*(xs(i0)+xs(i2))+a22*(ys(i0)+ys(i2))
        !aire du losange : aire (produit vectoriel I0I1 x I0I2)
        aire= a11*a22-a12*a21
        if (aire<0) then !si centre du cercle hors du triangle
-          write(*,*)"L'aire du volume ",i," est nÈgative"
+          write(*,*)"L'aire du volume ",i," est n√©gative"
           stop
        end if
        deter=0.5_8/aire
        xcv(i)=deter*(b1*a22-b2*a12)
-       ycv(i)=deter*(a11*b2-a21*b1)  
+       ycv(i)=deter*(a11*b2-a21*b1)
     end do
   end subroutine centre_volume
-  
-  
-  !################################################################### 
-  !################################################################### 
-  !################################################################### 
+
+
+  !###################################################################
+  !###################################################################
+  !###################################################################
   !MAILLAGE RECTANGULAIRE
-  !################################################################### 
-  !################################################################### 
-  !################################################################### 
+  !###################################################################
+  !###################################################################
+  !###################################################################
 !!$  subroutine rectangle_element
 !!$    implicit none
-!!$    
+!!$
 !!$    real(kind=8),dimension(:),allocatable::xs0,ys0
 !!$    integer,dimension(:,:),allocatable::nusom0
 !!$     real(kind=8),dimension(:,:),allocatable::rais0
-!!$    
+!!$
 !!$    integer::ncv0,nbsom0
-!!$        
+!!$
 !!$    ncv=ncv0*ndiv*ndiv
 !!$    nptvois=4*ncv
 !!$    allocate(nusom(nptvois),ptvois(ncv+1))
@@ -3043,35 +3043,35 @@ print*,'ipresslocal=',ipresslocal
 !!$         ndiv,rais0)
 !!$    deallocate(xs0,ys0,nusom0)
 !!$  end subroutine rectangle_element
-  
-  !################################################################### 
+
+  !###################################################################
 
 
   subroutine div_rectangle(&
        nusom ,xs ,ys ,nbsom ,ncv ,&
        nusom0,xs0,ys0,nbsom0,ncv0,&
        ndiv,rais_0,raff)
-    
+
     implicit none
-    
+
     integer,dimension(:),intent(out)::nusom
     real(kind=8),dimension(:,:),intent(inout)::rais_0
     real(kind=8),dimension(:),intent(out)::xs,ys
     integer,intent(inout)::nbsom,ncv
     integer,intent(in)::ndiv
     integer,intent(in)::raff
-  
+
     integer,dimension(:,:),intent(in)::nusom0
     real(kind=8),dimension(:),intent(in)::xs0,ys0
     integer,intent(in)::nbsom0,ncv0
-    
+
     integer,dimension(:,:,:),allocatable::arete0
     integer,dimension(:),allocatable::lim,lip
     real(kind=8),dimension(:,:),allocatable::rais0
     real(kind=8)::a0,a1,a2,ds,long0
     integer::is,icv,i0,i1,i2,i3
     integer::i,j,k
-      
+
     select case(raff)
     case(100)
        write(*,*)"Maillage REGULIER en x et y"
@@ -3096,7 +3096,7 @@ print*,'ipresslocal=',ipresslocal
     icv=ncv0
     !Allocation maxi
     allocate(arete0(nbsom0,nbsom0,ndiv+1),lim(ndiv+1),lip(ndiv+1))
-    !CrÈation des nouveau sommets sur les aretes principales
+    !Cr√©ation des nouveau sommets sur les aretes principales
     arete0=0._8
     !Initialisation des sommets par le maillage de base
     xs(1:nbsom0)=xs0(1:nbsom0)
@@ -3108,9 +3108,9 @@ print*,'ipresslocal=',ipresslocal
           i0=nusom0(i,j) !premier sommet de l'arete
           i1=nusom0(i,k) !second sommet de l'arete
 
-          
+
 !!$          if (raff==1000) then
-!!$             if (xs0(i1)>xs0(i0).or.ys0(i1)>ys0(i0)) rais0(i,j)=1/rais0(i,j) !Modification de la raison pour dÈbuter de la fin !!!
+!!$             if (xs0(i1)>xs0(i0).or.ys0(i1)>ys0(i0)) rais0(i,j)=1/rais0(i,j) !Modification de la raison pour d√©buter de la fin !!!
 !!$          end if
 
           if (arete0(i0,i1,1) == 0) then
@@ -3125,7 +3125,7 @@ print*,'ipresslocal=',ipresslocal
                    if (raff==101.or.raff==111) a0=.5_8*(1._8-dcos(a0*dacos(-1._8)))
                    a1=dfloat(k)/dfloat(ndiv)
                    if (raff==110.or.raff==111) a1=.5_8*(1._8-dcos(a1*dacos(-1._8)))
-                   !coordonnÈes des nouveaux noeuds
+                   !coordonn√©es des nouveaux noeuds
                    is=is+1
                    xs(is)=a0*xs0(i0)+(1._8-a0)*xs0(i1)
                    ys(is)=a1*ys0(i0)+(1._8-a1)*ys0(i1)
@@ -3134,7 +3134,7 @@ print*,'ipresslocal=',ipresslocal
                 else if (raff==1000) then
                    is=is+1
                    if (rais0(i,j) /=1) then
-                      a0=(1._8-rais0(i,j)**k)/(1._8-rais0(i,j)**ndiv)  !!!rapport de deux mailles consÈcutives
+                      a0=(1._8-rais0(i,j)**k)/(1._8-rais0(i,j)**ndiv)  !!!rapport de deux mailles cons√©cutives
                       xs(is)=xs0(i1)+a0*(xs0(i0)-xs0(i1))
                       ys(is)=ys0(i1)+a0*(ys0(i0)-ys0(i1))
                    else
@@ -3145,51 +3145,51 @@ print*,'ipresslocal=',ipresslocal
                    arete0(i1,i0,k+1)=is
                    arete0(i0,i1,ndiv-k+1)=is
                 end if
-                !dÈfinition des noeuds de l'arete (numÈro de i1 vers i0)
+                !d√©finition des noeuds de l'arete (num√©ro de i1 vers i0)
              end do
           end if
        end do
     end do
 
-    !crÈation des rectangles internes par subdivision
-    do i=1,ncv0 !dÈfinition numÈro des sommets du triangle i
+    !cr√©ation des rectangles internes par subdivision
+    do i=1,ncv0 !d√©finition num√©ro des sommets du triangle i
        i0=nusom0(i,1)
        i1=nusom0(i,2)
        i2=nusom0(i,3)
        i3=nusom0(i,4)
-       !parcours des bandes de triangles entre 2 lignes parallËles
-       !lim : tableau des sommets de la ligne infÈrieure
-       !lip :  tableau des sommets de la ligne supÈrieure
-       !Initialisation de lim sur cotÈ 1-2
+       !parcours des bandes de triangles entre 2 lignes parall√®les
+       !lim : tableau des sommets de la ligne inf√©rieure
+       !lip :  tableau des sommets de la ligne sup√©rieure
+       !Initialisation de lim sur cot√© 1-2
        do j=1,ndiv+1
           lim(j)=arete0(i2,i1,j)
        end do
        do j=1,ndiv-1
-          !initialisation des extrÈmitÈ de lip (parallËle ‡ 1-2)
+          !initialisation des extr√©mit√© de lip (parall√®le √† 1-2)
           lip(1)       =arete0(i2,i3,j+1)
           lip(ndiv+1)  =arete0(i1,i0,j+1)
-          
+
 
           if (raff>=100.and.raff<=111) then
-             a0=float(j)/float(ndiv) !valeur du pas sur le cotÈ I2I0
+             a0=float(j)/float(ndiv) !valeur du pas sur le cot√© I2I0
              if (raff==101.or.raff==111) a0=.5_8*(1._8-dcos(a0*dacos(-1._8)))
-             do k=1,ndiv-1 ! nombre de division sur la parallËle j
-                a1=dfloat(k)/dfloat(ndiv) !pas sur la parallËle j
+             do k=1,ndiv-1 ! nombre de division sur la parall√®le j
+                a1=dfloat(k)/dfloat(ndiv) !pas sur la parall√®le j
                 if (raff==110.or.raff==111) a1=.5_8*(1._8-dcos(a1*dacos(-1._8)))
                 is=is+1
                 xs(is)=a0*xs0(i0)+(1._8-a0)*xs0(i1) !
                 ys(is)=a1*ys0(i1)+(1._8-a1)*ys0(i2) ! (suite)
-                lip(k+1)=is ! numÈro du nouveau noeud
+                lip(k+1)=is ! num√©ro du nouveau noeud
              end do
           else if (raff==1000) then
-             do k=1,ndiv-1 ! nombre de division sur la parallËle j
+             do k=1,ndiv-1 ! nombre de division sur la parall√®le j
                 is=is+1
                 if (rais0(i,1) /=1) then
                    a0=(1._8-rais0(i,1)**j)/(1._8-rais0(i,1)**ndiv)
                    xs(is)=xs0(i1)+a0*(xs0(i0)-xs0(i1))
                 else
                    a0=float(j)/float(ndiv)
-                   xs(is)=a0*xs0(i0)+(1._8-a0)*xs0(i1) 
+                   xs(is)=a0*xs0(i0)+(1._8-a0)*xs0(i1)
                 end if
                 if (rais0(i,2) /=1) then
                    a0=(1._8-rais0(i,2)**k)/(1._8-rais0(i,2)**ndiv)
@@ -3198,7 +3198,7 @@ print*,'ipresslocal=',ipresslocal
                    a1=dfloat(k)/dfloat(ndiv)
                    ys(is)=a1*ys0(i1)+(1._8-a1)*ys0(i2)
                 end if
-                lip(k+1)=is ! numÈro du nouveau noeud
+                lip(k+1)=is ! num√©ro du nouveau noeud
              end do
           end if
           !
@@ -3215,7 +3215,7 @@ print*,'ipresslocal=',ipresslocal
              lim(k)=lip(k)
           end do
        end do
-       !NumÈrotation de la derniere ligne de  rectangles
+       !Num√©rotation de la derniere ligne de  rectangles
        do j=1,ndiv+1
           lip(j)=arete0(i3,i0,j)
        end do
@@ -3226,14 +3226,14 @@ print*,'ipresslocal=',ipresslocal
           nusom(4*icv-1)=lip(k)
           nusom(4*icv)  =lip(k+1)
        enddo
-       !NumÈrotation du dernier rectangle (ancien numÈro)
+       !Num√©rotation du dernier rectangle (ancien num√©ro)
        k=ndiv
        nusom(4*i-3)=lim(k+1)
        nusom(4*i-2)=lim(k)
        nusom(4*i-1)=lip(k)
        nusom(4*i)  =lip(k+1)
     end do
-    
+
     if (icv /= ncv) then
        write(*,*)"La division donne ",icv," rectangles au lieu de ",ncv
        stop
@@ -3246,10 +3246,10 @@ print*,'ipresslocal=',ipresslocal
     deallocate(lim)
     deallocate(lip)
     if (allocated(rais0)) deallocate(rais0)
-    
-    !###################################################################  
-    !DÈtermination des centres des volumes : xcv et ycv
-    !################################################################### 
+
+    !###################################################################
+    !D√©termination des centres des volumes : xcv et ycv
+    !###################################################################
     allocate(xcv(ncv),ycv(ncv))
     do i=1,ncv
        i0=nusom(4*i-3)
@@ -3259,7 +3259,7 @@ print*,'ipresslocal=',ipresslocal
        xcv(i)=.25_8*(xs(i0)+xs(i1)+xs(i2)+xs(i3))
        ycv(i)=.25_8*(ys(i0)+ys(i1)+ys(i2)+ys(i3))
     end do
-    
+
   end subroutine div_rectangle
 
 
@@ -3273,28 +3273,28 @@ print*,'ipresslocal=',ipresslocal
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!  EN COURS  
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!  EN COURS
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 
 
   subroutine div_srectangle(&
-                            ndx,ndy,&
-                            ndivx,ndivy,&
-                            maillage_x,maillage_y,&
-                            xs0,ys0)
-    
+       ndx,ndy,&
+       ndivx,ndivy,&
+       maillage_x,maillage_y,&
+       xs0,ys0)
+
     implicit none
     integer,intent(in)::ndx,ndy
-    integer,dimension(:),intent(in)::ndivx,ndivy  
+    integer,dimension(:),intent(in)::ndivx,ndivy
     character(len=*),dimension(:),intent(in)::maillage_x,maillage_y
     real(kind=8),dimension(:),intent(in)::xs0,ys0
 
     integer::ix,iy,i,j,is,k1,k2,k3,k4,i0,i1,i2,i3
     integer::nxc,nyc
     integer::nxt,nyt
-      
+
     real(kind=8)::pi,ax,ay,xm,ym,xl,yl
 
 
@@ -3311,10 +3311,10 @@ print*,'ipresslocal=',ipresslocal
     ym=0
     do ix=1,ndx
        if (ix/=1) then
-             xl=xs0(ix)-xs0(ix-1)
-          else
-             xl=xs0(ix)
-          end if
+          xl=xs0(ix)-xs0(ix-1)
+       else
+          xl=xs0(ix)
+       end if
        nyc=0
        do iy=1,ndy
           if (iy/=1) then
@@ -3326,7 +3326,7 @@ print*,'ipresslocal=',ipresslocal
              ax=dfloat(i)/dfloat(ndivx(ix))
              do j=0,ndivy(iy)
                 ay=dfloat(j)/dfloat(ndivy(iy))
-                
+
                 !Nouvelle maille
                 is=i+1+(nxc)+(j+nyc)*nxt
                 select case(maillage_x(ix))
@@ -3336,7 +3336,7 @@ print*,'ipresslocal=',ipresslocal
                 case('regulier')
                    xs(is)=xm+ax*xl
                 case default
-                   write(*,*)'pas de maillage appropriÈ'
+                   write(*,*)'pas de maillage appropri√©'
                    stop
                 end select
 
@@ -3346,7 +3346,7 @@ print*,'ipresslocal=',ipresslocal
                 case('regulier')
                    ys(is)=ym+ay*yl
                 case default
-                   write(*,*)'pas de maillage appropriÈ'
+                   write(*,*)'pas de maillage appropri√©'
                    stop
                 end select
              end do
@@ -3382,10 +3382,10 @@ print*,'ipresslocal=',ipresslocal
 
 
 
-    
-    !###################################################################  
-    !DÈtermination des centres des volumes : xcv et ycv
-    !################################################################### 
+
+    !###################################################################
+    !D√©termination des centres des volumes : xcv et ycv
+    !###################################################################
     allocate(xcv(ncv),ycv(ncv))
     do i=1,ncv
        i0=nusom(4*i-3)
@@ -3396,19 +3396,19 @@ print*,'ipresslocal=',ipresslocal
        ycv(i)=.25_8*(ys(i0)+ys(i1)+ys(i2)+ys(i3))
     end do
 
-!    print*,xcv
-!    print*,ycv
+    !    print*,xcv
+    !    print*,ycv
 
-!    do i=1,ncv
-!       ii=nusom(i)
-!       print*,xs(ii),ys(ii)
-!       ii=nusom(i+1)
-!       print*,xs(ii),ys(ii)
-! ii=nusom(i+2)
-!       print*,xs(ii),ys(ii)
-! ii=nusom(i+3)
-!       print*,xs(ii),ys(ii)
-!    end do
+    !    do i=1,ncv
+    !       ii=nusom(i)
+    !       print*,xs(ii),ys(ii)
+    !       ii=nusom(i+1)
+    !       print*,xs(ii),ys(ii)
+    ! ii=nusom(i+2)
+    !       print*,xs(ii),ys(ii)
+    ! ii=nusom(i+3)
+    !       print*,xs(ii),ys(ii)
+    !    end do
 
 
   end subroutine div_srectangle
@@ -3449,60 +3449,60 @@ print*,'ipresslocal=',ipresslocal
 
 
 
-  
-  
-  !################################################################### 
-  !################################################################### 
-  !################################################################### 
+
+
+  !###################################################################
+  !###################################################################
+  !###################################################################
   !POLAIRE 104
-  !################################################################### 
-  !################################################################### 
-  !################################################################### 
+  !###################################################################
+  !###################################################################
+  !###################################################################
   subroutine polaire(nr,nt,cr,ct)
     implicit none
-    
+
     integer,intent(in)::nr,nt
     real(kind=8),intent(in)::cr,ct
 
     real(kind=8),dimension(:),allocatable::r,t
-    real(kind=8)::deter,aire,a11,a12,a21,a22,b1,b2,pi    
+    real(kind=8)::deter,aire,a11,a12,a21,a22,b1,b2,pi
     integer::i0,i1,i2,i,ii,is
 
     integer::ip,jp
     real(kind=8)::angle,rayon_m,rayon_p
-    
-    
+
+
     write(*,*)"Nombre de mailles de R : ",nr
     write(*,*)"Nombre de mailles de THETA : ",nt
     if (cr==0) then
-       write(*,*)"Maillage RADIAL rÈgulier"
+       write(*,*)"Maillage RADIAL r√©gulier"
     else
        write(*,*)"R(J)=(atan(cr*(2*r-1))+atan(cr))/(2*atan(cr))"
        write(*,*)"cr=",cr
     end if
     if (ct==0) then
-       write(*,*)"Maillage AZIMUTAL rÈgulier"
+       write(*,*)"Maillage AZIMUTAL r√©gulier"
     else
        write(*,*)"THETA(J)=(exp(ct*2*t(j)*pi)-1)"
        write(*,*)"         ------------------------"
        write(*,*)"          (exp(ct*pi)-1)/2"
        write(*,*)"ct=",ct
     end if
-    
+
     pi=acos(-1._8)
-       
+
     ncv=nr*nt
     nbsom=(nr+1)*nt
     nptvois=ncv*4
-       
+
     write(*,*)"Nombre de volumes :",ncv
     write(*,*)"Nombre de sommets :",nbsom
-    
+
     allocate(r(nr),t(nt))
     allocate(xs(nbsom),ys(nbsom))
     allocate(xcv(ncv),ycv(ncv))
     allocate(nusom(nptvois))
-       
+
     do i=1,nr
        r(i)=(dfloat(i)/dfloat(nr+1))
     end do
@@ -3512,7 +3512,7 @@ print*,'ipresslocal=',ipresslocal
     end if
 
     r(:)=r(:)+1._8/eta
-       
+
     do i=1,nt
        t(i)=dfloat(i)/dfloat(nt+1)
     end do
@@ -3523,14 +3523,14 @@ print*,'ipresslocal=',ipresslocal
        end do
     end if
     t(nt/2+1:nt)=1._8-t(nt/2:1:-1)
-    
+
     t(:)=2._8*pi*t(:)-pi*.5_8
-    
+
     allocate(ptvois(ncv+1))
     do i=1,ncv+1
        ptvois(i)=4*i-4
     end do
-    
+
     is=0
     do i=1,nr
        do j=1,nt
@@ -3539,11 +3539,11 @@ print*,'ipresslocal=',ipresslocal
           ycv(is)=r(i)*sin(t(j))
        end do
     end do
-             
+
     ii=0
     do i=1,nr
        do j=1,nt
-          
+
           if (j==1) then
              angle=(t(nt)-2*pi+t(1))/2
           else
@@ -3560,7 +3560,7 @@ print*,'ipresslocal=',ipresslocal
           else
              rayon_p=(r(i+1)+r(i))/2/( cos(t(j)-angle) )
           end if
-          !             
+          !
           jp=j+1
           ip=i+1
           if (j==nt) then
@@ -3569,98 +3569,98 @@ print*,'ipresslocal=',ipresslocal
           !
           ii=ii+1
           nusom(ii)=jp+(i-1)*nt
-          
+
           ii=ii+1
           nusom(ii)=j+(i-1)*nt
           xs(nusom(ii))=rayon_m*cos(angle)
           ys(nusom(ii))=rayon_m*sin(angle)
-          
+
           ii=ii+1
           nusom(ii)=j+(ip-1)*nt
           xs(nusom(ii))=rayon_p*cos(angle)
           ys(nusom(ii))=rayon_p*sin(angle)
-          
+
           ii=ii+1
           nusom(ii)=jp+(ip-1)*nt
        end do
     end do
-    
+
     deallocate(r,t)
-    
+
   end subroutine polaire
 
 
-!################################################################### 
+  !###################################################################
 
 
   subroutine polaire_old(nr,nt,cr,ct)
     implicit none
-    
+
     integer,intent(in)::nr,nt
     real(kind=8),intent(in)::cr,ct
-    
+
     real(kind=8),dimension(:),allocatable::r,t
-    real(kind=8)::deter,aire,a11,a12,a21,a22,b1,b2,pi    
+    real(kind=8)::deter,aire,a11,a12,a21,a22,b1,b2,pi
     integer::i0,i1,i2,i,ii,is
-    
-    
+
+
     write(*,*)"Nombre de mailles de R : ",nr
     write(*,*)"Nombre de mailles de THETA : ",nt
     if (cr==0) then
-       write(*,*)"Maillage RADIAL rÈgulier"
+       write(*,*)"Maillage RADIAL r√©gulier"
     else
        write(*,*)"R(J)=(atan(cr*(2*r-1))+atan(cr))/(2*atan(cr))"
        write(*,*)"cr=",cr
     end if
     if (ct==0) then
-       write(*,*)"Maillage AZIMUTAL rÈgulier"
+       write(*,*)"Maillage AZIMUTAL r√©gulier"
     else
        write(*,*)"THETA(J)=(exp(ct*2*t(j)*pi)-1)"
        write(*,*)"         ------------------------"
        write(*,*)"          (exp(ct*pi)-1)/2"
        write(*,*)"ct=",ct
     end if
-    
+
     pi=acos(-1._8)
-    
+
     ncv=nr*nt
     nbsom=(nr+1)*nt
     nptvois=ncv*4
-    
+
     write(*,*)"Nombre de volumes :",ncv
     write(*,*)"Nombre de sommets :",nbsom
-    
+
     allocate(r(nr+1),t(nt+1))
     allocate(xs(nbsom),ys(nbsom))
     allocate(xcv(ncv),ycv(ncv))
     allocate(nusom(nptvois))
-    
+
     do i=1,nr+1
        r(i)=(dfloat(i-1)/dfloat(nr))
     end do
-    
+
     if (cr/=0) then
        r(:)=(atan(cr*(2*r(:)-1))+atan(cr))/(2*atan(cr))
     end if
-    
+
     r(:)=r(:)+1._8/eta
-    
+
     do i=1,nt+1
        t(i)=dfloat(i-1)/dfloat(nt)
     end do
-    
+
     do j=1,nt/2+1
        t(j)=(dexp(ct*2_8*t(j)*pi)-1_8)/(dexp(ct*pi)-1_8)/2._8
     end do
     t(nt/2+1:nt+1)=1._8-t(nt/2+1:1:-1)
-    
+
     t(:)=2._8*pi*t(:)-pi*.5_8
-    
+
     allocate(ptvois(ncv+1))
     do i=1,ncv+1
        ptvois(i)=4*i-4
     end do
-    
+
     ii=0
     is=0
     do i=1,nr
@@ -3668,8 +3668,8 @@ print*,'ipresslocal=',ipresslocal
           is=is+1
           xs(is)=r(i)*cos(t(j))
           ys(is)=r(i)*sin(t(j))
-          
-          ii=ii+1                    
+
+          ii=ii+1
           nusom(ii)=j+(i-1)*nt
           ii=ii+1
           nusom(ii)=j+(i)*nt
@@ -3686,14 +3686,14 @@ print*,'ipresslocal=',ipresslocal
           end if
        end do
     end do
-    
+
     i=nr+1
     do j=1,nt
        is=is+1
        xs(is)=r(i)*cos(t(j))
-       ys(is)=r(i)*sin(t(j))            
+       ys(is)=r(i)*sin(t(j))
     end do
-    
+
     !CENTRE VOLUMES
     do i=1,ncv
        i0=nusom(4*i)
@@ -3704,7 +3704,7 @@ print*,'ipresslocal=',ipresslocal
        a21=xs(i2)-xs(i0) !Vecteur I0I2
        a22=ys(i2)-ys(i0) ! (suite)
        b1=a11*(xs(i0)+xs(i1))+a12*(ys(i0)+ys(i1))
-       b2=a21*(xs(i0)+xs(i2))+a22*(ys(i0)+ys(i2))   
+       b2=a21*(xs(i0)+xs(i2))+a22*(ys(i0)+ys(i2))
        !aire du losange : aire (produit vectoriel I0I1 x I0I2)
        aire= a11*a22-a12*a21
        if (aire<0) then
@@ -3713,26 +3713,26 @@ print*,'ipresslocal=',ipresslocal
        end if
        deter=0.5_8/aire
        xcv(i)=deter*(b1*a22-b2*a12)
-       ycv(i)=deter*(a11*b2-a21*b1)  
+       ycv(i)=deter*(a11*b2-a21*b1)
     end do
-    
+
     deallocate(r,t)
-    
-    
+
+
   end subroutine polaire_old
 
-  !∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞
-  !∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞
-  !∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞
-  !∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞                        ∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞
-  !∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞    Lecture et Ècriture   ∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞
-  !∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞                        ∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞
-  !∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞
-  !∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞
-  !∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞
-  !∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞
+  !¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞
+  !¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞
+  !¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞
+  !¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞                        ¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞
+  !¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞    Lecture et √©criture   ¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞
+  !¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞                        ¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞
+  !¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞
+  !¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞
+  !¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞
+  !¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞
 
-  !################################################################### 
+  !###################################################################
   !lecture
   subroutine lecture
     implicit none
@@ -3755,19 +3755,19 @@ print*,'ipresslocal=',ipresslocal
     read(*,*)nutest,duree,dt,centt,delpourc
     read(*,*)vtest,residobj,thetamax,comu,aff
     read(*,*)ra,pr
-    
+
     write(*,*)"Reprise",l_reprise
     write(*,*)"Maillage=",c_maillage
     write(*,*)"nutest=",nutest
-    write(*,*)"durÈe=",duree
+    write(*,*)"dur√©e=",duree
     write(*,*)"dt initial=",dt
     write(*,*)"centt=",centt
     write(*,*)"delpourc=",delpourc
-    write(*,*)"RÈsidu objectif : ",residobj
-    write(*,*)"Coefficient maximal sur l'incrÈment : ",thetamax
-    write(*,*)"Coefficient de pÈnalisation",comu
+    write(*,*)"R√©sidu objectif : ",residobj
+    write(*,*)"Coefficient maximal sur l'incr√©ment : ",thetamax
+    write(*,*)"Coefficient de p√©nalisation",comu
     lambda=comu
-    write(*,*)"Affichage des Ètapes de Newton=",aff
+    write(*,*)"Affichage des √©tapes de Newton=",aff
     write(*,*)"Re : Vtest=",vtest
     write(*,*)"Ra=",ra
     write(*,*)"Pr=",pr
@@ -3789,9 +3789,9 @@ print*,'ipresslocal=',ipresslocal
 !!!**********************************************
        reprise=0
     end if
-       
 
-       
+
+
     select case(c_maillage)
     case('triangle') !Maillage triangle : triangle.dat
        write(*,*)"---------->>> Lecture dans triangle.dat"
@@ -3801,43 +3801,43 @@ print*,'ipresslocal=',ipresslocal
        read(20,*)ncv0
        !lecture du nombre de sommets maillage de base
        read(20,*)nbsom0
-       !lecture des coordonnÈes des sommets
+       !lecture des coordonn√©es des sommets
        allocate(xs0(nbsom0),ys0(nbsom0))
        do i=1,nbsom0
           read(20,*)xs0(i),ys0(i)
        end do
        allocate(nusom0(ncv0,3))
        do i=1,ncv0
-          read(20,*)(nusom0(i,j),j=1,3) 
+          read(20,*)(nusom0(i,j),j=1,3)
        end do
        close(20)
        call triangle_element
-       
+
     case('triangle_polaire')
        write(*,*)"---------->>> Lecture dans triangle_eccentrique.dat"
        !nbse=3
        open(20,file="triangle_eccentrique.dat",status="old")
        read(20,*)ndiv
        read(20,*) eta
-       !DÈcentrage
+       !D√©centrage
        read(20,*) ray
-       !Angle de dÈcentrage
+       !Angle de d√©centrage
        read(20,*) dec
        !Nombre de mailles en r
        read(20,*) nbr
-       !Nombre de mailles en thÈta
+       !Nombre de mailles en th√©ta
        read(20,*) nbt
        !Lecture du nombre de volumes de base
        read(20,*) ncv0
        !lecture du nombre de sommets maillage de base
        read(20,*) nbsom0
-       !ParamËtre de subdivision des mailles
+       !Param√®tre de subdivision des mailles
        read(20,*) para
-       !Coefficient pour la rÈpartition tangente hyperbolique en thÈta
+       !Coefficient pour la r√©partition tangente hyperbolique en th√©ta
        read(20,*) cstethe
-       !Coeff rÈparition des centres des cercles en r
+       !Coeff r√©parition des centres des cercles en r
        read(20,*) cster
-       !lecture des coordonnÈes des sommets
+       !lecture des coordonn√©es des sommets
        print*,'Nombre de sommets : ',nbsom0,' De mailles : ',ncv0,' eta=',eta
        allocate(xs0(nbsom0),ys0(nbsom0))
        do i=1,nbsom0
@@ -3845,10 +3845,10 @@ print*,'ipresslocal=',ipresslocal
        enddo
        write(*,*) 'Bornes en x : ',maxval(xs0),minval(xs0)
        write(*,*) 'Bornes en y : ',maxval(ys0),minval(ys0)
-       !lecture des numÈros des noeuds pour chaque volume
+       !lecture des num√©ros des noeuds pour chaque volume
        allocate(nusom0(ncv0,3))
        do i=1,ncv0
-          read(20,*)(nusom0(i,j),j=1,3) 
+          read(20,*)(nusom0(i,j),j=1,3)
        end do
        close(20)
        write(*,*) '---------------- Fin lecture maillage'
@@ -3858,7 +3858,7 @@ print*,'ipresslocal=',ipresslocal
        write(*,*) 'Coefficient de repartition des mailles en theta : ', cstethe
        write(*,*) 'Coefficient de repartition des centres des cercles en r : ', cster
        call triangle_element
-      
+
     case('voronoi_polaire')
        write(*,*)"---------->>> Lecture dans voronoi.dat"
        open(20,file="voronoi.dat",status="old")
@@ -3873,7 +3873,7 @@ print*,'ipresslocal=',ipresslocal
        print*,'Nombre de sommets : ',nbsom,' De mailles : ',ncv,' eta=',eta
        write(*,*) 'Excentricite : ', ray, ' Angle : ', dec
        allocate(xs(nbsom),ys(nbsom))
-       
+
        do i=1,nbsom
           read(20,*) xs(i),ys(i)
        enddo
@@ -3904,7 +3904,7 @@ print*,'ipresslocal=',ipresslocal
        close(21)
        print*,'Nombre de sommets : ',nbsom,' De mailles : ',ncv, ' De voisins :',nptvois
        allocate(xs(nbsom),ys(nbsom))
-       
+
        do i=1,nbsom
           read(20,*) xs(i),ys(i)
        enddo
@@ -3926,7 +3926,7 @@ print*,'ipresslocal=',ipresslocal
 
 
 
-       
+
     case('rect_cos_x', 'rect_cos_y', 'rect_cos_xy', 'rect_raison')
        write(*,*)"---------->>> Lecture dans rectangle.dat"
        open(20,file="rectangle.dat",status="old")
@@ -3935,7 +3935,7 @@ print*,'ipresslocal=',ipresslocal
        read(20,*)ncv0
        !lecture du nombre de sommets maillage de base
        read(20,*)nbsom0
-       !lecture des coordonnÈes des sommets
+       !lecture des coordonn√©es des sommets
        allocate(xs0(nbsom0),ys0(nbsom0))
        do i=1,nbsom0
           read(20,*)xs0(i),ys0(i)
@@ -3959,18 +3959,18 @@ print*,'ipresslocal=',ipresslocal
                    end select
                    write(*,*)"Taille de maille /1:",&
                         lg*min(&
-                              (1._8-rais_0(i,j)**1)/(1._8-rais_0(i,j)**ndiv),&
-                              rais_0(i,j)**(ndiv-1)*(1._8-rais_0(i,j)**1)/(1._8-rais_0(i,j)**ndiv)),&
+                        (1._8-rais_0(i,j)**1)/(1._8-rais_0(i,j)**ndiv),&
+                        rais_0(i,j)**(ndiv-1)*(1._8-rais_0(i,j)**1)/(1._8-rais_0(i,j)**ndiv)),&
                         lg*max(&
-                              (1._8-rais_0(i,j)**1)/(1._8-rais_0(i,j)**ndiv),&
-                              rais_0(i,j)**(ndiv-1)*(1._8-rais_0(i,j)**1)/(1._8-rais_0(i,j)**ndiv))
+                        (1._8-rais_0(i,j)**1)/(1._8-rais_0(i,j)**ndiv),&
+                        rais_0(i,j)**(ndiv-1)*(1._8-rais_0(i,j)**1)/(1._8-rais_0(i,j)**ndiv))
                 end if
              end do
           end do
        else
-	allocate(rais_0(1,1))
+          allocate(rais_0(1,1))
           do i=1,ncv0
-             read(20,*)(nusom0(i,j),j=1,4) 
+             read(20,*)(nusom0(i,j),j=1,4)
           end do
        end if
        close(20)
@@ -3992,106 +3992,106 @@ print*,'ipresslocal=',ipresslocal
             ndiv,rais_0,raff)
        deallocate(xs0,ys0,nusom0)
        if (allocated(rais_0)) deallocate(rais_0)
-       
-       case ('polaire')
-          open(20,file="polaire.dat",status="old")
-          read(20,*)eta
-          eta=eta-1
-          write(*,*)"ETA=",eta
-          read(20,*)nr,nt
-          read(20,*)cr,ct
-          close(20)
-          call polaire(nr,nt,cr,ct)
 
-       case('structure')
-          write(*,*)"---------->>> Lecture dans srectangle.dat"
-          open(20,file="srectangle.dat",status="old")
-          !Lecture du nombre de volumes en x et y
-          read(20,*)ndx,ndy
-          allocate(ndivx(ndx),ndivy(ndy),maillage_x(ndx),maillage_y(ndy))
-          do i=1,ndx
-             read(20,*)ndivx(i),maillage_x(i)
-          end do
-           do i=1,ndy
-             read(20,*)ndivy(i),maillage_y(i)
-          end do
-          !lecture des coordonnÈes des sommets
-          allocate(xs0(ndx),ys0(ndy))
-          do i=1,ndx
-             read(20,*)xs0(i)
-          end do
-          do i=1,ndy
-             read(20,*)ys0(i)
-          end do
+    case ('polaire')
+       open(20,file="polaire.dat",status="old")
+       read(20,*)eta
+       eta=eta-1
+       write(*,*)"ETA=",eta
+       read(20,*)nr,nt
+       read(20,*)cr,ct
+       close(20)
+       call polaire(nr,nt,cr,ct)
+
+    case('structure')
+       write(*,*)"---------->>> Lecture dans srectangle.dat"
+       open(20,file="srectangle.dat",status="old")
+       !Lecture du nombre de volumes en x et y
+       read(20,*)ndx,ndy
+       allocate(ndivx(ndx),ndivy(ndy),maillage_x(ndx),maillage_y(ndy))
+       do i=1,ndx
+          read(20,*)ndivx(i),maillage_x(i)
+       end do
+       do i=1,ndy
+          read(20,*)ndivy(i),maillage_y(i)
+       end do
+       !lecture des coordonn√©es des sommets
+       allocate(xs0(ndx),ys0(ndy))
+       do i=1,ndx
+          read(20,*)xs0(i)
+       end do
+       do i=1,ndy
+          read(20,*)ys0(i)
+       end do
 
 !!$          if (nutest==100) then
 !!$             ALy=ys0(ndy)
-!!$             write(*,*)"CavitÈ ouverte de longueur : ",ALy
+!!$             write(*,*)"Cavit√© ouverte de longueur : ",ALy
 !!$             write(*,*)"Valeur de Ra_m=",ra
 !!$             ra=ra*ALy
-!!$             write(*,*)"Valeur de Ra calculÈ :",ra
+!!$             write(*,*)"Valeur de Ra calcul√© :",ra
 !!$          end if
 
-          ncv=0
-          nbsom=0
-          do i=1,ndx
-             do j=1,ndy
-                ncv=ncv+ndivx(i)*ndivy(j)
-             end do
+       ncv=0
+       nbsom=0
+       do i=1,ndx
+          do j=1,ndy
+             ncv=ncv+ndivx(i)*ndivy(j)
           end do
+       end do
 
-          nbsom=(sum(ndivx(:))+1)*(sum(ndivy(:))+1)
+       nbsom=(sum(ndivx(:))+1)*(sum(ndivy(:))+1)
 
-          nptvois=4*ncv
-          allocate(nusom(nptvois),ptvois(ncv+1))
-          do k=1,ncv+1
-             ptvois(k)=4*k-4
-          end do
+       nptvois=4*ncv
+       allocate(nusom(nptvois),ptvois(ncv+1))
+       do k=1,ncv+1
+          ptvois(k)=4*k-4
+       end do
 
-          call div_srectangle(&
-               ndx,ndy,&
-               ndivx,ndivy,&
-               maillage_x,maillage_y,&
-               xs0,ys0)
-          deallocate(ndivx,ndivy)
-         case default
-            write(*,*)'pas de lecture appropriÈe'
-            stop
+       call div_srectangle(&
+            ndx,ndy,&
+            ndivx,ndivy,&
+            maillage_x,maillage_y,&
+            xs0,ys0)
+       deallocate(ndivx,ndivy)
+    case default
+       write(*,*)'pas de lecture appropri√©e'
+       stop
     end select
 
 
 
-     select case(nutest)
-     case(2,3,4,100,102,110,210)
+    select case(nutest)
+    case(2,3,4,100,102,110,210)
        ALy=maxval(ys)
        ALx=maxval(xs)
-       write(*,*)"CavitÈ de hauteur : ",ALy
-       write(*,*)"CavitÈ de largeur : ",ALx
+       write(*,*)"Cavit√© de hauteur : ",ALy
+       write(*,*)"Cavit√© de largeur : ",ALx
        if (nutest==100.or.nutest==110.or.nutest==210) then
           write(*,*)"Valeur de Ra_m=",ra
           ra=ra*ALy/2
-          write(*,*)"Valeur de Ra calculÈ :",ra
+          write(*,*)"Valeur de Ra calcul√© :",ra
        end if
     case(101)
        ALy=maxval(ys)-3
        ALx=maxval(xs)-3
-       write(*,*)"CavitÈ de hauteur : ",ALy
-       write(*,*)"CavitÈ de largeur : ",ALx
-       
-          write(*,*)"Valeur de Ra_m=",ra
-          ra=ra*ALy/2
-          write(*,*)"Valeur de Ra calculÈ :",ra
-       
-       
+       write(*,*)"Cavit√© de hauteur : ",ALy
+       write(*,*)"Cavit√© de largeur : ",ALx
+
+       write(*,*)"Valeur de Ra_m=",ra
+       ra=ra*ALy/2
+       write(*,*)"Valeur de Ra calcul√© :",ra
+
+
     end select
 
 
 
-    
+
 
   end subroutine lecture
 
-  !################################################################### 
+  !###################################################################
   !Sortie
   subroutine sortie(&
        vx,vy,press,tp,mcv,&
@@ -4145,12 +4145,12 @@ print*,'ipresslocal=',ipresslocal
     write(15,*)ncv,nbsom,nptvois
     select case(c_maillage)
     case('voronoi_polaire')
-       write(*,*)"∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞ETA"
+       write(*,*)"¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞ETA"
        write(15,*)eta
     case('triangle_polaire')
-       write(*,*)"∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞ETA"
+       write(*,*)"¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞ETA"
        write(15,*)eta
-       write(*,*)"∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞NR,NT,CR,CT"
+       write(*,*)"¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞NR,NT,CR,CT"
        write(15,*)nr,nt
        write(15,*)cr,ct
     end select
@@ -4179,7 +4179,7 @@ print*,'ipresslocal=',ipresslocal
 
   end subroutine sortie
 
-  !################################################################### 
+  !###################################################################
   !Lecture maillage
   subroutine lecture_maillage
     implicit none
@@ -4188,7 +4188,7 @@ print*,'ipresslocal=',ipresslocal
     real(kind=8)::vxs,vys,ps,tps,potent,potentc
     integer::i,j,k,is,ncv_plus_nusom_is,ncv_plus_nusom_j
     integer::test
-    
+
 
 
     character(len=1)::txt
@@ -4207,7 +4207,7 @@ print*,'ipresslocal=',ipresslocal
        write(*,*)"nr_old=",nr_old," nt_old=",nt_old
        write(*,*)"cr_old=",cr_old," ct_old=",ct_old
     end select
-    
+
     open(unit=15,file='uvpt.plt',status='unknown')
     read(15,"(A)")txt
     read(15,"(A)")txt
@@ -4218,12 +4218,12 @@ print*,'ipresslocal=',ipresslocal
 
     do i=1,ncv_old
        read(15,*)xcv_old(i),ycv_old(i),p_old(i),vx_old(i),vy_old(i),tp_old(i),potentc
-       
+
     end do
 
-    
+
   end subroutine lecture_maillage
-!################################################################### 
+  !###################################################################
 !!! Passage des variables OLD aux NEW
   subroutine changement_grille_excentrique
     implicit none
@@ -4247,7 +4247,7 @@ print*,'ipresslocal=',ipresslocal
        if (ycv_old(i)>=0.and.xcv_old(i)>0)  angle=atan(ycv_old(i)/xcv_old(i))
        if (ycv_old(i)<0 .and.xcv_old(i)>0)  angle=atan(ycv_old(i)/xcv_old(i))+2*pi
        if (ycv_old(i)>=0.and.xcv_old(i)<0)  angle=atan(ycv_old(i)/xcv_old(i))+pi
-       if (ycv_old(i)<0 .and.xcv_old(i)<0)  angle=atan(ycv_old(i)/xcv_old(i))+pi 
+       if (ycv_old(i)<0 .and.xcv_old(i)<0)  angle=atan(ycv_old(i)/xcv_old(i))+pi
        angle_min=0
        angle_max=delta_angle
        do j=1,n_angle
@@ -4262,7 +4262,7 @@ print*,'ipresslocal=',ipresslocal
 
     allocate(secteur_angl(n_angle,maxval(compt(:))))
 
- !Definition des secteurs angulaires
+    !Definition des secteurs angulaires
     write(*,*)"Definition des secteurs angulaires"
     compt(:)=0
     do i=1,ncv_old
@@ -4271,7 +4271,7 @@ print*,'ipresslocal=',ipresslocal
        if (ycv_old(i)>=0.and.xcv_old(i)>0)  angle=atan(ycv_old(i)/xcv_old(i))
        if (ycv_old(i)<0 .and.xcv_old(i)>0)  angle=atan(ycv_old(i)/xcv_old(i))+2*pi
        if (ycv_old(i)>=0.and.xcv_old(i)<0)  angle=atan(ycv_old(i)/xcv_old(i))+pi
-       if (ycv_old(i)<0 .and.xcv_old(i)<0)  angle=atan(ycv_old(i)/xcv_old(i))+pi 
+       if (ycv_old(i)<0 .and.xcv_old(i)<0)  angle=atan(ycv_old(i)/xcv_old(i))+pi
        angle_min=0
        angle_max=delta_angle
        do j=1,n_angle
@@ -4324,7 +4324,7 @@ print*,'ipresslocal=',ipresslocal
 
   end subroutine changement_grille_excentrique
 
-  !################################################################### 
+  !###################################################################
   !Impression
   subroutine imprime(&
        ptvois,nusom,xs,ys,xcv,ycv,ncv,&
@@ -4365,7 +4365,7 @@ print*,'ipresslocal=',ipresslocal
     end if
   end subroutine imprime
 
-!################################################################### 
+  !###################################################################
   !ligne
   subroutine line(x1,y1,x2,y2,decalage,echelle,coul)
     implicit none
@@ -4385,7 +4385,7 @@ print*,'ipresslocal=',ipresslocal
     write(15,*)"         ",i1,j1,i2,j2
   end subroutine line
 
-!################################################################### 
+  !###################################################################
   !noeud
   subroutine numero(x1,y1,nusom1,decalage,echelle,taille)
     implicit none
@@ -4401,7 +4401,7 @@ print*,'ipresslocal=',ipresslocal
 
   end subroutine numero
 
-!################################################################### 
+  !###################################################################
   !Lignes de courant
   subroutine ligncour(&
        mcv,A,bx,by,&
@@ -4409,36 +4409,36 @@ print*,'ipresslocal=',ipresslocal
        vx,vy,p,&
        ptvois,nusom,nuvois,&
        ncv,nbsom&
-        )
+       )
     implicit none
 
-    
+
     real(kind=8),dimension(:),intent(in)::mcv,A,bx,by,xs,ys
     real(kind=8),dimension(:),intent(in)::vx,vy,p
     integer,dimension(:),intent(in)::ptvois,nusom,nuvois
     integer,intent(in)::ncv,nbsom
-    
+
 
     integer::j,jj,jjj,icv,i0,i1,i0x,jx,i1x,jy
     integer::neumann_t,neumann_u,neumann_v,neumann_p,flagu,flagv,flagu2,flagv2
-    
+
     real(kind=8)::x_lim,y_lim,u_lim,v_lim,p_lim,t_lim,sx_lim,sy_lim,st_lim
     integer,dimension(:),allocatable::valpo,renlcv,denlcv
-    
-
-    write(*,*)"DÈbut ligncour"
 
 
-!Initialisation gÈnÈrale
+    write(*,*)"D√©but ligncour"
+
+
+    !Initialisation g√©n√©rale
     allocate(valpo(nbsom),renlcv(ncv),denlcv(ncv),potent(nbsom))
     valpo(1:nbsom)=0
     renlcv(1:ncv)=0
 
     renlcv(1)=1
     denlcv(1)=1
-    i=1 !compteur des mailles rencontrÈes
+    i=1 !compteur des mailles rencontr√©es
 
-!Initialisation du premier point    
+    !Initialisation du premier point
     icv=1
     j=ptvois(icv)+1
     i0=nusom(j)
@@ -4446,27 +4446,27 @@ print*,'ipresslocal=',ipresslocal
     valpo(i0)=1
 
     do k=1,ncv
-       
+
        !Recherche d'un sommet connu
        icv=denlcv(k)
        j=ptvois(icv)+1
        i0=nusom(j)
-       do while (valpo(i0) == 0) 
+       do while (valpo(i0) == 0)
           j=j+1
           if (j>ptvois(icv+1)) then
-             write(*,*)"ProblËme dans ligncour"
+             write(*,*)"Probl√®me dans ligncour"
              stop
           end if
           i0=nusom(j)
        end do
-          
+
        !Une fois le sommet connu, calcul des sommets suivants
        do jjj=ptvois(icv)+1,ptvois(icv+1) !boucle sur tous les sommets de icv
           j=j+1
           if (j>ptvois(icv+1)) j=ptvois(icv)+1
-          i1=nusom(j) 
+          i1=nusom(j)
           valpo(i1)=1 !sommet i1 en cours de calcul
-          
+
           jj=nuvois(j)
           if (jj<=0) then
              call testsol(&
@@ -4478,7 +4478,7 @@ print*,'ipresslocal=',ipresslocal
              flagu=1-neumann_u
              flagv=1-neumann_v
              potent(i1)=potent(i0)+bx(j)*u_lim*flagu-by(j)*v_lim*flagv
-             
+
              if (neumann_u==1.or.neumann_v==1) then !Reconstruction du flux :u1+u2+u3=0 (u3=-u2-u1)
                 i0x=nusom(ptvois(icv+1))
                 do jx=ptvois(icv)+1,ptvois(icv+1)
@@ -4498,18 +4498,18 @@ print*,'ipresslocal=',ipresslocal
                       flagu2=(1-neumann_u)*(1-flagu)
                       flagv2=(1-neumann_v)*(1-flagv)
                       potent(i1)=potent(i0)-&
-                      bx(j)*u_lim*flagu2-by(j)*v_lim*flagv2
+                           bx(j)*u_lim*flagu2-by(j)*v_lim*flagv2
                    else
                       flagu2=(1-flagu)
                       flagv2=(1-flagv)
                       potent(i1)=potent(i0)-&
-                      bx(j)*(vx(jy)+vx(icv))*flagu2-by(j)*(vy(jy)+vy(icv))*flagv2
+                           bx(j)*(vx(jy)+vx(icv))*flagu2-by(j)*(vy(jy)+vy(icv))*flagv2
                    end if
                    i0x=i1x
                 end do
              end if
           else
-             if (renlcv(jj)==0) then !Nouvelle maille ‡ considÈrer
+             if (renlcv(jj)==0) then !Nouvelle maille √† consid√©rer
                 i=i+1
                 renlcv(jj)=i
                 denlcv(i)=jj
@@ -4524,16 +4524,16 @@ print*,'ipresslocal=',ipresslocal
     write(*,*)"Fin ligncour"
   end subroutine ligncour
 
-  !∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞
-  !∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞
-  !∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞
-  !∞∞∞∞∞∞∞∞∞∞                               ∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞
-  !∞∞∞∞∞∞∞∞∞   FIN     Lecture et Ècriture   ∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞
-  !∞∞∞∞∞∞∞∞∞∞                               ∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞
-  !∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞
-  !∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞
-  !∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞
-  !∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞∞
+  !¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞
+  !¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞
+  !¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞
+  !¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞                               ¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞
+  !¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞   FIN     Lecture et √©criture   ¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞
+  !¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞                               ¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞
+  !¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞
+  !¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞
+  !¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞
+  !¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞¬∞
 
   !++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   !++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -4569,7 +4569,7 @@ print*,'ipresslocal=',ipresslocal
 
     real(kind=8)::long,longo,longi,er_psii,er_psio
 
-!
+    !
     integer,dimension(:,:),allocatable::n_coupe_x,n_coupe_y
     integer,dimension(3)::compt_coupe_x,compt_coupe_y
     real(kind=8)::tp1,nu_1,nu_2,nu_3
@@ -4585,76 +4585,76 @@ print*,'ipresslocal=',ipresslocal
     longi=0
     longo=0
 
-   
+
     select case(nutest)
-       case(1)
-          do i=1,ncv
-             i0=nusom(ptvois(i+1))
-             do j=ptvois(i)+1,ptvois(i+1)
-                i1=nusom(j)
-                jj=nuvois(j)
-                if (jj==-1) then
-                   nbi=nbi+1
-                   nui=nui+(.5_8-tp(i))*A(j)
-                   long=dsqrt((xs(i1)-xs(i0))**2+(ys(i1)-ys(i0))**2)
-                   psii= psii+long*(potent(i0)+potent(i1))/2
-                   longi=longi+long
-                end if
-                if (jj==-2) then
-                   nbo=nbo+1
-                   nuo=nuo+(tp(i)+.5_8)*A(j)
-                   long=dsqrt((xs(i1)-xs(i0))**2+(ys(i1)-ys(i0))**2)
-                   psio= psio+long*(potent(i0)+potent(i1))/2
-                   longo=longo+long
-                end if
-             end do
+    case(1)
+       do i=1,ncv
+          i0=nusom(ptvois(i+1))
+          do j=ptvois(i)+1,ptvois(i+1)
+             i1=nusom(j)
+             jj=nuvois(j)
+             if (jj==-1) then
+                nbi=nbi+1
+                nui=nui+(.5_8-tp(i))*A(j)
+                long=dsqrt((xs(i1)-xs(i0))**2+(ys(i1)-ys(i0))**2)
+                psii= psii+long*(potent(i0)+potent(i1))/2
+                longi=longi+long
+             end if
+             if (jj==-2) then
+                nbo=nbo+1
+                nuo=nuo+(tp(i)+.5_8)*A(j)
+                long=dsqrt((xs(i1)-xs(i0))**2+(ys(i1)-ys(i0))**2)
+                psio= psio+long*(potent(i0)+potent(i1))/2
+                longo=longo+long
+             end if
           end do
+       end do
 
-          psii=psii/longi
-          psio=psio/longo
-          er_psii=0
-          er_psio=0
+       psii=psii/longi
+       psio=psio/longo
+       er_psii=0
+       er_psio=0
 
-          do i=1,ncv
-             i0=nusom(ptvois(i+1))
-             do j=ptvois(i)+1,ptvois(i+1)
-                i1=nusom(j)
-                jj=nuvois(j)
-                if (jj==-1) then
-                   long=dsqrt((xs(i1)-xs(i0))**2+(ys(i1)-ys(i0))**2)
-                   er_psii=er_psii+  long*(psii - (potent(i0)+potent(i1))/2 )**2
-                end if
-                if (jj==-2) then
-                   long=dsqrt((xs(i1)-xs(i0))**2+(ys(i1)-ys(i0))**2)
-                   er_psio= er_psio+  long*(psio - (potent(i0)+potent(i1))/2 )**2
-                end if
-             end do
+       do i=1,ncv
+          i0=nusom(ptvois(i+1))
+          do j=ptvois(i)+1,ptvois(i+1)
+             i1=nusom(j)
+             jj=nuvois(j)
+             if (jj==-1) then
+                long=dsqrt((xs(i1)-xs(i0))**2+(ys(i1)-ys(i0))**2)
+                er_psii=er_psii+  long*(psii - (potent(i0)+potent(i1))/2 )**2
+             end if
+             if (jj==-2) then
+                long=dsqrt((xs(i1)-xs(i0))**2+(ys(i1)-ys(i0))**2)
+                er_psio= er_psio+  long*(psio - (potent(i0)+potent(i1))/2 )**2
+             end if
           end do
+       end do
 
-          er_psii=sqrt(er_psii)/longi
-          er_psio=sqrt(er_psio)/longo
+       er_psii=sqrt(er_psii)/longi
+       er_psio=sqrt(er_psio)/longo
 
 
-          nui=nui/(2*acos(-1._8)*1) !Flux moyen convectif
-          nui=nui*1*log(eta+1._8)      !Nusselt
-          nuo=nuo/(2*acos(-1._8)*(1+eta))!Flux moyen convectif
-          nuo=nuo*(1+eta)*log(eta+1)!Nusselt
-          write(*,*)"eta/log(eta+1)=",eta/log(eta+1)
-          write(*,10)nui,nuo
+       nui=nui/(2*acos(-1._8)*1) !Flux moyen convectif
+       nui=nui*1*log(eta+1._8)      !Nusselt
+       nuo=nuo/(2*acos(-1._8)*(1+eta))!Flux moyen convectif
+       nuo=nuo*(1+eta)*log(eta+1)!Nusselt
+       write(*,*)"eta/log(eta+1)=",eta/log(eta+1)
+       write(*,10)nui,nuo
 
-          urmax=0
-          utmax=0
-          do i=1,ncv
-             theta=atan(ycv(i)/(xcv(i)+.0000001))
-             ur=vx(i)*cos(theta)+vy(i)*sin(theta)
-             ut=-vx(i)*sin(theta)+vy(i)*cos(theta)
-             if (abs(ur)>urmax) urmax=abs(ur)
-             if (abs(ut)>utmax) utmax=abs(ut)
-          end do
-          write(*,*)"Max(ur)=",urmax
-          write(*,*)"Max(ut)=",utmax
-          write(*,*)"PSI inner =", psii," \pm RMS= ",er_psii
-          write(*,*)"PSI outer =", psio," \pm RMS= ",er_psio
+       urmax=0
+       utmax=0
+       do i=1,ncv
+          theta=atan(ycv(i)/(xcv(i)+.0000001))
+          ur=vx(i)*cos(theta)+vy(i)*sin(theta)
+          ut=-vx(i)*sin(theta)+vy(i)*cos(theta)
+          if (abs(ur)>urmax) urmax=abs(ur)
+          if (abs(ut)>utmax) utmax=abs(ut)
+       end do
+       write(*,*)"Max(ur)=",urmax
+       write(*,*)"Max(ut)=",utmax
+       write(*,*)"PSI inner =", psii," \pm RMS= ",er_psii
+       write(*,*)"PSI outer =", psio," \pm RMS= ",er_psio
 
 
 !!$       psi_i=0._8
@@ -4679,288 +4679,288 @@ print*,'ipresslocal=',ipresslocal
 !!$       write(*,*)"Cylindre interne :",psi_i,psi_mi
 !!$       write(*,*)"Cylindre externe :",psi_o,psi_mo
 
-       case(2,3)
-          do i=1,ncv
-             do j=ptvois(i)+1,ptvois(i+1)
-                jj=nuvois(j)
-                if (jj==-1) nui=nui+(.5_8-tp(i))*A(j)
-                if (jj==-2) nuo=nuo+(tp(i)+.5_8)*A(j)
-             end do
+    case(2,3)
+       do i=1,ncv
+          do j=ptvois(i)+1,ptvois(i+1)
+             jj=nuvois(j)
+             if (jj==-1) nui=nui+(.5_8-tp(i))*A(j)
+             if (jj==-2) nuo=nuo+(tp(i)+.5_8)*A(j)
           end do
-          nui=nui/1._8
-          nuo=nuo/1._8
-          write(*,10)nui,nuo
-          !
-          
-          
-       case(110,210)
-!!!DÈtermination de la taille des tableaux
-          compt_coupe_x(:)=0
-          compt_coupe_y(:)=0
-          do i=1,ncv
-             i0=nusom(ptvois(i+1))
-             do j=ptvois(i)+1,ptvois(i+1)
-                i1=nusom(j)
-                jj=nuvois(j)               
-!!! DÈtermination des coupes horizontales
-                if ((ys(i0)>=Aly/4+1e-8).and.(ys(i1)<Aly/4+1e-8)) then
-                   compt_coupe_x(1)=compt_coupe_x(1)+1
-                   exit
-                elseif ((ys(i0)>=Aly/2+1e-8).and.(ys(i1)<Aly/2+1e-8)) then
-                   compt_coupe_x(2)=compt_coupe_x(2)+1
-                   exit
-                elseif ((ys(i0)>=.75_8*Aly+1e-8).and.(ys(i1)<.75_8*Aly+1e-8)) then
-                   compt_coupe_x(3)=compt_coupe_x(3)+1
-                   exit
+       end do
+       nui=nui/1._8
+       nuo=nuo/1._8
+       write(*,10)nui,nuo
+       !
+
+
+    case(110,210)
+!!!D√©termination de la taille des tableaux
+       compt_coupe_x(:)=0
+       compt_coupe_y(:)=0
+       do i=1,ncv
+          i0=nusom(ptvois(i+1))
+          do j=ptvois(i)+1,ptvois(i+1)
+             i1=nusom(j)
+             jj=nuvois(j)
+!!! D√©termination des coupes horizontales
+             if ((ys(i0)>=Aly/4+1e-8).and.(ys(i1)<Aly/4+1e-8)) then
+                compt_coupe_x(1)=compt_coupe_x(1)+1
+                exit
+             elseif ((ys(i0)>=Aly/2+1e-8).and.(ys(i1)<Aly/2+1e-8)) then
+                compt_coupe_x(2)=compt_coupe_x(2)+1
+                exit
+             elseif ((ys(i0)>=.75_8*Aly+1e-8).and.(ys(i1)<.75_8*Aly+1e-8)) then
+                compt_coupe_x(3)=compt_coupe_x(3)+1
+                exit
+             end if
+!!! D√©termination des coupes verticales
+             if ((xs(i0)<=0).and.(xs(i1)>0)) then
+                compt_coupe_y(1)=compt_coupe_y(1)+1
+                exit
+             elseif ((xs(i0)<=0.5_8+1e-8).and.(xs(i1)>0.5_8+1e-8))  then
+                compt_coupe_y(2)=compt_coupe_y(2)+1
+                exit
+             elseif ((xs(i0)<1).and.(xs(i1)>=1-1e-6))    then
+                compt_coupe_y(3)=compt_coupe_y(3)+1
+                exit
+             end if
+             i0=i1
+          end do
+       end do
+
+       print*,compt_coupe_y,maxval(xs)
+       !stop
+
+!!! CALCUL des num√©ros des mailles des coupes
+
+       n=maxval(compt_coupe_x(:))
+       allocate(n_coupe_x(n,3))
+       n=maxval(compt_coupe_y(:))
+       allocate(n_coupe_y(n,3))
+
+       write(*,*)"--------------------------"
+       write(*,*)"-- Resultats thermiques --"
+       write(*,*)"--------------------------"
+       long=0
+       nui=0
+       compt_coupe_x(:)=0
+       compt_coupe_y(:)=0
+
+       do i=1,ncv
+          i0=nusom(ptvois(i+1))
+          do j=ptvois(i)+1,ptvois(i+1)
+             i1=nusom(j)
+             jj=nuvois(j)
+!!! D√©termination des Nusselt .5, .9 et .97
+             if (jj==-1) then
+                !A(j)*(tp-t(j))=1*(ys(i1)-ys(i0))
+                tp1=(ys(i1)-ys(i0))/A(j)+tp(i)
+                nui=nui+(1/tp1)*(ys(i1)-ys(i0))
+                long=long+(ys(i1)-ys(i0))
+                if ((ys(i0)>=Aly*.5_8).and.(ys(i1)<=Aly*.5_8))  then
+                   nu_1=1/tp1
+                   write(*,*)"Nu(0.5)= ",nu_1," ---->ycv=",ycv(i), "/",Aly*.5_8
+                   write(*,*)"REF Webb and Hill : Nu(0.5)=",.58*(Ra*2/Aly)**.206_8
+                   write(*,*)"REF Aung : Nu(0.5)=",.60*(Ra*2/Aly)**.2_8
+                   write(*,*)
                 end if
-!!! DÈtermination des coupes verticales
-                if ((xs(i0)<=0).and.(xs(i1)>0)) then
-                   compt_coupe_y(1)=compt_coupe_y(1)+1
-                   exit
-                elseif ((xs(i0)<=0.5_8+1e-8).and.(xs(i1)>0.5_8+1e-8))  then
-                   compt_coupe_y(2)=compt_coupe_y(2)+1
-                   exit
-                elseif ((xs(i0)<1).and.(xs(i1)>=1-1e-6))    then
-								  compt_coupe_y(3)=compt_coupe_y(3)+1  
-                   exit    
+                if ((ys(i0)>=Aly*(.25_8+.5_8*.9_8)).and.(ys(i1)<=Aly*(.25_8+.5_8*.9_8)))  then
+                   nu_2=1/tp1
+                   write(*,*)"Nu(0.9)= ",nu_2," ---->ycv=",ycv(i), "/",Aly*(.25_8+.5_8*.9_8)
+                   write(*,*)"REF Webb and Hill : Nu(0.9)=",.61*(Ra*2/Aly)**.205_8
+                   write(*,*)
                 end if
-                i0=i1
-             end do
-          end do
-					
-					print*,compt_coupe_y,maxval(xs)
-!stop
-
-!!! CALCUL des numÈros des mailles des coupes
-          
-          n=maxval(compt_coupe_x(:))
-          allocate(n_coupe_x(n,3))
-          n=maxval(compt_coupe_y(:))
-          allocate(n_coupe_y(n,3))
-
-          write(*,*)"--------------------------"
-          write(*,*)"-- Resultats thermiques --"
-          write(*,*)"--------------------------"
-          long=0
-          nui=0
-          compt_coupe_x(:)=0
-          compt_coupe_y(:)=0
-
-          do i=1,ncv
-             i0=nusom(ptvois(i+1))
-             do j=ptvois(i)+1,ptvois(i+1)
-                i1=nusom(j)
-                jj=nuvois(j)
-!!! DÈtermination des Nusselt .5, .9 et .97
-                if (jj==-1) then
-                   !A(j)*(tp-t(j))=1*(ys(i1)-ys(i0))
-                   tp1=(ys(i1)-ys(i0))/A(j)+tp(i)
-                   nui=nui+(1/tp1)*(ys(i1)-ys(i0))
-                   long=long+(ys(i1)-ys(i0))
-                   if ((ys(i0)>=Aly*.5_8).and.(ys(i1)<=Aly*.5_8))  then
-                      nu_1=1/tp1
-                      write(*,*)"Nu(0.5)= ",nu_1," ---->ycv=",ycv(i), "/",Aly*.5_8
-                      write(*,*)"REF Webb and Hill : Nu(0.5)=",.58*(Ra*2/Aly)**.206_8
-                      write(*,*)"REF Aung : Nu(0.5)=",.60*(Ra*2/Aly)**.2_8
-                       write(*,*)
-                   end if
-                   if ((ys(i0)>=Aly*(.25_8+.5_8*.9_8)).and.(ys(i1)<=Aly*(.25_8+.5_8*.9_8)))  then
-                      nu_2=1/tp1
-                      write(*,*)"Nu(0.9)= ",nu_2," ---->ycv=",ycv(i), "/",Aly*(.25_8+.5_8*.9_8)
-                      write(*,*)"REF Webb and Hill : Nu(0.9)=",.61*(Ra*2/Aly)**.205_8
-                       write(*,*)
-                   end if
-                   if ((ys(i0)>=Aly*(.25_8+.5_8*.97_8)).and.(ys(i1)<=Aly*(.25_8+.5_8*.97_8)))  then
-                      nu_3=1/tp1
-                      write(*,*)"Nu(0.97)=",nu_3," ---->ycv=",ycv(i), "/",Aly*(.25_8+.5_8*.97_8)
-                      write(*,*)"REF Webb and Hill : Nu(0.97)=",.63*(Ra*2/Aly)**.209_8
-                       write(*,*)
-                   end if
+                if ((ys(i0)>=Aly*(.25_8+.5_8*.97_8)).and.(ys(i1)<=Aly*(.25_8+.5_8*.97_8)))  then
+                   nu_3=1/tp1
+                   write(*,*)"Nu(0.97)=",nu_3," ---->ycv=",ycv(i), "/",Aly*(.25_8+.5_8*.97_8)
+                   write(*,*)"REF Webb and Hill : Nu(0.97)=",.63*(Ra*2/Aly)**.209_8
+                   write(*,*)
                 end if
-!!! DÈtermination des coupes horizontales         
-                if ((ys(i0)>=Aly/4+1e-8).and.(ys(i1)<=Aly/4+1e-8))         then
-                   compt_coupe_x(1)=compt_coupe_x(1)+1
-                   n_coupe_x(compt_coupe_x(1),1)=i
-                   exit
-                else if ((ys(i0)>=Aly/2+1e-8).and.(ys(i1)<=Aly/2+1e-8))    then
-                   compt_coupe_x(2)=compt_coupe_x(2)+1
-                   n_coupe_x(compt_coupe_x(2),2)=i
-                   exit
-                else if ((ys(i0)>=.75_8*Aly+1e-8).and.(ys(i1)<=.75_8*Aly+1e-8)) then
-                   compt_coupe_x(3)=compt_coupe_x(3)+1
-                   n_coupe_x(compt_coupe_x(3),3)=i
-                   exit
+             end if
+!!! D√©termination des coupes horizontales
+             if ((ys(i0)>=Aly/4+1e-8).and.(ys(i1)<=Aly/4+1e-8))         then
+                compt_coupe_x(1)=compt_coupe_x(1)+1
+                n_coupe_x(compt_coupe_x(1),1)=i
+                exit
+             else if ((ys(i0)>=Aly/2+1e-8).and.(ys(i1)<=Aly/2+1e-8))    then
+                compt_coupe_x(2)=compt_coupe_x(2)+1
+                n_coupe_x(compt_coupe_x(2),2)=i
+                exit
+             else if ((ys(i0)>=.75_8*Aly+1e-8).and.(ys(i1)<=.75_8*Aly+1e-8)) then
+                compt_coupe_x(3)=compt_coupe_x(3)+1
+                n_coupe_x(compt_coupe_x(3),3)=i
+                exit
+             end if
+!!! D√©termination des coupes verticales
+             if ((xs(i0)<=0).and.(xs(i1)>0))          then
+                compt_coupe_y(1)=compt_coupe_y(1)+1
+                n_coupe_y(compt_coupe_y(1),1)=i
+                exit
+             else if ((xs(i0)<=0.5_8+1e-8).and.(xs(i1)>0.5_8+1e-8)) then
+                compt_coupe_y(2)=compt_coupe_y(2)+1
+                n_coupe_y(compt_coupe_y(2),2)=i
+                exit
+             else if ((xs(i0)<1).and.(xs(i1)>=1-1e-6)) then
+                compt_coupe_y(3)=compt_coupe_y(3)+1
+                n_coupe_y(compt_coupe_y(3),3)=i
+                exit
+             end if
+             i0=i1
+          end do
+       end do
+
+
+
+
+       write(*,*)"Nusselt moyen sur la partie chauff√©e :",nui/long
+       write(*,*)"REF Webb and Hill : Nu_m=",.82*(Ra*2/Aly)**.194_8
+       write(*,*)
+
+       write(*,*)"----------------------"
+       write(*,*)"-- COUPES /x et /y  --"
+       write(*,*)"----------------------"
+
+
+       !Trie horizontal
+       do k=1,3
+          do kk=1,compt_coupe_x(k)
+             do i=2,compt_coupe_x(k)-kk+1
+                j1=n_coupe_x(i  ,k)
+                j2=n_coupe_x(i-1,k)
+                if (xcv(j1)<xcv(j2)) then
+                   n_coupe_x(i  ,k)=j2
+                   n_coupe_x(i-1,k)=j1
                 end if
-!!! DÈtermination des coupes verticales 
-                if ((xs(i0)<=0).and.(xs(i1)>0))          then
-                   compt_coupe_y(1)=compt_coupe_y(1)+1
-                   n_coupe_y(compt_coupe_y(1),1)=i
-                   exit
-                else if ((xs(i0)<=0.5_8+1e-8).and.(xs(i1)>0.5_8+1e-8)) then
-                   compt_coupe_y(2)=compt_coupe_y(2)+1
-                   n_coupe_y(compt_coupe_y(2),2)=i
-                   exit
-                else if ((xs(i0)<1).and.(xs(i1)>=1-1e-6)) then
-                   compt_coupe_y(3)=compt_coupe_y(3)+1
-                   n_coupe_y(compt_coupe_y(3),3)=i
-                   exit
+             end do
+          end do
+       end do
+
+
+
+       write(*,*)"Fin trie horizontal"
+
+       !Trie vertical
+       do k=1,3
+          do kk=1,compt_coupe_y(k)
+             do i=2,compt_coupe_y(k)-kk+1
+                j1=n_coupe_y(i  ,k)
+                j2=n_coupe_y(i-1,k)
+                if (ycv(j1)<ycv(j2)) then
+                   n_coupe_y(i  ,k)=j2
+                   n_coupe_y(i-1,k)=j1
                 end if
-                i0=i1
              end do
           end do
+       end do
 
+       write(*,*)"Fin trie vertical"
 
-
-
-          write(*,*)"Nusselt moyen sur la partie chauffÈe :",nui/long
-          write(*,*)"REF Webb and Hill : Nu_m=",.82*(Ra*2/Aly)**.194_8
-          write(*,*)
-
-          write(*,*)"----------------------"
-          write(*,*)"-- COUPES /x et /y  --"
-          write(*,*)"----------------------"
-
-          
-          !Trie horizontal
-          do k=1,3
-             do kk=1,compt_coupe_x(k)
-                do i=2,compt_coupe_x(k)-kk+1
-                   j1=n_coupe_x(i  ,k)
-                   j2=n_coupe_x(i-1,k)
-                   if (xcv(j1)<xcv(j2)) then
-                      n_coupe_x(i  ,k)=j2
-                      n_coupe_x(i-1,k)=j1
-                   end if
-                end do
-             end do
+       open(1001,file="profil_h_e.dat")
+       do i=1,compt_coupe_x(1)
+          ii=n_coupe_x(i,1)
+          psi=0
+          do j=ptvois(ii)+1,ptvois(ii+1)
+             k=nusom(j)
+             psi=psi+potent(k)
           end do
+          psi=psi/(ptvois(ii+1)-ptvois(ii))
+          write(1001,*)xcv(ii),vy(ii),vx(ii),psi,tp(ii),p(ii)
+       end do
+       close(1001)
 
-
-
-write(*,*)"Fin trie horizontal"
-
-          !Trie vertical
-          do k=1,3
-             do kk=1,compt_coupe_y(k)
-                do i=2,compt_coupe_y(k)-kk+1
-                   j1=n_coupe_y(i  ,k)
-                   j2=n_coupe_y(i-1,k)
-                   if (ycv(j1)<ycv(j2)) then
-                      n_coupe_y(i  ,k)=j2
-                      n_coupe_y(i-1,k)=j1
-                   end if
-                end do
-             end do
+       open(1001,file="profil_h_m.dat")
+       do i=1,compt_coupe_x(2)
+          ii=n_coupe_x(i,2)
+          psi=0
+          do j=ptvois(ii)+1,ptvois(ii+1)
+             k=nusom(j)
+             psi=psi+potent(k)
           end do
-          
-write(*,*)"Fin trie vertical"
+          psi=psi/(ptvois(ii+1)-ptvois(ii))
+          write(1001,*)xcv(ii),vy(ii),vx(ii),psi,tp(ii),p(ii)
+       end do
+       close(1001)
 
-          open(1001,file="profil_h_e.dat")
-          do i=1,compt_coupe_x(1)
-             ii=n_coupe_x(i,1)
-             psi=0
-             do j=ptvois(ii)+1,ptvois(ii+1)
-                k=nusom(j)
-                psi=psi+potent(k)
-             end do
-             psi=psi/(ptvois(ii+1)-ptvois(ii))
-             write(1001,*)xcv(ii),vy(ii),vx(ii),psi,tp(ii),p(ii)
+       open(1001,file="profil_h_s.dat")
+       do i=1,compt_coupe_x(3)
+          ii=n_coupe_x(i,3)
+          psi=0
+          do j=ptvois(ii)+1,ptvois(ii+1)
+             k=nusom(j)
+             psi=psi+potent(k)
           end do
-          close(1001)
+          psi=psi/(ptvois(ii+1)-ptvois(ii))
+          write(1001,*)xcv(ii),vy(ii),vx(ii),psi,tp(ii),p(ii)
+       end do
+       close(1001)
 
-          open(1001,file="profil_h_m.dat")
-          do i=1,compt_coupe_x(2)
-             ii=n_coupe_x(i,2)
-             psi=0
-             do j=ptvois(ii)+1,ptvois(ii+1)
-                k=nusom(j)
-                psi=psi+potent(k)
-             end do
-             psi=psi/(ptvois(ii+1)-ptvois(ii))
-             write(1001,*)xcv(ii),vy(ii),vx(ii),psi,tp(ii),p(ii)
+
+       open(1001,file="profil_v_0.dat")
+       do i=1,compt_coupe_y(1)
+          ii=n_coupe_y(i,1)
+          write(1001,*)ycv(ii),tp(ii)
+       end do
+       close(1001)
+
+       open(1001,file="profil_v_1.dat")
+       do i=1,compt_coupe_y(3)
+          ii=n_coupe_y(i,3)
+          write(1001,*)ycv(ii),tp(ii)
+       end do
+       close(1001)
+
+       open(1001,file="profil_v_0.5.dat")
+       do i=1,compt_coupe_y(2)
+          ii=n_coupe_y(i,2)
+          psi=0
+          do j=ptvois(ii)+1,ptvois(ii+1)
+             k=nusom(j)
+             psi=psi+potent(k)
           end do
-          close(1001)
-
-          open(1001,file="profil_h_s.dat")
-          do i=1,compt_coupe_x(3)
-             ii=n_coupe_x(i,3)
-             psi=0
-             do j=ptvois(ii)+1,ptvois(ii+1)
-                k=nusom(j)
-                psi=psi+potent(k)
-             end do
-             psi=psi/(ptvois(ii+1)-ptvois(ii))
-             write(1001,*)xcv(ii),vy(ii),vx(ii),psi,tp(ii),p(ii)
-          end do
-          close(1001)
-
-
-         open(1001,file="profil_v_0.dat")
-          do i=1,compt_coupe_y(1)
-             ii=n_coupe_y(i,1)
-             write(1001,*)ycv(ii),tp(ii)
-          end do
-          close(1001)
-
-          open(1001,file="profil_v_1.dat")
-          do i=1,compt_coupe_y(3)
-             ii=n_coupe_y(i,3)
-             write(1001,*)ycv(ii),tp(ii)
-          end do
-          close(1001)
-
-          open(1001,file="profil_v_0.5.dat")
-          do i=1,compt_coupe_y(2)
-             ii=n_coupe_y(i,2)
-             psi=0
-             do j=ptvois(ii)+1,ptvois(ii+1)
-                k=nusom(j)
-                psi=psi+potent(k)
-             end do
-             psi=psi/(ptvois(ii+1)-ptvois(ii))
+          psi=psi/(ptvois(ii+1)-ptvois(ii))
 !!!Debut de la paroi gauche
-             icv=n_coupe_y(i,1)
-             Tbulk=tp(icv)*vy(icv)*mcv(icv)
-             db=vy(icv)*mcv(icv)
-             do
-                i0=nusom(ptvois(icv+1))
-                b1:do j=ptvois(icv)+1,ptvois(icv+1)
-                   i1=nusom(j)
-                   j1=nuvois(j)
-                   if ((ys(i0)<ycv(ii)).and.(ys(i1)>ycv(ii))) then
-                      if (j1<0) goto 88
-                      icv=j1
-                      Tbulk=Tbulk+tp(icv)*vy(icv)*mcv(icv)
-                      db=db+vy(icv)*mcv(icv)
-                      exit b1
-                   end if
-                   i0=i1
-                end do b1
-             end do
-88           Tbulk=Tbulk/db
-             write(1001,*)ycv(ii),vy(ii),vx(ii),psi,tp(ii),Tbulk,p(ii)
+          icv=n_coupe_y(i,1)
+          Tbulk=tp(icv)*vy(icv)*mcv(icv)
+          db=vy(icv)*mcv(icv)
+          do
+             i0=nusom(ptvois(icv+1))
+             b1:do j=ptvois(icv)+1,ptvois(icv+1)
+                i1=nusom(j)
+                j1=nuvois(j)
+                if ((ys(i0)<ycv(ii)).and.(ys(i1)>ycv(ii))) then
+                   if (j1<0) goto 88
+                   icv=j1
+                   Tbulk=Tbulk+tp(icv)*vy(icv)*mcv(icv)
+                   db=db+vy(icv)*mcv(icv)
+                   exit b1
+                end if
+                i0=i1
+             end do b1
           end do
-          close(1001)
-          
-
-          
-       case default
-          write(*,*)"Nutest=",nutest," inconnu dans nusselt"
-       end select
+88        Tbulk=Tbulk/db
+          write(1001,*)ycv(ii),vy(ii),vx(ii),psi,tp(ii),Tbulk,p(ii)
+       end do
+       close(1001)
 
 
-10        format("Nombres de Nusselt : interne =",1pe11.4," | externe =",1pe11.4)
+
+    case default
+       write(*,*)"Nutest=",nutest," inconnu dans nusselt"
+    end select
+
+
+10  format("Nombres de Nusselt : interne =",1pe11.4," | externe =",1pe11.4)
 
   end subroutine nusselt
 
 
 
-  !################################################################### 
+  !###################################################################
   !Test solutions
   subroutine cls
     implicit none
 
-    
+
     real(kind=8)::x,y
     real(kind=8)::rayon
 
@@ -4968,19 +4968,19 @@ write(*,*)"Fin trie vertical"
 
     integer::i,i0,i1,j,jj
 
- 
+
     do i=1,ncv
        i0=nusom(ptvois(i+1))
        do j=ptvois(i)+1,ptvois(i+1)
           i1=nusom(j)
           jj=nuvois(j)
           if (jj<=0) then !Definition des CLS
-      
+
              select case(nutest)
              case(1) !Cylindres (test sur le rayon)
                 x=xs(i1)
                 y=ys(i1)
-             case(2,3,4,100,102,110,210) !carrÈs (test sur le centre du cotÈ)
+             case(2,3,4,100,102,110,210) !carr√©s (test sur le centre du cot√©)
                 x=(xs(i1)+xs(i0))*.5_8
                 y=(ys(i1)+ys(i0))*.5_8
 
@@ -4991,16 +4991,16 @@ write(*,*)"Fin trie vertical"
                 !write(*,*)"nutest inconnu :",nutest
                 !stop
              end select
-             
-             
+
+
              select case(nutest)
-             case(1) 
+             case(1)
                 rayon=sqrt(x*x+y*y)
                 nuvois(j)=-1
-!print*,eta,1/eta+1,rayon
+                !print*,eta,1/eta+1,rayon
                 if (rayon> 1/eta+1) nuvois(j)=-2
-              
-             case(2,3,100,102) 
+
+             case(2,3,100,102)
                 if (x-erx <0)   nuvois(j)=-1
                 if (x+erx >ALx) nuvois(j)=-2
                 if (y-ery <0)   nuvois(j)=-3
@@ -5033,7 +5033,7 @@ write(*,*)"Fin trie vertical"
 
                 if (y-ery <0)   nuvois(j)=-3
                 if (y+ery >ALy) nuvois(j)=-4
-                
+
              case default
                 !write(*,*)"nutest inconnu dans cls, nutest=",nutest
              end select
@@ -5058,9 +5058,9 @@ write(*,*)"Fin trie vertical"
              erx=abs(xcv(i)-x)/2
              ery=abs(ycv(i)-y)/2
 
-             if (jj>0) then !Definition des CLS intÈrieures
-               
-                
+             if (jj>0) then !Definition des CLS int√©rieures
+
+
                 if (y<ALy.and.y>0) then
                    if (abs(x-0)-erx<0) then
                       if (xcv(i)<0) then
@@ -5072,7 +5072,7 @@ write(*,*)"Fin trie vertical"
                          stop
                       end if
                    end if
-                   
+
                    if (abs(x-Alx)-erx<0) then
                       if (xcv(i)-Alx<0) then
                          nuvois(j)=-103
@@ -5085,7 +5085,7 @@ write(*,*)"Fin trie vertical"
                    end if
 
                 end if
-             else if (jj==0) then !Definition des CLS extÈrieures
+             else if (jj==0) then !Definition des CLS ext√©rieures
                 if (x-erx <-3)   nuvois(j)=-1
                 if (x+erx >ALx+3) nuvois(j)=-2
                 if (y-ery <-6)   nuvois(j)=-3
@@ -5097,10 +5097,10 @@ write(*,*)"Fin trie vertical"
        end do
     end if
   end subroutine cls
-  
 
 
-  !################################################################### 
+
+  !###################################################################
   !Test solutions
   subroutine testsol(&
        u,v,press,t_q,&
@@ -5114,7 +5114,7 @@ write(*,*)"Fin trie vertical"
     real(kind=8),intent(out)::u,v,press,t_q,sx,sy,st
     integer,intent(out)::neumann_t,neumann_u,neumann_v,neumann_p
 
-    
+
     real(kind=8)::y
     real(kind=8)::coef
 
@@ -5122,7 +5122,7 @@ write(*,*)"Fin trie vertical"
     sx=0
     sy=0
     st=0
-    
+
     u=0
     v=0
     press=0
@@ -5131,16 +5131,16 @@ write(*,*)"Fin trie vertical"
     neumann_t=0
     neumann_u=0
     neumann_v=0
-    neumann_p=1  
-!
+    neumann_p=1
+    !
     jj=nuvois(j)
-!
+    !
 
     select case(nutest)
     case(1)
        t_q=.5_8
        if (jj==-2) t_q=-.5_8
-       
+
     case(2,3)
        if (jj==-1) t_q=+.5_8
        if (jj==-2) t_q=-.5_8
@@ -5161,14 +5161,14 @@ write(*,*)"Fin trie vertical"
           neumann_v=1
        end if
 
-!!%%%%%CHEMINEE
+       !!%%%%%CHEMINEE
     case(100)
        if (jj==-1) then !GAUCHE
           neumann_t=1
           t_q=abs(ys(i1)-ys(i0))*1._8
        end if
        if (jj==-2) then !DROIT
-           neumann_t=1
+          neumann_t=1
           t_q=abs(ys(i1)-ys(i0))*1._8
        end if
        if (jj==-3) then !BAS
@@ -5214,7 +5214,7 @@ write(*,*)"Fin trie vertical"
              press=0
              bb(i,2)=bb(i,2)-by(j)*(press-p(i))
              dd(i,2,3)=dd(i,2,3)-by(j)
-          
+
              bb(i,3)=bb(i,3)-by(j)*v
              dd(i,3,2)=dd(i,3,2)+by(j)
           else
@@ -5236,7 +5236,7 @@ write(*,*)"Fin trie vertical"
           end if
        end if
 
-!!%%%%%CHEMINEE  DANS UN DOMAINE + VASTE
+       !!%%%%%CHEMINEE  DANS UN DOMAINE + VASTE
     case(101)
        if (jj==-1) then !GAUCHE
           if (vx(i)>=0) then
@@ -5391,7 +5391,7 @@ write(*,*)"Fin trie vertical"
           t_q=1
        end if
        if (jj==-2) then !DROIT
-           neumann_t=0
+          neumann_t=0
           t_q=0
        end if
        if (jj==-3) then !BAS
@@ -5435,16 +5435,16 @@ write(*,*)"Fin trie vertical"
           t_q=0
           press=0
        end if
-       
 
-!!%%%%%CHEMINEE BENCHMARK Webb et Hill
+
+       !!%%%%%CHEMINEE BENCHMARK Webb et Hill
     case(110)
        if (jj==-1) then !GAUCHE
           neumann_t=1
           t_q=abs(ys(i1)-ys(i0))*1._8
        end if
        if (jj==-2) then !DROIT
-           neumann_t=1
+          neumann_t=1
           t_q=0
        end if
        if (jj==-3) then !BAS
@@ -5458,7 +5458,7 @@ write(*,*)"Fin trie vertical"
              coef=1.
              !press=-.5_8*(vy(i)*vy(i))*coef
              press=-.5_8*(vx(i)*vx(i)+vy(i)*vy(i))*coef
-             dd(i,2,1)=dd(i,2,1)-by(j)*vx(i)*coef 
+             dd(i,2,1)=dd(i,2,1)-by(j)*vx(i)*coef
              dd(i,2,2)=dd(i,2,2)-by(j)*vy(i)*coef
              bb(i,2)=bb(i,2)-by(j)*(press-p(i))
              dd(i,2,3)=dd(i,2,3)-by(j)
@@ -5487,11 +5487,11 @@ write(*,*)"Fin trie vertical"
              neumann_v=1
              v=vy(i)
              neumann_t=1
-             t_q=0         
+             t_q=0
              press=0
              bb(i,2)=bb(i,2)-by(j)*(press-p(i))
              dd(i,2,3)=dd(i,2,3)-by(j)
-          
+
              bb(i,3)=bb(i,3)-by(j)*v
              dd(i,3,2)=dd(i,3,2)+by(j)
           else
@@ -5515,18 +5515,18 @@ write(*,*)"Fin trie vertical"
           end if
        end if
 
-!!%%%%%CHEMINEE BENCHMARK Webb et Hill avec Pression constante ‡ l'entrÈe
+       !!%%%%%CHEMINEE BENCHMARK Webb et Hill avec Pression constante √† l'entr√©e
     case(210)
        if (jj==-1) then !GAUCHE
           neumann_t=1
           t_q=abs(ys(i1)-ys(i0))*1._8
        end if
        if (jj==-2) then !DROIT
-           neumann_t=1
+          neumann_t=1
           t_q=0
        end if
        if (jj==-3) then !BAS
-         if (vy(i)>=0) then
+          if (vy(i)>=0) then
              neumann_u=0
              u=0
              neumann_v=1
@@ -5539,7 +5539,7 @@ write(*,*)"Fin trie vertical"
              dd(i,2,3)=dd(i,2,3)-by(j)
 
 !!$             press=-.5_8*(vy(i)*vy(i))*coef!-.5_8*(vx(i)*vx(i)+vy(i)*vy(i))*coef
-!!$             !dd(i,2,1)=dd(i,2,1)-by(j)*vx(i)*coef 
+!!$             !dd(i,2,1)=dd(i,2,1)-by(j)*vx(i)*coef
 !!$             dd(i,2,2)=dd(i,2,2)-by(j)*vy(i)*coef
 !!$             bb(i,2)=bb(i,2)-by(j)*(press-p(i))
 !!$             dd(i,2,3)=dd(i,2,3)-by(j)
@@ -5563,18 +5563,18 @@ write(*,*)"Fin trie vertical"
        end if
        if (jj==-4) then !HAUT
 !!$          if (vy(i)>=0) then
-             neumann_u=1
-             u=vx(i)
-             neumann_v=1
-             v=vy(i)
-             neumann_t=1
-             t_q=0         
-             press=0
-             bb(i,2)=bb(i,2)-by(j)*(press-p(i))
-             dd(i,2,3)=dd(i,2,3)-by(j)
-          
-             bb(i,3)=bb(i,3)-by(j)*v
-             dd(i,3,2)=dd(i,3,2)+by(j)
+          neumann_u=1
+          u=vx(i)
+          neumann_v=1
+          v=vy(i)
+          neumann_t=1
+          t_q=0
+          press=0
+          bb(i,2)=bb(i,2)-by(j)*(press-p(i))
+          dd(i,2,3)=dd(i,2,3)-by(j)
+
+          bb(i,3)=bb(i,3)-by(j)*v
+          dd(i,3,2)=dd(i,3,2)+by(j)
 !!$          else
 !!$             neumann_u=0
 !!$             u=0
@@ -5593,15 +5593,15 @@ write(*,*)"Fin trie vertical"
 !!$             bb(i,3)=bb(i,3)-by(j)*v
 !!$             dd(i,3,2)=dd(i,3,2)+by(j)
 !!$          end if
-          end if
+       end if
 
 
     case default
        write(*,*)"Nutest=",nutest
-       write(*,*)"Non implÈmentÈ dans testsol"
+       write(*,*)"Non impl√©ment√© dans testsol"
        stop
     end select
-    
+
   end subroutine testsol
 
   !++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
