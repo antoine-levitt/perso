@@ -27,9 +27,13 @@ program nvstks
        delobtu,delobtt,&
        coefdu,coefdt,coefb,&
        ra,pr
-  real(kind=8),dimension(:),allocatable::xs,ys,xcv,ycv,&
+  real(kind=8),dimension(:),allocatable::&
+       xs,ys,&    ! coordonnées des sommets
+       xcv,ycv,&  ! coordonnées des centres de mailles
        mcv,&
-       A,bx,by,As,&
+       A,&
+       bx,by&     ! normale * mesure de la maille
+       ,As,&
 !!$       Ass,&
        vx,vy,tp,vxd,vyd,p,tpd,&
        sx,sy,st,sp,&
