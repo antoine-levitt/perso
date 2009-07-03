@@ -125,7 +125,7 @@ program nvstks
 !!$                   if (k0>0) then
 !!$                      iter2 : do l=ptvois(k0)+1,ptvois(k0+1) !recherche de la connexion reciproque
 !!$                         l0=nuvois(l)
-!!$                         if (l0==i) then !connexion rÃ©ciproque  trouvÃ©e
+!!$                         if (l0==i) then !connexion réciproque  trouvée
 !!$                            As(l)=0
 !!$                            exit iter2
 !!$                         end if
@@ -158,7 +158,7 @@ program nvstks
 
 
   !###################################################################
-  !RenumÃ©rotation + dÃ©finition des largeurs de bande
+  !Renumérotation + définition des largeurs de bande
   !l_bg : largeur bande gauche
   !l_bd : largeur bande droite
   !pt_d : pointeur du terme diagonal
@@ -239,9 +239,9 @@ program nvstks
   else
      nordre1=nordre
      write(*,*)"******BCGS*******"
-     write(*,*)"Ordre de la factorisation incomplÃ¨te :",nordre1
-     write(*,*)"RÃ©sidu/(RÃ©sidu initial)=",test
-     write(*,*)"Nombre d'itÃ©rations maximal :",itbcgsmax
+     write(*,*)"Ordre de la factorisation incomplète :",nordre1
+     write(*,*)"Résidu/(Résidu initial)=",test
+     write(*,*)"Nombre d'itérations maximal :",itbcgsmax
      write(*,*)"*****************"
      call preilu(nordre1)
   end if
@@ -302,7 +302,7 @@ program nvstks
      do while (cvgce==0)
         iter=iter+1
         if (iter>10) then
-           write(*,*)"Pas de convergence en 10 itÃ©rations"
+           write(*,*)"Pas de convergence en 10 itérations"
            goto 100
         end if
 
@@ -410,7 +410,7 @@ program nvstks
   do while (cvgce==0)
      iter=iter+1
      if (iter>1000) then
-        write(*,*)"Pas de convergence en 1000 itÃ©rations"
+        write(*,*)"Pas de convergence en 1000 itérations"
         stop
      end if
 
@@ -628,7 +628,7 @@ contains
              bb(i,3)=bb(i,3)-bx(j)*u_lim*flagu-by(j)*v_lim*flagv
 
              if (neumann_p==0) then
-                !PÃ©nalisation par le laplacien
+                !Pénalisation par le laplacien
                 ipress=1
                 ipresslocal=1
              end if
@@ -639,7 +639,7 @@ contains
                   t_lim*coefdt*neumann_t
              dd(i,4,4)=dd(i,4,4)+A(j)*coefdt*flagt
 
-          else !intÃ©rieur
+          else !intérieur
              k=ptmat(i)+1
              do while (jj/=numat(k))
                 k=k+1
@@ -647,7 +647,7 @@ contains
 
              xxi=bx(j)*(vx(i)+vx(jj))+by(j)*(vy(i)+vy(jj))-As(j)*(p(jj)-p(i))
 
-             !Calcul PÃ©clet et Reynolds de maille
+             !Calcul Péclet et Reynolds de maille
              test_maille=xxi/A(j)
              pe_maille=max(pe_maille,test_maille/coefdt)
              re_maille=max(re_maille,test_maille/coefdu)
@@ -661,12 +661,12 @@ contains
              bb(i,1)=bb(i,1)+A(j)*(vx(jj)-vx(i))*coefdu
              dd(i,1,1)=dd(i,1,1)+A(j)*coefdu
              aa(k,1,1)=aa(k,1,1)-A(j)*coefdu
-             !Termes en pression pour les aretes intÃ©rieures
+             !Termes en pression pour les aretes intérieures
              bb(i,1)=bb(i,1)-bx(j)*(p(jj)-p(i))
              dd(i,1,3)=dd(i,1,3)-bx(j)
              aa(k,1,3)=aa(k,1,3)+bx(j)
              !**NL
-             !ajout des termes non-linÃ©aires de transport
+             !ajout des termes non-linéaires de transport
              xxj=(vx(jj)-vx(i))*.5_8
              bb(i,1)=bb(i,1)-xxi*xxj
              dd(i,1,1)=dd(i,1,1)+bx(j)*xxj-xxi*.5_8
@@ -680,12 +680,12 @@ contains
              bb(i,2)=bb(i,2)+A(j)*(vy(jj)-vy(i))*coefdu
              dd(i,2,2)=dd(i,2,2)+A(j)*coefdu
              aa(k,2,2)=aa(k,2,2)-A(j)*coefdu
-             !Termes en pression pour les aretes intÃ©rieures
+             !Termes en pression pour les aretes intérieures
              bb(i,2)=bb(i,2)-by(j)*(p(jj)-p(i))
              dd(i,2,3)=dd(i,2,3)-by(j)
              aa(k,2,3)=aa(k,2,3)+by(j)
              !**NL
-             !ajout des termes non-linÃ©aires de transport
+             !ajout des termes non-linéaires de transport
              xxj=(vy(jj)-vy(i))*.5_8
              bb(i,2)=bb(i,2)-xxi*xxj
              dd(i,2,2)=dd(i,2,2)+by(j)*xxj-xxi*.5_8
@@ -701,7 +701,7 @@ contains
              dd(i,4,4)=dd(i,4,4)+A(j)*coefdt
              aa(k,4,4)=aa(k,4,4)-A(j)*coefdt
              !**NL
-             !ajout des termes non-linÃ©aires de transport
+             !ajout des termes non-linéaires de transport
              xxj=(tp(jj)-tp(i))*.5_8
              bb(i,4)=bb(i,4)-xxi*xxj
              dd(i,4,1)=dd(i,4,1)+bx(j)*xxj
@@ -724,7 +724,7 @@ contains
              dd(i,3,2)=dd(i,3,2)+by(j)
              aa(k,3,1)=aa(k,3,1)+bx(j)
              aa(k,3,2)=aa(k,3,2)+by(j)
-             !PÃ©nalisation par le laplacien
+             !Pénalisation par le laplacien
              dd(i,3,3)=dd(i,3,3)+As(j)
              aa(k,3,3)=aa(k,3,3)-As(j)
 
@@ -764,13 +764,13 @@ contains
 
 
     if (dt<=0)    then
-       print*,'PÃ©clet de Maille :',pe_maille
+       print*,'Péclet de Maille :',pe_maille
        print*,'Reynolds de Maille :',pe_maille
     end if
     if (nutest>=100) then
-       if (dt<=0)  print*,'DÃ©bit sortant :',debit_out,'      DÃ©bit entrant :',debit_in
-!!$      print*,'DÃ©bit entrant',debit_in
-!!$      print*,'NUSSELT maximal (flux imposÃ©) :',1/maxval(tp)
+       if (dt<=0)  print*,'Débit sortant :',debit_out,'      Débit entrant :',debit_in
+!!$      print*,'Débit entrant',debit_in
+!!$      print*,'NUSSELT maximal (flux imposé) :',1/maxval(tp)
        debit=debit_out
     end if
   end subroutine calculsl
@@ -783,7 +783,7 @@ contains
   !6969696969696969696969696969696969696969696969696969696969696969696969
   !6969696969696969696969696969696969696969696969696969696969696969696969
   !69696969696969696969                   9696969696969696969696969696969
-  !6969696969696969696   Routine gÃ©nÃ©rales  96969696969696969696969696969
+  !6969696969696969696   Routine générales  96969696969696969696969696969
   !69696969696969696969                   9696969696969696969696969696969
   !6969696969696969696969696969696969696969696969696969696969696969696969
   !6969696969696969696969696969696969696969696969696969696969696969696969
@@ -793,8 +793,8 @@ contains
 
   !###################################################################
   !***************
-  !Calcul du facteur de rÃ©gularitÃ© et de l'aire des volumes
-  !Facteur de rÃ©gularitÃ© = d(centre volume, centre arete) / lg de l'arete
+  !Calcul du facteur de régularité et de l'aire des volumes
+  !Facteur de régularité = d(centre volume, centre arete) / lg de l'arete
   !(triangle rectangle : 0.5)
   !***************
   subroutine regularite(&
@@ -819,7 +819,7 @@ contains
        i1=nusom(ptvois(i+1)) !pointe sur le dernier noeud du triangle i
        a11=xs(i1)-xcv(i)
        a12=ys(i1)-ycv(i)
-       do j=ptvois(i)+1,ptvois(i+1) !boucle sur tous les 3 noeuds consÃ©cutifs
+       do j=ptvois(i)+1,ptvois(i+1) !boucle sur tous les 3 noeuds consécutifs
           i2=nusom(j)
           a21=xs(i2)-xcv(i)
           a22=ys(i2)-ycv(i)
@@ -831,26 +831,26 @@ contains
           xx=aire/diam
           if (aire<0) then
              if (diam>1e-8)&
-                  write(*,*)"Aire nÃ©gative : aire=0 !!!!, diam=",diam
+                  write(*,*)"Aire négative : aire=0 !!!!, diam=",diam
              aire=0
              xx=1
              stop
           end if
-          if (xx<zeta) zeta=xx ! recherche du rapport le plus petit (facteur de rÃ©gularitÃ©)
-          mcv(i)=mcv(i)+aire*0.5_8 !contribution Ã  l'aire du triangle
-          !on modifie le noeud de dÃ©part I1
+          if (xx<zeta) zeta=xx ! recherche du rapport le plus petit (facteur de régularité)
+          mcv(i)=mcv(i)+aire*0.5_8 !contribution à l'aire du triangle
+          !on modifie le noeud de départ I1
           i1=i2
           a11=a21
           a12=a22
        end do
     end do
-    write(*,*)"Facteur de rÃ©gularitÃ© : ",zeta
+    write(*,*)"Facteur de régularité : ",zeta
   end subroutine regularite
   !###################################################################
   !***************
   !Calcul des pointeurs
   !ptsc : pointeur contenant le cumul du nombre des aretes
-  !nusc : numÃ©ro sommet de l'arete dans un tableau cumulÃ©
+  !nusc : numéro sommet de l'arete dans un tableau cumulé
   !***************
   subroutine pointeur(&
        ptvois,ncv,nbsom,nusom,&
@@ -865,19 +865,19 @@ contains
     integer::i,j,k,is,js,nbc,i0
 
 
-    !comptage du nombre maximum de sommets connectÃ©s pour chaque noeud
+    !comptage du nombre maximum de sommets connectés pour chaque noeud
     do i=1,ncv
        do j=ptvois(i)+1,ptvois(i+1)
           is=nusom(j)
-          ptsc(is)=ptsc(is)+2 ! dÃ©compte par noeud des sommets connectÃ©s
+          ptsc(is)=ptsc(is)+2 ! décompte par noeud des sommets connectés
        end do
     end do
 
     nbc=0
     do i=1,nbsom
        j=ptsc(i)
-       ptsc(i)=ptsc(i)+nbc !ptcs(i) cumul le nb de sommets connectÃ©s
-       nbc=nbc+j !calcul du nombre total de sommets connectÃ©s
+       ptsc(i)=ptsc(i)+nbc !ptcs(i) cumul le nb de sommets connectés
+       nbc=nbc+j !calcul du nombre total de sommets connectés
     end do
     ptsc(nbsom+1)=nbc+1
 
@@ -888,7 +888,7 @@ contains
   !***************
   !Calcul des pointeurs
   !ptsc : pointeur contenant le cumul du nombre des aretes
-  !nusc : numÃ©ro sommet de l'arete dans un tableau cumulÃ©
+  !nusc : numéro sommet de l'arete dans un tableau cumulé
   !***************
   subroutine pre_num_voisin_volume(&
        ptvois,nusom,ncv,nbsom,nusc,&
@@ -904,50 +904,50 @@ contains
     integer::i,j,k,is,js,nbc,i0
 
 
-    !dÃ©finition du numÃ©ro de l'arete : mÃªme numÃ©ro que le noeud connectÃ©
+    !définition du numéro de l'arete : même numéro que le noeud connecté
     do i=1,ncv
-       is=nusom(ptvois(i+1)) ! pointe sur 3iÃ¨me noeud du triangle i
+       is=nusom(ptvois(i+1)) ! pointe sur 3ième noeud du triangle i
        do j=ptvois(i)+1,ptvois(i+1) !boucle sur tous les noeuds du triangle i
-          js=nusom(j) !numÃ©ro du sommet          nusc(ptsc(is))=js !numÃ©ro de l'arete = noeud connectÃ©
-          nusc(ptsc(is))=js ! le pointer pointe sur le sommet connectÃ© (au noeud is) prÃ©cÃ©dent
+          js=nusom(j) !numéro du sommet          nusc(ptsc(is))=js !numéro de l'arete = noeud connecté
+          nusc(ptsc(is))=js ! le pointer pointe sur le sommet connecté (au noeud is) précédent
           ptsc(is)=ptsc(is)-1
           nusc(ptsc(js))=is
-          ptsc(js)=ptsc(js)-1! pour le noeud is, un sommet connectÃ© traitÃ© :
-          is=js !noeuds suivants pour dÃ©crire tous les noeuds du triangle.
+          ptsc(js)=ptsc(js)-1! pour le noeud is, un sommet connecté traité :
+          is=js !noeuds suivants pour décrire tous les noeuds du triangle.
        end do
     end do
 
-    !remise des pointeurs au dÃ©but de chaque sÃ©quence de sommets connectÃ©s
+    !remise des pointeurs au début de chaque séquence de sommets connectés
     do i=1,nbsom
        ptsc(i)=ptsc(i)+1 !ajout de 1 sinon ptsc(1)=0 !!!!
     end do
 
-    !remise dans l'ordre des numÃ©ros des aretes
+    !remise dans l'ordre des numéros des aretes
     do i=1,nbsom
        call trie(nusc(ptsc(i):ptsc(i+1)-1) , ptsc(i+1)-ptsc(i) ) !ptsc(i+1)-ptsc(i)= nb aretes
     end do
 
-    !Elimination des aretes en doublon (de part et d'autre d'une arete commune Ã  2 triangles)
+    !Elimination des aretes en doublon (de part et d'autre d'une arete commune à 2 triangles)
     !et
     !Modification du pointeur
     nbc=1
     do i=1,nbsom
-       i0=ptsc(i) !pointe sur le nombre de sommets connectÃ©s
+       i0=ptsc(i) !pointe sur le nombre de sommets connectés
        ptsc(i)=nbc !nouveau pointeur
-!!$     if (ptsc(i+1)>ptsc(i)) then !le nombre de sommets connectÃ© au noeud i : ptsc(i+1)-ptsc(i)
+!!$     if (ptsc(i+1)>ptsc(i)) then !le nombre de sommets connecté au noeud i : ptsc(i+1)-ptsc(i)
        !
        !
        !
-!!$       if (ptsc(i+1)>i0) then !le nombre de sommets connectÃ© au noeud i : ptsc(i+1)-ptsc(i)
-       if (ptsc(i+1)>ptsc(i)) then !le nombre de sommets connectÃ© au noeud i : ptsc(i+1)-ptsc(i)
+!!$       if (ptsc(i+1)>i0) then !le nombre de sommets connecté au noeud i : ptsc(i+1)-ptsc(i)
+       if (ptsc(i+1)>ptsc(i)) then !le nombre de sommets connecté au noeud i : ptsc(i+1)-ptsc(i)
           !
           !
           !
           k=nusc(i0)
-          nusc(nbc)=k !stock le numÃ©ro arete
+          nusc(nbc)=k !stock le numéro arete
           nbc=nbc+1
           do j=i0+1, ptsc(i+1)-1
-             !si le numÃ©ro de l'arete (classÃ©) est diffÃ©rent du prÃ©cÃ©dent, on conserve
+             !si le numéro de l'arete (classé) est différent du précédent, on conserve
              if (nusc(j) /= k) then
                 k=nusc(j)
                 nusc(nbc)=k
@@ -963,9 +963,9 @@ contains
   end subroutine pre_num_voisin_volume
 
   !###################################################################
-  !DÃ©termination des voisins :
-  !voisind,voising dÃ©finis sur la base des pointeurs
-  !nuvois(i)=k correspond aux numÃ©ros entre voisins : arete nunero i voisine droite triangle k
+  !Détermination des voisins :
+  !voisind,voising définis sur la base des pointeurs
+  !nuvois(i)=k correspond aux numéros entre voisins : arete nunero i voisine droite triangle k
   !*******************************
   subroutine num_voisin_volume(&
        ncv,nusom,ptsc,nusc,&
@@ -982,7 +982,7 @@ contains
 
     integer::i,j,k,is,js,nbc
 
-    !preparation des voisin Ã  l'aide du pointeur
+    !preparation des voisin à l'aide du pointeur
     nbc=ptsc(nbsom+1)-1
     allocate(voisind(nbc),voising(nbc))
     voisind=0
@@ -991,23 +991,23 @@ contains
        is=nusom(ptvois(i+1))
        do j=ptvois(i)+1,ptvois(i+1)
           js=nusom(j)
-          !recherche du numÃ©ro de l'arete (le numÃ©ro correspond au noeud connectÃ©)
+          !recherche du numéro de l'arete (le numéro correspond au noeud connecté)
           k=ptsc(is)
-          do while (nusc(k)<js) !tant que le numÃ©ro de l'arete est infÃ©rieure au numÃ©ro du sommet
+          do while (nusc(k)<js) !tant que le numéro de l'arete est inférieure au numéro du sommet
              k=k+1 !arete suivante
           end do
           if (nusc(k)/=js) then
-             write(*,*)"ProblÃ¨me dans les voisins js"
+             write(*,*)"Problème dans les voisins js"
              stop
           end if
           voising(k)=i ! voisin gauche de l'arete nusc(k) : triangle i
-          !recherche du numÃ©ro de l'arete
+          !recherche du numéro de l'arete
           k=ptsc(js)
           do while (nusc(k)<is)
              k=k+1
           end do
           if (nusc(k)/=is) then
-             write(*,*)"ProblÃ¨me dans les voisins is"
+             write(*,*)"Problème dans les voisins is"
              stop
           end if
           voisind(k)=i
@@ -1015,7 +1015,7 @@ contains
        end do
     end do
 
-    !Fabrication du tableau des voisins de chaque numÃ©ro d'arete j :
+    !Fabrication du tableau des voisins de chaque numéro d'arete j :
     do i=1,ncv
        is=nusom(ptvois(i+1))
        do j=ptvois(i)+1,ptvois(i+1)
@@ -1037,7 +1037,7 @@ contains
   !###################################################################
   !Calcul des coefficients A
   !coef vitesse-vitesse
-  !longueur de l'arete divisÃ©e par la distance entre les centres des mailles
+  !longueur de l'arete divisée par la distance entre les centres des mailles
   !VOIR ARTICLE
   !*******************************
   subroutine calcul_coef(&
@@ -1052,7 +1052,7 @@ contains
     real(kind=8),dimension(:),intent(in)::xs,ys,xcv,ycv
     integer,intent(in)::ncv
     integer::i,j,i0,i1,ic,icc,jjj,j1,k,j0,k0,l,l0
-    real(kind=8)::a11,a12,a21,a22,b0,x_lim,y_lim,diam
+    real(kind=8)::a11,a12,a21,a22,b0,x_lim,y_lim,diam, xj, yj, xi0, yi0, d_j_droite, ponderation
 
     integer,dimension(:),allocatable::denlcv
 
@@ -1077,10 +1077,10 @@ contains
           a11=xs(i1)-xs(i0) !I0I1
           a12=ys(i1)-ys(i0)
           if (nuvois(j)<=0) then !Triangle droit absent (bord du domaine)
-             !I=insection(mÃ©diane,cotÃ©)
+             !I=insection(médiane,coté)
              !(I0IC.I0I1) =  d(I0,I) x d(IOI1)
              b0=((xcv(i)-xs(i0))*a11+(ycv(i)-ys(i0))*a12)/(a11*a11+a12*a12) !(I0IC.I0I1)/(I0I1.I0I1)
-             x_lim=xs(i0)+b0*a11 ! coordonnÃ©e de l'intersection (mÃ©diane,cotÃ©) I
+             x_lim=xs(i0)+b0*a11 ! coordonnée de l'intersection (médiane,coté) I
              y_lim=ys(i0)+b0*a12
              a21=xcv(i)-x_lim !IIIC
              a22=ycv(i)-y_lim
@@ -1109,8 +1109,23 @@ contains
                 by(j)=0
              else
                 A(j)=(a11*a11+a12*a12)/(a11*a22-a12*a21) ! d(I0,I1)/d(C,I)
-                bx(j)=-A(j)*a21*.5_8 !
+                bx(j)=-A(j)*a21*.5_8 !pondération par 1/2 : mal
                 by(j)=-A(j)*a22*.5_8 !
+                ! write(*,*) "Bx avant : ", bx(j)
+                ! AL : pondération par la distance de j à la droite I0, I1
+                ! distance de j à la droite I0, I1 : d = sqrt(i0j^2 - ((i0i1 scal i0j)/i0i1)^2)
+                xj = xcv(nuvois(j))
+                yj = ycv(nuvois(j))
+                xi0 = xs(i0);
+                yi0 = ys(i0);
+                d_j_droite = sqrt((xj - xi0)*(xj - xi0) + (yj - yi0)*(yj - yi0) - &
+                                  (a11 * (xi0 - xj) + a12 * (yi0 - yj))**2 / (a11*a11 + a12 * a12))
+                ponderation = (1 - d_j_droite / sqrt(a21*a21 + a22*a22))
+                ! bx(j) = - A(j) * a21 * ponderation
+                ! by(j) = - A(j) * a22 * ponderation
+                ! write(*,*) "Bx après : ", bx(j)
+                ! write(*,*) "Coeff de pondération : ", ponderation
+                ! fin AL
              end if
           end if
           if (A(j)<0) then
@@ -1120,8 +1135,8 @@ contains
           i0=i1
        end do
     end do
-    print*,"Nombre de bords Ã©liminÃ©s : ",ic
-    print*,"Nombre de faces Ã©liminÃ©es : ",icc/2
+    print*,"Nombre de bords éliminés : ",ic
+    print*,"Nombre de faces éliminées : ",icc/2
 
 
     if (macromaille==1) then
@@ -1137,7 +1152,7 @@ contains
 
        !Constitution des amas de base
        do i=1,ncv
-          !recherche si les voisins de i appartiennentÃ  une macro-maille
+          !recherche si les voisins de i appartiennentà une macro-maille
           jjj=denlcv(i)
           do j=ptvois(i)+1,ptvois(i+1)
              i1=nuvois(j)
@@ -1146,15 +1161,15 @@ contains
              end if
           end do
 
-          !Si les voisins n'appartiennent pas Ã  une macro maille
+          !Si les voisins n'appartiennent pas à une macro maille
           if (jjj==0) then
              k=k+1
-             denlcv(i)=k !la maille i appartient Ã  la macro-maille k
+             denlcv(i)=k !la maille i appartient à la macro-maille k
              do j=ptvois(i)+1,ptvois(i+1)
                 i1=nuvois(j)
                 if (i1>0) then
                    As(j)=As(j)+A(j)*lambda
-                   denlcv(i1)=k !la maille i1 appartient Ã  la macro-maille k
+                   denlcv(i1)=k !la maille i1 appartient à la macro-maille k
                    !recherche de la face vue par i1 (et non par i)
                    j1=ptvois(i1)+1
                    do while (nuvois(j1)/=i)
@@ -1168,7 +1183,7 @@ contains
 
        write(*,*)"Nombre de macro-mailles :",k
 
-       !accrochage virtuel des mailles isolÃ©es aux macro-mailles dÃ©jÃ  constituÃ©es
+       !accrochage virtuel des mailles isolées aux macro-mailles déjà constituées
        do i=1,ncv
           if (denlcv(i)==0) then
              do j=ptvois(i)+1,ptvois(i+1)
@@ -1176,7 +1191,7 @@ contains
                 if (i1>0) then
                    if (denlcv(i)==0) then !Raccrochement d'une face
                       if (denlcv(i1)>0) then !une macro-maille voisine
-                         denlcv(i)=-denlcv(i1) !valeur nÃ©gative temporaire pour Ã©viter des rattachement abusifs
+                         denlcv(i)=-denlcv(i1) !valeur négative temporaire pour éviter des rattachement abusifs
                          As(j)=As(j)+A(j)*lambda
                          j1=ptvois(i1)+1
                          do while (nuvois(j1)/=i)
@@ -1185,7 +1200,7 @@ contains
                          As(j1)=As(j)
                       end if
                    else
-                      if (denlcv(i1)==-denlcv(i)) then !Raccrochement des autres faces Ã  la mÃªme macro-maille (si nÃ©cessaire)
+                      if (denlcv(i1)==-denlcv(i)) then !Raccrochement des autres faces à la même macro-maille (si nécessaire)
                          As(j)=As(j)+A(j)*lambda
                          j1=ptvois(i1)+1
                          do while (nuvois(j1)/=i)
@@ -1197,14 +1212,14 @@ contains
                 end if
              end do
 
-             if (denlcv(i)==0) then !la raccrochement a Ã©chouÃ© !!!!
-                write(*,*)"ProblÃ¨me dans la construction des macro-mailles : mailles isolÃ©es !!!"
+             if (denlcv(i)==0) then !la raccrochement a échoué !!!!
+                write(*,*)"Problème dans la construction des macro-mailles : mailles isolées !!!"
                 stop
              end if
           end if
        end do
 
-       !Accrochage effectif des mailles isolÃ©es
+       !Accrochage effectif des mailles isolées
        do i=1,ncv
           if (denlcv(i)<0) denlcv(i)=-denlcv(i)
        end do
@@ -1217,7 +1232,7 @@ contains
        write(*,*)"Macro-mailles par sommets, macromaille=",macromaille
 
 
-       !DÃ©compte des sommets intÃ©rieurs
+       !Décompte des sommets intérieurs
        allocate(sommet_utilise(nbsom))
        sommet_utilise(:)=.false.
        l=0
@@ -1234,13 +1249,13 @@ contains
        end do
 
        n_som_in=l
-       write(*,*)"Nombre de sommets intÃ©rieurs :",n_som_in
+       write(*,*)"Nombre de sommets intérieurs :",n_som_in
 
 
        allocate(pt_som(nbsom+1))
 
 !!!
-!!!comptage du nombre de mailles par sommet intÃ©rieur
+!!!comptage du nombre de mailles par sommet intérieur
 !!!
        pt_som(1:nbsom+1)=0
        do i=1,ncv
@@ -1270,7 +1285,7 @@ contains
        end do
 
 !!!
-!!!Construction des clusters de base : contient les numÃ©ros des noeuds
+!!!Construction des clusters de base : contient les numéros des noeuds
 !!!
        allocate(maille_utilise(ncv))
        maille_utilise(:)=0
@@ -1281,7 +1296,7 @@ contains
              do j=pt_som(i)+1,pt_som(i+1)
                 j0=num_maille_par_sommet(j)
                 if (maille_utilise(j0)/=0) then
-                   k=1 !La maille appartient deja Ã  un cluster
+                   k=1 !La maille appartient deja à un cluster
                    exit
                 end if
              end do
@@ -1306,7 +1321,7 @@ contains
              do j=pt_som(i)+1,pt_som(i+1)
                 j0=num_maille_par_sommet(j)
                 if (maille_utilise(j0)/=0) then
-                   k=1 !La maille appartient deja Ã  un cluster
+                   k=1 !La maille appartient deja à un cluster
                    exit
                 end if
              end do
@@ -1331,7 +1346,7 @@ contains
 
        do i=1,n_cluster !Pour tous les cluster
           do j=pt_som(cluster(i))+1,pt_som(cluster(i)+1)
-             j0=num_maille_par_sommet(j) !On Ã©tudie la maille j0 du cluster i
+             j0=num_maille_par_sommet(j) !On étudie la maille j0 du cluster i
              do k=ptvois(j0)+1,ptvois(j0+1) !on regarde les voisins de j0
                 k0=nuvois(k)
                 do l=pt_som(cluster(i))+1,pt_som(cluster(i)+1) !si voisin dans cluster i
@@ -1346,21 +1361,21 @@ contains
        end do
 
 !!!
-!!!Mailles isolÃ©es
+!!!Mailles isolées
 !!!
 
        n_maille_a_rattacher=0
        n_maille_rattacher=0
        n_maille_attacher=0
        do i=1,ncv
-          if (maille_utilise(i)==0) then !Rattachement Ã  un cluster !!!
+          if (maille_utilise(i)==0) then !Rattachement à un cluster !!!
              n_maille_a_rattacher=n_maille_a_rattacher+1
 
-             boucle0 : do j=ptvois(i)+1,ptvois(i+1) !voisin de la maille Ã  rattacher
+             boucle0 : do j=ptvois(i)+1,ptvois(i+1) !voisin de la maille à rattacher
                 j0=nuvois(j)
                 if (j0>0) then
                    !Definition du Rattachement principal
-                   if (maille_utilise(j0)>0) then !si le voisin appartient Ã  un cluster de base, on rattache au cluster
+                   if (maille_utilise(j0)>0) then !si le voisin appartient à un cluster de base, on rattache au cluster
                       maille_utilise(i)=-maille_utilise(j0)
                       n_maille_rattacher=n_maille_rattacher+1
                       exit boucle0
@@ -1368,15 +1383,15 @@ contains
                 end if
              end do boucle0
 
-             if (maille_utilise(i)/=0) then !Si la maille est rattachÃ©e ...
+             if (maille_utilise(i)/=0) then !Si la maille est rattachée ...
                 boucle1 : do j=ptvois(i)+1,ptvois(i+1) !Construction des connexions au cluster de base
                    j0=nuvois(j)
                    if (j0>0) then
-                      if (abs(maille_utilise(j0))==-maille_utilise(i)) then !recherche des connexions Ã  effectuer dans le cluster
+                      if (abs(maille_utilise(j0))==-maille_utilise(i)) then !recherche des connexions à effectuer dans le cluster
                          As(j)=As(j)+A(j)*lambda
                          boucle2 : do k=ptvois(j0)+1,ptvois(j0+1) !recherche de la connexion reciproque
                             k0=nuvois(k)
-                            if (k0==i) then !connexion rÃ©ciproque  trouvÃ©e
+                            if (k0==i) then !connexion réciproque  trouvée
                                As(k)=As(k)+A(k)*lambda
                                exit boucle2
                             end if
@@ -1390,18 +1405,18 @@ contains
           end if
        end do
 
-       write(*,*)"Nombre de mailles Ã  rattacher :",n_maille_a_rattacher
-       write(*,*)"Nombre de mailles rattachÃ©es :",n_maille_rattacher
-       write(*,*)"Nombre de mailles attachÃ©es :",n_maille_attacher
+       write(*,*)"Nombre de mailles à rattacher :",n_maille_a_rattacher
+       write(*,*)"Nombre de mailles rattachées :",n_maille_rattacher
+       write(*,*)"Nombre de mailles attachées :",n_maille_attacher
        if (n_maille_rattacher+n_maille_attacher/=ncv) then
-          write(*,*)"Toutes les mailles ne sont pas attachÃ©es !!!"
+          write(*,*)"Toutes les mailles ne sont pas attachées !!!"
           stop
        end if
     elseif (macromaille==3) then
        write(*,*)"Macro-mailles par sommets, macromaille=",macromaille
 
 
-       !DÃ©compte des sommets intÃ©rieurs
+       !Décompte des sommets intérieurs
        allocate(sommet_utilise(nbsom))
        sommet_utilise(:)=.false.
        l=0
@@ -1418,13 +1433,13 @@ contains
        end do
 
        n_som_in=l
-       write(*,*)"Nombre de sommets intÃ©rieurs :",n_som_in
+       write(*,*)"Nombre de sommets intérieurs :",n_som_in
 
 
        allocate(pt_som(nbsom+1))
 
 !!!
-!!!comptage du nombre de mailles par sommet intÃ©rieur
+!!!comptage du nombre de mailles par sommet intérieur
 !!!
        pt_som(1:nbsom+1)=0
        do i=1,ncv
@@ -1454,7 +1469,7 @@ contains
        end do
 
 !!!
-!!!Construction des clusters de base : contient les numÃ©ros des noeuds
+!!!Construction des clusters de base : contient les numéros des noeuds
 !!!
        allocate(maille_utilise(ncv))
        maille_utilise(:)=0
@@ -1465,7 +1480,7 @@ contains
              do j=pt_som(i)+1,pt_som(i+1)
                 j0=num_maille_par_sommet(j)
                 if (maille_utilise(j0)/=0) then
-                   k=1 !La maille appartient deja Ã  un cluster
+                   k=1 !La maille appartient deja à un cluster
                    exit
                 end if
              end do
@@ -1490,7 +1505,7 @@ contains
              do j=pt_som(i)+1,pt_som(i+1)
                 j0=num_maille_par_sommet(j)
                 if (maille_utilise(j0)/=0) then
-                   k=1 !La maille appartient deja Ã  un cluster
+                   k=1 !La maille appartient deja à un cluster
                    exit
                 end if
              end do
@@ -1515,7 +1530,7 @@ contains
 
        do i=1,n_cluster !Pour tous les cluster
           do j=pt_som(cluster(i))+1,pt_som(cluster(i)+1)
-             j0=num_maille_par_sommet(j) !On Ã©tudie la maille j0 du cluster i
+             j0=num_maille_par_sommet(j) !On étudie la maille j0 du cluster i
              do k=ptvois(j0)+1,ptvois(j0+1) !on regarde les voisins de j0
                 k0=nuvois(k)
                 do l=pt_som(cluster(i))+1,pt_som(cluster(i)+1) !si voisin dans cluster i
@@ -1530,22 +1545,22 @@ contains
        end do
 
 !!!
-!!!Mailles isolÃ©es
+!!!Mailles isolées
 !!!
 
        n_maille_a_rattacher=0
        n_maille_rattacher=0
        n_maille_attacher=0
        do i=1,ncv
-          if (maille_utilise(i)==0) then !Rattachement Ã  un cluster !!!
+          if (maille_utilise(i)==0) then !Rattachement à un cluster !!!
              n_maille_a_rattacher=n_maille_a_rattacher+1
              allocate(nb_attach_clus(ptvois(i+1)-ptvois(i)))
              nb_attach_clus=0
-             do j=ptvois(i)+1,ptvois(i+1) !voisin de la maille Ã  rattacher
+             do j=ptvois(i)+1,ptvois(i+1) !voisin de la maille à rattacher
                 j0=nuvois(j)
                 if (j0>0) then
                    !Definition du Rattachement principal
-                   if (maille_utilise(j0)>0) then !si le voisin appartient Ã  un cluster de base, on rattache au cluster
+                   if (maille_utilise(j0)>0) then !si le voisin appartient à un cluster de base, on rattache au cluster
                       nb_attach_clus(j-ptvois(i))=nb_attach_clus(j-ptvois(i))+1
                    end if
                 end if
@@ -1555,15 +1570,15 @@ contains
              maille_utilise(i)=-maille_utilise(j0)
              n_maille_rattacher=n_maille_rattacher+1
 
-             if (maille_utilise(i)/=0) then !Si la maille est rattachÃ©e ...
+             if (maille_utilise(i)/=0) then !Si la maille est rattachée ...
                 boucle1b : do j=ptvois(i)+1,ptvois(i+1) !Construction des connexions au cluster de base
                    j0=nuvois(j)
                    if (j0>0) then
-                      if (abs(maille_utilise(j0))==-maille_utilise(i)) then !recherche des connexions Ã  effectuer dans le cluster
+                      if (abs(maille_utilise(j0))==-maille_utilise(i)) then !recherche des connexions à effectuer dans le cluster
                          As(j)=As(j)+A(j)*lambda
                          boucle2b : do k=ptvois(j0)+1,ptvois(j0+1) !recherche de la connexion reciproque
                             k0=nuvois(k)
-                            if (k0==i) then !connexion rÃ©ciproque  trouvÃ©e
+                            if (k0==i) then !connexion réciproque  trouvée
                                As(k)=As(k)+A(k)*lambda
                                exit boucle2b
                             end if
@@ -1577,11 +1592,11 @@ contains
           end if
        end do
 
-       write(*,*)"Nombre de mailles Ã  rattacher :",n_maille_a_rattacher
-       write(*,*)"Nombre de mailles rattachÃ©es :",n_maille_rattacher
-       write(*,*)"Nombre de mailles attachÃ©es :",n_maille_attacher
+       write(*,*)"Nombre de mailles à rattacher :",n_maille_a_rattacher
+       write(*,*)"Nombre de mailles rattachées :",n_maille_rattacher
+       write(*,*)"Nombre de mailles attachées :",n_maille_attacher
        if (n_maille_rattacher+n_maille_attacher/=ncv) then
-          write(*,*)"Toutes les mailles ne sont pas attachÃ©es !!!"
+          write(*,*)"Toutes les mailles ne sont pas attachées !!!"
           stop
        end if
     end if
@@ -1589,7 +1604,7 @@ contains
   end subroutine calcul_coef
 
   !###################################################################
-  !Trie Ã  bulles
+  !Trie à bulles
   subroutine trie(numer,long)
     implicit none
     integer,intent(in)::long
@@ -1615,7 +1630,7 @@ contains
   !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  !~~~~~~~~~~~~~~       ROUTINES DE RÃ©SOLUTION    ~~~~~~~~~~~~~~~~~~~~~
+  !~~~~~~~~~~~~~~       ROUTINES DE RéSOLUTION    ~~~~~~~~~~~~~~~~~~~~~
   !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1635,7 +1650,7 @@ contains
 
 
 !!!
-!!!renumÃ©rotation
+!!!renumérotation
 !!!
 
     if (.not.allocated(ptmat)) then
@@ -1666,8 +1681,8 @@ contains
 
     renum(1)=1
     denum(1)=1
-    j=0 !nouvelle numÃ©rotation
-    i=1 !nouvelle numÃ©rotation
+    j=0 !nouvelle numérotation
+    i=1 !nouvelle numérotation
     do while (j<ncv)
        j=j+1
        icv=denum(j)
@@ -1684,16 +1699,16 @@ contains
     end do
 
     if (i/=ncv) then
-       write(*,*)"ProblÃ¨me dans la renumÃ©rotation (subroutine preilu)",i,ncv
+       write(*,*)"Problème dans la renumérotation (subroutine preilu)",i,ncv
        stop
     end if
 
 
 !!!
 !!!Initialisation de nuv et ptv et ptd
-!!!      nuv=numÃ©ro du bloc dans la nouvelle numÃ©rotation
-!!!      ptv=pointeur de bloc dans la nouvelle numÃ©rotation
-!!!      ptd=pointeur de bloc diagonal dans la nouvelle numÃ©rotation
+!!!      nuv=numéro du bloc dans la nouvelle numérotation
+!!!      ptv=pointeur de bloc dans la nouvelle numérotation
+!!!      ptd=pointeur de bloc diagonal dans la nouvelle numérotation
 !!!
     ncvv=ptmat(ncv+1)
     nnuv=ncvv+ncv !on ajoute la diagonale, donc ncv termes
@@ -1708,10 +1723,10 @@ contains
           nuv(j+k)=renum(numat(k))
        end do
        ptv(i+1)=ptv(i+1)+1 !ajout de la diagonale
-       nuv(ptv(i+1))=i !numÃ©ro du bloc diagonal pour la maille i
+       nuv(ptv(i+1))=i !numéro du bloc diagonal pour la maille i
        call trie(nuv(ptv(i)+1:ptv(i+1)),ptv(i+1)-ptv(i))
 
-       !Recherche du terme diagonal aprÃ¨s la renumÃ©rotation
+       !Recherche du terme diagonal après la renumérotation
        k=ptv(i)+1
        do while (nuv(k)<i)
           k=k+1
@@ -1732,12 +1747,12 @@ contains
        allocate(ptvp(ncv+1))
        denlcv=0
 
-       !Decompte des blocs explorÃ©s pour chaque maille
-       !si denlcv(nÂ° bloc)=1, dÃ©jÃ  comptÃ©
-       !renlcv(dÃ©compte bloc)=nÂ° bloc
+       !Decompte des blocs explorés pour chaque maille
+       !si denlcv(n° bloc)=1, déjà compté
+       !renlcv(décompte bloc)=n° bloc
        do i=1,ncv
 
-          !dÃ©compte nombre de blocs sur une ligne
+          !décompte nombre de blocs sur une ligne
           kcompt=0
           do j=ptv(i)+1,ptv(i+1)
              kk=nuv(j)
@@ -1746,12 +1761,12 @@ contains
              renlcv(kcompt)=kk
           end do
 
-          !Ajout des voisins des voisins (dÃ©composition LU)
+          !Ajout des voisins des voisins (décomposition LU)
           do j=ptv(i)+1,ptd(i)-1
              jj=nuv(j)
              do k=ptd(jj)+1,ptv(jj+1)
                 kk=nuv(k)
-                if (denlcv(kk)==0) then !bloc non encore considÃ©rÃ©
+                if (denlcv(kk)==0) then !bloc non encore considéré
                    kcompt=kcompt+1
                    denlcv(kk)=1
                    renlcv(kcompt)=kk
@@ -1759,9 +1774,9 @@ contains
              end do
           end do
 
-          ptvp(i)=kcompt !nouveau pointeur de dÃ©composition iLU
+          ptvp(i)=kcompt !nouveau pointeur de décomposition iLU
 
-          do kk=1,kcompt !remise Ã  zÃ©ro du pointeur de bloc de dÃ©compte
+          do kk=1,kcompt !remise à zéro du pointeur de bloc de décompte
              denlcv(renlcv(kk))=0
           end do
 
@@ -1775,7 +1790,7 @@ contains
        ptvp(ncv+1)=nnuvp
 
        !
-       ! Allocation et construction des pointeurs d'Ã©limination
+       ! Allocation et construction des pointeurs d'élimination
        !
        allocate(nuvp(nnuvp))
 
@@ -1794,7 +1809,7 @@ contains
              jj=nuv(j)
              do k=ptd(jj)+1,ptv(jj+1)
                 kk=nuv(k)
-                if (denlcv(kk)==0) then !bloc non encore considÃ©rÃ©
+                if (denlcv(kk)==0) then !bloc non encore considéré
                    nuvp(ptvp(i))=kk
                    ptvp(i)=ptvp(i)-1
                    kcompt=kcompt+1
@@ -1804,14 +1819,14 @@ contains
              end do
           end do
 
-          do kk=1,kcompt !remise Ã  zÃ©ro du pointeur de bloc de dÃ©compte
+          do kk=1,kcompt !remise à zéro du pointeur de bloc de décompte
              denlcv(renlcv(kk))=0
           end do
 
        end do
 
        !
-       !Classement, recherche du pointeur diagonal et recopie des tableaux pour une nouvelle dÃ©composition LU
+       !Classement, recherche du pointeur diagonal et recopie des tableaux pour une nouvelle décomposition LU
        !
        k=0
        do i=1,ncv
@@ -1902,7 +1917,7 @@ contains
        omega=1
 
 !!!
-!!!Demarrage des itÃ©rations
+!!!Demarrage des itérations
 !!!
        iterations : do it=1,itbcgsmax
           rhom1=rho
@@ -1939,7 +1954,7 @@ contains
        end do iterations
 
 !!!
-!!!Remise Ã  l'Ã©chelle
+!!!Remise à l'échelle
 !!!
 
        do ii=1,ncv
@@ -1954,7 +1969,7 @@ contains
           bb(ii,4)=ui(k1)*norm4
        end do
        if (neq/=4) then
-          write(*,*)"Calcul prÃ©vu pour neq=4 !!!"
+          write(*,*)"Calcul prévu pour neq=4 !!!"
           stop
        end if
 
@@ -1967,8 +1982,8 @@ contains
 
 !!$          if (it<10) then
 !!$             test1=test1/10
-!!$             write(*,*)"Nombre d'itÃ©rations insuffisant :",it
-!!$             write(*,*)"critÃ¨re d'arrÃªt abaissÃ© : test=",test1
+!!$             write(*,*)"Nombre d'itérations insuffisant :",it
+!!$             write(*,*)"critère d'arrêt abaissé : test=",test1
 !!$             cycle retour
 !!$          end if
 
@@ -1977,7 +1992,7 @@ contains
              nordre1=nordre1+1
              write(*,*)"residu_old=",residu_old
              write(*,*)"residu=",residu
-             write(*,*)"Le rÃ©sidu augmente !!!  Ordre iLU=",nordre1
+             write(*,*)"Le résidu augmente !!!  Ordre iLU=",nordre1
              deallocate(renum)
              deallocate(aaf)
              deallocate(nuv,ptv,ptd)
@@ -2010,7 +2025,7 @@ contains
 !!!
 
     do i=1,ncv
-!!!Matrice U, de diagonale unitÃ©
+!!!Matrice U, de diagonale unité
        dd(i,1,1)=1._8/dd(i,1,1)
        dd(i,1,2)=dd(i,1,2)*dd(i,1,1)
        dd(i,1,3)=dd(i,1,3)*dd(i,1,1)
@@ -2027,7 +2042,7 @@ contains
        dd(i,4,2)=dd(i,4,2)-dd(i,4,1)*dd(i,1,2)
        dd(i,4,3)=dd(i,4,3)-dd(i,4,1)*dd(i,1,3)-dd(i,4,2)*dd(i,2,3)
        dd(i,4,4)=1._8/(dd(i,4,4)-dd(i,4,1)*dd(i,1,4)-dd(i,4,2)*dd(i,2,4)-dd(i,4,3)*dd(i,3,4))
-!!!Construction puis rÃ©solution : d^{-1}b
+!!!Construction puis résolution : d^{-1}b
        bb(i,1)=bb(i,1)*dd(i,1,1)
        bb(i,2)=(bb(i,2)-dd(i,2,1)*bb(i,1))*dd(i,2,2)
        bb(i,3)=(bb(i,3)-dd(i,3,1)*bb(i,1)-dd(i,3,2)*bb(i,2))*dd(i,3,3)
@@ -2036,7 +2051,7 @@ contains
        bb(i,3)=bb(i,3)-dd(i,3,4)*bb(i,4)
        bb(i,2)=bb(i,2)-dd(i,2,4)*bb(i,4)-dd(i,2,3)*bb(i,3)
        bb(i,1)=bb(i,1)-dd(i,1,4)*bb(i,4)-dd(i,1,3)*bb(i,3)-dd(i,1,2)*bb(i,2)
-!!!Construction puis rÃ©solution : d^{-1}a
+!!!Construction puis résolution : d^{-1}a
        do j=ptmat(i)+1,ptmat(i+1)
           aa(j,1,1)=aa(j,1,1)                                                              *dd(i,1,1)
           aa(j,2,1)=(aa(j,2,1)-dd(i,2,1)*aa(j,1,1))                                        *dd(i,2,2)
@@ -2101,7 +2116,7 @@ contains
        dd(i,4,3)=0
        dd(i,4,4)=1
 
-       !Changement d'Ã©chelle des inconnues
+       !Changement d'échelle des inconnues
        bb(i,1)=bb(i,1)*unorm1
        bb(i,2)=bb(i,2)*unorm2
        bb(i,3)=bb(i,3)*unorm3
@@ -2196,9 +2211,9 @@ contains
        do j=ptv(i)+1,ptd(i)-1
           jj=nuv(j)
           do k=ptd(jj)+1,ptv(jj+1) !voisins des voisins
-             ii=nuv(k) !numÃ©ro du bloc candidat Ã  la combinaison linÃ©aire d'Ã©limination
-             kk=j+1 !pointeur  des termes Ã  Ã©liminer
-             do while (nuv(kk)<ii.and.kk<ptv(i+1)) !recherche des bloc utilisÃ©s dans la dÃ©composition  iLU
+             ii=nuv(k) !numéro du bloc candidat à la combinaison linéaire d'élimination
+             kk=j+1 !pointeur  des termes à éliminer
+             do while (nuv(kk)<ii.and.kk<ptv(i+1)) !recherche des bloc utilisés dans la décomposition  iLU
                 kk=kk+1
              end do
              if (nuv(kk)==ii) then
@@ -2357,7 +2372,7 @@ contains
     end do
 
 !!!
-!!!RemontÃ©
+!!!Remonté
 !!!
     do i=ncv,1,-1
        do j=ptd(i)+1,ptv(i+1)
@@ -2405,7 +2420,7 @@ contains
     integer::i,j,k,ncvv,icv,jcv,jj,jjj,lmax,laa,i0
 
 
-    !renumÃ©rotation
+    !renumérotation
     allocate(ptmat(ncv+1),numat(ptvois(ncv+1)))
 
     k=0
@@ -2471,7 +2486,7 @@ contains
        end do
     end do
 !!!
-!!!On ajuste la ligne de ciel pour eviter des l_bd non-concordantes lors de l'Ã©limination
+!!!On ajuste la ligne de ciel pour eviter des l_bd non-concordantes lors de l'élimination
 !!!
     k=0
     lmax=0
@@ -2520,7 +2535,7 @@ contains
 
 
 !!!
-!!!MÃ©thode de Gauss
+!!!Méthode de Gauss
 !!!
 
     do i=1,ncv
@@ -2672,7 +2687,7 @@ contains
     end do
 
 !!!
-!!!RemontÃ©
+!!!Remonté
 !!!
     do i=ncv,1,-1
        kd=pt_d(i)-i
@@ -2698,7 +2713,7 @@ contains
   !6969696969696969696969696969696969696969696969696969696969696969696969
   !6969696969696969696969696969696969696969696969696969696969696969696969
   !69696969                               9696969696969696969696969696969
-  !69696969   FIN        Routine gÃ©nÃ©rales  96969696969696969696969696969
+  !69696969   FIN        Routine générales  96969696969696969696969696969
   !69696969                               9696969696969696969696969696969
   !6969696969696969696969696969696969696969696969696969696969696969696969
   !6969696969696969696969696969696969696969696969696969696969696969696969
@@ -2718,7 +2733,7 @@ contains
     implicit none
 
     !###################################################################
-    !Calcul du facteur de rÃ©gularitÃ© et de l'aire des volumes
+    !Calcul du facteur de régularité et de l'aire des volumes
     !###################################################################
     allocate(mcv(ncv))
 
@@ -2727,9 +2742,9 @@ contains
          mcv&
          )
     !###################################################################
-    !DÃ©finition du pointeur
+    !Définition du pointeur
     !###################################################################
-    allocate(ptsc(nbsom+1)) !pointeur du nombre de sommet connectÃ© cumulÃ©
+    allocate(ptsc(nbsom+1)) !pointeur du nombre de sommet connecté cumulé
     ptsc=0
     call pointeur(&
          ptvois,ncv,nbsom,nusom,&
@@ -2738,21 +2753,21 @@ contains
 
 
     !###################################################################
-    !DÃ©termination des sommets connectÃ©
-    !NumÃ©rotation des aretes
+    !Détermination des sommets connecté
+    !Numérotation des aretes
     !###################################################################
     nbc=ptsc(nbsom+1)-1
-    allocate(nusc(nbc)) !numÃ©ro des sommets cumulÃ©s=numero sommet connectÃ©
+    allocate(nusc(nbc)) !numéro des sommets cumulés=numero sommet connecté
     call pre_num_voisin_volume(&
          ptvois,nusom,ncv,nbsom,nusc,&
          ptsc&
          )
     !###################################################################
-    !DÃ©termination des voisins :
-    !voisind,voising dÃ©finis sur la base des pointeurs
-    !nuvois(i)=k correspond aux numÃ©ros entre voisins : arete nunero i voisine droite triangle k
+    !Détermination des voisins :
+    !voisind,voising définis sur la base des pointeurs
+    !nuvois(i)=k correspond aux numéros entre voisins : arete nunero i voisine droite triangle k
     !###################################################################
-    nbc=ptsc(nbsom+1)-1 ! le nombre d'aretes difÃ©rentes
+    nbc=ptsc(nbsom+1)-1 ! le nombre d'aretes diférentes
     allocate(nuvois(nptvois))
     nuvois=0
     call num_voisin_volume(&
@@ -2762,7 +2777,7 @@ contains
          nbsom)
     deallocate(nusc,ptsc)
     !
-    !Impression avant la renumÃ©rotation
+    !Impression avant la renumérotation
     !
     if (.true.) then
        call imprime(&
@@ -2799,16 +2814,16 @@ contains
 
     !##############################################################
     !division de triangles : nvc0->ncv
-    !crÃ©ation des nouveaux noeuds : nbsom0->nbsom
-    !dÃ©finitions des numÃ©ros : nusom
-    !dÃ©finition des coordonnÃ©e : (xs,ys)
+    !création des nouveaux noeuds : nbsom0->nbsom
+    !définitions des numéros : nusom
+    !définition des coordonnée : (xs,ys)
     !##############################################################
-    !calcul du nombre exacte de triangle aprÃ¨s subdivision
-    ncv=ncv0*ndiv*ndiv !calcul du nombre exacte de triangle aprÃ¨s subdivision
+    !calcul du nombre exacte de triangle après subdivision
+    ncv=ncv0*ndiv*ndiv !calcul du nombre exacte de triangle après subdivision
     nptvois=3*ncv ! nombre total de points pour tous les triangles
     allocate(nusom(nptvois),ptvois(ncv+1))
     do k=1,ncv+1
-       ptvois(k)=3*k-3   !pointe sur les 3 points voisins au triangle k : ptvoisin(k)+1 Ã  ptvoisin(k+1)
+       ptvois(k)=3*k-3   !pointe sur les 3 points voisins au triangle k : ptvoisin(k)+1 à ptvoisin(k+1)
     end do
     nbsom=ncv0*(ndiv+1)*(ndiv+2)/2 ! nombre de sommet apres division (vrai pour chaque triangle)
     allocate(xs(nbsom),ys(nbsom))
@@ -2819,7 +2834,7 @@ contains
     deallocate(xs0,ys0,nusom0)
 
     !###################################################################
-    !DÃ©termination des centres des volumes : xcv et ycv
+    !Détermination des centres des volumes : xcv et ycv
     !###################################################################
     allocate(xcv(ncv),ycv(ncv))
     call centre_volume(&
@@ -2833,9 +2848,9 @@ contains
 
   !###################################################################
   !division de triangles : nvc0->ncv
-  !crÃ©ation des nouveaux noeuds : nbsom0->nbsom
-  !dÃ©finitions des numÃ©ro : nusom
-  !dÃ©finition des coordonnÃ©e : (xs,ys)
+  !création des nouveaux noeuds : nbsom0->nbsom
+  !définitions des numéro : nusom
+  !définition des coordonnée : (xs,ys)
   subroutine div_triangle(&
        nusom ,xs ,ys ,nbsom ,ncv ,&
        nusom0,xs0,ys0,nbsom0,ncv0,&
@@ -2864,7 +2879,7 @@ contains
     icv=ncv0
     !Allocation maxi
     allocate(arete0(nbsom0,nbsom0,ndiv+1),lim(ndiv+1),lip(ndiv+1))
-    !CrÃ©ation des nouveau sommets sur les aretes principales
+    !Création des nouveau sommets sur les aretes principales
     arete0=0._8
     !Initialisation des sommets par le maillage de base
     xs(1:nbsom0)=xs0(1:nbsom0)
@@ -2884,74 +2899,74 @@ contains
              do k=1,ndiv-1
                 cf0=dfloat(k)/dfloat(ndiv)
                 cf1=1._8-cf0
-                !coordonnÃ©es des nouveaux noeuds
+                !coordonnées des nouveaux noeuds
                 is=is+1
                 xs(is)=cf0*xs0(i0)+cf1*xs0(i1)
                 ys(is)=cf0*ys0(i0)+cf1*ys0(i1)
-!!$                !****DÃ©palcement du noeud alÃ©atoire
+!!$                !****Dépalcement du noeud aléatoire
 !!$                call random_number(ds)
 !!$                xs(is)=xs(is)*(1._8+5e-2_8*(ds-.5_8))
 !!$                ys(is)=ys(is)*(1._8+5e-2_8*(ds-.5_8))
 !!$                !****
-                !dÃ©finition des noeuds de l'arete (numÃ©ro de i1 vers i0)
+                !définition des noeuds de l'arete (numéro de i1 vers i0)
                 arete0(i1,i0,k+1)=is
                 arete0(i0,i1,ndiv-k+1)=is
              end do
           end if
        end do
     end do
-    !crÃ©ation des triangles internes par subdivision
-    do i=1,ncv0 !dÃ©finition numÃ©ro des sommets du triangle i
+    !création des triangles internes par subdivision
+    do i=1,ncv0 !définition numéro des sommets du triangle i
        i0=nusom0(i,1)
        i1=nusom0(i,2)
        i2=nusom0(i,3)
-       !parcours des bandes de triangles entre 2 lignes parallÃ¨les
-       !lim : tableau des sommets de la ligne infÃ©rieure
-       !lip :  tableau des sommets de la ligne supÃ©rieure
-       !Initialisation de lim sur cotÃ© 1-2
+       !parcours des bandes de triangles entre 2 lignes parallèles
+       !lim : tableau des sommets de la ligne inférieure
+       !lip :  tableau des sommets de la ligne supérieure
+       !Initialisation de lim sur coté 1-2
        do j=1,ndiv+1
           lim(j)=arete0(i2,i1,j)
        end do
        do j=1,ndiv-1
-          !initialisation des extrÃ©mitÃ© de lip (parallÃ¨le Ã  1-2)
+          !initialisation des extrémité de lip (parallèle à 1-2)
           lip(1)       =arete0(i2,i0,j+1)
           lip(ndiv-j+1)=arete0(i1,i0,j+1)
-          a0=float(j)/float(ndiv) !valeur du pas sur le cotÃ© I2I0
-          do k=1,ndiv-j-1 ! nombre de division sur la parallÃ¨le j
-             a1=dfloat(k)/dfloat(ndiv) !pas sur la parallÃ¨le j
+          a0=float(j)/float(ndiv) !valeur du pas sur le coté I2I0
+          do k=1,ndiv-j-1 ! nombre de division sur la parallèle j
+             a1=dfloat(k)/dfloat(ndiv) !pas sur la parallèle j
              a2=1._8-a0-a1
              is=is+1
              xs(is)=a0*xs0(i0)+a1*xs0(i1)+a2*xs0(i2) !somme vecteur a0*I2I0 +a1*I2I1 (origine en I2)
              ys(is)=a0*ys0(i0)+a1*ys0(i1)+a2*ys0(i2) ! (suite)
-             !****DÃ©palcement du noeud alÃ©atoire
+             !****Dépalcement du noeud aléatoire
 !!$             call random_number(ds)
 !!$             xs(is)=xs(is)+0.e-2_8*(ds-.5_8)
 !!$             ys(is)=ys(is)+0.e-2_8*(ds-.5_8)
              !****
-             lip(k+1)=is ! numÃ©ro du nouveau noeud
+             lip(k+1)=is ! numéro du nouveau noeud
           end do
-          !crÃ©ation des triangles pointe en haut
-          !numÃ©rotation consÃ©cutive des 3 sommets des triangles
+          !création des triangles pointe en haut
+          !numérotation consécutive des 3 sommets des triangles
           do k=1,ndiv-j+1
              icv=icv+1 !nouveau triangle
              nusom(3*icv-2)=lim(k)
              nusom(3*icv-1)=lip(k)
              nusom(3*icv)  =lim(k+1)
           enddo
-          !crÃ©ation des triangles pointe en bas
+          !création des triangles pointe en bas
           do k=1,ndiv-j ! 1 de moins que le nombre triangles hauts
              icv=icv+1 !nouveau triangle
              nusom(3*icv-2)=lip(k)
              nusom(3*icv-1)=lip(k+1)
              nusom(3*icv)  =lim(k+1)
           enddo
-          !passage Ã  la parallÃ¨le suivante
+          !passage à la parallèle suivante
           !recopie de lip dans lim
           do k=1,ndiv-j+1
              lim(k)=lip(k)
           end do
        end do
-       !NumÃ©rotation du dernier triangle
+       !Numérotation du dernier triangle
        nusom(3*i-2)=lim(1)
        nusom(3*i-1)=i0
        nusom(3*i)  =lim(2)
@@ -2970,8 +2985,8 @@ contains
   end subroutine div_triangle
 
   !###################################################################
-  !DÃ©termination des centres des volumes : xcv et ycv
-  !2 Ã©quations Ã  deux inconnues (2 produits scalaires) :
+  !Détermination des centres des volumes : xcv et ycv
+  !2 équations à deux inconnues (2 produits scalaires) :
   !             [Milieu(I0I1)X].IOI1=0
   !             [Milieu(I0I2)X].IOI2=0
   !***************
@@ -3003,7 +3018,7 @@ contains
        !aire du losange : aire (produit vectoriel I0I1 x I0I2)
        aire= a11*a22-a12*a21
        if (aire<0) then !si centre du cercle hors du triangle
-          write(*,*)"L'aire du volume ",i," est nÃ©gative"
+          write(*,*)"L'aire du volume ",i," est négative"
           stop
        end if
        deter=0.5_8/aire
@@ -3096,7 +3111,7 @@ contains
     icv=ncv0
     !Allocation maxi
     allocate(arete0(nbsom0,nbsom0,ndiv+1),lim(ndiv+1),lip(ndiv+1))
-    !CrÃ©ation des nouveau sommets sur les aretes principales
+    !Création des nouveau sommets sur les aretes principales
     arete0=0._8
     !Initialisation des sommets par le maillage de base
     xs(1:nbsom0)=xs0(1:nbsom0)
@@ -3110,7 +3125,7 @@ contains
 
 
 !!$          if (raff==1000) then
-!!$             if (xs0(i1)>xs0(i0).or.ys0(i1)>ys0(i0)) rais0(i,j)=1/rais0(i,j) !Modification de la raison pour dÃ©buter de la fin !!!
+!!$             if (xs0(i1)>xs0(i0).or.ys0(i1)>ys0(i0)) rais0(i,j)=1/rais0(i,j) !Modification de la raison pour débuter de la fin !!!
 !!$          end if
 
           if (arete0(i0,i1,1) == 0) then
@@ -3125,7 +3140,7 @@ contains
                    if (raff==101.or.raff==111) a0=.5_8*(1._8-dcos(a0*dacos(-1._8)))
                    a1=dfloat(k)/dfloat(ndiv)
                    if (raff==110.or.raff==111) a1=.5_8*(1._8-dcos(a1*dacos(-1._8)))
-                   !coordonnÃ©es des nouveaux noeuds
+                   !coordonnées des nouveaux noeuds
                    is=is+1
                    xs(is)=a0*xs0(i0)+(1._8-a0)*xs0(i1)
                    ys(is)=a1*ys0(i0)+(1._8-a1)*ys0(i1)
@@ -3134,7 +3149,7 @@ contains
                 else if (raff==1000) then
                    is=is+1
                    if (rais0(i,j) /=1) then
-                      a0=(1._8-rais0(i,j)**k)/(1._8-rais0(i,j)**ndiv)  !!!rapport de deux mailles consÃ©cutives
+                      a0=(1._8-rais0(i,j)**k)/(1._8-rais0(i,j)**ndiv)  !!!rapport de deux mailles consécutives
                       xs(is)=xs0(i1)+a0*(xs0(i0)-xs0(i1))
                       ys(is)=ys0(i1)+a0*(ys0(i0)-ys0(i1))
                    else
@@ -3145,44 +3160,44 @@ contains
                    arete0(i1,i0,k+1)=is
                    arete0(i0,i1,ndiv-k+1)=is
                 end if
-                !dÃ©finition des noeuds de l'arete (numÃ©ro de i1 vers i0)
+                !définition des noeuds de l'arete (numéro de i1 vers i0)
              end do
           end if
        end do
     end do
 
-    !crÃ©ation des rectangles internes par subdivision
-    do i=1,ncv0 !dÃ©finition numÃ©ro des sommets du triangle i
+    !création des rectangles internes par subdivision
+    do i=1,ncv0 !définition numéro des sommets du triangle i
        i0=nusom0(i,1)
        i1=nusom0(i,2)
        i2=nusom0(i,3)
        i3=nusom0(i,4)
-       !parcours des bandes de triangles entre 2 lignes parallÃ¨les
-       !lim : tableau des sommets de la ligne infÃ©rieure
-       !lip :  tableau des sommets de la ligne supÃ©rieure
-       !Initialisation de lim sur cotÃ© 1-2
+       !parcours des bandes de triangles entre 2 lignes parallèles
+       !lim : tableau des sommets de la ligne inférieure
+       !lip :  tableau des sommets de la ligne supérieure
+       !Initialisation de lim sur coté 1-2
        do j=1,ndiv+1
           lim(j)=arete0(i2,i1,j)
        end do
        do j=1,ndiv-1
-          !initialisation des extrÃ©mitÃ© de lip (parallÃ¨le Ã  1-2)
+          !initialisation des extrémité de lip (parallèle à 1-2)
           lip(1)       =arete0(i2,i3,j+1)
           lip(ndiv+1)  =arete0(i1,i0,j+1)
 
 
           if (raff>=100.and.raff<=111) then
-             a0=float(j)/float(ndiv) !valeur du pas sur le cotÃ© I2I0
+             a0=float(j)/float(ndiv) !valeur du pas sur le coté I2I0
              if (raff==101.or.raff==111) a0=.5_8*(1._8-dcos(a0*dacos(-1._8)))
-             do k=1,ndiv-1 ! nombre de division sur la parallÃ¨le j
-                a1=dfloat(k)/dfloat(ndiv) !pas sur la parallÃ¨le j
+             do k=1,ndiv-1 ! nombre de division sur la parallèle j
+                a1=dfloat(k)/dfloat(ndiv) !pas sur la parallèle j
                 if (raff==110.or.raff==111) a1=.5_8*(1._8-dcos(a1*dacos(-1._8)))
                 is=is+1
                 xs(is)=a0*xs0(i0)+(1._8-a0)*xs0(i1) !
                 ys(is)=a1*ys0(i1)+(1._8-a1)*ys0(i2) ! (suite)
-                lip(k+1)=is ! numÃ©ro du nouveau noeud
+                lip(k+1)=is ! numéro du nouveau noeud
              end do
           else if (raff==1000) then
-             do k=1,ndiv-1 ! nombre de division sur la parallÃ¨le j
+             do k=1,ndiv-1 ! nombre de division sur la parallèle j
                 is=is+1
                 if (rais0(i,1) /=1) then
                    a0=(1._8-rais0(i,1)**j)/(1._8-rais0(i,1)**ndiv)
@@ -3198,7 +3213,7 @@ contains
                    a1=dfloat(k)/dfloat(ndiv)
                    ys(is)=a1*ys0(i1)+(1._8-a1)*ys0(i2)
                 end if
-                lip(k+1)=is ! numÃ©ro du nouveau noeud
+                lip(k+1)=is ! numéro du nouveau noeud
              end do
           end if
           !
@@ -3215,7 +3230,7 @@ contains
              lim(k)=lip(k)
           end do
        end do
-       !NumÃ©rotation de la derniere ligne de  rectangles
+       !Numérotation de la derniere ligne de  rectangles
        do j=1,ndiv+1
           lip(j)=arete0(i3,i0,j)
        end do
@@ -3226,7 +3241,7 @@ contains
           nusom(4*icv-1)=lip(k)
           nusom(4*icv)  =lip(k+1)
        enddo
-       !NumÃ©rotation du dernier rectangle (ancien numÃ©ro)
+       !Numérotation du dernier rectangle (ancien numéro)
        k=ndiv
        nusom(4*i-3)=lim(k+1)
        nusom(4*i-2)=lim(k)
@@ -3248,7 +3263,7 @@ contains
     if (allocated(rais0)) deallocate(rais0)
 
     !###################################################################
-    !DÃ©termination des centres des volumes : xcv et ycv
+    !Détermination des centres des volumes : xcv et ycv
     !###################################################################
     allocate(xcv(ncv),ycv(ncv))
     do i=1,ncv
@@ -3336,7 +3351,7 @@ contains
                 case('regulier')
                    xs(is)=xm+ax*xl
                 case default
-                   write(*,*)'pas de maillage appropriÃ©'
+                   write(*,*)'pas de maillage approprié'
                    stop
                 end select
 
@@ -3346,7 +3361,7 @@ contains
                 case('regulier')
                    ys(is)=ym+ay*yl
                 case default
-                   write(*,*)'pas de maillage appropriÃ©'
+                   write(*,*)'pas de maillage approprié'
                    stop
                 end select
              end do
@@ -3384,7 +3399,7 @@ contains
 
 
     !###################################################################
-    !DÃ©termination des centres des volumes : xcv et ycv
+    !Détermination des centres des volumes : xcv et ycv
     !###################################################################
     allocate(xcv(ncv),ycv(ncv))
     do i=1,ncv
@@ -3475,13 +3490,13 @@ contains
     write(*,*)"Nombre de mailles de R : ",nr
     write(*,*)"Nombre de mailles de THETA : ",nt
     if (cr==0) then
-       write(*,*)"Maillage RADIAL rÃ©gulier"
+       write(*,*)"Maillage RADIAL régulier"
     else
        write(*,*)"R(J)=(atan(cr*(2*r-1))+atan(cr))/(2*atan(cr))"
        write(*,*)"cr=",cr
     end if
     if (ct==0) then
-       write(*,*)"Maillage AZIMUTAL rÃ©gulier"
+       write(*,*)"Maillage AZIMUTAL régulier"
     else
        write(*,*)"THETA(J)=(exp(ct*2*t(j)*pi)-1)"
        write(*,*)"         ------------------------"
@@ -3607,13 +3622,13 @@ contains
     write(*,*)"Nombre de mailles de R : ",nr
     write(*,*)"Nombre de mailles de THETA : ",nt
     if (cr==0) then
-       write(*,*)"Maillage RADIAL rÃ©gulier"
+       write(*,*)"Maillage RADIAL régulier"
     else
        write(*,*)"R(J)=(atan(cr*(2*r-1))+atan(cr))/(2*atan(cr))"
        write(*,*)"cr=",cr
     end if
     if (ct==0) then
-       write(*,*)"Maillage AZIMUTAL rÃ©gulier"
+       write(*,*)"Maillage AZIMUTAL régulier"
     else
        write(*,*)"THETA(J)=(exp(ct*2*t(j)*pi)-1)"
        write(*,*)"         ------------------------"
@@ -3721,16 +3736,16 @@ contains
 
   end subroutine polaire_old
 
-  !Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°
-  !Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°
-  !Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°
-  !Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°                        Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°
-  !Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°    Lecture et Ã©criture   Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°
-  !Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°                        Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°
-  !Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°
-  !Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°
-  !Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°
-  !Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°
+  !°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°
+  !°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°
+  !°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°
+  !°°°°°°°°°°°°°°°°°                        °°°°°°°°°°°°°°°°°°°°°°
+  !°°°°°°°°°°°°°°°°    Lecture et écriture   °°°°°°°°°°°°°°°°°°°°°
+  !°°°°°°°°°°°°°°°°°                        °°°°°°°°°°°°°°°°°°°°°°
+  !°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°
+  !°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°
+  !°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°
+  !°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°
 
   !###################################################################
   !lecture
@@ -3759,15 +3774,15 @@ contains
     write(*,*)"Reprise",l_reprise
     write(*,*)"Maillage=",c_maillage
     write(*,*)"nutest=",nutest
-    write(*,*)"durÃ©e=",duree
+    write(*,*)"durée=",duree
     write(*,*)"dt initial=",dt
     write(*,*)"centt=",centt
     write(*,*)"delpourc=",delpourc
-    write(*,*)"RÃ©sidu objectif : ",residobj
-    write(*,*)"Coefficient maximal sur l'incrÃ©ment : ",thetamax
-    write(*,*)"Coefficient de pÃ©nalisation",comu
+    write(*,*)"Résidu objectif : ",residobj
+    write(*,*)"Coefficient maximal sur l'incrément : ",thetamax
+    write(*,*)"Coefficient de pénalisation",comu
     lambda=comu
-    write(*,*)"Affichage des Ã©tapes de Newton=",aff
+    write(*,*)"Affichage des étapes de Newton=",aff
     write(*,*)"Re : Vtest=",vtest
     write(*,*)"Ra=",ra
     write(*,*)"Pr=",pr
@@ -3801,7 +3816,7 @@ contains
        read(20,*)ncv0
        !lecture du nombre de sommets maillage de base
        read(20,*)nbsom0
-       !lecture des coordonnÃ©es des sommets
+       !lecture des coordonnées des sommets
        allocate(xs0(nbsom0),ys0(nbsom0))
        do i=1,nbsom0
           read(20,*)xs0(i),ys0(i)
@@ -3819,25 +3834,25 @@ contains
        open(20,file="triangle_eccentrique.dat",status="old")
        read(20,*)ndiv
        read(20,*) eta
-       !DÃ©centrage
+       !Décentrage
        read(20,*) ray
-       !Angle de dÃ©centrage
+       !Angle de décentrage
        read(20,*) dec
        !Nombre de mailles en r
        read(20,*) nbr
-       !Nombre de mailles en thÃ©ta
+       !Nombre de mailles en théta
        read(20,*) nbt
        !Lecture du nombre de volumes de base
        read(20,*) ncv0
        !lecture du nombre de sommets maillage de base
        read(20,*) nbsom0
-       !ParamÃ¨tre de subdivision des mailles
+       !Paramètre de subdivision des mailles
        read(20,*) para
-       !Coefficient pour la rÃ©partition tangente hyperbolique en thÃ©ta
+       !Coefficient pour la répartition tangente hyperbolique en théta
        read(20,*) cstethe
-       !Coeff rÃ©parition des centres des cercles en r
+       !Coeff réparition des centres des cercles en r
        read(20,*) cster
-       !lecture des coordonnÃ©es des sommets
+       !lecture des coordonnées des sommets
        print*,'Nombre de sommets : ',nbsom0,' De mailles : ',ncv0,' eta=',eta
        allocate(xs0(nbsom0),ys0(nbsom0))
        do i=1,nbsom0
@@ -3845,7 +3860,7 @@ contains
        enddo
        write(*,*) 'Bornes en x : ',maxval(xs0),minval(xs0)
        write(*,*) 'Bornes en y : ',maxval(ys0),minval(ys0)
-       !lecture des numÃ©ros des noeuds pour chaque volume
+       !lecture des numéros des noeuds pour chaque volume
        allocate(nusom0(ncv0,3))
        do i=1,ncv0
           read(20,*)(nusom0(i,j),j=1,3)
@@ -3935,7 +3950,7 @@ contains
        read(20,*)ncv0
        !lecture du nombre de sommets maillage de base
        read(20,*)nbsom0
-       !lecture des coordonnÃ©es des sommets
+       !lecture des coordonnées des sommets
        allocate(xs0(nbsom0),ys0(nbsom0))
        do i=1,nbsom0
           read(20,*)xs0(i),ys0(i)
@@ -4015,7 +4030,7 @@ contains
        do i=1,ndy
           read(20,*)ndivy(i),maillage_y(i)
        end do
-       !lecture des coordonnÃ©es des sommets
+       !lecture des coordonnées des sommets
        allocate(xs0(ndx),ys0(ndy))
        do i=1,ndx
           read(20,*)xs0(i)
@@ -4026,10 +4041,10 @@ contains
 
 !!$          if (nutest==100) then
 !!$             ALy=ys0(ndy)
-!!$             write(*,*)"CavitÃ© ouverte de longueur : ",ALy
+!!$             write(*,*)"Cavité ouverte de longueur : ",ALy
 !!$             write(*,*)"Valeur de Ra_m=",ra
 !!$             ra=ra*ALy
-!!$             write(*,*)"Valeur de Ra calculÃ© :",ra
+!!$             write(*,*)"Valeur de Ra calculé :",ra
 !!$          end if
 
        ncv=0
@@ -4055,7 +4070,7 @@ contains
             xs0,ys0)
        deallocate(ndivx,ndivy)
     case default
-       write(*,*)'pas de lecture appropriÃ©e'
+       write(*,*)'pas de lecture appropriée'
        stop
     end select
 
@@ -4065,22 +4080,22 @@ contains
     case(2,3,4,100,102,110,210)
        ALy=maxval(ys)
        ALx=maxval(xs)
-       write(*,*)"CavitÃ© de hauteur : ",ALy
-       write(*,*)"CavitÃ© de largeur : ",ALx
+       write(*,*)"Cavité de hauteur : ",ALy
+       write(*,*)"Cavité de largeur : ",ALx
        if (nutest==100.or.nutest==110.or.nutest==210) then
           write(*,*)"Valeur de Ra_m=",ra
           ra=ra*ALy/2
-          write(*,*)"Valeur de Ra calculÃ© :",ra
+          write(*,*)"Valeur de Ra calculé :",ra
        end if
     case(101)
        ALy=maxval(ys)-3
        ALx=maxval(xs)-3
-       write(*,*)"CavitÃ© de hauteur : ",ALy
-       write(*,*)"CavitÃ© de largeur : ",ALx
+       write(*,*)"Cavité de hauteur : ",ALy
+       write(*,*)"Cavité de largeur : ",ALx
 
        write(*,*)"Valeur de Ra_m=",ra
        ra=ra*ALy/2
-       write(*,*)"Valeur de Ra calculÃ© :",ra
+       write(*,*)"Valeur de Ra calculé :",ra
 
 
     end select
@@ -4145,12 +4160,12 @@ contains
     write(15,*)ncv,nbsom,nptvois
     select case(c_maillage)
     case('voronoi_polaire')
-       write(*,*)"Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°ETA"
+       write(*,*)"°°°°°°°°°°°°°°°°°ETA"
        write(15,*)eta
     case('triangle_polaire')
-       write(*,*)"Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°ETA"
+       write(*,*)"°°°°°°°°°°°°°°°°°ETA"
        write(15,*)eta
-       write(*,*)"Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°NR,NT,CR,CT"
+       write(*,*)"°°°°°°°°°°°°°°°°°NR,NT,CR,CT"
        write(15,*)nr,nt
        write(15,*)cr,ct
     end select
@@ -4426,17 +4441,17 @@ contains
     integer,dimension(:),allocatable::valpo,renlcv,denlcv
 
 
-    write(*,*)"DÃ©but ligncour"
+    write(*,*)"Début ligncour"
 
 
-    !Initialisation gÃ©nÃ©rale
+    !Initialisation générale
     allocate(valpo(nbsom),renlcv(ncv),denlcv(ncv),potent(nbsom))
     valpo(1:nbsom)=0
     renlcv(1:ncv)=0
 
     renlcv(1)=1
     denlcv(1)=1
-    i=1 !compteur des mailles rencontrÃ©es
+    i=1 !compteur des mailles rencontrées
 
     !Initialisation du premier point
     icv=1
@@ -4454,7 +4469,7 @@ contains
        do while (valpo(i0) == 0)
           j=j+1
           if (j>ptvois(icv+1)) then
-             write(*,*)"ProblÃ¨me dans ligncour"
+             write(*,*)"Problème dans ligncour"
              stop
           end if
           i0=nusom(j)
@@ -4509,7 +4524,7 @@ contains
                 end do
              end if
           else
-             if (renlcv(jj)==0) then !Nouvelle maille Ã  considÃ©rer
+             if (renlcv(jj)==0) then !Nouvelle maille à considérer
                 i=i+1
                 renlcv(jj)=i
                 denlcv(i)=jj
@@ -4524,16 +4539,16 @@ contains
     write(*,*)"Fin ligncour"
   end subroutine ligncour
 
-  !Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°
-  !Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°
-  !Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°
-  !Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°                               Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°
-  !Â°Â°Â°Â°Â°Â°Â°Â°Â°   FIN     Lecture et Ã©criture   Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°
-  !Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°                               Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°
-  !Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°
-  !Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°
-  !Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°
-  !Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°Â°
+  !°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°
+  !°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°
+  !°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°
+  !°°°°°°°°°°                               °°°°°°°°°°°°°°°°°°°°°°
+  !°°°°°°°°°   FIN     Lecture et écriture   °°°°°°°°°°°°°°°°°°°°°
+  !°°°°°°°°°°                               °°°°°°°°°°°°°°°°°°°°°°
+  !°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°
+  !°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°
+  !°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°
+  !°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°
 
   !++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   !++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -4694,7 +4709,7 @@ contains
 
 
     case(110,210)
-!!!DÃ©termination de la taille des tableaux
+!!!Détermination de la taille des tableaux
        compt_coupe_x(:)=0
        compt_coupe_y(:)=0
        do i=1,ncv
@@ -4702,7 +4717,7 @@ contains
           do j=ptvois(i)+1,ptvois(i+1)
              i1=nusom(j)
              jj=nuvois(j)
-!!! DÃ©termination des coupes horizontales
+!!! Détermination des coupes horizontales
              if ((ys(i0)>=Aly/4+1e-8).and.(ys(i1)<Aly/4+1e-8)) then
                 compt_coupe_x(1)=compt_coupe_x(1)+1
                 exit
@@ -4713,7 +4728,7 @@ contains
                 compt_coupe_x(3)=compt_coupe_x(3)+1
                 exit
              end if
-!!! DÃ©termination des coupes verticales
+!!! Détermination des coupes verticales
              if ((xs(i0)<=0).and.(xs(i1)>0)) then
                 compt_coupe_y(1)=compt_coupe_y(1)+1
                 exit
@@ -4731,7 +4746,7 @@ contains
        print*,compt_coupe_y,maxval(xs)
        !stop
 
-!!! CALCUL des numÃ©ros des mailles des coupes
+!!! CALCUL des numéros des mailles des coupes
 
        n=maxval(compt_coupe_x(:))
        allocate(n_coupe_x(n,3))
@@ -4751,7 +4766,7 @@ contains
           do j=ptvois(i)+1,ptvois(i+1)
              i1=nusom(j)
              jj=nuvois(j)
-!!! DÃ©termination des Nusselt .5, .9 et .97
+!!! Détermination des Nusselt .5, .9 et .97
              if (jj==-1) then
                 !A(j)*(tp-t(j))=1*(ys(i1)-ys(i0))
                 tp1=(ys(i1)-ys(i0))/A(j)+tp(i)
@@ -4777,7 +4792,7 @@ contains
                    write(*,*)
                 end if
              end if
-!!! DÃ©termination des coupes horizontales
+!!! Détermination des coupes horizontales
              if ((ys(i0)>=Aly/4+1e-8).and.(ys(i1)<=Aly/4+1e-8))         then
                 compt_coupe_x(1)=compt_coupe_x(1)+1
                 n_coupe_x(compt_coupe_x(1),1)=i
@@ -4791,7 +4806,7 @@ contains
                 n_coupe_x(compt_coupe_x(3),3)=i
                 exit
              end if
-!!! DÃ©termination des coupes verticales
+!!! Détermination des coupes verticales
              if ((xs(i0)<=0).and.(xs(i1)>0))          then
                 compt_coupe_y(1)=compt_coupe_y(1)+1
                 n_coupe_y(compt_coupe_y(1),1)=i
@@ -4812,7 +4827,7 @@ contains
 
 
 
-       write(*,*)"Nusselt moyen sur la partie chauffÃ©e :",nui/long
+       write(*,*)"Nusselt moyen sur la partie chauffée :",nui/long
        write(*,*)"REF Webb and Hill : Nu_m=",.82*(Ra*2/Aly)**.194_8
        write(*,*)
 
@@ -4980,7 +4995,7 @@ contains
              case(1) !Cylindres (test sur le rayon)
                 x=xs(i1)
                 y=ys(i1)
-             case(2,3,4,100,102,110,210) !carrÃ©s (test sur le centre du cotÃ©)
+             case(2,3,4,100,102,110,210) !carrés (test sur le centre du coté)
                 x=(xs(i1)+xs(i0))*.5_8
                 y=(ys(i1)+ys(i0))*.5_8
 
@@ -5058,7 +5073,7 @@ contains
              erx=abs(xcv(i)-x)/2
              ery=abs(ycv(i)-y)/2
 
-             if (jj>0) then !Definition des CLS intÃ©rieures
+             if (jj>0) then !Definition des CLS intérieures
 
 
                 if (y<ALy.and.y>0) then
@@ -5085,7 +5100,7 @@ contains
                    end if
 
                 end if
-             else if (jj==0) then !Definition des CLS extÃ©rieures
+             else if (jj==0) then !Definition des CLS extérieures
                 if (x-erx <-3)   nuvois(j)=-1
                 if (x+erx >ALx+3) nuvois(j)=-2
                 if (y-ery <-6)   nuvois(j)=-3
@@ -5515,7 +5530,7 @@ contains
           end if
        end if
 
-       !!%%%%%CHEMINEE BENCHMARK Webb et Hill avec Pression constante Ã  l'entrÃ©e
+       !!%%%%%CHEMINEE BENCHMARK Webb et Hill avec Pression constante à l'entrée
     case(210)
        if (jj==-1) then !GAUCHE
           neumann_t=1
@@ -5598,7 +5613,7 @@ contains
 
     case default
        write(*,*)"Nutest=",nutest
-       write(*,*)"Non implÃ©mentÃ© dans testsol"
+       write(*,*)"Non implémenté dans testsol"
        stop
     end select
 
