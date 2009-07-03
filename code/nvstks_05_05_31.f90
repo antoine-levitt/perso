@@ -649,7 +649,7 @@ contains
              end do
 
              xxi=bx(j)*(ponderations(j) * vx(i) + (2 - ponderations(j))*vx(jj))&
-                  +by(j)*(ponderations(j)*vy(i)+(2-ponderations(j)*vy(jj)))&
+                  +by(j)*(ponderations(j)*vy(i)+(2-ponderations(j))*vy(jj))&
                   -As(j)*(p(jj)-p(i))
 
              !Calcul Péclet et Reynolds de maille
