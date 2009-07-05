@@ -1,4 +1,5 @@
 simu: nvstks_05_05_31.f90
-	f95 nvstks_05_05_31.f90 -o simu
+	g95 nvstks_05_05_31.f90 -o simu
 run: simu
-	cat donnees.dat | ./simu
+
+	cat donnees.dat | G95_UNBUFFERED_ALL=y ./simu | tee out.txt
