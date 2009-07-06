@@ -1,3 +1,5 @@
+#define USE_DEBIT 0
+#define CL_U_DIRICHLET 0
 program nvstks
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   ! D'APRES CODE et ARTICLE R. EYMARD
@@ -1133,7 +1135,6 @@ contains
                 d_j_droite = sqrt((xj - xi0)*(xj - xi0) + (yj - yi0)*(yj - yi0) - &
                                   (a11 * (xi0 - xj) + a12 * (yi0 - yj))**2 / (a11*a11 + a12 * a12))
                 ponderation = 1 - d_j_droite / sqrt(a21*a21 + a22*a22) !entre 0 et 1
-                ! write(*,*) "Coeff de pondération : ", 1 - d_j_droite / sqrt(a21*a21 + a22*a22)
                 bx(j) = -A(j) * a21 * ponderation
                 by(j) = -A(j) * a22 * ponderation
              end if
@@ -5482,19 +5483,26 @@ contains
           neumann_t=1
           t_q=0
        end if
+       
        if (jj==-3) then !BAS
           if (vy(i)>=0) then
-             neumann_u=1
-             u=vx(i)
              neumann_v=1
              v=vy(i)
              neumann_t=0
              t_q=0
              coef=1.
-             !press=-.5_8*(vy(i)*vy(i))*coef
+#if CL_U_DIRICHLET
+             neumann_u=0
+             u=0
+             press=-.5_8*(vy(i)*vy(i))*coef
+#else
+             neumann_u=1
+             u=vx(i)
              press=-.5_8*(vx(i)*vx(i)+vy(i)*vy(i))*coef
              dd(i,2,1)=dd(i,2,1)-by(j)*vx(i)*coef
+#endif
              dd(i,2,2)=dd(i,2,2)-by(j)*vy(i)*coef
+             
              bb(i,2)=bb(i,2)-by(j)*(press-p(i))
              dd(i,2,3)=dd(i,2,3)-by(j)
 
@@ -5530,18 +5538,25 @@ contains
              bb(i,3)=bb(i,3)-by(j)*v
              dd(i,3,2)=dd(i,3,2)+by(j)
           else
-             neumann_u=1
-             u=vx(i)
              neumann_v=1
              v=vy(i)
              neumann_t=0
              t_q=0
 
              coef=1.
-             !press=-.5_8*(vy(i)*vy(i))*coef
+#if CL_U_DIRICHLET
+             neumann_u=0
+             u=0
+             press=-.5_8*(vy(i)*vy(i))*coef
+#else
+             neumann_u=1
+             u=vx(i)
              press=-.5_8*(vx(i)*vx(i)+vy(i)*vy(i))*coef
              dd(i,2,1)=dd(i,2,1)-by(j)*vx(i)*coef
+#endif
              dd(i,2,2)=dd(i,2,2)-by(j)*vy(i)*coef
+
+             
              bb(i,2)=bb(i,2)-by(j)*(press-p(i))
              dd(i,2,3)=dd(i,2,3)-by(j)
 
