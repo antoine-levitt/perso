@@ -32,9 +32,6 @@ program nvstks
        xcv,ycv,&  ! coordonnées des centres de mailles
        mcv,&
        A,bx,by,As,&
-       ponderations,& !tableau de même taille que bx donnant la
-                      !pondération à associer à chaque arête pour
-                      !approximer la vitesse
 !!$       Ass,&
        vx,vy,tp,vxd,vyd,p,tpd,&
        sx,sy,st,sp,&
@@ -312,7 +309,7 @@ program nvstks
         end if
 
         call calculsl(&
-             xcv,ycv,mcv,xs,ys,A,bx,by,ponderations,&
+             xcv,ycv,mcv,xs,ys,A,bx,by,&
              vxd,vyd,tpd,vx,vy,p,tp,&
              ptvois,nuvois,nusom,&
              ncv,&
@@ -420,7 +417,7 @@ program nvstks
      end if
 
      call calculsl(&
-          xcv,ycv,mcv,xs,ys,A,bx,by,ponderations,&
+          xcv,ycv,mcv,xs,ys,A,bx,by,&
           vxd,vyd,tpd,vx,vy,p,tp,&
           ptvois,nuvois,nusom,&
           ncv,&
@@ -496,7 +493,7 @@ program nvstks
 
 
 100 call ligncour(&
-       mcv,A,bx,by,ponderations,&
+       mcv,A,bx,by,&
        xs,ys,&
        vx,vy,p,&
        ptvois,nusom,nuvois,&
@@ -536,7 +533,7 @@ contains
   !###################################################################
   !
   subroutine calculsl(&
-       xcv,ycv,mcv,xs,ys,A,bx,by,ponderations,&
+       xcv,ycv,mcv,xs,ys,A,bx,by,&
        vxd,vyd,tpd,vx,vy,p,tp,&
        ptvois,nuvois,nusom,&
        ncv,&
@@ -549,7 +546,7 @@ contains
        eta)
     implicit none
 
-    real(kind=8),dimension(:),intent(in)::xcv,ycv,mcv,xs,ys,A,bx,by, ponderations
+    real(kind=8),dimension(:),intent(in)::xcv,ycv,mcv,xs,ys,A,bx,by
     integer,dimension(:),intent(in)::ptvois,nuvois,nusom
     real(kind=8),dimension(:,:,:),intent(out)::aa,dd
     real(kind=8),dimension(:,:),intent(out)::bb
@@ -565,9 +562,9 @@ contains
     integer::k,kk
     integer::j,jj,j1,j0,k0
     real(kind=8)::u_lim,v_lim,p_lim,t_lim,sx_lim,sy_lim,st_lim,x_lim,y_lim
-    integer::neumann_t,neumann_u,neumann_v,neumann_p,&
+    integer::neumann_t,neumann_u,neumann_v,neumann_p,ind,&
          ipress,ipresslocal
-    real(kind=8)::xxi,xxj
+    real(kind=8)::xxi,xxj,bxa,bya
     integer::flagu,flagv,flagt
 
     real(kind=8)::test_maille,pe_maille,re_maille,coef,erx,ery,y
@@ -645,13 +642,22 @@ contains
              dd(i,4,4)=dd(i,4,4)+A(j)*coefdt*flagt
 
           else !intérieur
+             !trouver le numéro de voisinage de i par rapport à j, pour accéder à son {bx,by}
+             ind = ptvois(jj)+1
+             do while (nuvois(ind) /= i)
+                ind = ind+1
+             end do
+             !les bx,by vus de l'autre côté. on change le signe pour que les formules d'après soient plus lisibles
+             bxa = -bx(ind)
+             bya = -by(ind)
+
              k=ptmat(i)+1
              do while (jj/=numat(k))
                 k=k+1
              end do
 
-             xxi=bx(j)*(ponderations(j) * vx(i) + (2 - ponderations(j))*vx(jj))&
-                  +by(j)*(ponderations(j)*vy(i)+(2-ponderations(j))*vy(jj))&
+             xxi = bx(j)*vx(i) + bxa*vx(jj)&
+                  +by(j)*vy(i) + bya*vy(jj)&
                   -As(j)*(p(jj)-p(i))
 
              !Calcul Péclet et Reynolds de maille
@@ -676,11 +682,11 @@ contains
              !ajout des termes non-linéaires de transport
              xxj=(vx(jj)-vx(i))*.5_8
              bb(i,1)=bb(i,1)-xxi*xxj
-             dd(i,1,1)=dd(i,1,1)+ponderations(j)*bx(j)*xxj-xxi*.5_8
-             dd(i,1,2)=dd(i,1,2)+ponderations(j)*by(j)*xxj
+             dd(i,1,1)=dd(i,1,1)+bx(j)*xxj-xxi*.5_8
+             dd(i,1,2)=dd(i,1,2)+by(j)*xxj
              dd(i,1,3)=dd(i,1,3)+As(j)*xxj
-             aa(k,1,1)=aa(k,1,1)+(2-ponderations(j))*bx(j)*xxj+xxi*.5_8
-             aa(k,1,2)=aa(k,1,2)+(2-ponderations(j))*by(j)*xxj
+             aa(k,1,1)=aa(k,1,1)+bxa*xxj+xxi*.5_8
+             aa(k,1,2)=aa(k,1,2)+bya*xxj
              aa(k,1,3)=aa(k,1,3)-As(j)*xxj
 !!$UY
              !**L
@@ -695,11 +701,11 @@ contains
              !ajout des termes non-linéaires de transport
              xxj=(vy(jj)-vy(i))*.5_8
              bb(i,2)=bb(i,2)-xxi*xxj
-             dd(i,2,2)=dd(i,2,2)+ponderations(j)*by(j)*xxj-xxi*.5_8
-             dd(i,2,1)=dd(i,2,1)+ponderations(j)*bx(j)*xxj
+             dd(i,2,2)=dd(i,2,2)+by(j)*xxj-xxi*.5_8
+             dd(i,2,1)=dd(i,2,1)+bx(j)*xxj
              dd(i,2,3)=dd(i,2,3)+As(j)*xxj
-             aa(k,2,1)=aa(k,2,1)+(2-ponderations(j))*bx(j)*xxj
-             aa(k,2,2)=aa(k,2,2)+(2-ponderations(j))*by(j)*xxj+xxi*.5_8
+             aa(k,2,1)=aa(k,2,1)+bxa*xxj
+             aa(k,2,2)=aa(k,2,2)+bya*xxj+xxi*.5_8
              aa(k,2,3)=aa(k,2,3)-As(j)*xxj
 
 !!$TEMP
@@ -711,12 +717,12 @@ contains
              !ajout des termes non-linéaires de transport
              xxj=(tp(jj)-tp(i))*.5_8
              bb(i,4)=bb(i,4)-xxi*xxj
-             dd(i,4,1)=dd(i,4,1)+ponderations(j)*bx(j)*xxj
-             dd(i,4,2)=dd(i,4,2)+ponderations(j)*by(j)*xxj
+             dd(i,4,1)=dd(i,4,1)+bx(j)*xxj
+             dd(i,4,2)=dd(i,4,2)+by(j)*xxj
              dd(i,4,3)=dd(i,4,3)+As(j)*xxj
              dd(i,4,4)=dd(i,4,4)-xxi*.5_8
-             aa(k,4,1)=aa(k,4,1)+(2-ponderations(j))*bx(j)*xxj
-             aa(k,4,2)=aa(k,4,2)+(2-ponderations(j))*by(j)*xxj
+             aa(k,4,1)=aa(k,4,1)+bxa*xxj
+             aa(k,4,2)=aa(k,4,2)+bya*xxj
              aa(k,4,3)=aa(k,4,3)-As(j)*xxj
              aa(k,4,4)=aa(k,4,4)+xxi*.5_8
 
@@ -727,10 +733,10 @@ contains
              !**L
              bb(i,3)=bb(i,3)-xxi
 
-             dd(i,3,1)=dd(i,3,1)+ponderations(j)*bx(j)
-             dd(i,3,2)=dd(i,3,2)+ponderations(j)*by(j)
-             aa(k,3,1)=aa(k,3,1)+(2-ponderations(j))*bx(j)
-             aa(k,3,2)=aa(k,3,2)+(2-ponderations(j))*by(j)
+             dd(i,3,1)=dd(i,3,1)+bx(j)
+             dd(i,3,2)=dd(i,3,2)+by(j)
+             aa(k,3,1)=aa(k,3,1)+bxa
+             aa(k,3,2)=aa(k,3,2)+bya
              !Pénalisation par le laplacien
              dd(i,3,3)=dd(i,3,3)+As(j)
              aa(k,3,3)=aa(k,3,3)-As(j)
@@ -1050,16 +1056,16 @@ contains
   subroutine calcul_coef(&
        nusom,ptvois,nuvois,&
        xs,ys,xcv,ycv,&
-       A,bx,by,As,ponderations,&
+       A,bx,by,As,&
        ncv)
     implicit none
 
     integer,dimension(:),intent(in)::nusom,ptvois,nuvois
-    real(kind=8),dimension(:),intent(out)::A,bx,by,As,ponderations
+    real(kind=8),dimension(:),intent(out)::A,bx,by,As
     real(kind=8),dimension(:),intent(in)::xs,ys,xcv,ycv
     integer,intent(in)::ncv
     integer::i,j,i0,i1,ic,icc,jjj,j1,k,j0,k0,l,l0
-    real(kind=8)::a11,a12,a21,a22,b0,x_lim,y_lim,diam, xj, yj, xi0, yi0, d_j_droite, ponderation
+    real(kind=8)::a11,a12,a21,a22,b0,x_lim,y_lim,diam, xj, yj, xi0, yi0, d_j_droite,ponderation
 
     integer,dimension(:),allocatable::denlcv
 
@@ -1103,7 +1109,6 @@ contains
                 A(j)=(a11*a11+a12*a12)/(a11*a22-a12*a21) ! d(I0,I1)/d(C,I)
                 bx(j)=-A(j)*a21 !-d(I1,I0)IIIC =d(I1,I0)ICII
                 by(j)=-A(j)*a22 !
-                ponderations(j) = 1
              end if
           else
              a21=xcv(i)-xcv(nuvois(j)) !ICj ICi
@@ -1119,7 +1124,7 @@ contains
                 A(j)=(a11*a11+a12*a12)/(a11*a22-a12*a21) ! d(I0,I1)/d(C,I)
                 bx(j)=-A(j)*a21*.5_8 !pondération par 1/2 : mal
                 by(j)=-A(j)*a22*.5_8 !
-                ! AL : pondération par la distance de j à la droite I0, I1
+                ! pondération par la distance de j à la droite I0, I1
                 ! distance de j à la droite I0, I1 : d = sqrt(i0j^2 - ((i0i1 scal i0j)/i0i1)^2)
                 xj = xcv(nuvois(j))
                 yj = ycv(nuvois(j))
@@ -1127,10 +1132,10 @@ contains
                 yi0 = ys(i0);
                 d_j_droite = sqrt((xj - xi0)*(xj - xi0) + (yj - yi0)*(yj - yi0) - &
                                   (a11 * (xi0 - xj) + a12 * (yi0 - yj))**2 / (a11*a11 + a12 * a12))
-                ponderations(j) = (1 - d_j_droite / sqrt(a21*a21 + a22*a22))*2
-                ponderations(j) = 1
-                ! write(*,*) "Coeff de pondération : ", ponderation
-                ! fin AL
+                ponderation = 1 - d_j_droite / sqrt(a21*a21 + a22*a22) !entre 0 et 1
+                ! write(*,*) "Coeff de pondération : ", 1 - d_j_droite / sqrt(a21*a21 + a22*a22)
+                bx(j) = -A(j) * a21 * ponderation
+                by(j) = -A(j) * a22 * ponderation
              end if
           end if
           if (A(j)<0) then
@@ -2796,12 +2801,12 @@ contains
     !                      bx = A(k,l) selon x
     !                      by = A(k,l) selon y
     !###################################################################
-    allocate(A(nptvois),bx(nptvois),by(nptvois),As(nptvois),ponderations(nptvois))
+    allocate(A(nptvois),bx(nptvois),by(nptvois),As(nptvois))
 !!$    allocate(Ass(nptvois))
     call calcul_coef(&
          nusom,ptvois,nuvois,&
          xs,ys,xcv,ycv,&
-         A,bx,by,As,ponderations,&
+         A,bx,by,As,&
          ncv)
 
   end subroutine geometrie
@@ -4424,7 +4429,7 @@ contains
   !###################################################################
   !Lignes de courant
   subroutine ligncour(&
-       mcv,A,bx,by,ponderations,&
+       mcv,A,bx,by,&
        xs,ys,&
        vx,vy,p,&
        ptvois,nusom,nuvois,&
@@ -4433,16 +4438,16 @@ contains
     implicit none
 
 
-    real(kind=8),dimension(:),intent(in)::mcv,A,bx,by,xs,ys,ponderations
+    real(kind=8),dimension(:),intent(in)::mcv,A,bx,by,xs,ys
     real(kind=8),dimension(:),intent(in)::vx,vy,p
     integer,dimension(:),intent(in)::ptvois,nusom,nuvois
     integer,intent(in)::ncv,nbsom
 
 
     integer::j,jj,jjj,icv,i0,i1,i0x,jx,i1x,jy
-    integer::neumann_t,neumann_u,neumann_v,neumann_p,flagu,flagv,flagu2,flagv2
+    integer::neumann_t,neumann_u,neumann_v,neumann_p,flagu,flagv,flagu2,flagv2,ind
 
-    real(kind=8)::x_lim,y_lim,u_lim,v_lim,p_lim,t_lim,sx_lim,sy_lim,st_lim
+    real(kind=8)::x_lim,y_lim,u_lim,v_lim,p_lim,t_lim,sx_lim,sy_lim,st_lim,bxa,bya
     integer,dimension(:),allocatable::valpo,renlcv,denlcv
 
 
@@ -4523,21 +4528,29 @@ contains
                       flagu2=(1-flagu)
                       flagv2=(1-flagv)
                       potent(i1)=potent(i0)-&
-                           bx(j)*(ponderations(j)*vx(jy)+(2-ponderations(j))*vx(icv))&
-                           *flagu2-by(j)*(ponderations(j)*vy(jy)+(2-ponderations(j))*vy(icv))*flagv2
+                           (bx(j)*vx(jy) + bxa*vx(icv))*flagu2&
+                           -(by(j)*vy(jy) + bya*vy(icv))*flagv2
                    end if
                    i0x=i1x
                 end do
              end if
           else
+             ind = ptvois(jj)
+             do while (nuvois(ind) /= icv)
+                ind = ind+1
+             end do
+             !les bx,by vus de l'autre côté
+             bxa = bx(ind)
+             bya = by(ind)
+
              if (renlcv(jj)==0) then !Nouvelle maille à considérer
                 i=i+1
                 renlcv(jj)=i
                 denlcv(i)=jj
              end if
-             potent(i1)=potent(i0)+bx(j)*(ponderations(j)*vx(jj)+(2-ponderations(j))*vx(icv))&
-                  +by(j)*(ponderations(j)*vy(jj)+(2-ponderations(j))*vy(icv))&
-                  -As(j)*(p(jj)-p(icv))
+             potent(i1) = potent(i0) + bx(j)*vx(jj) + bxa*vx(icv)&
+                  +by(j)*vy(jj)+bya*vy(icv)&
+                  -As(j)*(p(jj) - p(icv))
           end if
           i0=i1
        end do
@@ -4675,8 +4688,8 @@ contains
        end do
        write(*,*)"Max(ur)=",urmax
        write(*,*)"Max(ut)=",utmax
-       write(*,*)"PSI inner =", psii," \pm RMS= ",er_psii
-       write(*,*)"PSI outer =", psio," \pm RMS= ",er_psio
+       write(*,*)"PSI inner =", psii," pm RMS= ",er_psii
+       write(*,*)"PSI outer =", psio," pm RMS= ",er_psio
 
 
 !!$       psi_i=0._8
