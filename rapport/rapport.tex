@@ -1,0 +1,134 @@
+\documentclass[12pt]{article}
+% \usepackage[utf8]{inputenc}
+% \usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{graphicx}
+\usepackage[small]{caption}
+\usepackage{amsmath, amssymb}
+\usepackage{fullpage}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Z}{\mathbb{Z}}
+%helper macro for vectors
+\newcommand{\vb}[1]{\ensuremath{\mathbf{#1}}}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{definition}{Definition}
+
+\begin{document}
+\author{Antoine Levitt}
+\title{Finite volumes method for incompressible Navier-Stokes equations}
+\maketitle
+\abstract{TODO}
+\tableofcontents
+\newpage
+
+\section{Introduction}
+TODO
+\section{Physical context}
+We study a fluid contained in a d-dimensional (d = 2 or 3) domain
+$\Omega$, with a boundary $\partial \Omega$. Positions are specified
+by the d-dimensional vector \vb{x}. For every time $t \in \R^+$, the
+fluid is described by its velocity $\vb{v}(\vb{x}, t)$, its density
+$\rho(\vb{x}, t)$, its pressure $p(\vb{x},t)$ and its temperature
+$T(\vb{x}, t)$. The model used are the Navier-Stokes equations in the
+Boussinesq approximation, which lead to coupled partial differential
+equations (PDEs) for these variables. Together with initial and
+boundary condition, they specify the evolution of the flow.
+\subsection{The Navier-Stokes equations}
+The Navier-Stokes equations are a reformulation of conservation of
+momentum (Newton's Second Law) and conservation of mass in the case of
+a fluid. The conservation of momentum equation reads
+\begin{equation}
+  \label{ns-mom}
+  \rho \left(\frac{\partial \mathbf{v}}{\partial t} + \mathbf{v} \cdot
+    \nabla \mathbf{v}\right) = -\nabla p + \nabla \cdot\mathbb{T} +
+  \mathbf{f}.
+\end{equation}
+$\mathbb{T}$ is the stress tensor, and \vb{f} are the external volumic
+forces exerting on the fluid (gravity, electromagnetic ...).  We need
+an expression of $\mathbb{T}$ as a function of the other variables for
+the model to be complete. The second term, $\mathbf{v} \cdot \nabla
+\mathbf{v}$, known as the convective acceleration, is to be understood
+as $(\vb{v} \cdot \nabla) \vb{v}$, that is, the ``transport operator''
+$(\vb{v} \cdot \nabla) = \sum_{i=1}^d v_i \frac{\partial}{\partial i}$
+applied to $\vb{v}$.
+
+The conservation of mass equation is
+\begin{equation}
+  \label{ns-mass}
+  \frac{\partial \rho}{\partial t} + \nabla \cdot (\rho \mathbf{v}) = 0.
+\end{equation}
+
+\subsection{Natural convection and Boussinesq approximation}
+We are now interested in studying natural convection. While in forced
+convection the fluid flow is imposed (by boundary conditions either in
+velocity or pression), in natural convection the fluid is set in
+motion by temperature gradients alone. The Boussinesq approximation is
+to neglect the variation of density everywhere in the Navier-Stokes
+equations, except on the gravity term. This means that $\rho$ is
+constant, equal to $\rho_0$, and the mass equation simply becomes
+\begin{equation}
+  \label{ns-b-mass}
+  \nabla \vb{v} = 0.
+\end{equation}
+This is known as an incompressible flow.
+
+We also assume the fluid to be Newtonian (which is the case of most
+fluids commonly used, including the object of our study,
+air). Together with incompressibility, this implies that $\nabla \cdot
+\mathbb T = \mu \Delta \vb{v}$, where $\mu$ is the viscosity of the flow,
+assumed to be constant.
+
+The only external force here is gravity, so $\vb{f} = -\rho g
+\vb{e_z}$. This time, $\rho$ is not assumed constant and depends on
+the temperature $T$. At the first order, we can write $\rho - \rho_0 =
+\alpha \delta T$, where $\delta T$ is the difference between the
+actual temperature and a reference state. This leads to $\vb{f} =
+(\rho_0 + \alpha \delta T) g \vb{e_z}$.
+
+We then use the variable change $p = p + \rho_0 g z$, and $T = \delta
+T$, which simplifies the equations. The momentum equation now becomes :
+
+\begin{equation}
+  \label{ns-mom}
+  \rho \left(\frac{\partial \mathbf{v}}{\partial t} + \mathbf{v} \cdot
+    \nabla \mathbf{v}\right) = -\nabla p + \mu \Delta \vb{v} + \alpha
+  T \vb{e_z}.
+\end{equation}
+
+Since we introduced the variable $T$, we must add another equation so
+as to describe the evolution of $T$. This is given by energy
+conservation, which, under our hypotheses, is
+\begin{equation}
+  C_p \rho \left(\frac{\partial T}{\partial t} + \nabla \cdot (T \vb{v})\right) = k \Delta T
+\end{equation}
+
+Finally, we adimensionalize the equations by introducing Rayleigh and
+Prandtl numbers $Ra$ and $Pr$ and normalizing $T$. The final form of our equations is then
+\begin{align}
+  \nabla \cdot \vb{v} &= 0& \text{Mass}\\
+  \frac{\partial \mathbf{v}}{\partial t} + \mathbf{v} \cdot
+    \nabla \mathbf{v} +\nabla p - Pr \Delta \vb{v} - Ra Pr T
+  \vb{e_z} &= 0& \text{Momentum}\\
+  \frac{\partial T}{\partial t} + \nabla \cdot (T \vb{v}) - \Delta
+  T&=0& \text{Energy}
+\end{align}
+
+This is a system of $d + 2$ coupled PDEs with $d+2$ variables. We
+solve it using a finite volumes scheme.
+
+\section{Finite volumes}
+\subsection{Theory}
+\subsection{Implementation}
+\section{The chimney problem}
+\section{Numerical experiments}
+\subsection{Methodology}
+\subsection{Results}
+\section{Conclusion}
+TODO
+\listoffigures
+
+
+\begin{thebibliography}{99}
+\end{thebibliography}
+\end{document}

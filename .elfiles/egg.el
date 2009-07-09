@@ -2435,7 +2435,7 @@ rebase session."
 	    "\n")
     (setq inv-beg (1- (point)))
     (call-process-shell-command egg-git-command nil t nil "ls-files" "--others"  
-			"--exclude-standard | head -n 50")
+			"--exclude-standard | head -n 20")
     (setq end (point))
     (egg-delimit-section :section 'untracked beg end 
 			  inv-beg egg-section-map 'untracked)

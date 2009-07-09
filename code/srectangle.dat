@@ -1,7 +1,7 @@
 1	3	!ndx,ndy
 
 
-50	srect_cos_x	!ndivx, choix de maillage(srect_cos_x,regulier)
+50	srect_cos_x		!ndivx, choix de maillage(srect_cos_x,regulier)
 	
 75     srect_cos_y   !ndivy, choix de maillage(srect_cos_y,regulier)
 150		srect_cos_y
