@@ -752,7 +752,7 @@ contains
        end do
     end do
 
-
+    debit = debit_in
 
 
 
@@ -5494,14 +5494,14 @@ contains
 #if CL_U_DIRICHLET
              neumann_u=0
              u=0
-             press=-.5_8*(vy(i)*vy(i))*coef
+             press=-.5_8*debit*debit
 #else
              neumann_u=1
              u=vx(i)
              press=-.5_8*(vx(i)*vx(i)+vy(i)*vy(i))*coef
              dd(i,2,1)=dd(i,2,1)-by(j)*vx(i)*coef
-#endif
              dd(i,2,2)=dd(i,2,2)-by(j)*vy(i)*coef
+#endif
              
              bb(i,2)=bb(i,2)-by(j)*(press-p(i))
              dd(i,2,3)=dd(i,2,3)-by(j)
@@ -5544,16 +5544,9 @@ contains
              t_q=0
 
              coef=1.
-#if CL_U_DIRICHLET
-             neumann_u=0
-             u=0
-             press=-.5_8*(vy(i)*vy(i))*coef
-#else
              neumann_u=1
              u=vx(i)
-             press=-.5_8*(vx(i)*vx(i)+vy(i)*vy(i))*coef
-             dd(i,2,1)=dd(i,2,1)-by(j)*vx(i)*coef
-#endif
+             press=-.5_8*(vy(i)*vy(i))*coef
              dd(i,2,2)=dd(i,2,2)-by(j)*vy(i)*coef
 
              
