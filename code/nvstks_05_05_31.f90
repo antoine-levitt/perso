@@ -1,4 +1,4 @@
-#define USE_DEBIT 0
+#define GB 1
 #define CL_U_DIRICHLET 0
 #define USE_PONDERATION 1
 program nvstks
@@ -5499,12 +5499,24 @@ contains
 #if CL_U_DIRICHLET
              neumann_u=0
              u=0
-             press=-.5_8*debit*debit
 #else
              neumann_u=1
              u=vx(i)
+#endif
+             write(*,*) debit*debit, (vx(i)*vx(i)+vy(i)*vy(i))
+#if GB
+             if (residu < 1e-2) then
+                ! global bernoulli
+                press=-.5_8*debit*debit
+             else
+                press=-.5_8*(vx(i)*vx(i)+vy(i)*vy(i))*coef
+                dd(i,2,1)=dd(i,2,1)-by(j)*u*coef
+                dd(i,2,2)=dd(i,2,2)-by(j)*vy(i)*coef
+             end if
+#else
+             ! local bernoulli
              press=-.5_8*(vx(i)*vx(i)+vy(i)*vy(i))*coef
-             dd(i,2,1)=dd(i,2,1)-by(j)*vx(i)*coef
+             dd(i,2,1)=dd(i,2,1)-by(j)*u*coef
              dd(i,2,2)=dd(i,2,2)-by(j)*vy(i)*coef
 #endif
              
