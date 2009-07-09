@@ -1,5 +1,6 @@
 #define USE_DEBIT 0
 #define CL_U_DIRICHLET 0
+#define USE_PONDERATION 1
 program nvstks
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   ! D'APRES CODE et ARTICLE R. EYMARD
@@ -1124,8 +1125,7 @@ contains
                 by(j)=0
              else
                 A(j)=(a11*a11+a12*a12)/(a11*a22-a12*a21) ! d(I0,I1)/d(C,I)
-                bx(j)=-A(j)*a21*.5_8 !pondération par 1/2 : mal
-                by(j)=-A(j)*a22*.5_8 !
+#if PONDERATION
                 ! pondération par la distance de j à la droite I0, I1
                 ! distance de j à la droite I0, I1 : d = sqrt(i0j^2 - ((i0i1 scal i0j)/i0i1)^2)
                 xj = xcv(nuvois(j))
@@ -1137,6 +1137,11 @@ contains
                 ponderation = 1 - d_j_droite / sqrt(a21*a21 + a22*a22) !entre 0 et 1
                 bx(j) = -A(j) * a21 * ponderation
                 by(j) = -A(j) * a22 * ponderation
+#else
+                !ponderation par 1/2
+                bx(j)=-A(j)*a21*.5_8
+                by(j)=-A(j)*a22*.5_8
+#endif
              end if
           end if
           if (A(j)<0) then
