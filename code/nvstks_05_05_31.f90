@@ -585,6 +585,24 @@ contains
 
     debit_out=0
     debit_in=0
+    ! calcul du débit
+    do i=1,ncv
+       i0=nusom(ptvois(i+1))
+       do j=ptvois(i)+1,ptvois(i+1)
+          jj=nuvois(j)
+          i1=nusom(j)
+          if (nuvois(j)<=0) then
+             if (jj==-4) then !Bord haut
+                debit_out=debit_out+abs((xs(i1)-xs(i0))*vy(i))
+             end if
+             if (jj==-3) then !Bord bas
+                debit_in=debit_in+abs((xs(i1)-xs(i0))*vy(i))
+             end if
+          end if
+       end do
+    end do
+    debit = debit_in
+    
     do i=1,ncv
 
        bb(i,1)=bb(i,1)+mcv(i)*(-ucentt*(vx(i)-vxd(i))/dt)
@@ -610,13 +628,6 @@ contains
                   neumann_t,neumann_u,neumann_v,neumann_p,&
                   nutest,vtest,eta,&
                   i,j,i0,i1)
-
-             if (jj==-4) then
-                debit_out=debit_out+abs(xs(i1)-xs(i0))*v_lim
-             end if
-             if (jj==-3) then
-                debit_in=debit_in+abs(xs(i1)-xs(i0))*v_lim
-             end if
 
 !!$UX
              flagu=1-neumann_u
@@ -752,9 +763,6 @@ contains
           i0=i1
        end do
     end do
-
-    debit = debit_in
-
 
 
     !ipresslocal=1
