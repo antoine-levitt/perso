@@ -8,8 +8,8 @@ fi
 mkdir "res/$1"
 cp Makefile *.f90 *.dat *.plt "res/$1"
 cp out.txt "res/$1/ecran.txt"
+echo genere le $(date) > "res/$1/readme"
 if [ $# -eq 2 ]
 then
-    echo Commentaire "$2" dans "res/$1"
-    echo "$2" > "res/$1/readme"
+    echo "$2" >> "res/$1/readme"
 fi
