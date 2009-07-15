@@ -59,66 +59,124 @@ The conservation of mass equation is
   \frac{\partial \rho}{\partial t} + \nabla \cdot (\rho \mathbf{v}) = 0.
 \end{equation}
 
+These equations can be derived by applying conservation laws to an
+infinitesimal volume of fluid.
 \subsection{Natural convection and Boussinesq approximation}
 We are now interested in studying natural convection. While in forced
 convection the fluid flow is imposed (by boundary conditions either in
-velocity or pression), in natural convection the fluid is set in
-motion by temperature gradients alone. The Boussinesq approximation is
-to neglect the variation of density everywhere in the Navier-Stokes
-equations, except on the gravity term. This means that $\rho$ is
-constant, equal to $\rho_0$, and the mass equation simply becomes
+velocity or pressure), in natural convection the fluid is set in
+motion by temperature gradients alone.  These temperature gradients
+cause density inhomogeneities, which in turn affect the gravity forces
+$- \rho g \vb{e_z}$ and cause relative motion of the fluid. The
+Boussinesq approximation is the simplest model that still allows
+natural convection : we neglect the effects of density inhomogeneities
+everywhere in the Navier-Stokes equations, except in the gravity
+forces.
+
+The only external force here is gravity, so $\vb{f} = -\rho g
+\vb{e_z}$. $\rho$ depends on the temperature $T$ by a state equation
+(for instance, ideal gas law). At the first order, we can write $\rho
+- \rho_0 = - \alpha \delta T$, where $\delta T$ is the difference
+between the actual temperature and a reference state, and $\alpha > 0$
+is a coefficient depending on the fluid. This leads to $\vb{f} =
+(-\rho_0 + \alpha \delta T) g \vb{e_z}$ : this confirms the
+experimental observation that hot air rises and cold air falls.
+
+Assuming $\rho$ to be constant in the other terms simplifies greatly
+the equations. The mass equation becomes the equation of an
+incompressible flow
 \begin{equation}
   \label{ns-b-mass}
   \nabla \vb{v} = 0.
 \end{equation}
-This is known as an incompressible flow.
 
 We also assume the fluid to be Newtonian (which is the case of most
-fluids commonly used, including the object of our study,
+fluids commonly encountered, including the object of our study,
 air). Together with incompressibility, this implies that $\nabla \cdot
-\mathbb T = \mu \Delta \vb{v}$, where $\mu$ is the viscosity of the flow,
-assumed to be constant.
+\mathbb T = \mu \Delta \vb{v}$, where $\mu$ is the viscosity of the
+flow, assumed to be constant.
 
-The only external force here is gravity, so $\vb{f} = -\rho g
-\vb{e_z}$. This time, $\rho$ is not assumed constant and depends on
-the temperature $T$. At the first order, we can write $\rho - \rho_0 =
-\alpha \delta T$, where $\delta T$ is the difference between the
-actual temperature and a reference state. This leads to $\vb{f} =
-(\rho_0 + \alpha \delta T) g \vb{e_z}$.
-
-We then use the variable change $p = p + \rho_0 g z$, and $T = \delta
-T$, which simplifies the equations. The momentum equation now becomes :
-
+To simplify notations, we use the variable change $p = p + \rho_0 g z$
+($p$ is now the difference between the actual pressure and the
+hydrostatic pressure), and $T = \delta T$ ($T$ is the difference in
+temperature to the reference state). The momentum equation now
+becomes :
 \begin{equation}
   \label{ns-mom}
   \rho \left(\frac{\partial \mathbf{v}}{\partial t} + \mathbf{v} \cdot
-    \nabla \mathbf{v}\right) = -\nabla p + \mu \Delta \vb{v} + \alpha
+    \nabla \mathbf{v}\right) = -\nabla p + \mu \Delta \vb{v} + \alpha g
   T \vb{e_z}.
 \end{equation}
 
-Since we introduced the variable $T$, we must add another equation so
-as to describe the evolution of $T$. This is given by energy
+The evolution of the temperature $T$ is described by energy
 conservation, which, under our hypotheses, is
 \begin{equation}
   C_p \rho \left(\frac{\partial T}{\partial t} + \nabla \cdot (T \vb{v})\right) = k \Delta T
 \end{equation}
 
+This is a generalization of the heat equation in the case of a moving
+medium. Note that since $\nabla \cdot \vb{v} = 0$, our variable change
+$T = \delta T$ has no effect on this equation.
+
 Finally, we adimensionalize the equations by introducing Rayleigh and
-Prandtl numbers $Ra$ and $Pr$ and normalizing $T$. The final form of our equations is then
+Prandtl numbers $Ra$ and $Pr$, which reduces the number of parameters
+to only two. The final form of our equations is then
 \begin{align}
+  \label{b-mass}
   \nabla \cdot \vb{v} &= 0& \text{Mass}\\
+  \label{b-mom}
   \frac{\partial \mathbf{v}}{\partial t} + \mathbf{v} \cdot
     \nabla \mathbf{v} +\nabla p - Pr \Delta \vb{v} - Ra Pr T
   \vb{e_z} &= 0& \text{Momentum}\\
+  \label{b-ene}
   \frac{\partial T}{\partial t} + \nabla \cdot (T \vb{v}) - \Delta
   T&=0& \text{Energy}
 \end{align}
 
-This is a system of $d + 2$ coupled PDEs with $d+2$ variables. We
-solve it using a finite volumes scheme.
+This is a system of $d + 2$ coupled PDEs with $d+2$ variables
+($\vb{v}$, $p$ and $T$). The two parameters $Ra$ and $Pr$ quantify the
+relative effect of viscosity and buoyancy.
 
 \section{Finite volumes}
+We consider the steady equations ($\frac{\partial \vb{v}}{\partial t}
+= \frac{\partial T}{\partial t} = 0$) in the model described above. We
+prescribe boundary conditions on $\partial \Omega$. Finite volumes are
+a way to approximate solutions of the PDEs, by computing their values
+on elements of a mesh : we assume the domain $\Omega$ to be subdivised
+in elements $K \in \mathcal{M}_\Omega$, called control volumes.
+
+In this section, boundary conditions are taken to be homogeneous
+Dirichlet conditions to simplify the presentation. Other boundary
+conditions (non-homogeneous Dirichlet conditions, Neumann conditions)
+may still be expressed using the same basic principles.
 \subsection{Theory}
+We first integrate the equations
+(\ref{b-mass}-\ref{b-mom}-\ref{b-ene}) over each control volume
+$K$. Then we apply Green formulae to convert the $d$-dimensional
+integrals over $K$ into $d-1$ integrals over the boundary $\partial K$
+of each control volume :
+
+Eqs ici
+
+Note that this is only a reformulation, and no discretization was
+done. Solutions of this problem are solutions of the original problem,
+and vice versa. The discretization step consists in keeping only the
+values of the variables at element centers $\vb{x}_K$, and
+interpolating the integrals with these values. This leads to a
+non-linear system of algebraic equations, which can be solved by
+Newton method.
+
+This method can be seen as a finite element method, with the test
+functions $v$ belonging to the space of piecewise constant functions
+over the mesh (which is not a subspace of the space in which the
+solution is searched, meaning it is a non-conforming finite element
+method \footnote{check terminology}). One advantage of this method
+over finite element methods is that equations (\ref{TODO}) have an
+obvious physical meaning : they express conservation laws on a control
+volume $K$.
+
+Our problem is now to choose suitable interpolation methods for the
+integrals
 \subsection{Implementation}
 \section{The chimney problem}
 \section{Numerical experiments}
