@@ -465,7 +465,13 @@ program nvstks
      else
         cvgce=0
      end if
-     write(*,30)iter,residu,theta,diffusion,itbcgs
+     write(*,30)iter,residu,max(&
+          maxval(abs(st(:))),&
+          maxval(abs(sx(:))),&
+          maxval(abs(sy(:))),&
+          maxval(abs(sp(:)))),&
+          theta,diffusion,itbcgs
+
   end do
 
   vnorme=0._8
@@ -481,8 +487,7 @@ program nvstks
   write(*,*)"Max(T)=",tnorme
 
 
-
-30 format("Iter=",i3," Residu : ",1pe8.2," theta : ",1pe8.2," diffusion : ",1pe9.2," (ItBcgs=",i3,&
+30 format("Iter=",i3," Residu : ",1pe8.2," dx : ",1pe6.0," theta : ",1pe8.2," diffusion : ",1pe9.2," (ItBcgs=",i3,&
        ")")
 !!$  if (duree<=0) then
 !!$     do i=1,ncv
