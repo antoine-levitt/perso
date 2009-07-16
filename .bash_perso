@@ -1,10 +1,10 @@
 #!/bin/bash
 # User specific aliases and functions
 #alias ssh
-alias bm='ssh levitta@ensibm.imag.fr'
+alias sun='ssh levitta@ensisun.imag.fr'
 alias bull='ssh levitta@ensibull.imag.fr'
 alias bob='ssh smeuuh@82.233.220.106'
-alias bmredir='screen -d -m autossh levitta@ensibm.imag.fr -R 4242:localhost:22'
+alias sunredir='screen -d -m autossh levitta@ensisun.imag.fr -R 4242:localhost:22'
 #alias d'éditeurs
 alias e='emacs'
 alias enw='emacs -nw'
@@ -53,7 +53,7 @@ cd() {
 builtin cd "$@" && ls
 }
 
-alias boot='sudo /etc/init.d/bitlbee restart && reco && AUTOSSH_GATETIME=0 bmredir && sudo cpufreq-set -u 1Ghz && tray_daemon'
+alias boot='sudo /etc/init.d/bitlbee restart && reco && AUTOSSH_GATETIME=0 sunredir && sudo cpufreq-set -u 1Ghz && tray_daemon'
 alias apt-up='sudo apt-get update && sudo apt-get dist-upgrade'
 alias rsync='rsync -vahr --partial --progress'
 recup() {
