@@ -600,6 +600,7 @@ contains
              end if
           end if
        end do
+       i0 = i1
     end do
     debit = debit_in
     
