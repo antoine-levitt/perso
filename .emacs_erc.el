@@ -83,50 +83,39 @@ Additional support for inhibiting one activation (quick hack)"
 ;;--------------------
 ;;Colorize nick list
 ;;--------------------
-;;colorize nick list. Source : emacs wiki
-(setq nick-face-list '())
-;; Define the list of colors to use when coloring IRC nicks.
+;;Source : emacs wiki, simplified and extended
+
+;; Pool of colors to use when coloring IRC nicks.
 (setq erc-colors-list '("green" "blue" "red"
-			"dark gray" "brown" "dark orange"
+			"dark gray" "dark orange"
 			"dark magenta" "maroon"
 			"indian red" "black" "forest green"
 			"midnight blue" "dark violet"))
+;; special colors for some people
+(setq erc-nick-color-alist '(("Sam" . "blue")
+			     ("qdsklwhatever" . "somecolor")
+			     ))
 
-(defun build-nick-face-list ()
-  "build-nick-face-list builds a list of new faces using the
-foreground colors specified in erc-colors-list.  The nick faces
-created here will be used to format IRC nicks."
-  (setq i -1)
-  (setq nick-face-list
-	(mapcar
-	 (lambda (COLOR)
-	   (setq i (1+ i))
-	   (list (custom-declare-face
-		  (make-symbol (format "erc-nick-face-%d" i))
-		  (list (list t (list :foreground COLOR)))
-		  (format "Nick face %d" i))))
-	 erc-colors-list)))
+(defun erc-get-color-for-nick (nick)
+  "Gets a color for NICK. If NICK is specified in erc-nick-color-alist, use it, else hash the nick and get a color from that"
+  (or (cdr (assoc nick erc-nick-color-alist))
+      (nth
+       (mod (string-to-number
+	     (substring (md5 nick) 0 6) 16)
+	    (length erc-colors-list))
+       erc-colors-list)))
 
-(defun my-insert-modify-hook ()
-  "This insert-modify hook looks for nicks in new messages and
-computes md5(nick) and uses substring(md5_value, 0, 4) mod (length
-nick-face-list) to index the face list and produce the same face for a
-given nick each time it is seen.  We get a lot of collisions this way,
-unfortunately, but it's better than some other methods I tried.
-Additionally, if you change the order or size of the erc-colors-list,
-you'll change the colors used for nicks."
-  (if (null nick-face-list) (build-nick-face-list))
+(defun erc-put-color-on-nick ()
+  "Modifies the color of nicks according to erc-get-color-for-nick"
   (save-excursion
     (goto-char (point-min))
     (if (looking-at "<\\([^>]*\\)>")
 	(let ((nick (match-string 1)))
-	  (put-text-property (match-beginning 1) (match-end 1)
-			     'face (nth
-				    (mod (string-to-number
-					  (substring (md5 nick) 0 4) 16)
-					 (length nick-face-list))
-				    nick-face-list))))))
-(add-hook 'erc-insert-modify-hook 'my-insert-modify-hook)
+	  (put-text-property (match-beginning 1) (match-end 1) 'face
+			     (cons 'foreground-color
+				   (erc-get-color-for-nick nick)))))))
+
+(add-hook 'erc-insert-modify-hook 'erc-put-color-on-nick)
 
 ;;--------------------
 ;;Unread messages bar
