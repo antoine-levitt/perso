@@ -1,7 +1,11 @@
-#define PRESSION_HAUT_0   1 ! Pression nulle inconditionnellement en haut. Sinon, dépend du signe de v (voir pdf desrayaux)
-#define GB                0 ! Global bernoulli pour les CL en bas
-#define CL_U_DIRICHLET    1 ! U = 0 au lieu de dU/dz = 0
-#define USE_PONDERATION   1 ! Pondérer par la distance centre-interface
+! Pression nulle inconditionnellement en haut. Sinon, dépend du signe de v (voir pdf desrayaux)
+#define PRESSION_HAUT_0   1
+! Global bernoulli pour les CL en bas
+#define GB                0
+! U = 0 au lieu de dU/dz = 0
+#define CL_U_DIRICHLET    1
+! Pondérer par la distance centre-interface
+#define USE_PONDERATION   1
 program nvstks
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   ! D'APRES CODE et ARTICLE R. EYMARD
