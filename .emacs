@@ -146,7 +146,9 @@
 (require 'egg)
 (setq egg-buffer-hide-help-on-start (quote (egg-status-buffer-mode egg-log-buffer-mode egg-file-log-buffer-mode egg-reflog-buffer-mode egg-diff-buffer-mode egg-commit-buffer-mode))
       egg-buffer-hide-section-type-on-start (quote ((egg-status-buffer-mode . :diff)))
-      egg-confirm-next-action nil)
+      egg-confirm-next-action nil
+      egg-status-buffer-sections '(repo unstaged staged)
+      egg-commit-buffer-sections '(staged unstaged))
 
 
 ;;indentation automatique avec entrée
