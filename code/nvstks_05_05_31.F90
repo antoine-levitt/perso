@@ -1,6 +1,7 @@
-#define GB 1
-#define CL_U_DIRICHLET 0
-#define USE_PONDERATION 1
+#define PRESSION_HAUT_0   1 ! Pression nulle inconditionnellement en haut. Sinon, dépend du signe de v (voir pdf desrayaux)
+#define GB                0 ! Global bernoulli pour les CL en bas
+#define CL_U_DIRICHLET    1 ! U = 0 au lieu de dU/dz = 0
+#define USE_PONDERATION   1 ! Pondérer par la distance centre-interface
 program nvstks
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   ! D'APRES CODE et ARTICLE R. EYMARD
@@ -5556,6 +5557,7 @@ contains
        end if
        if (jj==-4) then !HAUT
           if (vy(i)>=0) then
+             !fluide sortant
              neumann_u=1
              u=vx(i)
              neumann_v=1
@@ -5569,6 +5571,7 @@ contains
              bb(i,3)=bb(i,3)-by(j)*v
              dd(i,3,2)=dd(i,3,2)+by(j)
           else
+             !fluide entrant
              neumann_v=1
              v=vy(i)
              neumann_t=0
@@ -5577,9 +5580,14 @@ contains
              coef=1.
              neumann_u=1
              u=vx(i)
+
+#if PRESSION_HAUT_0
+             press = 0
+
+#else
              press=-.5_8*(vy(i)*vy(i))*coef
              dd(i,2,2)=dd(i,2,2)-by(j)*vy(i)*coef
-
+#endif
              
              bb(i,2)=bb(i,2)-by(j)*(press-p(i))
              dd(i,2,3)=dd(i,2,3)-by(j)
