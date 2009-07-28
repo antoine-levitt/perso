@@ -603,15 +603,17 @@ contains
           i1=nusom(j)
           if (nuvois(j)<=0) then
              if (jj==-4) then !Bord haut
-                debit_out=debit_out+abs((xs(i1)-xs(i0))*vy(i))
+                debit_out=debit_out+(xs(i1)-xs(i0))*vy(i)
              end if
              if (jj==-3) then !Bord bas
-                debit_in=debit_in+abs((xs(i1)-xs(i0))*vy(i))
+                debit_in=debit_in+(xs(i1)-xs(i0))*vy(i)
              end if
           end if
        end do
        i0 = i1
     end do
+    debit_out = abs(debit_out)
+    debit_in = abs(debit_in)
     debit = debit_in
     
     do i=1,ncv
