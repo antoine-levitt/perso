@@ -1,4 +1,12 @@
 #!/bin/bash
+# Test for an interactive shell.  There is no need to set anything
+# past this point for scp and rcp, and it's important to refrain from
+# outputting anything in those cases.
+if [[ $- != *i* ]] ; then
+	# Shell is non-interactive.  Be done now!
+	return
+fi
+
 # User specific aliases and functions
 #alias ssh
 alias sun='ssh levitta@ensisun.imag.fr'
@@ -37,8 +45,6 @@ alias gst='git status | less'
 #env var
 export PATH=~/bin:$PATH
 
-
-
 #oui, je veux les core dumps, merci beaucoup
 ulimit -c unlimited >/dev/null 2>&1
 
@@ -48,7 +54,7 @@ export HISTIGNORE="&:ls:[bf]g:cd:c"
 export HISTSIZE=2000
 export HISTFILESIZE=2000
 
-# cd does a ls after a cd
+# ls after each cd
 cd() {
 builtin cd "$@" && ls
 }
@@ -59,3 +65,5 @@ alias rsync='rsync -vahr --partial --progress'
 recup() {
     rsync 82.233.220.106:~/"$@" .
 }
+
+ls
