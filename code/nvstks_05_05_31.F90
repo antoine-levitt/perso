@@ -17,8 +17,10 @@ program nvstks
   integer,parameter::nordre=5
   integer,parameter::itbcgsmax=500
   real(kind=8),parameter::epsilon_newton=1e-10
+  
 
 
+  logical::mode_gb=.false.
   integer::nbsom,ndiv,maillage
   integer::ncv0,nbsom0
   integer::ncv,nptvois,nbc,nlin
@@ -5524,11 +5526,15 @@ contains
              neumann_u=1
              u=vx(i)
 #endif
-             write(*,*) debit*debit, (vx(i)*vx(i)+vy(i)*vy(i))
+             ! write(*,*) debit, sqrt(vx(i)*vx(i)+vy(i)*vy(i))
 #if GB
-             if (residu < 1e-2) then
-                ! global bernoulli
+             ! global bernoulli
+             if (mode_gb .or. ((residu < 1e-2) .and. (residu > 1e-15))) then !première itération : residu = 0
+                mode_gb = .true.
                 press=-.5_8*debit*debit
+                dd(i,2,1)=dd(i,2,1)-by(j)*u*coef
+                dd(i,2,2)=dd(i,2,2)-by(j)*vy(i)*coef
+                !todo : ajouter la dépendance sur les voisins aussi
              else
                 press=-.5_8*(vx(i)*vx(i)+vy(i)*vy(i))*coef
                 dd(i,2,1)=dd(i,2,1)-by(j)*u*coef
