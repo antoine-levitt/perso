@@ -71,7 +71,8 @@ $- \rho g \vb{e_z}$ and cause relative motion of the fluid. The
 Boussinesq approximation is the simplest model that still allows
 natural convection : we neglect the effects of density inhomogeneities
 everywhere in the Navier-Stokes equations, except in the gravity
-forces.
+forces. We also neglect the variation of other physical parameters
+(viscosity, diffusivity, etc.).
 
 The only external force here is gravity, so $\vb{f} = -\rho g
 \vb{e_z}$. $\rho$ depends on the temperature $T$ by a state equation
@@ -93,8 +94,8 @@ incompressible flow
 We also assume the fluid to be Newtonian (which is the case of most
 fluids commonly encountered, including the object of our study,
 air). Together with incompressibility, this implies that $\nabla \cdot
-\mathbb T = \mu \Delta \vb{v}$, where $\mu$ is the viscosity of the
-flow, assumed to be constant.
+\mathbb T = \mu \Delta \vb{v}$, where $\mu$ is the kinematic viscosity
+of the flow, assumed to be constant.
 
 To simplify notations, we use the variable change $p = p + \rho_0 g z$
 ($p$ is now the difference between the actual pressure and the
@@ -111,14 +112,14 @@ becomes :
 The evolution of the temperature $T$ is described by energy
 conservation, which, under our hypotheses, is
 \begin{equation}
-  C_p \rho \left(\frac{\partial T}{\partial t} + \nabla \cdot (T \vb{v})\right) = k \Delta T
+  C_p \rho \left(\frac{\partial T}{\partial t} + \vb{v} \cdot \nabla T\right) = k \Delta T.
 \end{equation}
 
-This is a generalization of the heat equation in the case of a moving
+This is a generalisation of the heat equation in the case of a moving
 medium. Note that since $\nabla \cdot \vb{v} = 0$, our variable change
 $T = \delta T$ has no effect on this equation.
 
-Finally, we adimensionalize the equations by introducing Rayleigh and
+Finally, we adimensionalise the equations by introducing Rayleigh and
 Prandtl numbers $Ra$ and $Pr$, which reduces the number of parameters
 to only two. The final form of our equations is then
 \begin{align}
@@ -129,7 +130,7 @@ to only two. The final form of our equations is then
     \nabla \mathbf{v} +\nabla p - Pr \Delta \vb{v} - Ra Pr T
   \vb{e_z} &= 0& \text{Momentum}\\
   \label{b-ene}
-  \frac{\partial T}{\partial t} + \nabla \cdot (T \vb{v}) - \Delta
+  \frac{\partial T}{\partial t} + \vb{v} \cdot \nabla T - \Delta
   T&=0& \text{Energy}
 \end{align}
 
@@ -158,26 +159,65 @@ of each control volume :
 
 Eqs ici
 
-Note that this is only a reformulation, and no discretization was
+Note that this is only a reformulation, and no discretisation was
 done. Solutions of this problem are solutions of the original problem,
-and vice versa. The discretization step consists in keeping only the
+and vice versa. The discretisation step consists in keeping only the
 values of the variables at element centers $\vb{x}_K$, and
-interpolating the integrals with these values. This leads to a
-non-linear system of algebraic equations, which can be solved by
-Newton method.
+interpolating the integrals (fluxes) with these values. This leads to
+a nonlinear system of algebraic equations, which can be solved by
+Newton type method.
 
-This method can be seen as a finite element method, with the test
-functions $v$ belonging to the space of piecewise constant functions
-over the mesh (which is not a subspace of the space in which the
-solution is searched, meaning it is a non-conforming finite element
-method \footnote{check terminology}). One advantage of this method
-over finite element methods is that equations (\ref{TODO}) have an
-obvious physical meaning : they express conservation laws on a control
-volume $K$.
+The difference with the classical finite differences method is that
+the discretisation is performed on fluxes rather than on differential
+operators. This is simpler because one differentiation order is lost :
+Laplacians become gradients integrals. Another advantage is that the
+finite volume method is much more easily generalized to various sorts
+of meshs, and not limited to rectangular ones.
+
+This method can also be seen as a finite element method, where the
+test functions $v$ are chosen in the space of piecewise constant
+functions over the mesh. This is not a subspace of the space in which
+the solution is searched, since piecewise constant functions have no
+gradient : it is a non-conforming finite element method. One advantage
+of this method over finite element methods is that equations
+(\ref{TODO}) have an obvious physical meaning : they express
+conservation laws on a control volume $K$.
 
 Our problem is now to choose suitable interpolation methods for the
 integrals
 \subsection{Implementation}
+At the core of the algorithm is the solution of a nonlinear system of
+size equal to the number of cells. We use the standard Newton
+algorithm : we linearize the problem around an iterate $x_n$, solve
+this linear problem to obtain $x_{n+1}$, and repeat until
+convergence. Denoting by $x$ the unknowns of our problem, i.e. the
+velocities, pressures and temperatures at the cell centers, by $f(x)$
+the left-hand side of (\ref{TODO}), and by $J_f(x)$ the Jacobian
+matrix of $f$ at point $x$, the iteration is given by
+\begin{equation}
+  \label{eq:newton}
+  J_f(x_n) (x_{n+1} - x_n) = - f(x_n)
+\end{equation}
+The Jacobian is obtained by differentiating equation (\ref{TODO}). The
+result is a linear system, wich is solved for $x{n+1}$.
+\subsubsection{Solving the linear system}
+Solution of dense linear systems is of order $\mathcal O (n^3)$. This,
+as well as the memory cost of keeping $n^2$ entries, is prohibitively
+large for our problems, where $n$ can be around
+$100\,000$. Thankfully, our matrices are sparse (because component
+number $i$ of $f$ only depends of the cells connected to cell number
+$i$), which yields huge savings in memory and computation time : we
+only store non-zero entries in the matrix, and use specialized
+algorithms to solve the system.
+
+We use a modified version of the conjugate gradient method, with a
+preconditioning based on an incomplete LU factorisation. For some
+ill-conditioned problems, this iterative algorithm may not converge fast enough : we
+then fall back to a direct method, which is slower and less precise
+but has no convergence issues.
+
+\subsubsection{Relaxation}
+\subsubsection{Convergence criterion}
 \section{The chimney problem}
 \section{Numerical experiments}
 \subsection{Methodology}
