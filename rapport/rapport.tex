@@ -199,16 +199,27 @@ matrix of $f$ at point $x$, the iteration is given by
   J_f(x_n) (x_{n+1} - x_n) = - f(x_n)
 \end{equation}
 The Jacobian is obtained by differentiating equation (\ref{TODO}). The
-result is a linear system, wich is solved for $x{n+1}$.
+result is a linear system, wich is solved for $x_{n+1}$. The iteration
+is carried out until convergence. We stop the iterations when both the
+increment $||x_{n} - x_{n-1}||_\infty$ and the residual $||f(x_n)||_\infty$ are lower than
+$\varepsilon = 10^{-10}$. We numerically observe quadratic convergence
+in about $12$ iterations, as can be seen Fig. \ref{fig:conv_newton}.
+\begin{figure}[htb]
+\centering
+\includegraphics{figs/convergence}
+\caption{Convergence of Newton method}
+\label{fig:conv_newton}
+\end{figure}
 \subsubsection{Solving the linear system}
-Solution of dense linear systems is of order $\mathcal O (n^3)$. This,
-as well as the memory cost of keeping $n^2$ entries, is prohibitively
-large for our problems, where $n$ can be around
-$100\,000$. Thankfully, our matrices are sparse (because component
-number $i$ of $f$ only depends of the cells connected to cell number
-$i$), which yields huge savings in memory and computation time : we
-only store non-zero entries in the matrix, and use specialized
-algorithms to solve the system.
+Solution of linear systems is of order $\mathcal O (n^3)$. This, as
+well as the memory cost of keeping $n^2$ entries, is prohibitively
+large for our problems, where $n$ can be around $100\,000$. However,
+because of the locality of the fluxes approximations, the value of
+$f(x_n)$ on cell $i$ depends only of the value of $x_n$ on cells
+connected to cell $i$ : the number of non-zero elements of the
+Jacobian is of order $\mathcal O (n)$. This kind of matrices are known
+as sparse matrices, and the use of appropriate data structures to
+store them yields huge savings in memory and computation time.
 
 We use a modified version of the conjugate gradient method, with a
 preconditioning based on an incomplete LU factorisation. For some
