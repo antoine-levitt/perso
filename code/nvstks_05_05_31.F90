@@ -391,7 +391,7 @@ program nvstks
           tnorme,delobtt/dt/tnorme,debit
 20   format("% Temps eff :",1pe7.1," | t=",1pe10.4," | dt=",1pe7.1," || ",i3," iter ",&
           " | max(u)=",1pe7.1," | max(du/dt)/max(u)=",1pe7.1,&
-          " | max(T)=",1pe7.1," | max(dT/dt)/max(t)=",1pe7.1,&
+          " | max(T)=",1pe7.1," | max(dT/dt)/max(T)=",1pe7.1,&
           " | debit=",1pe7.1)
      if (delobj>0) dt=max(dt_i,dt*delobj/max(delobtu/vnorme,delobtt/tnorme))
 
@@ -494,7 +494,7 @@ program nvstks
   write(*,*)"Max(T)=",tnorme
 
 
-30 format("Iter=",i3," Residu : ",1pe8.2," dx : ",1pe6.0," theta : ",1pe8.2," diffusion : ",1pe9.2," (ItBcgs=",i3,&
+30 format("Iter=",i3," Residu : ",1pe8.2," dx : ",1pe8.2," theta : ",1pe8.2," diffusion : ",1pe9.2," (ItBcgs=",i3,&
        ")")
 !!$  if (duree<=0) then
 !!$     do i=1,ncv
