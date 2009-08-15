@@ -807,8 +807,8 @@ contains
        print*,'Reynolds de Maille :',pe_maille
     end if
     if (nutest>=100) then
-       if (dt<=0)  print*,'Débit sortant :',debit_out,'      Débit entrant :',debit_in
-!!$      print*,'Débit entrant',debit_in
+       ! if (dt<=0)  print*,'Débit sortant :',debit_out,'      Débit entrant :',debit_in
+       print*,'Débit entrant',debit_in
 !!$      print*,'NUSSELT maximal (flux imposé) :',1/maxval(tp)
        debit=debit_out
     end if
