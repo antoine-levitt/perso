@@ -1,8 +1,8 @@
-! Pression nulle inconditionnellement en haut. Sinon, dépend du signe de v (voir pdf desrayaux)
+! Pression nulle inconditionnellement en haut (comme lequere). Sinon, dépend du signe de v (comme benchmark desrayauds)
 #define PRESSION_HAUT_0   1
 ! Global bernoulli pour les CL en bas
 #define GB                0
-! U = 0 au lieu de dU/dz = 0
+! U = 0 au lieu de dU/dz = 0 en bas
 #define CL_U_DIRICHLET    1
 ! Pondérer par la distance centre-interface
 #define USE_PONDERATION   1
