@@ -201,9 +201,12 @@ matrix of $f$ at point $x$, the iteration is given by
 The Jacobian is obtained by differentiating equation (\ref{TODO}). The
 result is a linear system, wich is solved for $x_{n+1}$. The iteration
 is carried out until convergence. We stop the iterations when both the
-increment $||x_{n} - x_{n-1}||_\infty$ and the residual $||f(x_n)||_\infty$ are lower than
-$\varepsilon = 10^{-10}$. We numerically observe quadratic convergence
-in about $12$ iterations, as can be seen Fig. \ref{fig:conv_newton}.
+increment $||x_{n} - x_{n-1}||_\infty$ and the residual
+$||f(x_n)||_\infty$ are lower than $\varepsilon =
+10^{-10}$. Convergence can be seen in
+Fig. \ref{fig:conv_newton}. After a transient, we observe the
+characteristic quadratic convergence of Newton method, and convergence
+is quickly achieved.
 \begin{figure}[htb]
 \centering
 \includegraphics{figs/convergence}
