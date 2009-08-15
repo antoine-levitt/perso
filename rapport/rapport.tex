@@ -212,20 +212,41 @@ algorithms to solve the system.
 
 We use a modified version of the conjugate gradient method, with a
 preconditioning based on an incomplete LU factorisation. For some
-ill-conditioned problems, this iterative algorithm may not converge fast enough : we
-then fall back to a direct method, which is slower and less precise
-but has no convergence issues.
+ill-conditioned problems, this iterative algorithm may not converge
+fast enough : we then fall back to a direct method, which is slower
+and less precise but has no convergence issues.
 
-\subsubsection{Relaxation}
 \subsubsection{Convergence criterion}
+
+\subsubsection{Under-relaxation}
+For some problems, Newton method may oscillate around the solution. An
+easy solution for this is to limit the amplitude of steps taken :
+instead of $x_{n+1} = x_n + \Delta x$, we use $x_{n+1} = x_n +\theta
+\Delta x$, where $\theta < 1$ is the under-relaxation factor. This
+prevents oscillations but may lead to slower convergence. A sensible
+choice is to limit the magnitude of the steps to be no greater than a
+prescribed $\delta$ : if $||\Delta x|| > \delta$, $\theta = \delta /
+||\Delta x||$, and if not, $\theta = 1$.
 \section{The chimney problem}
 \section{Numerical experiments}
 \subsection{Methodology}
 \subsection{Results}
+\begin{table}[!h]
+  \centering
+  \begin{tabular}{|l|c|c|}
+    \hline
+    & Local Bernoulli & Global Bernoulli \\
+    \hline
+    Pression benchmark & 73.23 & 85.51\\
+    Pression lequere & 59.08 & 76.98\\
+    \hline
+  \end{tabular}
+  \caption{Mass flux for different boundary conditions}
+\end{table}
 \section{Conclusion}
 TODO
 \listoffigures
-
+\listoftables
 
 \begin{thebibliography}{99}
 \end{thebibliography}
