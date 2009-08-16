@@ -128,7 +128,7 @@ to only two. The final form of our equations is then
   \label{b-mom}
   \frac{\partial \mathbf{v}}{\partial t} + \mathbf{v} \cdot
   \nabla \mathbf{v} +\nabla p - Pr \Delta \vb{v} - Ra Pr T
-  \vb{e_z} &= 0& \text{Momentum}\\
+  \vb{e_z} &= \vb{0}& \text{Momentum}\\
   \label{b-ene}
   \frac{\partial T}{\partial t} + \vb{v} \cdot \nabla T - \Delta
   T&=0& \text{Energy}
@@ -185,6 +185,8 @@ conservation laws on a control volume $K$.
 
 Our problem is now to choose suitable interpolation methods for the
 integrals
+
+TODO
 \subsection{Newton method}
 At the core of the algorithm is the solution of a nonlinear system of
 size equal to the number of cells. We use the standard Newton
@@ -237,10 +239,78 @@ greater than a prescribed $\delta$ : if $||\Delta x|| > \delta$,
 $\theta = \delta / ||\Delta x||$, and if not, $\theta = 1$.
 
 \subsection{Methods for instationary flow}
-TODO
-trapezoidal rule -> pareil que stationnaire en itératif. Permet de
-laisser certains bouts explicites là où c'est difficile en implicite
-(ex : GB). Vérifié que ça donne la même solution en instationaire et stationaire
+This work focuses on the stationary solver. However, certain boundary
+conditions are easier to treat by a transient approach, which we will
+now describe.
+
+Let us begin by recalling three simple methods for solving ODEs :
+forward Euler, backward Euler, and the trapezoidal rule. The problem
+is to approximate a solution of $x'(t) = f(x(t))$, $x(0) =
+x_0$. Using a timestep $h$, the three methods
+are, with $x^i$ as an approximation of $x(i h)$ :
+TODO : typesetting
+$$x^{i+1} = x^i + h f(x^i)$$
+$$x^{i+1} = x^i + h f(x^{i+1})$$
+$$x^{i+1} = x^i + h \frac{f(x^i) + f(x^{i+1})}{2}$$
+
+Note that while forward Euler is an explicit method, both backward
+euler and the trapezoidal rule are implicit : at each iteration, an
+equation has to be solved for $x^{i+1}$. Generally speaking, implicit
+methods are more stable than explicit ones, which allows greater
+steps to be taken.
+
+However, our problem, once spatially discretized, is not an ODE,
+because of the absence of an evolution equation for pressure. This is
+because in the incompressible Navier-Stokes equations pressure is not
+explicitely determined. Rather, pressure is implicitely determined by
+the condition $\nabla \cdot \vb{v} = 0$, as can be seen by taking the
+divergence of (\ref{b-mom}), which makes $\frac{\partial
+  \vb{v}}{\partial t}$ vanish, and gives $p$ as the solution of a
+Poisson problem.
+
+In this context, explicit methods would require the solving of a
+Poisson problem at each step. Implicit methods however require no
+modification except the addition of this constraint into the equations
+being solved. Note that the absence of an evolution equation for
+pressure is compensated by the presence of an additional constraint,
+thus maintaining in the implicit system an equal number of equations
+and variables.
+
+The implementation of an implicit transient method is quite easy if
+one can already solve stationary problems. Indeed, taking for instance
+backward Euler method, the equation (TODO, ref eq BE) can be rewritten
+as
+$$f(x^{i+1}) - \frac{x^{i+1}}{h} + \frac{x^i}{h} = 0.$$
+
+This is a minor correction of the stationnary equation $f(x) = 0$, and
+can be solved in the same way. Incidentally, notice that the only
+change in the Jacobian matrix is to substract $\frac{1}{h}$ on its
+diagonal. For small $h$, this has the nice side effect of improving
+its conditioning, since it brings the matrix closer to $\frac{1}{h}
+I$, which has condition number $1$. This speeds up iterative methods
+for the linear system.
+
+The main advantage of transient methods in our context is that one
+can freely mix implicit or explicit schemes for each equation. Thus,
+difficult boundary conditions need not be solved implicitely, which
+would require filling the Jacobian. This is useful for instance for
+non-local boundary conditions which would destroy the block structure
+of the Jacobian.
+
+Our use case is for a boundary condition which reads $p = -
+\frac{1}{2} V^2$, where $V$ is the average velocity on a border of our
+domain. Using a fully implicit scheme (or solving the stationary
+problem) would require the Jacobian to contain non-local entries,
+because the pressure at cell $i$ would depend on velocities on the
+whole border. This would not be compatible with the way matrices are
+implemented in the code without extensive modification. By allowing
+this condition to be explicit, the issue is removed : the $V$ in the
+equation is the one from the last step, which does not require any
+entry in the Jacobian.
+
+Transient methods were numerically found to converge to stable
+equilibria corresponding to the solutions computed by stationary
+methods.
 \section{The chimney problem}
 TODO intro benchmark, free convection
 \subsection{Physical setup}
@@ -256,8 +326,8 @@ TODO
 \label{sec:conv_newton}
 Convergence can be seen in Fig. \ref{fig:conv_newton}. After a
 transient, we observe the characteristic quadratic convergence of
-Newton method in both residual $||f(x_n)||$ and increment $||x_{n} -
-x_{n-1}||$.
+Newton method in both residual $||f(x_n)||_\infty$ and increment $||x_{n} -
+x_{n-1}||_\infty$.
 \begin{figure}[htb]
 \centering
 \includegraphics{figs/convergence}
