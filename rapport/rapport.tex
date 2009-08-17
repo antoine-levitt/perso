@@ -151,6 +151,7 @@ Dirichlet conditions to simplify the presentation. Other boundary
 conditions (non-homogeneous Dirichlet conditions, Neumann conditions)
 may still be expressed using the same basic principles.
 \subsection{Theory}
+\subsubsection{Generalities}
 We first integrate the equations
 (\ref{b-mass}-\ref{b-mom}-\ref{b-ene}) over each control volume
 $K$. Then we apply Green formulae to convert the $d$-dimensional
@@ -160,12 +161,10 @@ of each control volume :
 TODO Eqs ici
 
 Note that this is only a reformulation, and no discretisation was
-done. Solutions of this problem are solutions of the original problem,
-and vice versa. The discretisation step consists in keeping only the
-values of the variables at element centers $\vb{x}_K$, and
-interpolating the integrals (fluxes) with these values. This leads to
-a nonlinear system of algebraic equations, which can be solved by
-Newton type method.
+done. The discretisation step consists in keeping only the values of
+the variables at element centers $\vb{x}_K$, and interpolating the
+integrals (fluxes) with these values. This leads to a nonlinear system
+of algebraic equations, which can be solved by Newton type method.
 
 The difference with the classical finite differences method is that
 the discretisation is performed on fluxes rather than on differential
@@ -184,9 +183,15 @@ of this method over finite element methods is that equations
 conservation laws on a control volume $K$.
 
 Our problem is now to choose suitable interpolation methods for the
-integrals
-
+integrals.
+\subsubsection{Discretisation}
 TODO
+Principe de la discrétisation : imposer un contrôle pour utiliser des
+arguments de compacité.
+\subsubsection{Stabilisation}
+TODO Tel quel : pas inversible \footnote{pourquoi ?}, modes oscillants
+de pression. Ajout de la stabilisation : expliquer comment. Méthode de
+clusters.
 \subsection{Newton method}
 At the core of the algorithm is the solution of a nonlinear system of
 size equal to the number of cells. We use the standard Newton
@@ -320,7 +325,7 @@ TODO LB/GB, pression en haut ...
 
 \section{Numerical experiments}
 \subsection{Methodology}
-TODO
+TODO paramètres fixes \& variables
 \subsection{Convergence}
 \subsubsection{Newton convergence}
 \label{sec:conv_newton}
@@ -336,9 +341,11 @@ x_{n-1}||_\infty$.
 \end{figure}
 
 \subsubsection{Mesh convergence}
-TODO
+TODO trouver un critère : problème modèle dont la solution est connue
+et trouver l'ordre ? ou alors l'admettre et vérifier la convergence
+sur des courbes
 \subsection{Effects of different boundary conditions}
-TODO
+TODO rapport avec les autres benchmarks
 \begin{table}[!h]
   \centering
   \begin{tabular}{|l|c|c|}
@@ -352,7 +359,7 @@ TODO
   \caption{Mass flux for different boundary conditions}
 \end{table}
 \subsection{Chimney in a larger box}
-TODO
+TODO interfacer triangle avec le programme
 \section{Conclusion}
 TODO
 \listoffigures
