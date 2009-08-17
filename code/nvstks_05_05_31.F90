@@ -12,7 +12,7 @@ program nvstks
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   implicit none
 
-  logical,parameter::direct=.false.
+  logical,parameter::direct=.true.
   real(kind=8),parameter::test=1e-3
   integer,parameter::nordre=5
   integer,parameter::itbcgsmax=500
