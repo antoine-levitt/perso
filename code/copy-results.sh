@@ -6,7 +6,7 @@ if [ $# -eq 0 ]
 fi
 
 mkdir "res/$1"
-cp Makefile *.f90 *.dat *.plt "res/$1"
+cp Makefile *.F90 *.dat *.plt "res/$1"
 cp out.txt "res/$1/ecran.txt"
 echo genere le $(date) > "res/$1/readme"
 if [ $# -eq 2 ]
