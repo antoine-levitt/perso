@@ -160,11 +160,11 @@ of each control volume :
 
 TODO Eqs ici
 
-Note that this is only a reformulation, and no discretisation was
-done. The discretisation step consists in keeping only the values of
-the variables at element centers $\vb{x}_K$, and interpolating the
-integrals (fluxes) with these values. This leads to a nonlinear system
-of algebraic equations, which can be solved by Newton type method.
+Note that no discretisation is done at this point. The discretisation
+step consists in keeping only the values of the variables at cell
+centers $\vb{x}_K$, and interpolating the integrals (fluxes) with
+these values. This leads to a nonlinear system of algebraic equations,
+which can be solved by a Newton type method.
 
 The difference with the classical finite differences method is that
 the discretisation is performed on fluxes rather than on differential
@@ -180,14 +180,15 @@ the solution is searched, since piecewise constant functions have no
 gradient : it is a non-conforming finite element method. One advantage
 of this method over finite element methods is that equations
 (\ref{TODO}) have an obvious physical meaning : they express
-conservation laws on a control volume $K$.
+conservation laws on a control volume $K$. Another is that this method
+is conservative \footnote{quel intérêt ?}
 
 Our problem is now to choose suitable interpolation methods for the
 integrals.
 \subsubsection{Discretisation}
 TODO
 Principe de la discrétisation : imposer un contrôle pour utiliser des
-arguments de compacité.
+arguments de compacité : consistent et stable
 \subsubsection{Stabilisation}
 TODO Tel quel : pas inversible \footnote{pourquoi ?}, modes oscillants
 de pression. Ajout de la stabilisation : expliquer comment. Méthode de
