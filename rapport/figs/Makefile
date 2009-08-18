@@ -1,5 +1,5 @@
-EPSS=$(wildcard *.plt)
-imagespdf: $(EPSS:plt=pdf)
+OBJ=$(wildcard *.plt)
+imagespdf: $(OBJ:plt=pdf)
 %.pdf: %.plt %.txt
 	gnuplot $<
 	epstopdf `basename $< plt`pdf
