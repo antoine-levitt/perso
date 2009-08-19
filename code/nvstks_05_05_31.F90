@@ -70,7 +70,7 @@ program nvstks
 
   integer,dimension(10)::i_pos
   real(kind=8),dimension(10)::x_pos,y_pos
-  real(kind=8)::distance,nui,nuo,debit,debit_in,debit_out,&
+  real(kind=8)::distance,nui,nuo,debit,debit_in,debit_out,debit_prec,&
        ALy,ALx
 
   real(kind=4)::echelle,decalage
@@ -303,6 +303,7 @@ program nvstks
      end do
   end if
 
+  debit_prec = 0
   do while(t<duree)
      t=t+dt
      iter=0
@@ -388,7 +389,7 @@ program nvstks
 
      write(*,20)t/duree*100,t,dt,iter,&
           vnorme,delobtu/dt/vnorme,&
-          tnorme,delobtt/dt/tnorme,debit
+          tnorme,delobtt/dt/tnorme,debit_in
 20   format("% Temps eff :",1pe7.1," | t=",1pe10.4," | dt=",1pe7.1," || ",i3," iter ",&
           " | max(u)=",1pe7.1," | max(du/dt)/max(u)=",1pe7.1,&
           " | max(T)=",1pe7.1," | max(dT/dt)/max(T)=",1pe7.1,&
@@ -406,6 +407,8 @@ program nvstks
      write(11,*)t,tp(i_pos(2)),vx(i_pos(2)),vy(i_pos(2)), nui,nuo
      write(12,*)t,tp(i_pos(3)),vx(i_pos(3)),vy(i_pos(3)), nui,nuo
 
+     !TODO : ajustement du deltaT
+     debit_prec = debit_in
   end do
 
 !!!!!!!!!!!!!!!
@@ -808,7 +811,7 @@ contains
     end if
     if (nutest>=100) then
        ! if (dt<=0)  print*,'Débit sortant :',debit_out,'      Débit entrant :',debit_in
-       print*,'Débit entrant',debit_in
+       ! print*,'Débit entrant',debit_in
 !!$      print*,'NUSSELT maximal (flux imposé) :',1/maxval(tp)
        debit=debit_out
     end if
@@ -5531,10 +5534,15 @@ contains
              ! global bernoulli
              if (mode_gb .or. ((residu < 1e-2) .and. (residu > 1e-15))) then !première itération : residu = 0
                 mode_gb = .true.
-                press=-.5_8*debit*debit
-                dd(i,2,1)=dd(i,2,1)-by(j)*u*coef
-                dd(i,2,2)=dd(i,2,2)-by(j)*vy(i)*coef
-                !todo : ajouter la dépendance sur les voisins aussi
+                ! si transitoire, on utilise le débit précédent
+                if (duree > 0) then
+                   press = -.5_8 * debit_prec * debit_prec
+                else
+                   press=-.5_8*debit*debit
+                   dd(i,2,1)=dd(i,2,1)-by(j)*u*coef
+                   dd(i,2,2)=dd(i,2,2)-by(j)*vy(i)*coef
+                   !todo : ajouter la dépendance sur les voisins aussi
+                endif
              else
                 press=-.5_8*(vx(i)*vx(i)+vy(i)*vy(i))*coef
                 dd(i,2,1)=dd(i,2,1)-by(j)*u*coef
