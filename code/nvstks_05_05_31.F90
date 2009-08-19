@@ -409,8 +409,8 @@ program nvstks
 
      debit_prec = debit_in
      ! ajustement du deltaT : adapter aux variations pour avoir un delta_obj, mais ne pas descendre en dessous de dt_i et ne pas monter au dessus de DT_MAX
-#define DT_MAX (dt_i * 1000)
-#define DELTA_OBJ 10
+#define DT_MAX (dt_i * 10)
+#define DELTA_OBJ 1
 
      dt = dt * DELTA_OBJ / delobtu
      dt = max(dt, dt_i)
@@ -812,8 +812,8 @@ contains
 
 
     if (dt<=0)    then
-       print*,'Péclet de Maille :',pe_maille
-       print*,'Reynolds de Maille :',pe_maille
+       print*,'Debit entrant',debit_in
+       print*,'Peclet de maille :',pe_maille
     end if
     if (nutest>=100) then
        ! if (dt<=0)  print*,'Débit sortant :',debit_out,'      Débit entrant :',debit_in
