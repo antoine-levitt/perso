@@ -6,6 +6,9 @@
 #define CL_U_DIRICHLET    1
 ! Pondérer par la distance centre-interface
 #define USE_PONDERATION   1
+! ajustement du deltaT : adapter aux variations pour avoir un delta_obj, mais ne pas descendre en dessous de dt_i et ne pas monter au dessus de DT_MAX
+#define DT_MAX (dt_i * 10)
+#define DELTA_OBJ 1
 program nvstks
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   ! D'APRES CODE et ARTICLE R. EYMARD
@@ -408,9 +411,6 @@ program nvstks
      write(12,*)t,tp(i_pos(3)),vx(i_pos(3)),vy(i_pos(3)), nui,nuo
 
      debit_prec = debit_in
-     ! ajustement du deltaT : adapter aux variations pour avoir un delta_obj, mais ne pas descendre en dessous de dt_i et ne pas monter au dessus de DT_MAX
-#define DT_MAX (dt_i * 10)
-#define DELTA_OBJ 1
 
      dt = dt * DELTA_OBJ / delobtu
      dt = max(dt, dt_i)
