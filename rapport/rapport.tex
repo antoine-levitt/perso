@@ -180,8 +180,9 @@ the solution is searched, since piecewise constant functions have no
 gradient : it is a non-conforming finite element method. One advantage
 of this method over finite element methods is that equations
 (\ref{TODO}) have an obvious physical meaning : they express
-conservation laws on a control volume $K$. Another is that this method
-is conservative \footnote{quel intérêt ?}
+conservation laws on a control volume $K$. This method is also simpler
+because the approximation is piecewise constant, which makes it easier
+if other physical effects are to be taken into account.
 
 Our problem is now to choose suitable interpolation methods for the
 integrals.
@@ -190,9 +191,8 @@ TODO
 Principe de la discrétisation : imposer un contrôle pour utiliser des
 arguments de compacité : consistent et stable
 \subsubsection{Stabilisation}
-TODO Tel quel : pas inversible \footnote{pourquoi ?}, modes oscillants
-de pression. Ajout de la stabilisation : expliquer comment. Méthode de
-clusters.
+TODO Tel quel : pas inversible, modes oscillants de pression. Ajout de
+la stabilisation : expliquer comment. Méthode de clusters.
 \subsection{Newton method}
 At the core of the algorithm is the solution of a nonlinear system of
 size equal to the number of cells. We use the standard Newton
