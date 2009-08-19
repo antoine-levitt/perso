@@ -394,7 +394,7 @@ program nvstks
           " | max(u)=",1pe7.1," | max(du/dt)/max(u)=",1pe7.1,&
           " | max(T)=",1pe7.1," | max(dT/dt)/max(T)=",1pe7.1,&
           " | debit=",1pe7.1)
-     if (delobj>0) dt=max(dt_i,dt*delobj/max(delobtu/vnorme,delobtt/tnorme))
+     ! if (delobj>0) dt=max(dt_i,dt*delobj/max(delobtu/vnorme,delobtt/tnorme))
 
 !!$     call nusselt(A,&
 !!$       tp,&
@@ -407,8 +407,14 @@ program nvstks
      write(11,*)t,tp(i_pos(2)),vx(i_pos(2)),vy(i_pos(2)), nui,nuo
      write(12,*)t,tp(i_pos(3)),vx(i_pos(3)),vy(i_pos(3)), nui,nuo
 
-     !TODO : ajustement du deltaT
      debit_prec = debit_in
+     ! ajustement du deltaT : adapter aux variations pour avoir un delta_obj, mais ne pas descendre en dessous de dt_i et ne pas monter au dessus de DT_MAX
+#define DT_MAX (dt_i * 10)
+#define DELTA_OBJ 1
+
+     dt = dt * 10_8 / delobtu
+     dt = max(dt, dt_i)
+     dt = min(dt, DT_MAX)
   end do
 
 !!!!!!!!!!!!!!!
