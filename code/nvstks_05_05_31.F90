@@ -1,14 +1,28 @@
+!! Paramètres pour les CL
 ! Pression nulle inconditionnellement en haut (comme lequere). Sinon, dépend du signe de v (comme benchmark desrayauds)
 #define PRESSION_HAUT_0   1
 ! Global bernoulli pour les CL en bas
-#define GB                0
+#define GB                1
 ! U = 0 au lieu de dU/dz = 0 en bas
 #define CL_U_DIRICHLET    1
+
 ! Pondérer par la distance centre-interface
 #define USE_PONDERATION   1
+
 ! ajustement du deltaT : adapter aux variations pour avoir un delta_obj, mais ne pas descendre en dessous de dt_i et ne pas monter au dessus de DT_MAX
 #define DT_MAX (dt_i * 10)
 #define DELTA_OBJ 1
+
+! fonction du programme. à mettre en nutest dans donnees.dat
+#define CHEMINEE 110
+#define CHEMINEE_ETENDUE 400
+
+! paramètres pour CHEMINEE_ETENDUE
+! largeur et longueur relative (entre 0 et 1) de la cheminée dans sa boite, en supposant la cheminée centrée
+#define LARGEUR_CHEMINEE 0.8
+#define LONGUEUR_CHEMINEE 0.8
+#define LARGEUR_COTE ((1 - LARGEUR_CHEMINEE) / 2)
+#define LONGUEUR_COTE ((1 - LONGUEUR_CHEMINEE) / 2)
 program nvstks
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   ! D'APRES CODE et ARTICLE R. EYMARD
