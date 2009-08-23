@@ -23,6 +23,14 @@
 #define LONGUEUR_CHEMINEE 0.8
 #define LARGEUR_COTE ((1 - LARGEUR_CHEMINEE) / 2)
 #define LONGUEUR_COTE ((1 - LONGUEUR_CHEMINEE) / 2)
+
+! constantes de représentation interne de CL
+! extérieur du domaine
+#define CL_EXTERIEUR -1
+! paroi chauffée
+#define CL_PAROI_GAUCHE -2
+#define CL_PAROI_DROITE -3
+#define CL_PAROI_EXTERIEUR -4
 program nvstks
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   ! D'APRES CODE et ARTICLE R. EYMARD
@@ -235,6 +243,7 @@ program nvstks
            if (jj==-1) coul=4 !rouge
            if (jj==-2) coul=1 !bleu
            if (As(j)<=0) call line( xs(i0),ys(i0),xs(i1),ys(i1),decalage,echelle,coul)
+           !TODO : cheminée étendue
         case(100,110,210)
            if (jj==-1) then
               coul=4
@@ -4139,11 +4148,12 @@ contains
 
 
     select case(nutest)
-    case(2,3,4,100,102,110,210)
+    case(2,3,4,100,102,110,210, CHEMINEE_ETENDUE)
        ALy=maxval(ys)
        ALx=maxval(xs)
        write(*,*)"Cavité de hauteur : ",ALy
        write(*,*)"Cavité de largeur : ",ALx
+       !TODO : étendue ?
        if (nutest==100.or.nutest==110.or.nutest==210) then
           write(*,*)"Valeur de Ra_m=",ra
           ra=ra*ALy/2
@@ -5102,8 +5112,7 @@ contains
                 if (y-ery <0)   nuvois(j)=-4
                 if (y+ery >ALy) nuvois(j)=-5
 
-
-             case(110,210)
+             case(CHEMINEE,210)
                 x=(xs(i1)+xs(i0))*.5_8
                 y=(ys(i1)+ys(i0))*.5_8
                 erx=abs(xcv(i)-x)/100
@@ -5120,6 +5129,20 @@ contains
 
                 if (y-ery <0)   nuvois(j)=-3
                 if (y+ery >ALy) nuvois(j)=-4
+
+             case(CHEMINEE_ETENDUE)
+                ! coordonnées du centre du côté
+                x=(xs(i1)+xs(i0))*.5_8
+                y=(ys(i1)+ys(i0))*.5_8
+                erx=abs(xcv(i)-x)/100
+                ery=abs(ycv(i)-y)/100
+
+                ! TODO : définir les CL ici
+                ! les bords de la boite
+                if ((x - erx < 0) .or. (x + erx > ALx) .or. (y+ery > ALy) .or. (y-ery < 0)) then
+                   nuvois(j) = CL_EXTERIEUR
+                end if
+                ! les parois de la cheminée
 
              case default
                 !write(*,*)"nutest inconnu dans cls, nutest=",nutest
@@ -5524,6 +5547,7 @@ contains
        end if
 
 
+       !TODO étendue
        !!%%%%%CHEMINEE BENCHMARK Webb et Hill
     case(110)
        if (jj==-1) then !GAUCHE
@@ -5561,7 +5585,7 @@ contains
                    press=-.5_8*debit*debit
                    dd(i,2,1)=dd(i,2,1)-by(j)*u*coef
                    dd(i,2,2)=dd(i,2,2)-by(j)*vy(i)*coef
-                   !todo : ajouter la dépendance sur les voisins aussi
+                   !éventuellement : ajouter la dépendance sur les voisins aussi
                 endif
              else
                 press=-.5_8*(vx(i)*vx(i)+vy(i)*vy(i))*coef
