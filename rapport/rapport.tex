@@ -32,39 +32,106 @@ obtained.}
 \newpage
 
 \section{Introduction}
-TODO
+The Navier-Stokes equations, discovered in the 19th century, are a
+system of non-linear partial differential equations (PDEs) describing
+the motion of fluid. These equations couple velocities, pressure and
+other variables as required by the application field (temperature,
+electrical charge and currents \dots), in which case the Navier-Stokes
+are complemented by other equations, such as conservation laws for
+temperature or Maxwell laws for electromagnetism. Due to their wide
+applicability, they are essential for engineering. There is also a
+number of open problems in the mathematical study of these
+equations. In particular, the question of existence and smoothness of
+solutions are one of the Millenium Prize Problems.
 
-points \`a mentionner dans l'introduction:
+Fast, accurate and reliable numerical solutions to these equations is
+an important goal for engineering. Reflecting this, many commercial
+and research codes have been developed. Most of them belong to the
+three classes of finite volume, finite element and finite difference
+methods :
 
-- passer en revue les m\'ethodes num\'eriques pour convection naturelle:
+\begin{itemize}
+\item {\bf Finite difference method} approximates fields by their
+  values on points, and interpolates derivatives. This, while the
+  simplest of all methods, generally yields poor accuracy.
 
-sch\'emas \'el\'ements finis \cite{gun-89-fin,pironneau}, 
-volumes finis sur grilles d\'ecal\'ees, sch\'ema MAC \cite{har-65-num,Pat-80-num},
-\'etudi\'e dans \cite{har-65-num,nic-92-ana,cho-97-ana,cho-97-mac}
-volumes finis  colocalis\'es (collocated), n\'ecessitent stabilisation
-\cite{mat-97-apr,brezzip,brezzip2}
+\item {\bf Finite element method} convert the PDE into an equivalent
+  variational form, then approximate the infinite-dimensional solution
+  space by a finite-dimensional one, in which the variational problem
+  can be solved.
 
-m\'ethodes de projection (solution stationnaire n\'ecessite limite
-probl\`eme transitoire, et conditions aux limites
-artificielles en pression) \cite{mat-97-pre} 
+\item {\bf Finite volume method} use Green formulas to convert the
+  equation into a per-cell conservation equation. Fluxes are then
+  interpolated from values at neighbouring cells.
+\end{itemize}
 
-m\'ethodes coupl\'ees pour pb stationnaires ou transitoires
- (mais nonlin\'earit\'es impliquent Newton ou limite pb transitoire) 
+All these methods discretize the solution according to a grid. There
+are various choices for the location of the unknowns inside the grid,
+and methods can be split between {\bf collocated} and {\bf staggered}
+grids. In collocated grids, all variables are stored in the cell
+centers of the control volumes. In staggered grids, scalar variables
+are still stored in cell centers, but velocities are located at cell
+faces. The main motivation for using staggered grids is to avoid the
+so-called checkerboard pressure modes that arise from the
+discretization of first derivatives in collocated grids.
+
+Examples of classical schemes on staggered grids include the
+Marker-And-Cell (MAC) scheme
+\cite{har-65-num,Pat-80-num,har-65-num,nic-92-ana,cho-97-ana,cho-97-mac}. Collocated
+grids need stabilisation to avoid checkerboard modes. Various methods
+exist. We use a variant of the Brezzi-Pitk{\"a}ranta approach
+\cite{mat-97-apr,brezzip,brezzip2}, which consists in introducing an
+artificial diffusion term in the mass conservation equation.
+
+Various scheme also exist to decouple the equations, most notably
+variants of the projection method \cite{mat-97-pre}. This method,
+valid only for transient analysis (which means steady state has to be
+found as a limit of the transient process, while for other methods it
+can be directly computed), uses a two-step algorithm to decouple
+velocities and pressure, which greatly reduces computation time. The
+SIMPLE algorithm is the most popular of these variants. However, these
+methods need artificial boundary conditions for pressure, and can
+cause artificial boundary layers to appear.
+
+The algorithm we use is a fully implicit, fully coupled, collocated
+finite volume scheme introduced by E. Chénier and R. Eymard
+\cite{che-09-col,che-08-col,che-06-num}.
+
+To test the accuracy of these variants in the context of free
+convection (where fluid flow is only a result of temperature
+gradients), G. Desrayaud organised a benchmark in 2007, around a
+simple problem. TODO : qu'est ce qu'on en fait, décrire les différents
+codes.
+
+% points \`a mentionner dans l'introduction:
+
+% - passer en revue les m\'ethodes num\'eriques pour convection naturelle:
+
+% sch\'emas \'el\'ements finis \cite{gun-89-fin,pironneau}, 
+% volumes finis sur grilles d\'ecal\'ees, sch\'ema MAC \cite{har-65-num,Pat-80-num},
+% \'etudi\'e dans \cite{har-65-num,nic-92-ana,cho-97-ana,cho-97-mac}
+% volumes finis  colocalis\'es (collocated), n\'ecessitent stabilisation
+% \cite{mat-97-apr,brezzip,brezzip2}
+
+% m\'ethodes de projection (solution stationnaire n\'ecessite limite
+% probl\`eme transitoire, et conditions aux limites
+% artificielles en pression) \cite{mat-97-pre} 
+
+% m\'ethodes coupl\'ees pour pb stationnaires ou transitoires
+%  (mais nonlin\'earit\'es impliquent Newton ou limite pb transitoire) 
 
 
 
-- benchmark pour comparer diff\'erentes approches en convection naturelle
+% - benchmark pour comparer diff\'erentes approches en convection naturelle
 
-- ranger les diff\'erents logiciels du bench selon les m\'ethodes num\'eriques
-utilis\'ees
+% - ranger les diff\'erents logiciels du bench selon les m\'ethodes num\'eriques
+% utilis\'ees
 
-FLUENT \cite{mat-97-apr,mat-97-pre}
+% FLUENT \cite{mat-97-apr,mat-97-pre}
 
-code colocalis\'e Ch\'enier \cite{che-09-col,che-08-col,che-06-num}
+% code colocalis\'e Ch\'enier \cite{che-09-col,che-08-col,che-06-num}
 
-AQUILON devenu THETIS
-
-
+% AQUILON devenu THETIS
 
 \section{Physical context}
 We study a fluid contained in a d-dimensional (d = 2 or 3) domain
