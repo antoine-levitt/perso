@@ -263,7 +263,7 @@ may still be expressed using the same basic principles.
 \subsubsection{Generalities}
 We first integrate the equations
 (\ref{b-mass}-\ref{b-mom}-\ref{b-ene}) over each control volume
-$K$. Then we apply Green formulae to convert the $d$-dimensional
+$K$. Then we apply Green formulas to convert the $d$-dimensional
 integrals over $K$ into $d-1$ integrals over the boundary $\partial K$
 of each control volume :
 
@@ -302,6 +302,9 @@ arguments de compacit\'e : consistent et stable
 \subsubsection{Stabilisation}
 TODO Tel quel : pas inversible, modes oscillants de pression. Ajout de
 la stabilisation : expliquer comment. M\'ethode de clusters.
+
+Explication : pas d'influence de $p_k$ sur l'eq pour la maille k, donc
+checkeboard modes. Remède : fausse diffusion dans conservation de la masse
 \subsection{Newton method}
 At the core of the algorithm is the solution of a nonlinear system of
 size equal to the number of cells. We use the standard Newton
