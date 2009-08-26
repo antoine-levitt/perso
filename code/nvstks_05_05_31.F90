@@ -1,10 +1,10 @@
 !! Paramètres pour les CL
 ! Pression nulle inconditionnellement en haut (comme lequere). Sinon, dépend du signe de v (comme benchmark desrayauds)
-#define PRESSION_HAUT_0   1
+#define PRESSION_HAUT_0   0
 ! Global bernoulli pour les CL en bas
-#define GB                1
+#define GB                0
 ! U = 0 au lieu de dU/dz = 0 en bas
-#define CL_U_DIRICHLET    1
+#define CL_U_DIRICHLET    0
 
 ! Pondérer par la distance centre-interface
 #define USE_PONDERATION   1
