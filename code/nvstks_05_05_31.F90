@@ -1,11 +1,36 @@
+!! Paramètres pour les CL
 ! Pression nulle inconditionnellement en haut (comme lequere). Sinon, dépend du signe de v (comme benchmark desrayauds)
 #define PRESSION_HAUT_0   1
 ! Global bernoulli pour les CL en bas
-#define GB                0
+#define GB                1
 ! U = 0 au lieu de dU/dz = 0 en bas
 #define CL_U_DIRICHLET    1
+
 ! Pondérer par la distance centre-interface
 #define USE_PONDERATION   1
+
+! ajustement du deltaT : adapter aux variations pour avoir un delta_obj, mais ne pas descendre en dessous de dt_i et ne pas monter au dessus de DT_MAX
+#define DT_MAX (dt_i * 10)
+#define DELTA_OBJ 1
+
+! fonction du programme. à mettre en nutest dans donnees.dat
+#define CHEMINEE 110
+#define CHEMINEE_ETENDUE 400
+
+! paramètres pour CHEMINEE_ETENDUE
+! largeur et longueur relative (entre 0 et 1) de la cheminée dans sa boite, en supposant la cheminée centrée
+#define LARGEUR_CHEMINEE 0.8
+#define LONGUEUR_CHEMINEE 0.8
+#define LARGEUR_COTE ((1 - LARGEUR_CHEMINEE) / 2)
+#define LONGUEUR_COTE ((1 - LONGUEUR_CHEMINEE) / 2)
+
+! constantes de représentation interne de CL
+! extérieur du domaine
+#define CL_EXTERIEUR -1
+! paroi chauffée
+#define CL_PAROI_GAUCHE -2
+#define CL_PAROI_DROITE -3
+#define CL_PAROI_EXTERIEUR -4
 program nvstks
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   ! D'APRES CODE et ARTICLE R. EYMARD
@@ -70,7 +95,7 @@ program nvstks
 
   integer,dimension(10)::i_pos
   real(kind=8),dimension(10)::x_pos,y_pos
-  real(kind=8)::distance,nui,nuo,debit,debit_in,debit_out,&
+  real(kind=8)::distance,nui,nuo,debit,debit_in,debit_out,debit_prec,&
        ALy,ALx
 
   real(kind=4)::echelle,decalage
@@ -218,6 +243,7 @@ program nvstks
            if (jj==-1) coul=4 !rouge
            if (jj==-2) coul=1 !bleu
            if (As(j)<=0) call line( xs(i0),ys(i0),xs(i1),ys(i1),decalage,echelle,coul)
+           !TODO : cheminée étendue
         case(100,110,210)
            if (jj==-1) then
               coul=4
@@ -303,6 +329,7 @@ program nvstks
      end do
   end if
 
+  debit_prec = 0
   do while(t<duree)
      t=t+dt
      iter=0
@@ -388,12 +415,12 @@ program nvstks
 
      write(*,20)t/duree*100,t,dt,iter,&
           vnorme,delobtu/dt/vnorme,&
-          tnorme,delobtt/dt/tnorme,debit
+          tnorme,delobtt/dt/tnorme,debit_in
 20   format("% Temps eff :",1pe7.1," | t=",1pe10.4," | dt=",1pe7.1," || ",i3," iter ",&
           " | max(u)=",1pe7.1," | max(du/dt)/max(u)=",1pe7.1,&
           " | max(T)=",1pe7.1," | max(dT/dt)/max(T)=",1pe7.1,&
-          " | debit=",1pe7.1)
-     if (delobj>0) dt=max(dt_i,dt*delobj/max(delobtu/vnorme,delobtt/tnorme))
+          " | debit=",1pe10.4)
+     ! if (delobj>0) dt=max(dt_i,dt*delobj/max(delobtu/vnorme,delobtt/tnorme))
 
 !!$     call nusselt(A,&
 !!$       tp,&
@@ -406,6 +433,11 @@ program nvstks
      write(11,*)t,tp(i_pos(2)),vx(i_pos(2)),vy(i_pos(2)), nui,nuo
      write(12,*)t,tp(i_pos(3)),vx(i_pos(3)),vy(i_pos(3)), nui,nuo
 
+     debit_prec = debit_in
+
+     dt = dt * DELTA_OBJ / delobtu
+     dt = max(dt, dt_i)
+     dt = min(dt, DT_MAX)
   end do
 
 !!!!!!!!!!!!!!!
@@ -803,12 +835,12 @@ contains
 
 
     if (dt<=0)    then
-       print*,'Péclet de Maille :',pe_maille
-       print*,'Reynolds de Maille :',pe_maille
+       print*,'Debit entrant',debit_in
+       print*,'Peclet de maille :',pe_maille
     end if
     if (nutest>=100) then
        ! if (dt<=0)  print*,'Débit sortant :',debit_out,'      Débit entrant :',debit_in
-       print*,'Débit entrant',debit_in
+       ! print*,'Débit entrant',debit_in
 !!$      print*,'NUSSELT maximal (flux imposé) :',1/maxval(tp)
        debit=debit_out
     end if
@@ -4116,11 +4148,12 @@ contains
 
 
     select case(nutest)
-    case(2,3,4,100,102,110,210)
+    case(2,3,4,100,102,110,210, CHEMINEE_ETENDUE)
        ALy=maxval(ys)
        ALx=maxval(xs)
        write(*,*)"Cavité de hauteur : ",ALy
        write(*,*)"Cavité de largeur : ",ALx
+       !TODO : étendue ?
        if (nutest==100.or.nutest==110.or.nutest==210) then
           write(*,*)"Valeur de Ra_m=",ra
           ra=ra*ALy/2
@@ -5079,8 +5112,7 @@ contains
                 if (y-ery <0)   nuvois(j)=-4
                 if (y+ery >ALy) nuvois(j)=-5
 
-
-             case(110,210)
+             case(CHEMINEE,210)
                 x=(xs(i1)+xs(i0))*.5_8
                 y=(ys(i1)+ys(i0))*.5_8
                 erx=abs(xcv(i)-x)/100
@@ -5097,6 +5129,20 @@ contains
 
                 if (y-ery <0)   nuvois(j)=-3
                 if (y+ery >ALy) nuvois(j)=-4
+
+             case(CHEMINEE_ETENDUE)
+                ! coordonnées du centre du côté
+                x=(xs(i1)+xs(i0))*.5_8
+                y=(ys(i1)+ys(i0))*.5_8
+                erx=abs(xcv(i)-x)/100
+                ery=abs(ycv(i)-y)/100
+
+                ! TODO : définir les CL ici
+                ! les bords de la boite
+                if ((x - erx < 0) .or. (x + erx > ALx) .or. (y+ery > ALy) .or. (y-ery < 0)) then
+                   nuvois(j) = CL_EXTERIEUR
+                end if
+                ! les parois de la cheminée
 
              case default
                 !write(*,*)"nutest inconnu dans cls, nutest=",nutest
@@ -5501,6 +5547,7 @@ contains
        end if
 
 
+       !TODO étendue
        !!%%%%%CHEMINEE BENCHMARK Webb et Hill
     case(110)
        if (jj==-1) then !GAUCHE
@@ -5531,10 +5578,15 @@ contains
              ! global bernoulli
              if (mode_gb .or. ((residu < 1e-2) .and. (residu > 1e-15))) then !première itération : residu = 0
                 mode_gb = .true.
-                press=-.5_8*debit*debit
-                dd(i,2,1)=dd(i,2,1)-by(j)*u*coef
-                dd(i,2,2)=dd(i,2,2)-by(j)*vy(i)*coef
-                !todo : ajouter la dépendance sur les voisins aussi
+                ! si transitoire, on utilise le débit précédent
+                if (duree > 0) then
+                   press = -.5_8 * debit_prec * debit_prec
+                else
+                   press=-.5_8*debit*debit
+                   dd(i,2,1)=dd(i,2,1)-by(j)*u*coef
+                   dd(i,2,2)=dd(i,2,2)-by(j)*vy(i)*coef
+                   !éventuellement : ajouter la dépendance sur les voisins aussi
+                endif
              else
                 press=-.5_8*(vx(i)*vx(i)+vy(i)*vy(i))*coef
                 dd(i,2,1)=dd(i,2,1)-by(j)*u*coef
