@@ -8,6 +8,8 @@
 
 ! Pondérer par la distance centre-interface
 #define USE_PONDERATION   1
+! Utiliser la stabilisation par méthode des clusters. Sinon, stabilisation globale Brezzi-Pitkaranta
+#define STABILISATION_CLUSTERS 1
 
 ! ajustement du deltaT : adapter aux variations pour avoir un delta_obj, mais ne pas descendre en dessous de dt_i et ne pas monter au dessus de DT_MAX
 #define DT_MAX (dt_i * 10)
@@ -178,9 +180,10 @@ program nvstks
 
 
 
-
-
-
+#if STABILISATION_CLUSTERS
+#else
+As = A * lambda
+#endif
 
 
 
