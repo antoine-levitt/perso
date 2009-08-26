@@ -1,6 +1,6 @@
 #!/bin/bash
 echo -n 'plot ' > gnuplot_commands
-for i in $(find . -type d -maxdepth 1 -not -name . -name 'base*') ; do
+for i in $(find . -type d -maxdepth 1 -not -name . -name 'lambda*' | sort -k 2 -g -t '-') ; do
     echo -n "\"$i/profil_v_0.5.dat\"  using 1:$1 title \"$i\" with linespoints," >> gnuplot_commands
 done
 sed -i 's/,$//' gnuplot_commands
