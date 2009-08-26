@@ -343,8 +343,9 @@ store them yields huge savings in memory and computation time.
 We use a modified version of the conjugate gradient method, with a
 preconditioning based on an incomplete LU factorisation. For some
 ill-conditioned problems, this iterative algorithm may not converge
-fast enough : we then fall back to a direct method, which is slower
-and less precise but has no convergence issues.
+fast enough, or even fail to converge altogether : we then fall back
+to a direct method, which is slower and less precise but has no
+convergence issues.
 
 \subsubsection{Under-relaxation}
 For some problems, Newton method may oscillate around the solution. An
@@ -457,6 +458,38 @@ x_{n-1}||_\infty$.
 TODO trouver un crit\`ere : probl\`eme mod\`ele dont la solution est connue
 et trouver l'ordre ? ou alors l'admettre et v\'erifier la convergence
 sur des courbes
+\subsection{Influrence of stabilisation}
+Stabilisation, while introducing numerical errors, is an essential
+part of this method. Without it, there would be trivial solutions of
+the linear equations (checkerboard modes), and the linear system would
+not be invertible. The stabilisation introduces a parameter $\lambda$,
+which quantifies its relative effect.
+
+$\lambda$ has to be selected neither too small nor too large. For
+large $\lambda$, the pressure diffusion is so important that pressure
+is nearly constant in each cluster. On the other hand, a small
+$\lambda$ will introduce pressure oscillations similar to the
+checkerboard modes as well as ill-conditioning in the Jacobian.
+
+Since the right-hand side and the matrix are computed at machine
+precision, the condition number would have to be very large to
+introduce significant variations in the solution. However, iterative
+solvers are very sensitive to conditioning and can not be used on
+ill-conditioned matrices. For our problem, the iterative solver does
+not converge unless $\lambda > 10^{-6}$. Further increasing $\lambda$
+reduces the number of iterations needed for the iterative solver,
+until it reaches a plateau around $10^{-4}$.
+
+Even ignoring conditioning, choosing an appropriate $\lambda$ is no
+easy task. We want to remove spurrious oscillations caused by small
+$\lambda$, as well as avoid intra-clusters diffusion.
+
+\begin{figure}[htb]
+\centering
+\includegraphics{figs/lambdas}
+\caption{Pressure at mid-width.}
+\label{fig:conv_newton}
+\end{figure}
 \subsection{Effects of different boundary conditions}
 TODO rapport avec benchmark, lequere. comparer les courbes
 \begin{table}[!h]
