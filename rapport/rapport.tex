@@ -482,13 +482,18 @@ until it reaches a plateau around $10^{-4}$.
 
 Even ignoring conditioning, choosing an appropriate $\lambda$ is no
 easy task. We want to remove spurrious oscillations caused by small
-$\lambda$, as well as avoid intra-clusters diffusion.
+$\lambda$, as well as avoid intra-clusters diffusion. Figure
+\ref{fig:lambdas} shows the pressure at mid-width for our problem with
+different $\lambda$. For small values of $\lambda$ (under $10^{-5}$),
+we can see the even-odd oscillations. As $\lambda$ increases, clusters
+(here, of two cells) appear, until a stage around $10^{-4}$ where
+pressure becomes constant inside the clusters.
 
 \begin{figure}[htb]
 \centering
 \includegraphics{figs/lambdas}
 \caption{Pressure at mid-width.}
-\label{fig:conv_newton}
+\label{fig:lambdas}
 \end{figure}
 \subsection{Effects of different boundary conditions}
 TODO rapport avec benchmark, lequere. comparer les courbes
