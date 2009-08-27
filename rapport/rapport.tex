@@ -184,13 +184,17 @@ forces. We also neglect the variation of other physical parameters
 (viscosity, diffusivity, etc.).
 
 The only external force here is gravity, so $\vb{f} = -\rho g
-\vb{e_z}$. $\rho$ depends on the temperature $T$ by a state equation
-(for instance, ideal gas law). At the first order, we can write $\rho
-- \rho_0 = - \alpha \delta T$, where $\delta T$ is the difference
-between the actual temperature and a reference state, and $\alpha > 0$
-is a coefficient depending on the fluid. This leads to $\vb{f} =
-(-\rho_0 + \alpha \delta T) g \vb{e_z}$ : this confirms the
-experimental observation that hot air rises and cold air falls.
+\vb{e_z}$. This force depends on the temperature $T$ via the density
+$\rho$. Assuming small variations in $T$, we can write at the first
+order $\rho - \rho_0 = - \alpha (T - T_0)$, where ($\rho_0$,$T_0$) is the
+reference state, and $\alpha > 0$\footnote{At least, for ideal
+  gases, where the sign can readily be checked from the equation $p =
+  r T \rho$, which, assuming no variation of pressure with
+  temperature, gives $\alpha = \rho_0/T_0$ around a reference state
+  ($\rho_0$, $T_0$).}  is a coefficient assumed to be constant. This
+leads to $\vb{f} = (-\rho_0 + \alpha (T - T_0)) g \vb{e_z}$ : this
+confirms the experimental observation that hot air rises and cold air
+falls.
 
 Assuming $\rho$ to be constant in the other terms simplifies greatly
 the equations. The mass equation becomes the equation of an
@@ -208,9 +212,9 @@ of the flow, assumed to be constant.
 
 To simplify notations, we use the variable change $p = p + \rho_0 g z$
 ($p$ is now the difference between the actual pressure and the
-hydrostatic pressure), and $T = \delta T$ ($T$ is the difference in
-temperature to the reference state). The momentum equation now
-becomes :
+hydrostatic pressure), and $T = (T - T_0)$ ($T$ is the difference in
+temperature to the reference state). The momentum equation now becomes
+:
 \begin{equation}
   \label{ns-mom}
   \rho \left(\frac{\partial \vb{v}}{\partial t} + \vb{v} \cdot
