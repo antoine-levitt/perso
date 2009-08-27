@@ -1,39 +1,74 @@
 #!/bin/bash
-# Test for an interactive shell.  There is no need to set anything
-# past this point for scp and rcp, and it's important to refrain from
-# outputting anything in those cases.
+
+#si le shell n'est pas interactif, ne rien faire pour ne
+# pas défoncer scp & co
 if [[ $- != *i* ]] ; then
-	# Shell is non-interactive.  Be done now!
 	return
 fi
 
-# User specific aliases and functions
-#alias ssh
-alias sun='ssh levitta@ensisun.imag.fr'
-alias bull='ssh levitta@ensibull.imag.fr'
-alias bob='ssh smeuuh@82.233.220.106'
-alias sunredir='screen -d -m autossh levitta@ensisun.imag.fr -R 4242:localhost:22'
-#alias d'éditeurs
-alias e='emacs'
-alias enw='emacs -nw'
-alias ec='emacsclient --no-wait -a emacs'
-alias re='emacsclient -t'
-alias d='svn diff | less'
-alias gdb='gdb --args'
+#emacs : what else.
 export EDITOR='emacsclient -a emacs'
-#alias autres
-alias less='less -m'
+#ignorer les commandes débiles dans l'historique, et en mettre un de taille correcte
+export HISTIGNORE="&:ls:[bf]g:cd:c"
+export HISTSIZE=2000
+export HISTFILESIZE=2000
+#standard mais on sait jamais
+export PATH=~/bin:$PATH
+
+#M-q = effacer le dernier mot
+bind '"\eq":backward-kill-word'
+
+#à décommenter pour activer les core dump
+# ulimit -c unlimited >/dev/null 2>&1
+
+# ls après chaque cd, parce qu'il est scientifiquement prouvé que 42%
+# des gens font un ls après chaque cd.  Chiant pour des scripts style
+# for i in * ; do cd $i ; do_stuff ; cd .. ; done : dans ces cas-là,
+# mettre builtin cd à la place de cd.
+cd() {
+builtin cd "$@" && ls
+}
+
+#accueillir l'utilisateur avec un affichage de ~
+ls --color=auto
+
+
+# les alias
+# -------------------- Emacs --------------------
+#what else
+alias e='emacs'
+#mode console
+alias enw='emacs -nw'
+#ouvrir un fichier dans la session d'emacs en cours, et si emacs ne tourne pas, le lancer
+alias ec='emacsclient --no-wait -a emacs'
+#connection à un emacs en cours
+alias re='emacsclient -c'
+#connection à un emacs en cours en console
+alias renw='emacsclient -t'
+
+# -------------------- Autres --------------------
+#affichage de la progression dans le fichier en bas de less
+alias less='less -M'
+#affichage d'un processus
 alias proc='ps aux | grep'
+#potentiellement l'alias le plus utile de tous
 alias c='cd ..'
+#normalement par défaut dans les distros censées, mais bon
 alias ls='ls --color=auto'
+# utile pour faire p.ex. make && coin
 alias coin='play /usr/share/gnubiff/coin.wav'
-alias w='w | sort | uniq -w 4 | grep -v USER | grep -v "load average"'
-#alias internet
-alias reco='sudo ethtool -s eth0 autoneg off speed 10 duplex half'
-alias wake='wakeonlan -i 82.233.220.106 00:0a:e6:1d:3e:ef'
-alias tray_daemon='rm /tmp/tray_daemon_control; mkfifo /tmp/tray_daemon_control; killall tray_daemon; cd ~/bin; ./tray_daemon&'
+#laisser gnome choisir le programme à utiliser
 alias o='gnome-open'
-#git
+#w, sans duplicata et trié
+alias w='w | sort | uniq -w 4 | grep -v USER | grep -v "load average"'
+#pour pouvoir débugger un programme juste en ajoutant gdb devant.
+#désactiver si besoin de passer des options à gdb lui-même
+alias gdb='gdb --args'
+#maj complète pour les debian-like
+alias apt-up='sudo apt-get update && sudo apt-get dist-upgrade'
+
+
+# -------------------- Git dans tous ses états --------------------
 alias gb='git branch'
 alias gba='git branch -a'
 alias gc='git commit -v'
@@ -41,35 +76,15 @@ alias gd='git diff'
 alias gl='git pull'
 alias gp='git push'
 alias gst='git status | less'
-#latex
-alias latexpreview="latexmk -pdfpreviewer gnome-open -dvipreviewer gnome-open -pspreviewer gnome-open -pvc"
-alias pdflmk="latexpreview -pdf"
-alias pslmk="latexpreview -ps"
-alias dvilmk="latexpreview -dvi"
+
+
+# -------------------- Latexmk --------------------
+#latexmk : compilateur latex automatique
+#nécessite la version patchée pour lui passer les options en paramètres cli
+alias latexmk="latexmk -pdfpreviewer gnome-open -dvipreviewer gnome-open -pspreviewer gnome-open"
+alias pdflmk="latexmk -pdf"
+alias pslmk="latexmk -ps"
+alias dvilmk="latexmk -dvi"
 alias l='pdflmk'
-
-#env var
-export PATH=~/bin:$PATH
-
-#oui, je veux les core dumps, merci beaucoup
-ulimit -c unlimited >/dev/null 2>&1
-
-#M-q = delete backward
-bind '"\eq":backward-kill-word'
-export HISTIGNORE="&:ls:[bf]g:cd:c"
-export HISTSIZE=2000
-export HISTFILESIZE=2000
-
-# ls after each cd
-cd() {
-builtin cd "$@" && ls
-}
-
-alias boot='sudo /etc/init.d/bitlbee restart && reco && AUTOSSH_GATETIME=0 sunredir && sudo cpufreq-set -u 1Ghz && tray_daemon'
-alias apt-up='sudo apt-get update && sudo apt-get dist-upgrade'
-alias rsync='rsync -vahr --partial --progress'
-recup() {
-    rsync 82.233.220.106:~/"$@" .
-}
-
-ls
+#visionneur avec recompilation automatique quand changement dans les fichiers sources
+alias lview='pdflmk -pvc'
