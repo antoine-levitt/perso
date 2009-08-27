@@ -437,6 +437,10 @@ TODO sch\'ema
 \subsection{Boundary conditions}
 TODO LB/GB, pression en haut ...
 
+Pour GB : soit transitoire, soit méthode de Newton à plusieurs
+étages. Pour Newton à plusieurs étages : marche à condition que
+l'initial guess sur le débit soit pas trop mauvais (50 : OK, 0 :
+KO). Point fixe : KO
 \section{Numerical experiments}
 \subsection{Methodology}
 TODO param\`etres fixes \& variables
@@ -458,7 +462,7 @@ x_{n-1}||_\infty$.
 TODO trouver un crit\`ere : probl\`eme mod\`ele dont la solution est connue
 et trouver l'ordre ? ou alors l'admettre et v\'erifier la convergence
 sur des courbes
-\subsection{Influrence of stabilisation}
+\subsection{Influence of stabilisation}
 Stabilisation, while introducing numerical errors, is an essential
 part of this method. Without it, there would be trivial solutions of
 the linear equations (checkerboard modes), and the linear system would
@@ -489,6 +493,8 @@ we can see the even-odd oscillations. As $\lambda$ increases, clusters
 (here, of two cells) appear, until a stage around $10^{-4}$ where
 pressure becomes constant inside the clusters.
 
+TODO : comparaison avec Brezzi-Pitkaranta, clusters centrés sur les
+mailles, macromailles = 1
 \begin{figure}[htb]
 \centering
 \includegraphics{figs/lambdas}
