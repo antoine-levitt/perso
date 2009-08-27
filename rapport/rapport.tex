@@ -305,7 +305,8 @@ Principe de la discr\'etisation : imposer un contr\^ole pour utiliser des
 arguments de compacit\'e : consistent et stable
 \subsubsection{Stabilisation}
 TODO Tel quel : pas inversible, modes oscillants de pression. Ajout de
-la stabilisation : expliquer comment. M\'ethode de clusters.
+la stabilisation : expliquer comment. M\'ethode de clusters. Figure de
+macro.fig.
 
 Explication : pas d'influence de $p_k$ sur l'eq pour la maille k, donc
 checkeboard modes. RemÃ¨de : fausse diffusion dans conservation de la masse
@@ -379,17 +380,17 @@ $$x^{i+1} = x^i + h \frac{f(x^i) + f(x^{i+1})}{2}$$
 Note that while forward Euler is an explicit method, both backward
 euler and the trapezoidal rule are implicit : at each iteration, an
 equation has to be solved for $x^{i+1}$. Generally speaking, implicit
-methods are more stable than explicit ones, which allows greater
+methods are more stable than explicit ones, which allows larger
 steps to be taken.
 
-However, our problem, once spatially discretized, is not an ODE,
-because of the absence of an evolution equation for pressure. This is
-because in the incompressible Navier-Stokes equations pressure is not
-explicitely determined. Rather, pressure is implicitely determined by
-the condition $\nabla \cdot \vb{v} = 0$, as can be seen by taking the
-divergence of (\ref{b-mom}), which makes $\frac{\partial
-  \vb{v}}{\partial t}$ vanish, and gives $p$ as the solution of a
-Poisson problem.
+However, our problem, once spatially discretized, is not exactly an
+ODE, because of the absence of an evolution equation for
+pressure. This is because, in the incompressible Navier-Stokes
+equations, pressure is not explicitely given. Rather, it is
+implicitely determined by the condition $\nabla \cdot \vb{v} = 0$, as
+can be seen by taking the divergence of (\ref{b-mom}), which makes
+$\frac{\partial \vb{v}}{\partial t}$ vanish, and gives $p$ as the
+solution of a Poisson problem.
 
 In this context, explicit methods would require the solving of a
 Poisson problem at each step. Implicit methods however require no
@@ -441,6 +442,10 @@ TODO sch\'ema
 \subsection{Boundary conditions}
 TODO LB/GB, pression en haut ...
 
+Pour GB : soit transitoire, soit méthode de Newton à plusieurs
+étages. Pour Newton à plusieurs étages : marche à condition que
+l'initial guess sur le débit soit pas trop mauvais (50 : OK, 0 :
+KO). Point fixe : KO
 \section{Numerical experiments}
 \subsection{Methodology}
 TODO param\`etres fixes \& variables
@@ -462,7 +467,7 @@ x_{n-1}||_\infty$.
 TODO trouver un crit\`ere : probl\`eme mod\`ele dont la solution est connue
 et trouver l'ordre ? ou alors l'admettre et v\'erifier la convergence
 sur des courbes
-\subsection{Influrence of stabilisation}
+\subsection{Influence of stabilisation}
 Stabilisation, while introducing numerical errors, is an essential
 part of this method. Without it, there would be trivial solutions of
 the linear equations (checkerboard modes), and the linear system would
@@ -485,14 +490,15 @@ reduces the number of iterations needed for the iterative solver,
 until it reaches a plateau around $10^{-4}$.
 
 Even ignoring conditioning, choosing an appropriate $\lambda$ is no
-easy task. We want to remove spurrious oscillations caused by small
-$\lambda$, as well as avoid intra-clusters diffusion. Figure
-\ref{fig:lambdas} shows the pressure at mid-width for our problem with
-different $\lambda$. For small values of $\lambda$ (under $10^{-5}$),
-we can see the even-odd oscillations. As $\lambda$ increases, clusters
-(here, of two cells) appear, until a stage around $10^{-4}$ where
-pressure becomes constant inside the clusters.
+easy task. Figure \ref{fig:lambdas} shows the pressure at mid-width
+for our problem with different $\lambda$. For small values of
+$\lambda$ (under $10^{-5}$), we can see the even-odd oscillations. As
+$\lambda$ increases, clusters (here, of two cells) appear, until a
+stage around $10^{-4}$ where pressure becomes constant inside the
+clusters.
 
+TODO : comparaison avec Brezzi-Pitkaranta, clusters centrés sur les
+mailles, macromailles = 1
 \begin{figure}[htb]
 \centering
 \includegraphics{figs/lambdas}
@@ -514,10 +520,9 @@ TODO rapport avec benchmark, lequere. comparer les courbes
   \caption{Mass flux for different boundary conditions}
 \end{table}
 \subsection{Chimney in a larger box}
-TODO interfacer triangle avec le programme, ou mesher en
-rectangles. Va poser des probl\`emes en stationnaire parce que
-turbulent, essayer en instationnaire et voir si il y a solution
-stationnaire dans la chemin\'ee
+TODO essayer le code de E. Chénier, changer les CL (boite
+ouverte). Comparer les CL de la boite restreinte avec les résultats de
+la grande.
 \section{Conclusion}
 TODO
 \listoffigures
