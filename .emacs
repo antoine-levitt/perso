@@ -471,8 +471,8 @@ brake whatever split of windows we might have in the frame."
 (global-set-key (kbd "M-s") 'fill-paragraph)
 ;;nice to have, coherent with other keybindings, and bound to nothing
 ;;by default, so ...
-(global-set-key (kbd "M-n") 'scroll-up)
-(global-set-key (kbd "M-p") 'scroll-down)
+(global-set-key (kbd "M-p") 'backward-paragraph)
+(global-set-key (kbd "M-n") 'forward-paragraph)
 ;;shortcuts to region commenting
 (global-set-key (kbd "C-c u") 'uncomment-region)
 (global-set-key (kbd "C-c c") 'comment-region)
