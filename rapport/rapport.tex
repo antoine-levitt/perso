@@ -379,14 +379,14 @@ equation has to be solved for $x^{i+1}$. Generally speaking, implicit
 methods are more stable than explicit ones, which allows larger
 steps to be taken.
 
-However, our problem, once spatially discretized, is not an ODE,
-because of the absence of an evolution equation for pressure. This is
-because in the incompressible Navier-Stokes equations pressure is not
-explicitely determined. Rather, pressure is implicitely determined by
-the condition $\nabla \cdot \vb{v} = 0$, as can be seen by taking the
-divergence of (\ref{b-mom}), which makes $\frac{\partial
-  \vb{v}}{\partial t}$ vanish, and gives $p$ as the solution of a
-Poisson problem.
+However, our problem, once spatially discretized, is not exactly an
+ODE, because of the absence of an evolution equation for
+pressure. This is because, in the incompressible Navier-Stokes
+equations, pressure is not explicitely given. Rather, it is
+implicitely determined by the condition $\nabla \cdot \vb{v} = 0$, as
+can be seen by taking the divergence of (\ref{b-mom}), which makes
+$\frac{\partial \vb{v}}{\partial t}$ vanish, and gives $p$ as the
+solution of a Poisson problem.
 
 In this context, explicit methods would require the solving of a
 Poisson problem at each step. Implicit methods however require no
