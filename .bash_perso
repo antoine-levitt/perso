@@ -41,6 +41,12 @@ alias gd='git diff'
 alias gl='git pull'
 alias gp='git push'
 alias gst='git status | less'
+#latex
+alias latexpreview="latexmk -pdfpreviewer gnome-open -dvipreviewer gnome-open -pspreviewer gnome-open -pvc"
+alias pdflmk="latexpreview -pdf"
+alias pslmk="latexpreview -ps"
+alias dvilmk="latexpreview -dvi"
+alias l='pdflmk'
 
 #env var
 export PATH=~/bin:$PATH
