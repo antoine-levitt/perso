@@ -1,5 +1,5 @@
 OBJ=$(wildcard *.plt)
 imagespdf: $(OBJ:plt=pdf)
-%.pdf: %.plt %.txt
+%.pdf: %.plt
 	gnuplot $<
 	epstopdf `basename $< plt`pdf
