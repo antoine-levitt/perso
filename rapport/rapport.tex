@@ -301,7 +301,8 @@ Principe de la discr\'etisation : imposer un contr\^ole pour utiliser des
 arguments de compacit\'e : consistent et stable
 \subsubsection{Stabilisation}
 TODO Tel quel : pas inversible, modes oscillants de pression. Ajout de
-la stabilisation : expliquer comment. M\'ethode de clusters.
+la stabilisation : expliquer comment. M\'ethode de clusters. Figure de
+macro.fig.
 
 Explication : pas d'influence de $p_k$ sur l'eq pour la maille k, donc
 checkeboard modes. RemÃ¨de : fausse diffusion dans conservation de la masse
@@ -485,13 +486,12 @@ reduces the number of iterations needed for the iterative solver,
 until it reaches a plateau around $10^{-4}$.
 
 Even ignoring conditioning, choosing an appropriate $\lambda$ is no
-easy task. We want to remove spurrious oscillations caused by small
-$\lambda$, as well as avoid intra-clusters diffusion. Figure
-\ref{fig:lambdas} shows the pressure at mid-width for our problem with
-different $\lambda$. For small values of $\lambda$ (under $10^{-5}$),
-we can see the even-odd oscillations. As $\lambda$ increases, clusters
-(here, of two cells) appear, until a stage around $10^{-4}$ where
-pressure becomes constant inside the clusters.
+easy task. Figure \ref{fig:lambdas} shows the pressure at mid-width
+for our problem with different $\lambda$. For small values of
+$\lambda$ (under $10^{-5}$), we can see the even-odd oscillations. As
+$\lambda$ increases, clusters (here, of two cells) appear, until a
+stage around $10^{-4}$ where pressure becomes constant inside the
+clusters.
 
 TODO : comparaison avec Brezzi-Pitkaranta, clusters centrés sur les
 mailles, macromailles = 1
