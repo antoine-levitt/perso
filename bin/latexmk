@@ -661,7 +661,7 @@ $pdf_mode = 0;          # No pdf file requested to be made by pdflatex
                         #     2 to create pdf file by ps2pdf
                         #     3 to create pdf file by dvipdf
 $view = 'default';      # Default preview is of highest of dvi, ps, pdf
-$sleep_time = 2;	# time to sleep b/w checks for file changes in -pvc mode
+$sleep_time = 1;	# time to sleep b/w checks for file changes in -pvc mode
 $banner = 0;            # Non-zero if we have a banner to insert
 $banner_scale = 220;    # Original default scale
 $banner_intensity = 0.95;  # Darkness of the banner message
