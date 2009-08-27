@@ -1,13 +1,15 @@
 !! Paramètres pour les CL
 ! Pression nulle inconditionnellement en haut (comme lequere). Sinon, dépend du signe de v (comme benchmark desrayauds)
-#define PRESSION_HAUT_0   1
+#define PRESSION_HAUT_0   0
 ! Global bernoulli pour les CL en bas
-#define GB                1
+#define GB                0
 ! U = 0 au lieu de dU/dz = 0 en bas
-#define CL_U_DIRICHLET    1
+#define CL_U_DIRICHLET    0
 
 ! Pondérer par la distance centre-interface
 #define USE_PONDERATION   1
+! Utiliser la stabilisation par méthode des clusters. Sinon, stabilisation globale Brezzi-Pitkaranta
+#define STABILISATION_CLUSTERS 1
 
 ! ajustement du deltaT : adapter aux variations pour avoir un delta_obj, mais ne pas descendre en dessous de dt_i et ne pas monter au dessus de DT_MAX
 #define DT_MAX (dt_i * 10)
@@ -178,9 +180,10 @@ program nvstks
 
 
 
-
-
-
+#if STABILISATION_CLUSTERS
+#else
+As = A * lambda
+#endif
 
 
 
