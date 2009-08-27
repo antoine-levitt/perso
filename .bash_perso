@@ -87,4 +87,4 @@ alias pslmk="latexmk -ps"
 alias dvilmk="latexmk -dvi"
 alias l='pdflmk'
 #visionneur avec recompilation automatique quand changement dans les fichiers sources
-alias lview='pdflmk -pvc'
+alias lview='pdflmk -pvc -silent'
