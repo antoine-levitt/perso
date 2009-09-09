@@ -26,7 +26,7 @@ bind '"\eq":backward-kill-word'
 # for i in * ; do cd $i ; do_stuff ; cd .. ; done : dans ces cas-là,
 # mettre builtin cd à la place de cd.
 cd() {
-builtin cd "$@" && ls
+builtin cd "$@" && ls --color=auto
 }
 
 #accueillir l'utilisateur avec un affichage de ~
