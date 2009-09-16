@@ -246,7 +246,7 @@ erc-modified-channels-alist, filtered by erc-tray-ignored-channels."
       (notify nick "Connexion MSN")))
   nil)
 ;;notify if someone joins on bitlbee
-(add-hook 'erc-server-JOIN-functions 'my-notify-JOIN)
+;(add-hook 'erc-server-JOIN-functions 'my-notify-JOIN)
 
 (defun my-notify-PRIVMSG (proc parsed)
   "Popup whenever someone privmsgs you and you're not seeing it"
@@ -260,7 +260,7 @@ erc-modified-channels-alist, filtered by erc-tray-ignored-channels."
       ;;prevents from blinking on messages for which there is already
       ;;a notification
       ;; (setq erc-tray-inhibit-one-activation t)
-      (notify (format "PM de %s" nick)
+      (notify nick
 	      msg)))
   nil)
 ;;notify if away and pmed
