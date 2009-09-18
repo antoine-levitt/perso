@@ -45,7 +45,10 @@ Additional support for inhibiting one activation (quick hack)"
 			     autoaway truncate))
 ;;301 : "x is away"
 ;;305 306 : away messages
-(setq erc-hide-list '("301" "305" "306")
+;;329 : chan created on
+;;324 : chan modes
+;;333 : X set the topic
+(setq erc-hide-list '("301" "305" "306" "324" "329" "333")
       erc-server-reconnect-attempts t
       erc-prompt ">"
       erc-minibuffer-ignored t
@@ -61,7 +64,7 @@ Additional support for inhibiting one activation (quick hack)"
       erc-prompt-for-nickserv-password nil
       erc-track-enable-keybindings nil
       erc-track-exclude-server-buffer t
-      erc-track-exclude-types '("JOIN" "NICK" "PART" "QUIT" "305" "306" "333" "353")
+      erc-track-exclude-types '("JOIN" "NICK" "PART" "QUIT" "305" "306" "333" "353" "324" "329")
       erc-track-position-in-mode-line t
       erc-track-showcount t
       erc-track-switch-direction 'leastactive
