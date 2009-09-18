@@ -64,7 +64,7 @@ Additional support for inhibiting one activation (quick hack)"
       erc-prompt-for-nickserv-password nil
       erc-track-enable-keybindings nil
       erc-track-exclude-server-buffer t
-      erc-track-exclude-types '("JOIN" "NICK" "PART" "QUIT" "305" "306" "333" "353" "324" "329")
+      erc-track-exclude-types '("JOIN" "NICK" "PART" "QUIT" "305" "306" "333" "353" "324" "329" "MODE")
       erc-track-position-in-mode-line t
       erc-track-showcount t
       erc-track-switch-direction 'leastactive
