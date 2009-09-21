@@ -360,12 +360,9 @@
 				(define-key c-mode-base-map "\C-m"
 				  'c-context-line-break)))
 
-;;Ada mode
-;;don't bind ctrl tab
-(add-hook 'ada-mode-hook (lambda ()
-			   (define-key ada-mode-map (kbd "<C-tab>") nil)))
-
 ;;Latex mode
+(load "auctex.el" nil t t)
+(load "preview-latex.el" nil t t)
 ;;don't ask to cache preamble
 (setq preview-auto-cache-preamble t)
 ;;indent when pressing RET
