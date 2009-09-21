@@ -835,7 +835,7 @@ some other pops up with display-buffer), go back to only one window open"
 (setq backup-directory-alist (list (cons "." backup-dir)))
 
 ;;move between windows with meta-arrows
-(windmove-default-keybindings 'meta)
+(windmove-default-keybindings 'shift)
 
 ;;please add a final newline each time I save a buffer
 (setq require-final-newline 't)
