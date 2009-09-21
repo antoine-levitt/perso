@@ -386,6 +386,46 @@
 	      comint-move-point-for-output t)
 (ansi-color-for-comint-mode-on)
 
+
+;;org-mode
+(require 'org-install)
+(add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
+(add-hook 'org-mode-hook 'org-indent-mode)
+(require 'remember)
+(add-hook 'remember-mode-hook 'org-remember-apply-template)
+(global-set-key "\C-cl" 'org-store-link)
+(global-set-key (kbd "s-r") 'remember)
+(global-set-key (kbd "s-a") 'org-agenda)
+
+;bindings
+(add-hook 'org-load-hook
+	  (lambda ()
+	    (define-key org-mode-map (kbd "<C-tab>") nil)
+	    (define-key org-mode-map (kbd "C-c C-r") 'org-refile)
+	    (define-key org-mode-map (kbd "<S-up>") nil)
+	    (define-key org-mode-map (kbd "<S-down>") nil)
+	    (define-key org-mode-map (kbd "<S-right>") nil)
+	    (define-key org-mode-map (kbd "<S-left>") nil)))
+
+;settings
+(setq
+ org-agenda-files (list "~/org/todo.org")
+ org-default-notes-file "~/org/notes.org"
+ org-agenda-ndays 7
+ org-log-done 'time
+ org-startup-folded 'content
+ org-deadline-warning-days 14
+ org-agenda-show-all-dates t
+ org-agenda-skip-deadline-if-done t
+ org-agenda-skip-scheduled-if-done t
+ org-agenda-start-on-weekday nil
+ org-reverse-note-order t
+ org-remember-store-without-prompt t
+ org-remember-templates (quote ((116 "* TODO %?" "~/org/todo.org" "Tasks")
+				(110 "* %?" "~/org/notes.org" "Notes")))
+ remember-annotation-functions (quote (org-remember-annotation))
+ remember-handler-functions (quote (org-remember-handler)))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;compilation
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -583,13 +623,16 @@ Ignores CHAR at point."
 (global-set-key (kbd "s-SPC") 'pop-global-mark)
 (global-set-key (kbd "s-;") 'ede)
 (global-set-key (kbd "s-k") 'kill-whitespace)
-(global-set-key (kbd "s-t") 'exchange-lines)
 (global-set-key (kbd "<s-left>") 'winner-undo)
 (global-set-key (kbd "<s-right>") 'winner-redo)
 (defun note ()
   (interactive)
-  (find-file "~/.notes"))
+  (find-file "~/org/notes.org"))
+(defun todos ()
+  (interactive)
+  (find-file "~/org/todo.org"))
 (global-set-key (kbd "s-n") 'note)
+(global-set-key (kbd "s-t") 'todos)
 (global-set-key (kbd "s-l") 'bury-buffer)
 (defun duplicate-current-line ()
   (interactive)
