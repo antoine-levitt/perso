@@ -793,7 +793,9 @@ some other pops up with display-buffer), go back to only one window open"
     (message "Sorry, buffer is not in Term mode.")))
 (global-set-key [f5] (lambda ()
 		       (interactive)
-		       (term "/bin/bash")))
+		       (with-current-buffer
+			   (term "/bin/bash")
+			 (term-line-mode))))
 (add-hook 'term-mode-hook
 	  (lambda ()
 	    ;;line mode
