@@ -79,6 +79,7 @@ Additional support for inhibiting one activation (quick hack)"
       erc-autoaway-idle-seconds (* 60 30)
       erc-autoaway-message "Away"
       erc-truncate-buffer-on-save t
+      erc-max-buffer-size 6000
       erc-quit-reason (lambda (arg) (or arg "")))
 
 (add-to-list 'auto-coding-alist '("\\.erclogs/.*\\.txt" . utf-8))
