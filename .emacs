@@ -5,7 +5,8 @@
 ;; files and compilation.
 
 ;;library path : used for require, load-library, autoload ...
-(add-to-list 'load-path (expand-file-name "~/.elfiles" ))
+(add-to-list 'load-path (expand-file-name "~/.elfiles"))
+(add-to-list 'load-path (expand-file-name "~/.elfiles/dict"))
 
 ;;byte-recompile elisp files if they need to be
 (byte-recompile-directory "~/.elfiles" 0)
@@ -887,6 +888,10 @@ some other pops up with display-buffer), go back to only one window open"
 (setq ispell-dictionary "fr"
       ispell-silently-savep t
       ispell-program-name "aspell")
+
+; true dictionary : look up words
+(load "dictionary-init")
+(global-set-key (kbd "s-w") 'dictionary-search)
 
 ;;mouse use : paste at point position
 (setq mouse-yank-at-point t)
