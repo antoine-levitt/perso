@@ -406,8 +406,8 @@
 
 ;settings
 (setq
- org-agenda-files (list "~/org/todo.org")
- org-default-notes-file "~/org/notes.org"
+ org-agenda-files (list "~/.emacs.d/org/todo.org")
+ org-default-notes-file "~/.emacs.d/org/notes.org"
  org-agenda-ndays 7
  org-log-done 'time
  org-startup-folded 'content
@@ -418,8 +418,8 @@
  org-agenda-start-on-weekday nil
  org-reverse-note-order t
  org-remember-store-without-prompt t
- org-remember-templates (quote ((116 "* TODO %?" "~/org/todo.org" "Tasks")
-				(110 "* %?" "~/org/notes.org" "Notes")))
+ org-remember-templates (quote ((116 "* TODO %?" "~/.emacs.d/org/todo.org" "Tasks")
+				(110 "* %?" "~/.emacs.d/org/notes.org" "Notes")))
  remember-annotation-functions (quote (org-remember-annotation))
  remember-handler-functions (quote (org-remember-handler)))
 
@@ -624,10 +624,10 @@ Ignores CHAR at point."
 (global-set-key (kbd "<s-right>") 'winner-redo)
 (defun note ()
   (interactive)
-  (find-file "~/org/notes.org"))
+  (find-file "~/.emacs.d/org/notes.org"))
 (defun todos ()
   (interactive)
-  (find-file "~/org/todo.org"))
+  (find-file "~/.emacs.d/org/todo.org"))
 (global-set-key (kbd "s-n") 'note)
 (global-set-key (kbd "s-t") 'todos)
 (global-set-key (kbd "s-l") 'bury-buffer)
