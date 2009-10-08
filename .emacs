@@ -412,7 +412,7 @@
  org-agenda-ndays 7
  org-log-done 'time
  org-startup-folded 'content
- org-deadline-warning-days 14
+ org-deadline-warning-days 4
  org-agenda-show-all-dates t
  org-agenda-skip-deadline-if-done t
  org-agenda-skip-scheduled-if-done t
