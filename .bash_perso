@@ -14,6 +14,8 @@ export HISTSIZE=2000
 export HISTFILESIZE=2000
 #standard mais on sait jamais
 export PATH=~/bin:$PATH
+#prompt 
+export PS1='\u@\h:\w\$ '
 
 #M-q = effacer le dernier mot
 bind '"\eq":backward-kill-word'
