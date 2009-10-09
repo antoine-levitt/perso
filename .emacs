@@ -362,8 +362,9 @@
 				  'c-context-line-break)))
 
 ;;Latex mode
-(load "auctex.el" nil t t)
-(load "preview-latex.el" nil t t)
+(condition-case err
+    (progn (load "auctex.el" nil t t)
+	   (load "preview-latex.el" nil t t)))
 ;;don't ask to cache preamble
 (setq preview-auto-cache-preamble t)
 ;;indent when pressing RET
