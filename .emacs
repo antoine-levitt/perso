@@ -419,7 +419,8 @@
  org-agenda-show-all-dates t
  org-agenda-skip-deadline-if-done t
  org-agenda-skip-scheduled-if-done t
- org-agenda-start-on-weekday nil
+ org-agenda-start-on-weekday 1
+ org-agenda-repeating-timestamp-show-all t
  org-reverse-note-order t
  org-remember-store-without-prompt t
  org-remember-templates (quote ((116 "* TODO %?" "~/.emacs.d/org/todo.org" "Tasks")
@@ -888,7 +889,7 @@ some other pops up with display-buffer), go back to only one window open"
 	       (regexp-quote isearch-string))))))
 
 ;;english dictionary, change it with M-x ispell-change-dictionary
-(setq ispell-dictionary "fr"
+(setq ispell-dictionary "british"
       ispell-silently-savep t
       ispell-program-name "aspell")
 
