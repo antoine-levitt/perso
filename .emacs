@@ -17,7 +17,7 @@
 ;;very crude hack
 (when (string= "1\n"
 	       (shell-command-to-string
-		"ps x | grep emacs | grep -v grep | grep -v emacs-bin | wc -l"))
+		"ps x | grep emacs | grep -v grep | grep -v emacs-bin | grep -v emacsclient | wc -l"))
   (server-start)
   (desktop-save-mode 1))
 
