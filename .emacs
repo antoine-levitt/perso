@@ -370,7 +370,8 @@
 ;;don't ask to cache preamble
 (setq preview-auto-cache-preamble t)
 ;;indent when pressing RET
-(setq TeX-newline-function 'newline-and-indent)
+(setq TeX-newline-function 'newline-and-indent
+      LaTeX-math-abbrev-prefix (kbd "ù"))
 ;;always preview using gnome-open
 (setq TeX-output-view-style
       '(
@@ -380,6 +381,7 @@
 (add-hook 'LaTeX-mode-hook (lambda ()
 			     (auto-fill-mode 1)
 			     (TeX-PDF-mode 1)
+			     (LaTeX-math-mode 1)
 			     ))
 
 ;;shell
