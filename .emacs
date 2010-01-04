@@ -114,7 +114,8 @@
 (load-library "yank-indent")
 
 ;;dired
-;;clean dired default view
+;;clean dired default view : omit hidden files, don't display groups, use human-readable sizes
+(setq dired-listing-switches "-alhG")
 (add-hook 'dired-load-hook (lambda ()
 			     (require 'dired-x)
 			     (setq dired-omit-files
