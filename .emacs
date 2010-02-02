@@ -124,7 +124,16 @@
 (defun dired-gnome-open-file ()
   "Opens the current file in a Dired buffer."
   (interactive)
-  (gnome-open-file (dired-get-file-for-visit)))
+  (launch-command "/usr/bin/gnome-open" (dired-get-file-for-visit)))
+;;add smplayer as M-ret
+(defun smplayer-open-file ()
+  (interactive)
+  (launch-command "/usr/bin/smplayer" (dired-get-file-for-visit)))
+
+(defun launch-command (command filename)
+  "Launches command with argument filename, discarding all output"
+  (let ((process-connection-type nil))
+    (start-process "" nil command filename)))
 
 (defun gnome-open-file (filename)
   "gnome-opens the specified file."
@@ -135,6 +144,7 @@
 (add-hook 'dired-mode-hook
           (lambda ()
             (define-key dired-mode-map (kbd "<C-return>") 'dired-gnome-open-file)
+            (define-key dired-mode-map (kbd "M-RET") 'smplayer-open-file)
 	    (dired-omit-mode)))
 
 ;;C-x v s as main svn entry point
