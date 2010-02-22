@@ -7,13 +7,12 @@
 (setq do-not-disturb nil)
 ;;set this if you don't want to be disturbed by notifications
 ;;(setq do-not-disturb t)
-(defun notify (title message)
+(defun notify (message)
   "Notify user by graphical display"
   (unless do-not-disturb
     (shell-command-to-string (format
-			      "notify-send %s %s"
-			      (shell-quote-argument (concat "" title))
-			      (shell-quote-argument (concat "" message))))))
+			      "gnome-osd-client %s"
+			      (shell-quote-argument (concat "" (xml-escape-string message)))))))
 
 ;;ERC tray. Needs tray_daemon, http://smeuuh.free.fr/tray_daemon/
 ;;defined in emacs_perso : list of regexps for which we don't blink
@@ -237,8 +236,7 @@ erc-modified-channels-alist, filtered by erc-tray-ignored-channels."
   "Notify whenever someone highlights you and you're away"
   (when (and (eq matched-type 'current-nick)
 	     (not (eq t (frame-visible-p (selected-frame)))))
-    (notify (format "HL de %s" (erc-extract-nick nick))
-	    msg)))
+    (notify (format "\<%s\> %s" (erc-extract-nick nick) msg))))
 ;;notify if away and highlighted
 (add-hook 'erc-text-matched-hook 'erc-notify-if-hl)
 
@@ -247,7 +245,7 @@ erc-modified-channels-alist, filtered by erc-tray-ignored-channels."
   (let ((nick (erc-extract-nick (erc-response.sender parsed)))
 	(chan (erc-response.contents parsed)))
     (when (string= chan "&bitlbee")
-      (notify nick "Connexion MSN")))
+      (notify (format "%s s'est connecté" nick))))
   nil)
 ;;notify if someone joins on bitlbee
 ;(add-hook 'erc-server-JOIN-functions 'my-notify-JOIN)
@@ -264,8 +262,7 @@ erc-modified-channels-alist, filtered by erc-tray-ignored-channels."
       ;;prevents from blinking on messages for which there is already
       ;;a notification
       ;; (setq erc-tray-inhibit-one-activation t)
-      (notify nick
-	      msg)))
+      (notify (format "\<%s\> %s" nick msg))))
   nil)
 ;;notify if away and pmed
 (add-hook 'erc-server-PRIVMSG-functions 'my-notify-PRIVMSG)
@@ -383,6 +380,7 @@ erc-modified-channels-alist, filtered by erc-tray-ignored-channels."
   (interactive)
   (global-set-key [escape] 'irc-dwim)
   (global-set-key (kbd "<menu>") 'irc-dwim)
+  (global-set-key (kbd "s-&") (lambda () (interactive) (switch-to-buffer "&bitlbee")))
   (local-set-key (kbd "C-c C-a") 'erc-toggle-away)
   (local-set-key (kbd "C-c C-u") 'browse-url-before-point)
   (local-set-key (kbd "C-c C-q") 'erc-query-prompt)

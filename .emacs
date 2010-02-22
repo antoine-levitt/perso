@@ -114,7 +114,8 @@
 (load-library "yank-indent")
 
 ;;dired
-;;clean dired default view
+;;clean dired default view : omit hidden files, don't display groups, use human-readable sizes
+(setq dired-listing-switches "-alhG")
 (add-hook 'dired-load-hook (lambda ()
 			     (require 'dired-x)
 			     (setq dired-omit-files
@@ -123,7 +124,16 @@
 (defun dired-gnome-open-file ()
   "Opens the current file in a Dired buffer."
   (interactive)
-  (gnome-open-file (dired-get-file-for-visit)))
+  (launch-command "/usr/bin/gnome-open" (dired-get-file-for-visit)))
+;;add smplayer as M-ret
+(defun smplayer-open-file ()
+  (interactive)
+  (launch-command "/usr/bin/smplayer" (dired-get-file-for-visit)))
+
+(defun launch-command (command filename)
+  "Launches command with argument filename, discarding all output"
+  (let ((process-connection-type nil))
+    (start-process "" nil command filename)))
 
 (defun gnome-open-file (filename)
   "gnome-opens the specified file."
@@ -134,6 +144,7 @@
 (add-hook 'dired-mode-hook
           (lambda ()
             (define-key dired-mode-map (kbd "<C-return>") 'dired-gnome-open-file)
+            (define-key dired-mode-map (kbd "M-RET") 'smplayer-open-file)
 	    (dired-omit-mode)))
 
 ;;C-x v s as main svn entry point
@@ -366,7 +377,7 @@
     (progn (load "auctex.el" nil t t)
 	   (load "preview-latex.el" nil t t))
   (error
-    (message "Failed to load auctex")))
+   (message "Failed to load auctex")))
 ;;don't ask to cache preamble
 (setq preview-auto-cache-preamble t)
 ;;indent when pressing RET
@@ -400,7 +411,7 @@
 (global-set-key (kbd "s-r") 'remember)
 (global-set-key (kbd "s-a") 'org-agenda)
 
-;bindings
+					;bindings
 (add-hook 'org-load-hook
 	  (lambda ()
 	    (define-key org-mode-map (kbd "<C-tab>") nil)
@@ -410,7 +421,7 @@
 	    (define-key org-mode-map (kbd "<S-right>") nil)
 	    (define-key org-mode-map (kbd "<S-left>") nil)))
 
-;settings
+					;settings
 (setq
  org-agenda-files (list "~/.emacs.d/org/todo.org")
  org-default-notes-file "~/.emacs.d/org/notes.org"
@@ -664,11 +675,12 @@ Ignores CHAR at point."
 	      (if (or switch-include-erc
 		      (not (eq (buffer-local-value 'major-mode b) 'erc-mode)))
 		  (unless (minibufferp b)
-		    (if (= n 1)
-			(progn
-			  (switch-to-buffer b)
-			  (throw 'tag nil))
-		      (setq n (- n 1))))))
+		    (unless (string-match "^\\*" (buffer-name b))
+		      (if (= n 1)
+			  (progn
+			    (switch-to-buffer b)
+			    (throw 'tag nil))
+			(setq n (- n 1)))))))
 	    (cdr (buffer-list)))))
 
 (defun switch-to-most-recent-buffer (&optional arg)
@@ -895,7 +907,7 @@ some other pops up with display-buffer), go back to only one window open"
       ispell-silently-savep t
       ispell-program-name "aspell")
 
-; true dictionary : look up words
+					; true dictionary : look up words
 (load "dictionary-init")
 (global-set-key (kbd "s-w") 'dictionary-search)
 
