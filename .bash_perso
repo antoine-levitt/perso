@@ -71,6 +71,8 @@ alias apt-up='sudo apt-get update && sudo apt-get dist-upgrade'
 #lancer matlab avec fichier de startup
 alias matlab='matlab -r "run ~/.matlab/startup.m"'
 alias m=matlab
+#xfig with latex fonts
+alias xfig='xfig -specialtext -latexfonts -startlatexFont default' 
 
 
 # -------------------- Git dans tous ses états --------------------
