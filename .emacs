@@ -393,6 +393,7 @@
 			     (auto-fill-mode 1)
 			     (TeX-PDF-mode 1)
 			     (LaTeX-math-mode 1)
+			     (local-set-key (kbd "C-c C-d") 'TeX-insert-braces)
 			     ))
 
 ;;shell
