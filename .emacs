@@ -957,3 +957,16 @@ expression of the same type as those required by around advices"
 (global-set-key (kbd "<down-mouse-3>") (lambda () (interactive) (message "non")))
 (global-set-key (kbd "<mouse-3>") (lambda () (interactive) (message "non")))
 (global-set-key (kbd "<drag-mouse-3>") (lambda () (interactive) (message "non")))
+
+;;notification
+(setq do-not-disturb nil)
+;;set this if you don't want to be disturbed by notifications
+;;(setq do-not-disturb t)
+(defun notify (message)
+  "Notify user by graphical display"
+  (unless do-not-disturb
+    (shell-command-to-string (format
+			      "gnome-osd-client %s"
+			      (shell-quote-argument (concat "" (xml-escape-string message)))))))
+
+(global-set-key (kbd "s-g") 'gnus)

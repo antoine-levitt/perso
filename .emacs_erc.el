@@ -3,17 +3,6 @@
 ;; Helper functions
 ;;--------------------
 
-;;notification
-(setq do-not-disturb nil)
-;;set this if you don't want to be disturbed by notifications
-;;(setq do-not-disturb t)
-(defun notify (message)
-  "Notify user by graphical display"
-  (unless do-not-disturb
-    (shell-command-to-string (format
-			      "gnome-osd-client %s"
-			      (shell-quote-argument (concat "" (xml-escape-string message)))))))
-
 ;;ERC tray. Needs tray_daemon, http://smeuuh.free.fr/tray_daemon/
 ;;defined in emacs_perso : list of regexps for which we don't blink
 ;;the tray icon
