@@ -676,12 +676,12 @@ Ignores CHAR at point."
 	      (if (or switch-include-erc
 		      (not (eq (buffer-local-value 'major-mode b) 'erc-mode)))
 		  (unless (minibufferp b)
-		    (unless (string-match "^\\*" (buffer-name b))
+		    ;(unless (string-match "^\\*" (buffer-name b))
 		      (if (= n 1)
 			  (progn
 			    (switch-to-buffer b)
 			    (throw 'tag nil))
-			(setq n (- n 1)))))))
+			(setq n (- n 1))))));)
 	    (cdr (buffer-list)))))
 
 (defun switch-to-most-recent-buffer (&optional arg)
