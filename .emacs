@@ -22,10 +22,6 @@
   (desktop-save-mode 1))
 
 (custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
  '(inhibit-startup-echo-area-message (user-login-name))
  '(inhibit-startup-screen t)
  '(initial-scratch-message nil)
@@ -962,6 +958,7 @@ expression of the same type as those required by around advices"
 (setq do-not-disturb nil)
 ;;set this if you don't want to be disturbed by notifications
 ;;(setq do-not-disturb t)
+(require 'xml)
 (defun notify (message)
   "Notify user by graphical display"
   (unless do-not-disturb
@@ -969,4 +966,7 @@ expression of the same type as those required by around advices"
 			      "gnome-osd-client %s"
 			      (shell-quote-argument (concat "" (xml-escape-string message)))))))
 
+;; gnus
 (global-set-key (kbd "s-g") 'gnus)
+;; compose mails with message-mode (C-x m)
+(setq mail-user-agent 'gnus-user-agent)
