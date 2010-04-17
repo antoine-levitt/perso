@@ -1,25 +1,23 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;Misc
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Me
-(setq user-mail-address "antoine.levitt@gmail.com")
-(setq user-full-name "Antoine Levitt")
-(setq gnus-ignored-from-addresses "")
+(setq mm-discouraged-alternatives '("text/html" "text/richtext"))
+
 ; Don't bother me
 (setq gnus-always-read-dribble-file t)
 ;; I don't use any other newsreader
 (setq gnus-save-newsrc-file nil 
       gnus-read-newsrc-file nil)
-(setq-default gnus-asynchronous t)
+(setq gnus-asynchronous t)
 ; default value was : "^to\\.\\|^[0-9. 	]+\\( \\|$\\)\\|^[\"][]\"[#'()]"
 ; must have been useful for some reason, around 1970.
 (setq gnus-ignored-newsgroups "")
 ; stfu, kthx
 (setq gnus-verbose 4)
 ;default : (setq gnus-group-line-format "%M%S%p%P%5y:%B%(%g%)%O\n")
-(setq gnus-group-line-format "^%L ?%I !%T %M%S%p%m%P%5y: %(%G %)%O\n")
+(setq gnus-group-line-format "^%L %M%S%p%m%P%4y/%4t: %(%G %)%O\n")
 
-(setq gnus-summary-line-format "%U%R%z%(%[%4L: %-20,20f%]%)%B %s\n"
+(setq gnus-summary-line-format "%U%R%z%(%[%d: %-20,20n%]%)%B %s\n"
       gnus-summary-same-subject "")
 
 (setq gnus-sum-thread-tree-root " >"
@@ -29,6 +27,29 @@
       gnus-sum-thread-tree-leaf-with-other "+-> "
       gnus-sum-thread-tree-single-leaf "`-> ")
 
+(setq gnus-sum-thread-tree-vertical "│")
+(setq gnus-sum-thread-tree-leaf-with-other "├─► ")
+(setq gnus-sum-thread-tree-single-leaf "╰─► ")
+
+
+(setq gnus-inhibit-startup-message t
+      gnus-interactive-exit nil
+      gnus-use-dribble-file nil
+      ; don't bother querying the server about unsubscribed groups
+      gnus-activate-level gnus-level-subscribed)
+
+; toggle between read and unread articles. this is a bit of a hack, and should be better integrated.
+; oh well.
+(setq gnus-group-display-unread nil)
+(defun gnus-group-toggle-unread ()
+  (interactive)
+  (if gnus-group-display-unread
+      (progn
+	(gnus-group-list-groups gnus-level-subscribed nil)
+	(setq gnus-group-display-unread nil))
+    (gnus-group-list-all-groups gnus-level-subscribed)
+    (setq gnus-group-display-unread t)))
+(define-key gnus-group-mode-map (kbd "h") 'gnus-group-toggle-unread)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;Receive mail
@@ -116,3 +137,63 @@
       (10 (message "Gnus timed out."))
     ad-do-it))
 
+(defun gnus-thread-sort-by-least-recent-number (h1 h2)
+  "Sort threads such that the thread with the most recently arrived article comes last."
+  (< (gnus-thread-highest-number h1) (gnus-thread-highest-number h2)))
+
+;(setq gnus-thread-sort-functions '(gnus-thread-sort-by-number (not gnus-thread-sort-by-most-recent-number)))
+(setq gnus-thread-sort-functions '(gnus-thread-sort-by-most-recent-date))
+(setq gnus-article-sort-functions '((not gnus-article-sort-by-date)))
+(setq gnus-group-sort-function '(gnus-group-sort-by-alphabet gnus-group-sort-by-level))
+
+(setq gnus-build-sparse-threads 'more)
+(setq gnus-thread-hide-subtree t)
+;; Sometimes, the cache gets corrupted. Either disable agent or rm -rf ~/News/agent
+;; (setq nnimap-nov-is-evil t)
+(setq gnus-agent nil)
+
+(setq gnus-large-newsgroup 2000)
+
+;; (add-to-list 'gnus-parameters '(".*" (gcc-self . t)))
+;; (setq gnus-gcc-mark-as-read t)
+
+(define-key gnus-group-mode-map (kbd "M-&") nil)
+(define-key gnus-summary-mode-map (kbd "M-&") nil)
+
+(defun gnus-group-bury ()
+  (interactive)
+  (gnus-group-save-newsrc)
+  (bury-buffer))
+; bury instead of gnus-group-exit.
+(define-key gnus-group-mode-map (kbd "q") 'gnus-group-bury)
+
+(gnus-compile)
+
+(defadvice save-buffers-kill-emacs (before quit-gnus (&rest args) activate)
+  (let (buf)
+    (when (and (fboundp 'gnus-alive-p)
+	       (gnus-alive-p)
+	       (bufferp (setq buf (get-buffer "*Group*"))))
+      (with-current-buffer buf
+	(gnus-group-exit)))))
+
+
+;; BBDB
+(require 'bbdb)
+(require 'bbdb-hooks)
+(bbdb-initialize 'gnus 'message)
+(bbdb-insinuate-message)
+(bbdb-insinuate-gnus)
+(setq bbdb-always-add-addresses t)
+(setq bbdb-offer-save 1) ; save without asking
+; add recipients of mails to the bbdb, thanks to matthieu moy
+(autoload 'bbdb/send-hook "moy-bbdb" 
+  "Function to be added to `message-send-hook' to notice records when sending messages" t)
+(add-hook 'message-send-hook 'bbdb/send-hook)
+; add to bbdb if I'm recipient or cc'ed
+(setq bbdb-ignore-most-messages-alist '(("to" . "levitt")
+					("cc" . "levitt")))
+
+(setq bbdb/mail-auto-create-p 'bbdb-ignore-most-messages-hook
+      bbdb/news-auto-create-p 'bbdb-ignore-most-messages-hook)
+(setq bbdb-use-pop-up nil)
