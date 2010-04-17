@@ -833,6 +833,10 @@ some other pops up with display-buffer), go back to only one window open"
 ;;save the minibuffer input
 (savehist-mode 1)
 
+;;save last edit place in files
+(setq-default save-place t)
+(require 'saveplace)
+
 ;;blinking cursor is distracting and useless
 (blink-cursor-mode -1)
 
