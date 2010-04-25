@@ -543,8 +543,18 @@ brake whatever split of windows we might have in the frame."
 ;;easy window management for azerty users
 (global-set-key (kbd "M-é") 'split-window-vertically)
 (global-set-key (kbd "M-\"") 'split-window-horizontally)
-(global-set-key (kbd "M-&") 'delete-other-windows)
-;;make use of that useless key to do something useful. This can fail,
+(defun my-delete-other-windows ()
+  "Delete other windows, and bury buffers that were displayed"
+  (interactive)
+  (when (> (length (window-list)) 1)
+    (dolist (win (cdr (window-list)))
+      (unless (equal (current-buffer) (window-buffer win))
+	      (bury-buffer (window-buffer win))))
+    (delete-other-windows)))
+(global-set-key (kbd "M-&") 'my-delete-other-windows)
+(global-set-key (kbd "C-x 1") 'my-delete-other-windows)
+
+;;make use of that useless ^2 key to do something useful. This can fail on some terminals,
 ;;so protect
 (condition-case err
     (progn
