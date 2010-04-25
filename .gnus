@@ -2,6 +2,7 @@
 ;;Misc
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (setq mm-discouraged-alternatives '("text/html" "text/richtext"))
+(setq mm-discouraged-alternatives '())
 
 ; Don't bother me
 (setq gnus-always-read-dribble-file t)
@@ -17,11 +18,15 @@
 ;default : (setq gnus-group-line-format "%M%S%p%P%5y:%B%(%g%)%O\n")
 (setq gnus-group-line-format "^%L %M%S%p%m%P%4y/%4t: %(%G %)%O\n")
 
-(setq gnus-summary-line-format "%U%R%z%(%[%d: %-20,20n%]%)%B %s\n"
-      gnus-summary-same-subject "")
+;(setq gnus-summary-line-format "%U%R%z%(%[%d: %-20,20n%]%)%B %s\n")
+;(setq gnus-summary-line-format "%&user-date; %-30,30n%B%s\n")
+;; the %uB invokes a function which returns the author name from BBDB
+(setq gnus-summary-line-format "%&user-date; %-30,30uB %B%s\n")
+(setq gnus-user-date-format-alist '((t . "%d.%m.%Y %H:%M")))
 
-(setq gnus-sum-thread-tree-root " >"
-      gnus-sum-thread-tree-single-indent "  "
+
+(setq gnus-sum-thread-tree-root ""
+      gnus-sum-thread-tree-single-indent ""
       gnus-sum-thread-tree-vertical "|"
       gnus-sum-thread-tree-indent " "
       gnus-sum-thread-tree-leaf-with-other "+-> "
@@ -108,6 +113,7 @@
 
 (defun gnus-unread-demon-handler ()
   "Checks new mail, and notify authorities"
+  (interactive)
   (gnus-demon-scan-news)
   (gnus-unread-update-unread-count))
 
@@ -127,8 +133,9 @@
 
 ; every 1 gnus-demon-timestep, do a check
 (gnus-demon-add-handler 'gnus-unread-demon-handler 1 nil)
-; check every 20 seconds
-(setq gnus-demon-timestep 20)
+; check every 2 mins. Furthermore, a sync is done whenever offlineimap does a sync, with
+; postsynchook = emacsclient -e '(gnus-unread-demon-handler)'
+(setq gnus-demon-timestep 120)
 (gnus-demon-init)
 ; if gnus doesn't respond in 10s, give up
 (defadvice gnus-demon-scan-news (around gnus-demon-timeout activate)
@@ -137,32 +144,28 @@
       (10 (message "Gnus timed out."))
     ad-do-it))
 
-(defun gnus-thread-sort-by-least-recent-number (h1 h2)
-  "Sort threads such that the thread with the most recently arrived article comes last."
-  (< (gnus-thread-highest-number h1) (gnus-thread-highest-number h2)))
-
 ;(setq gnus-thread-sort-functions '(gnus-thread-sort-by-number (not gnus-thread-sort-by-most-recent-number)))
 (setq gnus-thread-sort-functions '(gnus-thread-sort-by-most-recent-date))
 (setq gnus-article-sort-functions '((not gnus-article-sort-by-date)))
 (setq gnus-group-sort-function '(gnus-group-sort-by-alphabet gnus-group-sort-by-level))
 
 (setq gnus-build-sparse-threads 'more)
-(setq gnus-thread-hide-subtree t)
-;; Sometimes, the cache gets corrupted. Either disable agent or rm -rf ~/News/agent
-;; (setq nnimap-nov-is-evil t)
+;(setq gnus-thread-hide-subtree t)
+;; Gnus agent is buggy for imap. It's a known issue, but nobody seems
+;; to care. It's not really faster anyway, so disable
 (setq gnus-agent nil)
 
 (setq gnus-large-newsgroup 2000)
 
-;; (add-to-list 'gnus-parameters '(".*" (gcc-self . t)))
-;; (setq gnus-gcc-mark-as-read t)
-
 (define-key gnus-group-mode-map (kbd "M-&") nil)
 (define-key gnus-summary-mode-map (kbd "M-&") nil)
+;(define-key gnus-summary-buffer-map (kbd "M-&") nil)
+(define-key gnus-article-mode-map (kbd "M-&") nil)
 
 (defun gnus-group-bury ()
   (interactive)
   (gnus-group-save-newsrc)
+  (gnus-unread-update-unread-count)
   (bury-buffer))
 ; bury instead of gnus-group-exit.
 (define-key gnus-group-mode-map (kbd "q") 'gnus-group-bury)
@@ -184,6 +187,7 @@
 (bbdb-initialize 'gnus 'message)
 (bbdb-insinuate-message)
 (bbdb-insinuate-gnus)
+(setq bbdb/gnus-summary-mark-known-posters nil)
 (setq bbdb-always-add-addresses t)
 (setq bbdb-offer-save 1) ; save without asking
 ; add recipients of mails to the bbdb, thanks to matthieu moy
@@ -196,4 +200,30 @@
 
 (setq bbdb/mail-auto-create-p 'bbdb-ignore-most-messages-hook
       bbdb/news-auto-create-p 'bbdb-ignore-most-messages-hook)
-(setq bbdb-use-pop-up nil)
+(setq bbdb-use-pop-up nil
+      bbdb-complete-name-allow-cycling t)
+
+
+(setq gnus-summary-thread-gathering-function 'gnus-gather-threads-by-references)
+
+(setq mm-attachment-override-types '("image/.*"))
+
+(defun my-gnus-summary-view-html-alternative ()
+  "Display the HTML part of the current multipart/alternative MIME message
+    in current browser."
+  (interactive)
+  (save-current-buffer
+    (gnus-summary-show-article)
+    (set-buffer gnus-article-buffer)
+    (let ((file (make-temp-file "html-message-" nil ".html"))
+	  (handle (cdr (assq 1 gnus-article-mime-handle-alist))))
+      (mm-save-part-to-file handle file)
+      (browse-url (concat "file://" file)))))
+(define-key gnus-summary-mode-map (kbd "K H")
+  'my-gnus-summary-view-html-alternative)
+
+; suggested in the man. Not sure that's useful though.
+(setq gc-cons-threshold 3500000)
+(setq gnus-newsgroup-maximum-articles nil)
+
+(setq message-tab-body-function (lambda () (interactive) (dabbrev-expand nil)))
