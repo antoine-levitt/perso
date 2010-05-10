@@ -78,14 +78,12 @@
 ; Please be a bit more verbose if the connection fails.
 (setq smtpmail-debug-info t)
 ; Configuration, see emacswiki, for instance http://www.emacswiki.org/emacs/GnusGmail#toc2
-; Configuration in ~/.gnus_perso.el for password privacy
-(load-file "~/.gnus_perso.el")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;Notify. From Matthieu Moy, with modifs
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; set for a specific notification level
-(setq gnus-unread-level 3)
+(setq gnus-unread-level 1)
 ; will be updated
 (setq gnus-previous-unread-count 0)
 (setq gnus-unread-count 0)
@@ -227,3 +225,7 @@
 (setq gnus-newsgroup-maximum-articles nil)
 
 (setq message-tab-body-function (lambda () (interactive) (dabbrev-expand nil)))
+
+
+; Personal info in ~/.gnus_perso.el for password privacy
+(load-file "~/.gnus_perso.el")
