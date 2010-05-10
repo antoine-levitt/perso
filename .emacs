@@ -983,6 +983,28 @@ expression of the same type as those required by around advices"
 			      "gnome-osd-client %s"
 			      (shell-quote-argument (concat "" (xml-escape-string message)))))))
 
+;;ERC tray. Needs tray_daemon, http://smeuuh.free.fr/tray_daemon/
+;;defined in emacs_perso : list of regexps for which we don't blink
+;;the tray icon
+(setq erc-tray-inhibit-one-activation nil)
+(setq erc-tray-ignored-channels nil)
+(setq erc-tray-state nil)
+(setq erc-tray-enable t)
+(defun erc-tray-change-state-aux (arg)
+  "Enables or disable blinking, depending on arg (non-nil or nil)"
+  (unless (eq erc-tray-state arg)
+    (shell-command-to-string
+     (concat "echo " (if arg "B" "b") " > /tmp/tray_daemon_control"))
+    (setq erc-tray-state arg)))
+(defun erc-tray-change-state (arg)
+  "Enables or disable blinking, depending on arg (t or nil).
+Additional support for inhibiting one activation (quick hack)"
+  (when erc-tray-enable
+    (if erc-tray-inhibit-one-activation
+	(setq erc-tray-inhibit-one-activation nil)
+      (erc-tray-change-state-aux arg))))
+
+
 ;; gnus
 (global-set-key (kbd "s-g") 'gnus)
 ;; compose mails with message-mode (C-x m)

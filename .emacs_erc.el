@@ -1,28 +1,5 @@
 (require 'erc)
 ;;--------------------
-;; Helper functions
-;;--------------------
-
-;;ERC tray. Needs tray_daemon, http://smeuuh.free.fr/tray_daemon/
-;;defined in emacs_perso : list of regexps for which we don't blink
-;;the tray icon
-(setq erc-tray-inhibit-one-activation nil)
-(setq erc-tray-ignored-channels nil)
-(setq erc-tray-state nil)
-(defun erc-tray-change-state-aux (arg)
-  "Enables or disable blinking, depending on arg (non-nil or nil)"
-  (unless (eq erc-tray-state arg)
-    (shell-command-to-string
-     (concat "echo " (if arg "B" "b") " > /tmp/tray_daemon_control"))
-    (setq erc-tray-state arg)))
-(defun erc-tray-change-state (arg)
-  "Enables or disable blinking, depending on arg (t or nil).
-Additional support for inhibiting one activation (quick hack)"
-  (if erc-tray-inhibit-one-activation
-      (setq erc-tray-inhibit-one-activation nil)
-    (erc-tray-change-state-aux arg)))
-
-;;--------------------
 ;;Settings
 ;;--------------------
 (setq erc-modules '(autojoin button completion irccontrols list
