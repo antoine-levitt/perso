@@ -401,7 +401,7 @@
 ;;org-mode
 (require 'org-install)
 (add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
-(add-hook 'org-mode-hook 'org-indent-mode)
+(setq org-startup-indented t)
 (require 'remember)
 (add-hook 'remember-mode-hook 'org-remember-apply-template)
 (global-set-key "\C-cl" 'org-store-link)
@@ -656,6 +656,9 @@ Ignores CHAR at point."
 (global-set-key (kbd "s-n") 'note)
 (global-set-key (kbd "s-t") 'todos)
 (global-set-key (kbd "s-l") 'bury-buffer)
+(global-set-key (kbd "s-y") (lambda ()
+			      (interactive)
+			      (popup-menu 'yank-menu)))
 (defun duplicate-current-line ()
   (interactive)
   "Duplicate current line"
