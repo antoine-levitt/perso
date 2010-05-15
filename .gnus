@@ -200,6 +200,7 @@
       bbdb/news-auto-create-p 'bbdb-ignore-most-messages-hook)
 (setq bbdb-use-pop-up nil
       bbdb-complete-name-allow-cycling t)
+(setq bbdb-dwim-net-address-allow-redundancy t)
 
 
 (setq gnus-summary-thread-gathering-function 'gnus-gather-threads-by-references)
