@@ -31,6 +31,8 @@
 
 (require 'zenburn)
 (zenburn)
+(setq font-use-system-font t)
+
 
 ;; general use functions
 (defun toggle-variable (symb)
@@ -60,6 +62,8 @@
 
 ;; amazing new variable in e23. No need to worry about longlines any more
 (setq-default word-wrap t)
+;; ... but still use ll sometimes for reading dense text
+(defalias 'll 'longlines-mode)
 ;; no right fringe
 (fringe-mode '(nil . 0))
 
@@ -111,7 +115,8 @@
 
 ;;dired
 ;;clean dired default view : omit hidden files, don't display groups, use human-readable sizes
-(setq dired-listing-switches "-alhG")
+(setq dired-listing-switches "-alhG"
+      dired-auto-revert-buffer t)
 (add-hook 'dired-load-hook (lambda ()
 			     (require 'dired-x)
 			     (setq dired-omit-files
@@ -406,9 +411,9 @@
 (add-hook 'remember-mode-hook 'org-remember-apply-template)
 (global-set-key "\C-cl" 'org-store-link)
 (global-set-key (kbd "s-r") 'remember)
-(global-set-key (kbd "s-a") 'org-agenda)
+(global-set-key (kbd "s-a") 'org-agenda-list)
 
-					;bindings
+;;bindings
 (add-hook 'org-load-hook
 	  (lambda ()
 	    (define-key org-mode-map (kbd "<C-tab>") nil)
@@ -549,7 +554,7 @@ brake whatever split of windows we might have in the frame."
   (when (> (length (window-list)) 1)
     (dolist (win (cdr (window-list)))
       (unless (equal (current-buffer) (window-buffer win))
-	      (bury-buffer (window-buffer win))))
+	(bury-buffer (window-buffer win))))
     (delete-other-windows)))
 (global-set-key (kbd "M-&") 'my-delete-other-windows)
 (global-set-key (kbd "C-x 1") 'my-delete-other-windows)
@@ -685,12 +690,12 @@ Ignores CHAR at point."
 	      (if (or switch-include-erc
 		      (not (eq (buffer-local-value 'major-mode b) 'erc-mode)))
 		  (unless (minibufferp b)
-		    ;(unless (string-match "^\\*" (buffer-name b))
-		      (if (= n 1)
-			  (progn
-			    (switch-to-buffer b)
-			    (throw 'tag nil))
-			(setq n (- n 1))))));)
+					;(unless (string-match "^\\*" (buffer-name b))
+		    (if (= n 1)
+			(progn
+			  (switch-to-buffer b)
+			  (throw 'tag nil))
+		      (setq n (- n 1))))));)
 	    (cdr (buffer-list)))))
 
 (defun switch-to-most-recent-buffer (&optional arg)
