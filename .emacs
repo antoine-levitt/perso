@@ -926,9 +926,21 @@ some other pops up with display-buffer), go back to only one window open"
       ispell-silently-savep t
       ispell-program-name "aspell")
 
-					; true dictionary : look up words
+;; true dictionary : look up words
 (load "dictionary-init")
-(global-set-key (kbd "s-w") 'dictionary-search)
+;;(global-set-key (kbd "s-w") 'dictionary-search)
+
+
+;; w3m
+(setq w3m-use-cookies t)
+(setq w3m-use-title-buffer-name t)
+(setq w3m-display-inline-images t)
+(defun w3m-switch ()
+  (interactive "")
+  (if (eq 'w3m-mode (current-mm))
+      (w3m-close-window)
+    (w3m)))
+(global-set-key (kbd "s-w") 'w3m-switch)
 
 ;;mouse use : paste at point position
 (setq mouse-yank-at-point t)
