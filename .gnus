@@ -16,7 +16,7 @@
 ; stfu, kthx
 (setq gnus-verbose 4)
 ;default : (setq gnus-group-line-format "%M%S%p%P%5y:%B%(%g%)%O\n")
-(setq gnus-group-line-format "^%L %M%S%p%m%P%4y/%4t: %(%G %)%O\n")
+(setq gnus-group-line-format "%y %(%G %)%O\n")
 
 ;(setq gnus-summary-line-format "%U%R%z%(%[%d: %-20,20n%]%)%B %s\n")
 ;(setq gnus-summary-line-format "%&user-date; %-30,30n%B%s\n")
