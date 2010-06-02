@@ -2,7 +2,7 @@
 ;;Misc
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (setq mm-discouraged-alternatives '("text/html" "text/richtext"))
-(setq mm-discouraged-alternatives '())
+;(setq mm-discouraged-alternatives '())
 
 ; Don't bother me
 (setq gnus-always-read-dribble-file t)
