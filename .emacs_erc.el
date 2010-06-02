@@ -2,6 +2,9 @@
 ;;--------------------
 ;;Settings
 ;;--------------------
+; specific settings for IM gateways : minbif or bitlbee
+(setq im-gateway-channel-name "&bitlbee")
+; erc general conf
 (setq erc-modules '(autojoin button completion irccontrols list
 			     log match menu move-to-prompt
 			     netsplit networks noncommands
@@ -210,7 +213,7 @@ erc-modified-channels-alist, filtered by erc-tray-ignored-channels."
   "Display notification of user connections on bitlbee"
   (let ((nick (erc-extract-nick (erc-response.sender parsed)))
 	(chan (erc-response.contents parsed)))
-    (when (string= chan "&bitlbee")
+    (when (string= chan im-gateway-channel-name)
       (notify (format "%s s'est connecté" nick))))
   nil)
 ;;notify if someone joins on bitlbee
@@ -287,8 +290,11 @@ erc-modified-channels-alist, filtered by erc-tray-ignored-channels."
 (defun erc-names-prompt ()
   "Get names of channel, either using /names or blist if using bitlbee"
   (interactive)
-  (if (string-match "&bitlbee" (buffer-name))
-      (erc-send-message "root: blist")
+  ;;just for bitlbee
+  (if (string= im-gateway-channel-name "&bitlbee")
+      (if (string-match im-gateway-channel-name (buffer-name))
+	  (erc-send-message "root: blist")
+	(erc-channel-names))
     (erc-channel-names)))
 
 ;;--------------------
@@ -346,7 +352,7 @@ erc-modified-channels-alist, filtered by erc-tray-ignored-channels."
   (interactive)
   (global-set-key [escape] 'irc-dwim)
   (global-set-key (kbd "<menu>") 'irc-dwim)
-  (global-set-key (kbd "s-&") (lambda () (interactive) (switch-to-buffer "&bitlbee")))
+  (global-set-key (kbd "s-&") (lambda () (interactive) (switch-to-buffer im-gateway-channel-name)))
   (local-set-key (kbd "C-c C-a") 'erc-toggle-away)
   (local-set-key (kbd "C-c C-u") 'browse-url-before-point)
   (local-set-key (kbd "C-c C-q") 'erc-query-prompt)
