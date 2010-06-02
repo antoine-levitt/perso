@@ -986,7 +986,10 @@ expression of the same type as those required by around advices"
   (unless do-not-disturb
     (shell-command-to-string (format
 			      "gnome-osd-client %s"
-			      (shell-quote-argument (concat "" (xml-escape-string message)))))))
+			      (shell-quote-argument (concat "" (xml-escape-string
+								(if (> (length message) 45)
+								    (concat (substring message  0 45) "...")
+								  message))))))))
 
 ;;ERC tray. Needs tray_daemon, http://smeuuh.free.fr/tray_daemon/
 ;;defined in emacs_perso : list of regexps for which we don't blink
