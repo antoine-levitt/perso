@@ -1,5 +1,3 @@
-% NOTE TO SELF if I forget : run make in src, and move .mexglx
-
 %MPGWRITE Write an MPEG file.
 %	MPGWRITE(M, map, 'filename', options) Encodes M in MPEG 
 %	format using the specified colormap and writes the result to the
@@ -30,4 +28,6 @@
 %
 
 % Copyright 1994, The MathWorks, Inc.
+
+% NOTE TO SELF if I forget : run make in src, and move .mexglx
 
