@@ -979,7 +979,7 @@ expression of the same type as those required by around advices"
 (put 'narrow-to-region 'disabled nil)
 
 ;;read personal info (ERC stuff)
-(load-file "~/.emacs_perso.el")
+(load "~/.emacs_perso.el" t)
 
 (global-set-key (kbd "<down-mouse-1>") (lambda () (interactive) (message "non")))
 (global-set-key (kbd "<mouse-1>") (lambda () (interactive) (message "non")))
@@ -1029,6 +1029,3 @@ Additional support for inhibiting one activation (quick hack)"
 (global-set-key (kbd "s-g") 'gnus)
 ;; compose mails with message-mode (C-x m)
 (setq mail-user-agent 'gnus-user-agent)
-
-;; run gnus
-(gnus)
