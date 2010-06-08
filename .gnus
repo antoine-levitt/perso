@@ -229,4 +229,4 @@
 
 
 ; Personal info in ~/.gnus_perso.el for password privacy
-(load-file "~/.gnus_perso.el")
+(load "~/.gnus_perso.el" t)
