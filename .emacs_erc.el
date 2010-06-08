@@ -11,6 +11,7 @@
 			     readonly ring scrolltobottom
 			     services stamp track smiley
 			     autoaway truncate))
+(require 'erc-dcc)
 ;;301 : "x is away"
 ;;305 306 : away messages
 ;;329 : chan created on
