@@ -22,10 +22,6 @@
   (desktop-save-mode 1))
 
 (custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
  '(inhibit-startup-echo-area-message (user-login-name))
  '(inhibit-startup-screen t)
  '(initial-scratch-message nil)
@@ -35,6 +31,8 @@
 
 (require 'zenburn)
 (zenburn)
+(setq font-use-system-font t)
+
 
 ;; general use functions
 (defun toggle-variable (symb)
@@ -64,6 +62,8 @@
 
 ;; amazing new variable in e23. No need to worry about longlines any more
 (setq-default word-wrap t)
+;; ... but still use ll sometimes for reading dense text
+(defalias 'll 'longlines-mode)
 ;; no right fringe
 (fringe-mode '(nil . 0))
 
@@ -115,7 +115,8 @@
 
 ;;dired
 ;;clean dired default view : omit hidden files, don't display groups, use human-readable sizes
-(setq dired-listing-switches "-alhG")
+(setq dired-listing-switches "-alhG"
+      dired-auto-revert-buffer t)
 (add-hook 'dired-load-hook (lambda ()
 			     (require 'dired-x)
 			     (setq dired-omit-files
@@ -405,14 +406,14 @@
 ;;org-mode
 (require 'org-install)
 (add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
-(add-hook 'org-mode-hook 'org-indent-mode)
+(setq org-startup-indented t)
 (require 'remember)
 (add-hook 'remember-mode-hook 'org-remember-apply-template)
 (global-set-key "\C-cl" 'org-store-link)
 (global-set-key (kbd "s-r") 'remember)
-(global-set-key (kbd "s-a") 'org-agenda)
+(global-set-key (kbd "s-a") 'org-agenda-list)
 
-					;bindings
+;;bindings
 (add-hook 'org-load-hook
 	  (lambda ()
 	    (define-key org-mode-map (kbd "<C-tab>") nil)
@@ -547,8 +548,18 @@ brake whatever split of windows we might have in the frame."
 ;;easy window management for azerty users
 (global-set-key (kbd "M-é") 'split-window-vertically)
 (global-set-key (kbd "M-\"") 'split-window-horizontally)
-(global-set-key (kbd "M-&") 'delete-other-windows)
-;;make use of that useless key to do something useful. This can fail,
+(defun my-delete-other-windows ()
+  "Delete other windows, and bury buffers that were displayed"
+  (interactive)
+  (when (> (length (window-list)) 1)
+    (dolist (win (cdr (window-list)))
+      (unless (equal (current-buffer) (window-buffer win))
+	(bury-buffer (window-buffer win))))
+    (delete-other-windows)))
+(global-set-key (kbd "M-&") 'my-delete-other-windows)
+(global-set-key (kbd "C-x 1") 'my-delete-other-windows)
+
+;;make use of that useless ^2 key to do something useful. This can fail on some terminals,
 ;;so protect
 (condition-case err
     (progn
@@ -650,6 +661,9 @@ Ignores CHAR at point."
 (global-set-key (kbd "s-n") 'note)
 (global-set-key (kbd "s-t") 'todos)
 (global-set-key (kbd "s-l") 'bury-buffer)
+(global-set-key (kbd "s-y") (lambda ()
+			      (interactive)
+			      (popup-menu 'yank-menu)))
 (defun duplicate-current-line ()
   (interactive)
   "Duplicate current line"
@@ -676,12 +690,12 @@ Ignores CHAR at point."
 	      (if (or switch-include-erc
 		      (not (eq (buffer-local-value 'major-mode b) 'erc-mode)))
 		  (unless (minibufferp b)
-		    (unless (string-match "^\\*" (buffer-name b))
-		      (if (= n 1)
-			  (progn
-			    (switch-to-buffer b)
-			    (throw 'tag nil))
-			(setq n (- n 1)))))))
+					;(unless (string-match "^\\*" (buffer-name b))
+		    (if (= n 1)
+			(progn
+			  (switch-to-buffer b)
+			  (throw 'tag nil))
+		      (setq n (- n 1))))));)
 	    (cdr (buffer-list)))))
 
 (defun switch-to-most-recent-buffer (&optional arg)
@@ -837,6 +851,10 @@ some other pops up with display-buffer), go back to only one window open"
 ;;save the minibuffer input
 (savehist-mode 1)
 
+;;save last edit place in files
+(setq-default save-place t)
+(require 'saveplace)
+
 ;;blinking cursor is distracting and useless
 (blink-cursor-mode -1)
 
@@ -908,9 +926,21 @@ some other pops up with display-buffer), go back to only one window open"
       ispell-silently-savep t
       ispell-program-name "aspell")
 
-					; true dictionary : look up words
+;; true dictionary : look up words
 (load "dictionary-init")
-(global-set-key (kbd "s-w") 'dictionary-search)
+;;(global-set-key (kbd "s-w") 'dictionary-search)
+
+
+;; w3m
+(setq w3m-use-cookies t)
+(setq w3m-use-title-buffer-name t)
+(setq w3m-display-inline-images t)
+(defun w3m-switch ()
+  (interactive "")
+  (if (eq 'w3m-mode (current-mm))
+      (w3m-close-window)
+    (w3m)))
+(global-set-key (kbd "s-w") 'w3m-switch)
 
 ;;mouse use : paste at point position
 (setq mouse-yank-at-point t)
@@ -957,3 +987,48 @@ expression of the same type as those required by around advices"
 (global-set-key (kbd "<down-mouse-3>") (lambda () (interactive) (message "non")))
 (global-set-key (kbd "<mouse-3>") (lambda () (interactive) (message "non")))
 (global-set-key (kbd "<drag-mouse-3>") (lambda () (interactive) (message "non")))
+
+;;notification
+(setq do-not-disturb nil)
+;;set this if you don't want to be disturbed by notifications
+;;(setq do-not-disturb t)
+(require 'xml)
+(defun notify (message)
+  "Notify user by graphical display"
+  (unless do-not-disturb
+    (shell-command-to-string (format
+			      "gnome-osd-client %s"
+			      (shell-quote-argument (concat "" (xml-escape-string
+								(if (> (length message) 45)
+								    (concat (substring message  0 45) "...")
+								  message))))))))
+
+;;ERC tray. Needs tray_daemon, http://smeuuh.free.fr/tray_daemon/
+;;defined in emacs_perso : list of regexps for which we don't blink
+;;the tray icon
+(setq erc-tray-inhibit-one-activation nil)
+(setq erc-tray-ignored-channels nil)
+(setq erc-tray-state nil)
+(setq erc-tray-enable t)
+(defun erc-tray-change-state-aux (arg)
+  "Enables or disable blinking, depending on arg (non-nil or nil)"
+  (unless (eq erc-tray-state arg)
+    (shell-command-to-string
+     (concat "echo " (if arg "B" "b") " > /tmp/tray_daemon_control"))
+    (setq erc-tray-state arg)))
+(defun erc-tray-change-state (arg)
+  "Enables or disable blinking, depending on arg (t or nil).
+Additional support for inhibiting one activation (quick hack)"
+  (when erc-tray-enable
+    (if erc-tray-inhibit-one-activation
+	(setq erc-tray-inhibit-one-activation nil)
+      (erc-tray-change-state-aux arg))))
+
+
+;; gnus
+(global-set-key (kbd "s-g") 'gnus)
+;; compose mails with message-mode (C-x m)
+(setq mail-user-agent 'gnus-user-agent)
+
+;; run gnus
+(gnus)
