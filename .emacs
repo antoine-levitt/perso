@@ -21,7 +21,25 @@
   (server-start)
   (desktop-save-mode 1))
 
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(diredp-dir-heading ((t (:foreground "Blue"))))
+ '(diredp-dir-priv ((t (:foreground "DarkRed"))))
+ '(diredp-exec-priv ((t nil)))
+ '(diredp-no-priv ((t nil)))
+ '(diredp-other-priv ((t nil)))
+ '(diredp-rare-priv ((t (:foreground "Magenta"))))
+ '(diredp-read-priv ((t nil)))
+ '(diredp-write-priv ((t nil))))
+
 (custom-set-variables
+  ;; custom-set-variables was added by Custom.
+  ;; If you edit it by hand, you could mess it up, so be careful.
+  ;; Your init file should contain only one such instance.
+  ;; If there is more than one, they won't work right.
  '(inhibit-startup-echo-area-message (user-login-name))
  '(inhibit-startup-screen t)
  '(initial-scratch-message nil)
@@ -114,13 +132,6 @@
 (load-library "yank-indent")
 
 ;;dired
-;;clean dired default view : omit hidden files, don't display groups, use human-readable sizes
-(setq dired-listing-switches "-alhG"
-      dired-auto-revert-buffer t)
-(add-hook 'dired-load-hook (lambda ()
-			     (require 'dired-x)
-			     (setq dired-omit-files
-				   (concat dired-omit-files "\\|^\\..+$"))))
 ;;add gnome-open as C-ret
 (defun dired-gnome-open-file ()
   "Opens the current file in a Dired buffer."
@@ -141,6 +152,15 @@
   (interactive "fFile to open: ")
   (let ((process-connection-type nil))
     (start-process "" nil "/usr/bin/gnome-open" filename)))
+
+(require 'dired-x)
+(require 'dired+)
+(require 'wuxch-dired-copy-paste)
+(setq dired-omit-files
+      (concat dired-omit-files "\\|^\\..+$"))
+;;clean dired default view : omit hidden files, don't display groups, use human-readable sizes
+(setq dired-listing-switches "-alhG"
+      dired-auto-revert-buffer t)
 
 (add-hook 'dired-mode-hook
           (lambda ()
