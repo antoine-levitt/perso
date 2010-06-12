@@ -171,6 +171,7 @@
       (concat dired-omit-files "\\|^\\..+$"))
 ;;clean dired default view : omit hidden files, don't display groups, use human-readable sizes
 (setq dired-listing-switches "-alhG"
+      dired-free-space-args "-Pkm"
       dired-auto-revert-buffer t)
 
 (add-hook 'dired-mode-hook 'dired-omit-mode)
