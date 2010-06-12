@@ -27,13 +27,16 @@
   ;; If you edit it by hand, you could mess it up, so be careful.
   ;; Your init file should contain only one such instance.
   ;; If there is more than one, they won't work right.
- '(diredp-dir-heading ((t (:foreground "White"))))
- '(diredp-dir-priv ((t (:foreground "DarkBlue"))))
+ '(diredp-date-time ((t (:foreground "#8fb28f"))))
+ '(diredp-dir-heading ((t (:foreground "LightBlue"))))
+ '(diredp-dir-priv ((t (:foreground "LightBlue"))))
+ '(diredp-symlink ((t (:foreground "Grey"))))
  '(diredp-exec-priv ((t nil)))
  '(diredp-file-name ((t (:foreground "White"))))
  '(diredp-file-suffix ((t (:foreground "Grey"))))
  '(diredp-flag-mark ((t (:foreground "Yellow"))))
  '(diredp-flag-mark-line ((t (:foreground "red"))))
+ '(diredp-inode+size ((t (:foreground "LightBlue"))))
  '(diredp-no-priv ((t nil)))
  '(diredp-other-priv ((t nil)))
  '(diredp-rare-priv ((t (:foreground "Magenta"))))
