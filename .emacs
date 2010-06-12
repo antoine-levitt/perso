@@ -39,6 +39,7 @@
  '(diredp-inode+size ((t (:foreground "LightBlue"))))
  '(diredp-no-priv ((t nil)))
  '(diredp-other-priv ((t nil)))
+ '(diredp-link-priv ((t (:foreground "Grey"))))
  '(diredp-rare-priv ((t (:foreground "Magenta"))))
  '(diredp-read-priv ((t nil)))
  '(diredp-write-priv ((t nil))))
