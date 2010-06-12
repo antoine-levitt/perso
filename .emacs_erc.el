@@ -12,11 +12,6 @@
 			     services stamp track smiley
 			     autoaway truncate))
 (require 'erc-dcc)
-;;301 : "x is away"
-;;305 306 : away messages
-;;329 : chan created on
-;;324 : chan modes
-;;333 : X set the topic
 (setq erc-hide-list '("301" "305" "306" "324" "329" "333")
       erc-server-reconnect-attempts t
       erc-prompt ">"
@@ -33,11 +28,21 @@
       erc-prompt-for-nickserv-password nil
       erc-track-enable-keybindings nil
       erc-track-exclude-server-buffer t
+      ;;301 : "x is away"
+      ;;305 306 : away messages
+      ;;329 : chan created on
+      ;;324 : chan modes
+      ;;333 : X set the topic
       erc-track-exclude-types '("JOIN" "NICK" "PART" "QUIT" "305" "306" "333" "353" "324" "329" "MODE" "TOPIC")
       erc-track-position-in-mode-line t
       erc-track-showcount t
       erc-track-switch-direction 'leastactive
       erc-track-visibility 'visible
+      ;; only fontify indicator on HLs
+      erc-track-faces-priority-list
+      '((erc-nick-default-face erc-current-nick-face)
+	erc-current-nick-face erc-keyword-face
+	erc-default-face)
       erc-timestamp-only-if-changed-flag nil
       erc-timestamp-format "%D %T "
       erc-hide-timestamps t
