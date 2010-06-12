@@ -135,15 +135,24 @@
 (load-library "yank-indent")
 
 ;;dired
+(require 'dired-x)
+(require 'dired+)
+(require 'wuxch-dired-copy-paste)
+(define-key dired-mode-map (kbd "M-w") 'wuxch-dired-copy)
+(define-key dired-mode-map (kbd "C-w") 'wuxch-dired-cut)
+(define-key dired-mode-map (kbd "C-y") 'wuxch-dired-paste)
+
 ;;add gnome-open as C-ret
 (defun dired-gnome-open-file ()
   "Opens the current file in a Dired buffer."
   (interactive)
-  (launch-command "/usr/bin/gnome-open" (dired-get-file-for-visit)))
+  (launch-command "gnome-open" (dired-get-file-for-visit)))
+(define-key dired-mode-map (kbd "<C-return>") 'dired-gnome-open-file)
 ;;add smplayer as M-ret
 (defun smplayer-open-file ()
   (interactive)
-  (launch-command "/usr/bin/smplayer" (dired-get-file-for-visit)))
+  (launch-command "smplayer" (dired-get-file-for-visit)))
+(define-key dired-mode-map (kbd "M-RET") 'smplayer-open-file)
 
 (defun launch-command (command filename)
   "Launches command with argument filename, discarding all output"
@@ -156,24 +165,13 @@
   (let ((process-connection-type nil))
     (start-process "" nil "/usr/bin/gnome-open" filename)))
 
-(require 'dired-x)
-(require 'dired+)
-(require 'wuxch-dired-copy-paste)
-(define-key dired-mode-map (kbd "M-w") 'wuxch-dired-copy)
-(define-key dired-mode-map (kbd "C-w") 'wuxch-dired-cut)
-(define-key dired-mode-map (kbd "C-y") 'wuxch-dired-paste)
-
 (setq dired-omit-files
       (concat dired-omit-files "\\|^\\..+$"))
 ;;clean dired default view : omit hidden files, don't display groups, use human-readable sizes
 (setq dired-listing-switches "-alhG"
       dired-auto-revert-buffer t)
 
-(add-hook 'dired-mode-hook
-          (lambda ()
-            (define-key dired-mode-map (kbd "<C-return>") 'dired-gnome-open-file)
-            (define-key dired-mode-map (kbd "M-RET") 'smplayer-open-file)
-	    (dired-omit-mode)))
+(add-hook 'dired-mode-hook 'dired-omit-mode)
 
 ;;C-x v s as main svn entry point
 ;;note : dired customisations have to be done BEFORE this
