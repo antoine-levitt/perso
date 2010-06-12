@@ -18,7 +18,7 @@
 (when (string= "1\n"
 	       (shell-command-to-string
 		"ps x | grep emacs | grep -v grep | grep -v emacs-bin | grep -v emacsclient | wc -l"))
-  (setq emacs-is-master)
+  (setq emacs-is-master t)
   (server-start)
   (desktop-save-mode 1))
 
