@@ -10,7 +10,6 @@
 
 ;;byte-recompile elisp files if they need to be
 (byte-recompile-directory "~/.elfiles" 0)
-(kill-buffer "*Compile-Log*")
 
 ;;desktop and server
 ;;if we are alone, run server, and load desktop
@@ -1001,12 +1000,12 @@ expression of the same type as those required by around advices"
 ;;read personal info (ERC stuff)
 (load "~/.emacs_perso.el" t)
 
-(global-set-key (kbd "<down-mouse-1>") (lambda () (interactive) (message "non")))
-(global-set-key (kbd "<mouse-1>") (lambda () (interactive) (message "non")))
-(global-set-key (kbd "<drag-mouse-1>") (lambda () (interactive) (message "non")))
-(global-set-key (kbd "<down-mouse-3>") (lambda () (interactive) (message "non")))
-(global-set-key (kbd "<mouse-3>") (lambda () (interactive) (message "non")))
-(global-set-key (kbd "<drag-mouse-3>") (lambda () (interactive) (message "non")))
+;; (global-set-key (kbd "<down-mouse-1>") (lambda () (interactive) (message "non")))
+;; (global-set-key (kbd "<mouse-1>") (lambda () (interactive) (message "non")))
+;; (global-set-key (kbd "<drag-mouse-1>") (lambda () (interactive) (message "non")))
+;; (global-set-key (kbd "<down-mouse-3>") (lambda () (interactive) (message "non")))
+;; (global-set-key (kbd "<mouse-3>") (lambda () (interactive) (message "non")))
+;; (global-set-key (kbd "<drag-mouse-3>") (lambda () (interactive) (message "non")))
 
 ;;notification
 (setq do-not-disturb nil)
