@@ -155,6 +155,10 @@
 (require 'dired-x)
 (require 'dired+)
 (require 'wuxch-dired-copy-paste)
+(define-key dired-mode-map (kbd "M-w") 'wuxch-dired-copy)
+(define-key dired-mode-map (kbd "C-w") 'wuxch-dired-cut)
+(define-key dired-mode-map (kbd "C-y") 'wuxch-dired-paste)
+
 (setq dired-omit-files
       (concat dired-omit-files "\\|^\\..+$"))
 ;;clean dired default view : omit hidden files, don't display groups, use human-readable sizes
