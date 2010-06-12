@@ -14,9 +14,11 @@
 ;;desktop and server
 ;;if we are alone, run server, and load desktop
 ;;very crude hack
+(setq emacs-is-master nil)
 (when (string= "1\n"
 	       (shell-command-to-string
 		"ps x | grep emacs | grep -v grep | grep -v emacs-bin | grep -v emacsclient | wc -l"))
+  (setq emacs-is-master)
   (server-start)
   (desktop-save-mode 1))
 
