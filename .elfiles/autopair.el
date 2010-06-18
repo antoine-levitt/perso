@@ -302,7 +302,7 @@ the list, or call it in your handlers.")
 
 (define-minor-mode autopair-mode
   "Automagically pair braces and quotes like in TextMate."
-  nil " pair" nil
+  nil "" nil
   (cond (autopair-mode
          ;; Setup the dynamic emulation keymap
          ;;
