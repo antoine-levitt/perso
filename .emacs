@@ -137,6 +137,10 @@
 ;;toggle paredit with f6
 (global-set-key (kbd "<f6>") 'paredit-mode)
 
+;;autopair
+(require 'autopair)
+(autopair-global-mode) ;; enable autopair in all buffers 
+
 ;;indent yanked code in programming languages modes
 (load-library "yank-indent")
 
