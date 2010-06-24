@@ -10,18 +10,45 @@
 
 ;;byte-recompile elisp files if they need to be
 (byte-recompile-directory "~/.elfiles" 0)
-(kill-buffer "*Compile-Log*")
 
 ;;desktop and server
 ;;if we are alone, run server, and load desktop
 ;;very crude hack
+(setq emacs-is-master nil)
 (when (string= "1\n"
 	       (shell-command-to-string
 		"ps x | grep emacs | grep -v grep | grep -v emacs-bin | grep -v emacsclient | wc -l"))
+  (setq emacs-is-master t)
   (server-start)
   (desktop-save-mode 1))
 
+(custom-set-faces
+  ;; custom-set-faces was added by Custom.
+  ;; If you edit it by hand, you could mess it up, so be careful.
+  ;; Your init file should contain only one such instance.
+  ;; If there is more than one, they won't work right.
+ '(diredp-date-time ((t (:foreground "#8fb28f"))))
+ '(diredp-dir-heading ((t (:foreground "LightBlue"))))
+ '(diredp-dir-priv ((t (:foreground "LightBlue"))))
+ '(diredp-symlink ((t (:foreground "Grey"))))
+ '(diredp-exec-priv ((t nil)))
+ '(diredp-file-name ((t (:foreground "White"))))
+ '(diredp-file-suffix ((t (:foreground "Grey"))))
+ '(diredp-flag-mark ((t (:foreground "Yellow"))))
+ '(diredp-flag-mark-line ((t (:foreground "red"))))
+ '(diredp-inode+size ((t (:foreground "LightBlue"))))
+ '(diredp-no-priv ((t nil)))
+ '(diredp-other-priv ((t nil)))
+ '(diredp-link-priv ((t (:foreground "Grey"))))
+ '(diredp-rare-priv ((t (:foreground "Magenta"))))
+ '(diredp-read-priv ((t nil)))
+ '(diredp-write-priv ((t nil))))
+
 (custom-set-variables
+  ;; custom-set-variables was added by Custom.
+  ;; If you edit it by hand, you could mess it up, so be careful.
+  ;; Your init file should contain only one such instance.
+  ;; If there is more than one, they won't work right.
  '(inhibit-startup-echo-area-message (user-login-name))
  '(inhibit-startup-screen t)
  '(initial-scratch-message nil)
@@ -110,26 +137,32 @@
 ;;toggle paredit with f6
 (global-set-key (kbd "<f6>") 'paredit-mode)
 
+;;autopair
+(require 'autopair)
+(autopair-global-mode) ;; enable autopair in all buffers 
+
 ;;indent yanked code in programming languages modes
 (load-library "yank-indent")
 
 ;;dired
-;;clean dired default view : omit hidden files, don't display groups, use human-readable sizes
-(setq dired-listing-switches "-alhG"
-      dired-auto-revert-buffer t)
-(add-hook 'dired-load-hook (lambda ()
-			     (require 'dired-x)
-			     (setq dired-omit-files
-				   (concat dired-omit-files "\\|^\\..+$"))))
+(require 'dired-x)
+(require 'dired+)
+(require 'wuxch-dired-copy-paste)
+(define-key dired-mode-map (kbd "M-w") 'wuxch-dired-copy)
+(define-key dired-mode-map (kbd "C-w") 'wuxch-dired-cut)
+(define-key dired-mode-map (kbd "C-y") 'wuxch-dired-paste)
+
 ;;add gnome-open as C-ret
 (defun dired-gnome-open-file ()
   "Opens the current file in a Dired buffer."
   (interactive)
-  (launch-command "/usr/bin/gnome-open" (dired-get-file-for-visit)))
+  (launch-command "gnome-open" (dired-get-file-for-visit)))
+(define-key dired-mode-map (kbd "<C-return>") 'dired-gnome-open-file)
 ;;add smplayer as M-ret
 (defun smplayer-open-file ()
   (interactive)
-  (launch-command "/usr/bin/smplayer" (dired-get-file-for-visit)))
+  (launch-command "smplayer" (dired-get-file-for-visit)))
+(define-key dired-mode-map (kbd "M-RET") 'smplayer-open-file)
 
 (defun launch-command (command filename)
   "Launches command with argument filename, discarding all output"
@@ -142,11 +175,14 @@
   (let ((process-connection-type nil))
     (start-process "" nil "/usr/bin/gnome-open" filename)))
 
-(add-hook 'dired-mode-hook
-          (lambda ()
-            (define-key dired-mode-map (kbd "<C-return>") 'dired-gnome-open-file)
-            (define-key dired-mode-map (kbd "M-RET") 'smplayer-open-file)
-	    (dired-omit-mode)))
+(setq dired-omit-files
+      (concat dired-omit-files "\\|^\\..+$"))
+;;clean dired default view : omit hidden files, don't display groups, use human-readable sizes
+(setq dired-listing-switches "-alhG"
+      dired-free-space-args "-Pkm"
+      dired-auto-revert-buffer t)
+
+(add-hook 'dired-mode-hook 'dired-omit-mode)
 
 ;;C-x v s as main svn entry point
 ;;note : dired customisations have to be done BEFORE this
@@ -652,6 +688,10 @@ Ignores CHAR at point."
 (global-set-key (kbd "s-k") 'kill-whitespace)
 (global-set-key (kbd "<s-left>") 'winner-undo)
 (global-set-key (kbd "<s-right>") 'winner-redo)
+(defun open-shell-here ()
+  (interactive)
+  (launch-command "gnome-terminal" ""))
+(global-set-key (kbd "s-h") 'open-shell-here)
 (defun note ()
   (interactive)
   (find-file "~/.emacs.d/org/notes.org"))
@@ -981,12 +1021,12 @@ expression of the same type as those required by around advices"
 ;;read personal info (ERC stuff)
 (load "~/.emacs_perso.el" t)
 
-(global-set-key (kbd "<down-mouse-1>") (lambda () (interactive) (message "non")))
-(global-set-key (kbd "<mouse-1>") (lambda () (interactive) (message "non")))
-(global-set-key (kbd "<drag-mouse-1>") (lambda () (interactive) (message "non")))
-(global-set-key (kbd "<down-mouse-3>") (lambda () (interactive) (message "non")))
-(global-set-key (kbd "<mouse-3>") (lambda () (interactive) (message "non")))
-(global-set-key (kbd "<drag-mouse-3>") (lambda () (interactive) (message "non")))
+;; (global-set-key (kbd "<down-mouse-1>") (lambda () (interactive) (message "non")))
+;; (global-set-key (kbd "<mouse-1>") (lambda () (interactive) (message "non")))
+;; (global-set-key (kbd "<drag-mouse-1>") (lambda () (interactive) (message "non")))
+;; (global-set-key (kbd "<down-mouse-3>") (lambda () (interactive) (message "non")))
+;; (global-set-key (kbd "<mouse-3>") (lambda () (interactive) (message "non")))
+;; (global-set-key (kbd "<drag-mouse-3>") (lambda () (interactive) (message "non")))
 
 ;;notification
 (setq do-not-disturb nil)
