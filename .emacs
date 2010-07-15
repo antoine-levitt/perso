@@ -139,7 +139,13 @@
 
 ;;autopair
 (require 'autopair)
-(autopair-global-mode) ;; enable autopair in all buffers 
+(autopair-global-mode) ;; enable autopair in all buffers
+(setq autopair-blink nil)
+(add-hook 'erc-mode-hook
+	  #'(lambda () (setq autopair-dont-activate t)))
+(add-hook 'LaTeX-mode-hook
+          #'(lambda ()
+              (modify-syntax-entry ?$ "\"")))
 
 ;;indent yanked code in programming languages modes
 (load-library "yank-indent")
