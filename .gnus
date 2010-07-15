@@ -83,7 +83,7 @@
 ;;Notify. From Matthieu Moy, with modifs
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; set for a specific notification level
-(setq gnus-unread-level 1)
+(setq gnus-unread-level 3) ;to override in personal settings
 ; will be updated
 (setq gnus-previous-unread-count 0)
 (setq gnus-unread-count 0)
@@ -153,7 +153,7 @@
 ;; to care. It's not really faster anyway, so disable
 (setq gnus-agent nil)
 
-(setq gnus-large-newsgroup 2000)
+(setq gnus-large-newsgroup 1000)
 
 (define-key gnus-group-mode-map (kbd "M-&") nil)
 (define-key gnus-summary-mode-map (kbd "M-&") nil)
@@ -187,6 +187,7 @@
 (bbdb-insinuate-gnus)
 (setq bbdb/gnus-summary-mark-known-posters nil)
 (setq bbdb-always-add-addresses t)
+(setq bbdb-new-nets-always-primary t)
 (setq bbdb-offer-save 1) ; save without asking
 ; add recipients of mails to the bbdb, thanks to matthieu moy
 (autoload 'bbdb/send-hook "moy-bbdb" 
