@@ -76,6 +76,9 @@
   (insert (format-time-string "%Y-%m-%d %R")))
 ;; automatically update buffers when changed
 (global-auto-revert-mode t)
+(setq global-auto-revert-non-file-buffers t)
+(setq auto-revert-interval 10) ;10s is enough
+(setq auto-revert-verbose nil)
 ;;ido : makes C-x C-f and C-x b a lot easier
 (require 'ido)
 (setq ido-create-new-buffer 'always
@@ -189,6 +192,19 @@
 (setq dired-listing-switches "-alhG"
       dired-free-space-args "-Pkm"
       dired-auto-revert-buffer t)
+;; Omit, be quiet
+(defadvice dired-omit-expunge (around dired-omit-be-quiet)
+  "Be quiet."
+  (flet ((message (&rest args) ))
+    ad-do-it))
+(ad-activate 'dired-omit-expunge)
+;; And while we're at it, save too. Note that it can not prevent
+;; the "Wrote %s" message, which is coded in C.
+(defadvice save-buffer (around save-omit-be-quiet)
+  "Be quiet."
+  (flet ((message (&rest args) ))
+    ad-do-it))
+(ad-activate 'save-buffer)
 
 (add-hook 'dired-mode-hook 'dired-omit-mode)
 
