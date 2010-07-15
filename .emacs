@@ -538,9 +538,23 @@
  compilation-read-command nil
  compilation-scroll-output 'first-error
  compilation-ask-about-save nil
- compilation-window-height 6
+ compilation-window-height nil
  compilation-auto-jump-to-first-error t
  compilation-disable-input t)
+
+(add-hook 'LaTeX-mode-hook
+	  (lambda ()
+	    (let ((master (if (stringp TeX-master)
+			      TeX-master
+			    (file-name-nondirectory (buffer-file-name)))))
+	      (set (make-local-variable 'compile-command)
+		   (format
+		    "rubber -d %s && (wmctrl -a %s || nohup gnome-open %s > /dev/null)"
+		    master
+		    (concat master ".pdf")
+		    (concat master ".pdf")))))
+	  ; important that it's done at the end, because we need the value of TeX-master
+	  'attheend)
 
 ;;compilation by C-c C-c in modes that don't shadow it
 ;;(else s-c)
