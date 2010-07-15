@@ -446,10 +446,11 @@
   (local-set-key (kbd "C-c l") 'reftex-label)
   (local-set-key (kbd "C-c r") 'reftex-reference)
   (local-set-key (kbd "C-c b") 'reftex-citation)
-					; if a main.tex exists, assume it is a master file
-  (setq TeX-master (if (file-exists-p "main.tex")
-		       "main"
-		     t)))
+  ;; if a main.tex exists, assume it is a master file
+  (setq list-of-master-files '("main" "master"))
+  (dolist (name list-of-master-files)
+    (when (file-exists-p (concat name ".tex"))
+      (setq TeX-master name))))
 (add-hook 'LaTeX-mode-hook 'my-tex-config)
 
 ;;shell
