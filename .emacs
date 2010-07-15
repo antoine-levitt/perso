@@ -74,6 +74,8 @@
 (defun insert-time ()
   (interactive)
   (insert (format-time-string "%Y-%m-%d %R")))
+;; automatically update buffers when changed
+(global-auto-revert-mode t)
 ;;ido : makes C-x C-f and C-x b a lot easier
 (require 'ido)
 (setq ido-create-new-buffer 'always
@@ -425,6 +427,31 @@
 (require 'reftex)
 (require 'reftex-toc)
 (setq reftex-plug-into-AUCTeX t)
+(add-hook 'reftex-toc-mode-hook 'delete-other-windows)
+
+;; I need to add a save-window-excursion, or else it'll display the buffer whenever
+;; the buffer is reverted
+(defun reftex-toc-revert (&rest ignore)
+  "Regenerate the *toc* from the internal lists."
+  (interactive)
+  (save-window-excursion
+    (let ((unsplittable
+	   (if (fboundp 'frame-property)
+	       (frame-property (selected-frame) 'unsplittable)
+	     (frame-parameter (selected-frame) 'unsplittable)))
+	  (reftex-rebuilding-toc t))
+      (if unsplittable
+	  (switch-to-buffer
+	   (reftex-get-file-buffer-force reftex-last-toc-file))
+	(switch-to-buffer
+	 (reftex-get-file-buffer-force reftex-last-toc-file))
+	)
+      )
+    (reftex-erase-buffer "*toc*")
+    (setq current-prefix-arg nil)
+    (reftex-toc t)
+    ))
+
 (define-key reftex-toc-map (kbd "q") 'reftex-toc-quit-and-kill)
 ;;don't ask to cache preamble
 (setq preview-auto-cache-preamble t)
@@ -550,7 +577,7 @@
 		    master
 		    (concat master ".pdf")
 		    (concat master ".pdf")))))
-	  ; important that it's done at the end, because we need the value of TeX-master
+	  ;; important that it's done at the end, because we need the value of TeX-master
 	  'attheend)
 
 ;;compilation by C-c C-c in modes that don't shadow it
