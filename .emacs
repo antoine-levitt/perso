@@ -508,12 +508,8 @@
 	    (if (string-match "abnormally" str)
 		(message "There were errors :-(")
 	      ;;no errors, make the compilation window go away in 1 second
-	      (run-at-time 1 nil
-			   (lambda (buf)
-			     (delete-windows-on buf)
-			     (bury-buffer buf))
-			   buf)
-	      (message "No errors :-)")))))
+	      (delete-windows-on buf)
+	      (bury-buffer buf)))))
 
 ;;my-compile is smarter about how to display the new buffer
 (defun display-buffer-by-splitting-largest (buffer force-other-window)
