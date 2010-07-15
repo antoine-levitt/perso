@@ -421,6 +421,11 @@
 	   (load "preview-latex.el" nil t t))
   (error
    (message "Failed to load auctex")))
+;;reftex
+(require 'reftex)
+(require 'reftex-toc)
+(setq reftex-plug-into-AUCTeX t)
+(define-key reftex-toc-map (kbd "q") 'reftex-toc-quit-and-kill)
 ;;don't ask to cache preamble
 (setq preview-auto-cache-preamble t)
 ;;indent when pressing RET
@@ -432,12 +437,20 @@
 	("pdf" "." "gnome-open %o")
 	("dvi" "." "dvipdf %o && gnome-open $(basename %o dvi)pdf")
 	))
-(add-hook 'LaTeX-mode-hook (lambda ()
-			     (auto-fill-mode 1)
-			     (TeX-PDF-mode 1)
-			     (LaTeX-math-mode 1)
-			     (local-set-key (kbd "C-c C-d") 'TeX-insert-braces)
-			     ))
+(defun my-tex-config ()
+  (turn-on-reftex)
+  (auto-fill-mode 1)
+  (TeX-PDF-mode 1)
+  (LaTeX-math-mode 1)
+  (local-set-key (kbd "C-c C-d") 'TeX-insert-braces)
+  (local-set-key (kbd "C-c l") 'reftex-label)
+  (local-set-key (kbd "C-c r") 'reftex-reference)
+  (local-set-key (kbd "C-c b") 'reftex-citation)
+					; if a main.tex exists, assume it is a master file
+  (setq TeX-master (if (file-exists-p "main.tex")
+		       "main"
+		     t)))
+(add-hook 'LaTeX-mode-hook 'my-tex-config)
 
 ;;shell
 (setq-default comint-scroll-to-bottom-on-input 'all
