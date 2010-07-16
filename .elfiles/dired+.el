@@ -2174,16 +2174,31 @@ Add text property `dired-filename' to the file name."
       (while (< (point) end)
         (condition-case nil
             (when (dired-move-to-filename)
-              (add-text-properties
-               (save-excursion (beginning-of-line) (point))
-               (save-excursion (end-of-line) (point))
-               '(mouse-face highlight
-                 help-echo "mouse-2: visit this file in other window"))
               (put-text-property
                (point) (save-excursion (dired-move-to-end-of-filename) (point))
                'dired-filename t))
           (error nil))
         (forward-line 1)))))
+;;MODIFIED BY ME Actually, highlight nothing
+;; (defun dired-insert-set-properties (beg end)
+;;   "Highlight entire dired line upon mouseover.
+;; Add text property `dired-filename' to the file name."
+;;   (let ((inhibit-field-text-motion  t)) ; Just in case.
+;;     (save-excursion
+;;       (goto-char beg)
+;;       (while (< (point) end)
+;;         (condition-case nil
+;;             (when (dired-move-to-filename)
+;;               (add-text-properties
+;;                (save-excursion (beginning-of-line) (point))
+;;                (save-excursion (end-of-line) (point))
+;;                '(mouse-face highlight
+;;                  help-echo "mouse-2: visit this file in other window"))
+;;               (put-text-property
+;;                (point) (save-excursion (dired-move-to-end-of-filename) (point))
+;;                'dired-filename t))
+;;           (error nil))
+;;         (forward-line 1)))))
 
 
 ;;; REPLACE ORIGINAL in `dired.el'.
