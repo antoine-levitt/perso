@@ -86,7 +86,8 @@
 (setq ido-create-new-buffer 'always
       ido-enable-flex-matching t
       ido-max-prospects 12
-      ido-max-window-height 1)
+      ido-max-window-height 1
+      ido-read-file-name-non-ido '(gnus-mime-save-part))
 (ido-mode 1)
 (ido-everywhere 1)
 

@@ -2,6 +2,7 @@
 ;;Misc
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (setq mm-discouraged-alternatives '("text/html" "text/richtext"))
+(setq mm-default-directory "~/")
 ;(setq mm-discouraged-alternatives '())
 
 ; Don't bother me
