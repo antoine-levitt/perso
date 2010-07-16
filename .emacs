@@ -486,6 +486,8 @@
 (defun my-tex-config ()
   (turn-on-reftex)
   (auto-fill-mode 1)
+  (flyspell-mode 1)
+  (flyspell-buffer)
   (TeX-PDF-mode 1)
   (LaTeX-math-mode 1)
   (local-set-key (kbd "C-c C-d") 'TeX-insert-braces)
@@ -596,9 +598,9 @@
 	  (concat master ".pdf")
 	  (concat master ".pdf")))))
 (defun my-bibtex-compilation-setup ()
-    (set (make-local-variable 'compile-command)
-	 (format
-	  "rubber -d main && (wmctrl -a main.pdf || nohup gnome-open main.pdf > /dev/null)")))
+  (set (make-local-variable 'compile-command)
+       (format
+	"rubber -d main && (wmctrl -a main.pdf || nohup gnome-open main.pdf > /dev/null)")))
 (add-hook 'LaTeX-mode-hook 'my-latex-compilation-setup 'attheend)
 (add-hook 'bibtex-mode-hook 'my-bibtex-compilation-setup 'attheend)
 
