@@ -1098,9 +1098,14 @@ some other pops up with display-buffer), go back to only one window open"
 
 ;; need 23.2
 (setq tab-always-indent 'complete)
-(setq completion-at-point-functions (list (lambda ()
-					    (dabbrev-expand nil)
-					    nil)))
+(defun my-dabbrev-expand ()
+  (when (and (not (bolp))
+	     (looking-at "\\_>"))
+    (dabbrev-expand nil)))
+(defun my-dabbrev-expand-and-nil ()
+  (my-dabbrev-expand)
+  nil)
+(setq completion-at-point-functions '(my-dabbrev-expand-and-nil))
 
 (put 'downcase-region 'disabled nil)
 (put 'upcase-region 'disabled nil)
