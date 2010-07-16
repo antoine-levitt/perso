@@ -11,6 +11,8 @@
 ;;byte-recompile elisp files if they need to be
 (byte-recompile-directory "~/.elfiles" 0)
 
+(setq default-directory (expand-file-name "~/"))
+
 ;;desktop and server
 ;;if we are alone, run server, and load desktop
 ;;very crude hack
