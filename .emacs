@@ -582,19 +582,22 @@
  compilation-auto-jump-to-first-error t
  compilation-disable-input t)
 
-(add-hook 'LaTeX-mode-hook
-	  (lambda ()
-	    (let ((master (if (stringp TeX-master)
-			      TeX-master
-			    (file-name-nondirectory (buffer-file-name)))))
-	      (set (make-local-variable 'compile-command)
-		   (format
-		    "rubber -d %s && (wmctrl -a %s || nohup gnome-open %s > /dev/null)"
-		    master
-		    (concat master ".pdf")
-		    (concat master ".pdf")))))
-	  ;; important that it's done at the end, because we need the value of TeX-master
-	  'attheend)
+(defun my-latex-compilation-setup ()
+  (let ((master (if (stringp TeX-master)
+		    TeX-master
+		  (file-name-nondirectory (buffer-file-name)))))
+    (set (make-local-variable 'compile-command)
+	 (format
+	  "rubber -d %s && (wmctrl -a %s || nohup gnome-open %s > /dev/null)"
+	  master
+	  (concat master ".pdf")
+	  (concat master ".pdf")))))
+(defun my-bibtex-compilation-setup ()
+    (set (make-local-variable 'compile-command)
+	 (format
+	  "rubber -d main && (wmctrl -a main.pdf || nohup gnome-open main.pdf > /dev/null)")))
+(add-hook 'LaTeX-mode-hook 'my-latex-compilation-setup 'attheend)
+(add-hook 'bibtex-mode-hook 'my-bibtex-compilation-setup 'attheend)
 
 ;;compilation by C-c C-c in modes that don't shadow it
 ;;(else s-c)
