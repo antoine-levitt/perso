@@ -56,6 +56,27 @@
       erc-max-buffer-size 6000
       erc-quit-reason (lambda (arg) (or arg "")))
 
+;; modify return value of erc-pcomplete: return t if completed
+;; something, nil otherwise
+(require 'erc-pcomplete)
+(defun erc-pcomplete ()
+  "Complete the nick before point."
+  (interactive)
+  (let ((pointbefore (point)))
+    (when (> (point) (erc-beg-of-input-line))
+      (let ((last-command (if (eq last-command 'erc-complete-word)
+			      'pcomplete
+			    last-command)))
+	(call-interactively 'pcomplete)
+	(if (> (point) pointbefore)
+	    t
+	  nil)))))
+(defun erc-complete-with-dabbrev ()
+  (dabbrev-expand nil))
+(add-hook 'erc-complete-functions 'erc-complete-with-dabbrev
+	  'attheend)
+(setq erc-complete-functions '(erc-pcomplete erc-complete-with-dabbrev))
+
 (add-to-list 'auto-coding-alist '("\\.erclogs/.*\\.txt" . utf-8))
 
 

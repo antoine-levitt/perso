@@ -1063,37 +1063,44 @@ some other pops up with display-buffer), go back to only one window open"
     (w3m)))
 (global-set-key (kbd "s-w") 'w3m-switch)
 
-;;mouse use : paste at point position
-(setq mouse-yank-at-point t)
+;;mouse use : paste at point position. Do not highlight
+(setq mouse-yank-at-point t
+      mouse-highlight 1)
 
-;;make tab the ultimate completion key
-(defmacro ad-add-advice-to-key (key expr)
-  "Around advice the key KEY with expression EXPR. KEY should be
-a key in the format accepted by key-binding and such, and EXPR an
-expression of the same type as those required by around advices"
-  `(add-hook 'pre-command-hook
-	     (lambda ()
-	       (when (equal (this-command-keys-vector) ,key)
-		 (ad-add-advice this-command
-				'(azerrswdf ;arbitrary advice name
-				  nil	    ;not protected
-				  t	    ;activated
-				  (lambda ()
-				    ,expr
-				    (ad-unadvise this-command)))
-				'around
-				'last)
-		 (ad-activate this-command)))))
+;; ;;make tab the ultimate completion key
+;; (defmacro ad-add-advice-to-key (key expr)
+;;   "Around advice the key KEY with expression EXPR. KEY should be
+;; a key in the format accepted by key-binding and such, and EXPR an
+;; expression of the same type as those required by around advices"
+;;   `(add-hook 'pre-command-hook
+;; 	     (lambda ()
+;; 	       (when (equal (this-command-keys-vector) ,key)
+;; 		 (ad-add-advice this-command
+;; 				'(azerrswdf ;arbitrary advice name
+;; 				  nil	    ;not protected
+;; 				  t	    ;activated
+;; 				  (lambda ()
+;; 				    ,expr
+;; 				    (ad-unadvise this-command)))
+;; 				'around
+;; 				'last)
+;; 		 (ad-activate this-command)))))
 
-(ad-add-advice-to-key [9]
-		      (let ((p (point)))
-			ad-do-it
-			(when (and (not (minibuffer-window-active-p (minibuffer-window)))
-				   (not (eq (current-mm) 'term-mode))
-				   (= p (point))
-				   (not (bolp))
-				   (looking-at "\\_>"))
-			  (dabbrev-expand nil))))
+;; (ad-add-advice-to-key [9]
+;; 		      (let ((p (point)))
+;; 			ad-do-it
+;; 			(when (and (not (minibuffer-window-active-p (minibuffer-window)))
+;; 				   (not (eq (current-mm) 'term-mode))
+;; 				   (= p (point))
+;; 				   (not (bolp))
+;; 				   (looking-at "\\_>"))
+;; 			  (dabbrev-expand nil))))
+
+;; need 23.2
+(setq tab-always-indent 'complete)
+(setq completion-at-point-functions (list (lambda ()
+					    (dabbrev-expand nil)
+					    nil)))
 
 (put 'downcase-region 'disabled nil)
 (put 'upcase-region 'disabled nil)
