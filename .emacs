@@ -1121,6 +1121,11 @@ some other pops up with display-buffer), go back to only one window open"
 ;; (global-set-key (kbd "<mouse-3>") (lambda () (interactive) (message "non")))
 ;; (global-set-key (kbd "<drag-mouse-3>") (lambda () (interactive) (message "non")))
 
+;; control mouse clipboard. In particular, select-active-regions, activated in 23.2, sucks.
+(setq x-select-enable-primary t)
+(setq x-select-enable-clipboard nil)
+(setq select-active-regions nil)
+
 ;;notification
 (setq do-not-disturb nil)
 ;;set this if you don't want to be disturbed by notifications
