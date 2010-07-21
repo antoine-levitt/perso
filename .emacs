@@ -79,7 +79,7 @@
 ;; automatically update buffers when changed
 (global-auto-revert-mode t)
 (setq global-auto-revert-non-file-buffers t)
-(setq auto-revert-interval 10) ;10s is enough
+(setq auto-revert-interval 30) ;30s is enough
 (setq auto-revert-verbose nil)
 ;;ido : makes C-x C-f and C-x b a lot easier
 (require 'ido)
@@ -590,7 +590,7 @@
 (defun my-latex-compilation-setup ()
   (let ((master (if (stringp TeX-master)
 		    TeX-master
-		  (file-name-nondirectory (buffer-file-name)))))
+		  (file-name-sans-extension (file-name-nondirectory (buffer-file-name))))))
     (set (make-local-variable 'compile-command)
 	 (format
 	  "rubber -d %s && (wmctrl -a %s || nohup gnome-open %s > /dev/null)"
