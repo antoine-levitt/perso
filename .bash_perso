@@ -3,7 +3,7 @@
 #si le shell n'est pas interactif, ne rien faire pour ne
 # pas défoncer scp & co
 if [[ $- != *i* ]] ; then
-	return
+    return
 fi
 
 #emacs : what else.
@@ -14,7 +14,7 @@ export HISTSIZE=2000
 export HISTFILESIZE=2000
 #standard mais on sait jamais
 export PATH=~/bin:$PATH
-#prompt 
+#prompt
 export PS1='\u@\h:\w\$ '
 
 #M-q = effacer le dernier mot
@@ -28,7 +28,7 @@ bind '"\eq":backward-kill-word'
 # for i in * ; do cd $i ; do_stuff ; cd .. ; done : dans ces cas-là,
 # mettre builtin cd à la place de cd.
 cd() {
-builtin cd "$@" && ls --color=auto
+    builtin cd "$@" && ls --color=auto
 }
 
 #accueillir l'utilisateur avec un affichage de ~
@@ -55,8 +55,12 @@ alias less='less -M'
 alias proc='ps aux | grep'
 #potentiellement l'alias le plus utile de tous
 alias c='cd ..'
-#normalement par défaut dans les distros censées, mais bon
+#normalement par défaut dans les distros sensées, mais bon
 alias ls='ls --color=auto'
+#lister les fichiers triés par taille, human readable
+function duf {
+    du -k "$@" | sort -n | while read size fname; do for unit in k M G T P E Z Y; do if [ $size -lt 1024 ]; then echo -e "${size}${unit}\t${fname}"; break; fi; size=$((size/1024)); done; done
+}
 # utile pour faire p.ex. make && coin
 alias coin='play /usr/share/gnubiff/coin.wav'
 #laisser gnome choisir le programme à utiliser
@@ -74,7 +78,7 @@ alias matlabnw='DISPLAY='' matlab'
 alias m=matlab
 alias mnw=matlabnw
 #xfig with latex fonts
-alias xfig='xfig -specialtext -latexfonts -startlatexFont default' 
+alias xfig='xfig -specialtext -latexfonts -startlatexFont default'
 
 
 # -------------------- Git dans tous ses états --------------------
