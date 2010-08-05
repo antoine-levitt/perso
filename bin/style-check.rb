@@ -193,9 +193,9 @@ Input_files.each { |f|
     elsif( ln =~ /\\end\{verbatim\}/ ) then
       in_multiline_verbatim=false
     end
-    if( ln =~ /\\begin\{(equation|math|eqnarray)\*?\}/ ) then
+    if( ln =~ /\\begin\{(equation|math|eqnarray|align)\*?\}/ ) then
       in_multiline_equation=true
-    elsif( ln =~ /\\end\{(equation|math|eqnarray)\*?\}/ ) then
+    elsif( ln =~ /\\end\{(equation|math|eqnarray|align)\*?\}/ ) then
       in_multiline_equation=false
     end
     if(in_multiline_comment == 0 && ! in_multiline_verbatim && ! in_multiline_equation)  then
