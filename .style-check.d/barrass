@@ -3,7 +3,8 @@
 anticipate   % phrase expect
 breakthrough % phrase discovery
 commence     % phrase begin
-conjecture   % phrase guess
+#not in maths
+#conjecture   % phrase guess
 ## I use this correctly. consider     % phrase think
 considerable % phrase much
 ## I often use this in a technical sense. construct    % phrase build

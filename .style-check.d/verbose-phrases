@@ -13,10 +13,12 @@ be done                             % phrase if "X of Y can be done", try "Y can
 combining multiple                  % phrase as opposed to "combining one?"
 aggregating multiple                % phrase "aggregating"
 do this                             % phrase probably verbose if you use a pronoun for what you're doing
-exists[ ]                           % phrase probably no better than "is", but end of sentence may be unavoidable?
+#useful in maths
+#exists[ ]                           % phrase probably no better than "is", but end of sentence may be unavoidable?
 if it is to                         % phrase should be "to" (usually followed by "be X")
 if they are to                      % phrase should be "to" (usually followed by "be X")
-in general                          % phrase unless matched with "in specific," this is usually useless; perhaps "overall"
+# useful in maths
+# in general                          % phrase unless matched with "in specific," this is usually useless; perhaps "overall"
 in order to                         % phrase remove "in order" and get "to"
 in the past                         % phrase past tense is likely enough.
 in the way of                       % phrase should be "as"

@@ -151,7 +151,7 @@ on the part of % phrase "by" or "among" or "for"
 on those occasions in which % phrase "when"
 our attention has been called to the fact that % phrase "we belatedly discovered"
 owing to the fact that  % phrase "because"
-perform % phrase "do"
+#perform % phrase "do"
 place a major emphasis on % phrase "stress" or "emphasize"
 pooled together % phrase "pooled"
 presents a picture similar to % phrase "resembles"
@@ -208,7 +208,7 @@ whether or not to % phrase "whether to"
 with a view to % phrase "to"
 with reference to % phrase "about" (or leave out)
 with regard to % phrase "concerning" or "about" (or leave out)
-with respect to  % phrase "about
+# with respect to  % phrase "about
 with the exception of  % phrase "except"
 with the result that % phrase "so that"
 within the realm of possibility % phrase "possible"
