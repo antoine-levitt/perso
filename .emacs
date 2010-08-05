@@ -494,7 +494,9 @@
   (local-set-key (kbd "C-c l") 'reftex-label)
   (local-set-key (kbd "C-c r") 'reftex-reference)
   (local-set-key (kbd "C-c b") 'reftex-citation)
-  (local-set-key (kbd "M-g n") 'next-error)
+  ;; interferes with compilation
+  (define-key TeX-mode-map [remap next-error] nil)
+  (define-key TeX-mode-map [remap previous-error] nil)
   ;; if a main.tex exists, assume it is a master file
   (setq list-of-master-files '("main" "master"))
   (dolist (name list-of-master-files)
@@ -551,6 +553,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;compilation
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(require 'compile)
 ;;make compile window disappear after successful compilation
 (setq compilation-finish-function
       (lambda (buf str)
@@ -560,23 +563,6 @@
 	      ;;no errors, make the compilation window go away in 1 second
 	      (delete-windows-on buf)
 	      (bury-buffer buf)))))
-
-;;my-compile is smarter about how to display the new buffer
-(defun display-buffer-by-splitting-largest (buffer force-other-window)
-  "Display buffer BUFFER by splitting the largest buffer vertically, except if
-  there is already a window for it."
-  (or (get-buffer-window buffer)
-      (let ((new-win
-	     (with-selected-window (get-largest-window)
-	       (split-window-vertically))))
-	(set-window-buffer new-win buffer)
-	new-win)))
-
-(defun my-compile ()
-  "Ad-hoc display of compilation buffer."
-  (interactive)
-  (let ((display-buffer-function 'display-buffer-by-splitting-largest))
-    (call-interactively 'compile)))
 
 ;;misc compilation settings
 (setq-default
@@ -605,9 +591,16 @@
 (add-hook 'LaTeX-mode-hook 'my-latex-compilation-setup 'attheend)
 (add-hook 'bibtex-mode-hook 'my-bibtex-compilation-setup 'attheend)
 
+(defun compile-with-style-check ()
+  "Use compile's interface for style check, but do not memorise as last compilation command"
+  (interactive)
+  (let ((cmd compile-command))
+    (compile (format "style-check.rb -v %s" buffer-file-name))
+    (setq compile-command cmd)))
+
 ;;compilation by C-c C-c in modes that don't shadow it
 ;;(else s-c)
-(global-set-key (kbd "C-c C-c") 'my-compile)
+(global-set-key (kbd "C-c C-c") 'compile)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;keybindings
@@ -760,7 +753,8 @@ Ignores CHAR at point."
 ;;shortcuts to two-keys commands I often use
 (global-set-key (kbd "s-s") 'save-buffer)
 (global-set-key (kbd "s-b") 'switch-to-buffer)
-(global-set-key (kbd "s-c") 'my-compile)
+(global-set-key (kbd "s-c") 'compile)
+(global-set-key (kbd "s-j") 'compile-with-style-check)
 (global-set-key (kbd "s-f") 'find-file)
 (global-set-key (kbd "s-u") 'undo)
 (global-set-key (kbd "s-i") 'iwb)
