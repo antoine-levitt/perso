@@ -494,6 +494,7 @@
   (local-set-key (kbd "C-c l") 'reftex-label)
   (local-set-key (kbd "C-c r") 'reftex-reference)
   (local-set-key (kbd "C-c b") 'reftex-citation)
+  (local-set-key (kbd "M-g n") 'next-error)
   ;; if a main.tex exists, assume it is a master file
   (setq list-of-master-files '("main" "master"))
   (dolist (name list-of-master-files)
@@ -825,11 +826,15 @@ Ignores CHAR at point."
 (defun switch-to-second-most-recent-buffer (&optional arg)
   (interactive "P")
   (switch-to-nth-buffer 2 arg))
+(defun switch-to-third-most-recent-buffer (&optional arg)
+  (interactive "P")
+  (switch-to-nth-buffer 3 arg))
 
 ;;fast switching between two buffers
 (global-set-key [\s-tab] 'switch-to-most-recent-buffer)
 ;;fast switching between three buffers
 (global-set-key (kbd "<C-tab>") 'switch-to-second-most-recent-buffer)
+(global-set-key (kbd "<C-s-tab>") 'switch-to-third-most-recent-buffer)
 
 
 ;; multifunction

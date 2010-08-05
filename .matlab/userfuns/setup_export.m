@@ -16,6 +16,10 @@ allMarker = [allLines; allPatch; allSurf];
 allEdge   = [allPatch; allSurf];
 allCData  = [allImages; allPatch; allSurf];
 
-set(allFont,'FontSize',18);
+% set(allFont,'FontSize',20);
+% %set(allText, 'FontSize', 36);
+% set(allText, 'FontSize', 30);
+% set(allText, 'FontSize', 24);
 set(allText, 'interpreter', 'latex');
-set(allLines, 'LineWidth', 2);
+% set(allLines, 'LineWidth', 2);
+% set(allMarker, 'MarkerSize', 6);

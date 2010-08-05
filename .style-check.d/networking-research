@@ -1,0 +1,50 @@
+EBONE                % capitalize a somewhat useless rule, now (we standardized on Ebone)
+EBone                % capitalize a somewhat useless rule, now (we standardized on Ebone)
+IPs                  % phrase should be IP addresses
+NMI                  % spelling is Steve's cat's name, not a measurement system
+Planetlab            % capitalize PlanetLab
+Send-Train           % capitalize should be Send-train 
+UUNET                % capitalize UUnet
+[Rr]ate-limits       % spelling "rate limits" has no hyphen, only "rate-limited"
+[a-z] Tier           % syntax don't capitalize Tier unless at the beginning of the sentence
+``no-valley''        % spelling should not be quoted, it's distracting
+best effort          % phrase hyphenate best-effort service.
+bpf                  % capitalize
+ccdf                 % capitalize
+cisco                % capitalize the company name
+city-pairs           % phrase decided to hyphenate
+deliver route        % phrase jargon redundancy
+euclidean % capitalize Euclidean.
+interdomain          % spelling inter-domain
+internet             % capitalize unless talking about an internet other than the Internet
+intradomain          % spelling intra-domain
+load\bbalanc         % syntax load-balanced links, hyphenate load-balancing too
+log-normal           % spelling lognormal is one word.
+magic-packet         % spelling don't hyphenate
+multiaccess          % spelling multi-access (or better, multiple access)
+namespace            % spelling two words
+nimi                 % capitalize
+no\bvalley           % phrase hyphenate no-valley
+pareto               % capitalize
+planetlab            % capitalize PlanetLab
+points links         % phrase probably wrong to have two plural nouns adjacent
+scriptroute          % capitalize
+send-train           % capitalize should be Send-train 
+tier [123]           % phrase should be tier-1, tier-2, or tier-3.
+tier-[123]s          % phrase should be tier-1 ISPs
+ttl                  % capitalize
+weibull              % capitalize proper name.
+PoP                  % syntax I think POP looks less annoying.
+PoPs                 % syntax I think POP looks less annoying.
+the general Internet % phrase it's just the Internet.  there is only one.
+IP-ID                % phrase spell it out
+handful of routers   % phrase they don't fit in your hand
+outdegree            % phrase going to use hyphenated form.
+network measurement algorithms % phrase you're too kind to network measurement.  I haven't seen an algorithm yet.
+http[ ]              % capitalize capitalize HTTP.
+linux                % capitalize capitalize Linux
+Internet[^\.]*Internet % syntax avoid Internet twice in the same sentence?
+zipf                 % capitalize capitalize the guy's name.
+in network distance % phrase what is that?
+TIMEWAIT % spelling it's "TIME-WAIT", hyphenated in rfc 793
+FINWAIT % syntax it's "FIN-WAIT-1" or "FIN-WAIT-2", hyphenated in rfc 793
