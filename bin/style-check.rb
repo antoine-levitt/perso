@@ -153,6 +153,7 @@ def do_cns(line, file, linenum, phra_hash)
       # MODIFIED don't output column number
       # puts "%s:%d:%d: %s (%s)" % [ file, linenum, m.begin(0)+1, matchedlines, m.to_s.tr("\n", ' ') ]
       puts "%s:%d: %s (%s)" % [ file, linenum, matchedlines, m.to_s.tr("\n", ' ') ]
+      $exit_status = 1
       if($VERBOSE && phra_hash[r]) then
         puts "  " + phra_hash[r]
         phra_hash[r] = nil # don't print the reason more than once
@@ -219,9 +220,11 @@ Input_files.each { |f|
         if(checkstring =~ /[a-z0-9][^\.\:\!\?\n}]\n\n/) then
           puts "%s:%d: apparent bad paragraph break: %s" % [ 
             f, i+1, checkstring.gsub(/\n/, '\n') ];
+          $exit_status = 1
         end
       end
     end
   }
 }
-    
+
+exit $exit_status
