@@ -1080,7 +1080,7 @@ some other pops up with display-buffer), go back to only one window open"
 (put 'narrow-to-region 'disabled nil)
 
 ;;read personal info (ERC stuff)
-(load "~/.emacs_perso.el" t)
+(load "~/.emacs.d/priv_emacs.el" t)
 
 ;; (global-set-key (kbd "<down-mouse-1>") (lambda () (interactive) (message "non")))
 ;; (global-set-key (kbd "<mouse-1>") (lambda () (interactive) (message "non")))
