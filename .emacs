@@ -560,33 +560,6 @@ some other pops up with display-buffer), go back to only one window open"
 (ansi-color-for-comint-mode-on)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; Term
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;setup term mode : f5 to switch in/out of term, f6 to switch
-;;line/char mode (enables other keybindings in term buffer)
-(defun my-term-change-mode ()
-  "Change term mode : char-mode <-> line-mode"
-  (interactive)
-  (if (string= mode-name "Term")
-      (if (term-in-char-mode)
-	  (term-line-mode)
-	(term-char-mode))
-    (message "Sorry, buffer is not in Term mode.")))
-(global-set-key [f5] (lambda ()
-		       (interactive)
-		       (with-current-buffer
-			   (term "/bin/bash")
-			 (term-line-mode))))
-(add-hook 'term-mode-hook
-	  (lambda ()
-	    ;;line mode
-	    (local-set-key [f5] 'bury-buffer)
-	    (local-set-key [f6] 'my-term-change-mode)
-	    ;;char mode
-	    (define-key term-raw-map [f5] 'bury-buffer)
-	    (define-key term-raw-map [f6] 'my-term-change-mode)))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Org
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (require 'org-install)
