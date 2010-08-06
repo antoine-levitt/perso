@@ -1,11 +1,11 @@
-;; -*- coding: utf-8 -*-
-;; Emacs of Antoine Levitt. Homepage : http://smeuuh.free.fr
-;; Mainly a mix of many things I found on the net. I coded all the big
-;; functions myself though : most ERC stuff, tab completion, recent
-;; files and compilation.
+;;;; -*- coding: utf-8 -*-
+;; Emacs of Antoine Levitt. Homepage : http://github.com/antoine-levitt/perso
+;; Mainly a mix of many things I found on the net, plus some stuff of mine
+
+;; Can be viewed in outline mode
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Path setup
+;;; Path setup
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/lisp"))
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/lisp/dict"))
@@ -17,7 +17,7 @@
 (byte-recompile-directory "~/.emacs.d/lisp" 0)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Desktop and server
+;;; Desktop and server
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;if we are alone, run server, and load desktop
 ;;very crude hack
@@ -30,7 +30,7 @@
   (desktop-save-mode 1))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Graphical display
+;;; Graphical display
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; there is some stuff in customize, but can't move it
 ;; here for technical reasons
@@ -39,14 +39,14 @@
 (fringe-mode '(nil . 0))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Colour theme and fonts
+;;; Colour theme and fonts
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (require 'zenburn)
 (zenburn)
 (setq font-use-system-font t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Mouse
+;;; Mouse
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;mouse use : paste at point position. Do not highlight
 (setq mouse-yank-at-point t
@@ -58,7 +58,7 @@
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; General-purpose functions
+;;; General-purpose functions
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun toggle-variable (symb)
   (set symb (not (eval symb))))
@@ -98,7 +98,7 @@
 (defun ede () (interactive) (find-file "~/.emacs"))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Misc. settings
+;;; Misc. settings
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; instead of / or whatever
 (setq default-directory (expand-file-name "~/"))
@@ -159,7 +159,7 @@ some other pops up with display-buffer), go back to only one window open"
 (setq require-final-newline 't)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Scrolling
+;;; Scrolling
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;scroll one line at a time
 (setq scroll-conservatively 100000000)
@@ -167,7 +167,7 @@ some other pops up with display-buffer), go back to only one window open"
 (setq scroll-preserve-screen-position 42)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Silent saves
+;;; Silent saves
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Note that this can not prevent
 ;; the "Wrote %s" message, which is coded in C.
@@ -178,7 +178,7 @@ some other pops up with display-buffer), go back to only one window open"
 (ad-activate 'save-buffer)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Word wrapping
+;;; Word wrapping
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; amazing new variable in e23. No need to worry about longlines any more
 (setq-default word-wrap t)
@@ -186,7 +186,7 @@ some other pops up with display-buffer), go back to only one window open"
 (defalias 'll 'longlines-mode)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Display time
+;;; Display time
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; display time in the bar, insert time in buffers
 (setq display-time-default-load-average nil)
@@ -197,7 +197,7 @@ some other pops up with display-buffer), go back to only one window open"
   (insert (format-time-string "%Y-%m-%d %R")))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Auto revert
+;;; Auto revert
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; automatically update buffers when changed
 (global-auto-revert-mode t)
@@ -215,7 +215,7 @@ some other pops up with display-buffer), go back to only one window open"
 	nil))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Ido
+;;; Ido
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;makes C-x C-f and C-x b a lot easier
 (require 'ido)
@@ -228,20 +228,20 @@ some other pops up with display-buffer), go back to only one window open"
 (ido-everywhere 1)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Uniquify
+;;; Uniquify
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; uniquify buffer names
 (require 'uniquify)
 (setq uniquify-buffer-name-style 'post-forward)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Icomplete
+;;; Icomplete
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;icomplete : completion for commands that don't use ido (like help)
 (icomplete-mode 1)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Parenthesis editing
+;;; Parenthesis editing
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;visual paren matching
 (show-paren-mode t)
@@ -252,7 +252,7 @@ some other pops up with display-buffer), go back to only one window open"
 (global-highlight-parentheses-mode t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Paredit
+;;; Paredit
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (require 'paredit)
 ;;undefine some keys I use for other things
@@ -274,7 +274,7 @@ some other pops up with display-buffer), go back to only one window open"
 (global-set-key (kbd "<f6>") 'paredit-mode)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Autopair
+;;; Autopair
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (require 'autopair)
 (autopair-global-mode) ;; enable autopair in all buffers
@@ -288,7 +288,7 @@ some other pops up with display-buffer), go back to only one window open"
               (modify-syntax-entry ?$ "\"")))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Dired
+;;; Dired
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; misc. dired add-ons
 (require 'dired-x)
@@ -326,7 +326,7 @@ some other pops up with display-buffer), go back to only one window open"
 (define-key dired-mode-map (kbd "M-RET") 'smplayer-open-file)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Psvn
+;;; Psvn
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;C-x v s as main svn entry point
 ;;note : dired customisations have to be done BEFORE this
@@ -337,7 +337,7 @@ some other pops up with display-buffer), go back to only one window open"
 (setq svn-status-hide-unmodified t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Egg for git
+;;; Egg for git
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (require 'egg)
 (setq egg-buffer-hide-help-on-start (quote (egg-status-buffer-mode egg-log-buffer-mode egg-file-log-buffer-mode egg-reflog-buffer-mode egg-diff-buffer-mode egg-commit-buffer-mode))
@@ -347,13 +347,13 @@ some other pops up with display-buffer), go back to only one window open"
       egg-commit-buffer-sections '(staged unstaged))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Winner
+;;; Winner
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;C-c left/right to undo/redo changes in window configuration
 (winner-mode 1)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Recent files
+;;; Recent files
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;recent files, interaction with ido
 (defun recentf-ido-find-file-or-maybe-list (&optional arg)
@@ -377,7 +377,7 @@ some other pops up with display-buffer), go back to only one window open"
 (global-set-key (kbd "C-x C-r") 'recentf-ido-find-file-or-maybe-list)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Imenu: jump between indexes
+;;; Imenu: jump between indexes
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (require 'imenu)
 (defun ido-goto-symbol ()
@@ -413,14 +413,14 @@ some other pops up with display-buffer), go back to only one window open"
 (global-set-key (kbd "C-x C-i") 'ido-goto-symbol)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Ibuffer
+;;; Ibuffer
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (require 'al-ibuffer)
 ;;entry point
 (global-set-key (kbd "C-x C-b") 'ibuffer)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Programming modes
+;;; Programming modes
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;ignore case when matching a suffix (such as .F90)
 (setq auto-mode-case-fold t)
@@ -440,7 +440,7 @@ some other pops up with display-buffer), go back to only one window open"
 			  matlab-mode ada-mode))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Matlab
+;;; Matlab
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (require 'matlab)
 (setq matlab-indent-function t)
@@ -451,7 +451,7 @@ some other pops up with display-buffer), go back to only one window open"
 (define-key matlab-mode-map (kbd "M-q") nil)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; C
+;;; C
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (require 'cc-mode)
 ;;linux style
@@ -461,7 +461,7 @@ some other pops up with display-buffer), go back to only one window open"
   'c-context-line-break)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Latex
+;;; Latex
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (condition-case err
     (progn (load "auctex.el" nil t t)
@@ -513,9 +513,16 @@ some other pops up with display-buffer), go back to only one window open"
        (format
 	"rubber -d main && (wmctrl -a main.pdf || nohup gnome-open main.pdf > /dev/null)")))
 (add-hook 'bibtex-mode-hook 'my-bibtex-compilation-setup 'attheend)
+;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Outline
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(setq outline-minor-mode-prefix (kbd "s-o"))
+(add-hook 'LaTeX-mode-hook 'outline-minor-mode)
+(add-hook 'emacs-lisp-mode-hook 'outline-minor-mode)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Reftex
+;;; Reftex
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (require 'reftex)
 (require 'reftex-toc)
@@ -546,14 +553,14 @@ some other pops up with display-buffer), go back to only one window open"
 (define-key reftex-toc-map (kbd "q") 'reftex-toc-quit-and-kill)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Shell
+;;; Shell
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (setq-default comint-scroll-to-bottom-on-input 'all
 	      comint-move-point-for-output t)
 (ansi-color-for-comint-mode-on)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Term
+;;; Term
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;setup term mode : f5 to switch in/out of term, f6 to switch
 ;;line/char mode (enables other keybindings in term buffer)
@@ -580,7 +587,7 @@ some other pops up with display-buffer), go back to only one window open"
 	    (define-key term-raw-map [f6] 'my-term-change-mode)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Org
+;;; Org
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (require 'org-install)
 (add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
@@ -622,7 +629,7 @@ some other pops up with display-buffer), go back to only one window open"
  remember-handler-functions (quote (org-remember-handler)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Compilation
+;;; Compilation
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (require 'compile)
 ;;make compile window disappear after successful compilation
@@ -648,7 +655,7 @@ some other pops up with display-buffer), go back to only one window open"
 (global-set-key (kbd "C-c C-c") 'compile)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Style check
+;;; Style check
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun compile-with-style-check ()
   "Use compile's interface for style check, but do not memorise as last compilation command"
@@ -658,7 +665,7 @@ some other pops up with display-buffer), go back to only one window open"
     (setq compile-command cmd)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Keybindings
+;;; Keybindings
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;see http://www.emacswiki.org/emacs/IgnacioKeyboardQuit , with a little bit of modifications
 (defun my-keyboard-quit()
@@ -782,7 +789,7 @@ Ignores CHAR at point."
 (global-set-key (kbd "C-M-z") 'zap-up-to-char-back)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Super keybindings
+;;; Super keybindings
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;shortcuts to two-keys commands I often use
 (global-set-key (kbd "s-s") 'save-buffer)
@@ -841,7 +848,7 @@ Ignores CHAR at point."
 (global-set-key (kbd "s-d") 'duplicate-current-line)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Easy buffer switching
+;;; Easy buffer switching
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (setq switch-include-erc t)
 (defun toggle-switch-to-erc ()
@@ -883,7 +890,7 @@ Ignores CHAR at point."
 (global-set-key (kbd "<C-s-tab>") 'switch-to-third-most-recent-buffer)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Misc editing commands without keybindings
+;;; Misc editing commands without keybindings
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defun duplicate-region (beg end &optional sep)
@@ -933,7 +940,7 @@ Ignores CHAR at point."
 			'(my-aux-fun) delimited start end))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Ediff
+;;; Ediff
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;vertical split (terminology is confusing)
 (setq ediff-split-window-function 'split-window-horizontally)
@@ -970,7 +977,7 @@ Ignores CHAR at point."
 (add-hook 'ediff-quit-hook 'my-ediff-qh-after 'after)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Isearch
+;;; Isearch
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;zap to isearch
@@ -993,7 +1000,7 @@ Ignores CHAR at point."
 	       (regexp-quote isearch-string))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Dictionnaries
+;;; Dictionnaries
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (setq my-languages '("british" "french"))
 (setq my-languages-index 0)
@@ -1013,7 +1020,7 @@ Ignores CHAR at point."
 (global-set-key (kbd "s-w") 'dictionary-search)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; W3M
+;;; W3M
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; w3m
 (setq w3m-use-cookies t)
@@ -1027,7 +1034,7 @@ Ignores CHAR at point."
 (global-set-key (kbd "s-w") 'w3m-switch)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Tab completion
+;;; Tab completion
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; need 23.2
 (setq tab-always-indent 'complete)
@@ -1041,7 +1048,7 @@ Ignores CHAR at point."
 (setq completion-at-point-functions '(my-dabbrev-expand-and-nil))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Notification framework (used in ERC)
+;;; Notification framework (used in ERC)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;notification
 (setq do-not-disturb nil)
@@ -1059,7 +1066,7 @@ Ignores CHAR at point."
 								  message))))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; System tray
+;;; System tray
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;ERC tray. Needs tray_daemon, http://smeuuh.free.fr/tray_daemon/
 ;;defined in emacs_perso : list of regexps for which we don't blink
@@ -1083,7 +1090,7 @@ Additional support for inhibiting one activation (quick hack)"
       (erc-tray-change-state-aux arg))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Gnus
+;;; Gnus
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (setq gnus-init-file "~/.emacs.d/gnus.el")
 (global-set-key (kbd "s-g") 'gnus)
@@ -1091,7 +1098,7 @@ Additional support for inhibiting one activation (quick hack)"
 (setq mail-user-agent 'gnus-user-agent)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; ERC
+;;; ERC
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (load "~/.emacs.d/erc.el")
 ;;read personal info (ERC stuff)
