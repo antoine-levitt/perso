@@ -270,8 +270,6 @@ some other pops up with display-buffer), go back to only one window open"
 				    "-mode-hook"))))
 	  (add-hook hook (lambda () (paredit-mode 1)))))
       '(emacs-lisp lisp inferior-lisp scheme))
-;;toggle paredit with f6
-(global-set-key (kbd "<f6>") 'paredit-mode)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Autopair
@@ -829,7 +827,6 @@ Ignores CHAR at point."
   (toggle-variable 'switch-include-erc)
   (message "Now %s"
 	   (if switch-include-erc "including erc" "excluding erc")))
-(global-set-key (kbd "<f7>") 'toggle-switch-to-erc)
 ;;quickly switch buffers
 (defun switch-to-nth-buffer (n arg)
   "Switches to nth most recent buffer. Ignores erc buffers unless switch-include-erc is non-nil."
