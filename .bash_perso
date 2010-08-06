@@ -1,20 +1,20 @@
 #!/bin/bash
 
-#si le shell n'est pas interactif, ne rien faire pour ne
-# pas défoncer scp & co
+#si le shell n'est pas interactif, ne surtout rien faire pour ne pas
+# défoncer scp & co
 if [[ $- != *i* ]] ; then
     return
 fi
 
 #emacs : what else.
 export EDITOR='emacsclient -a emacs'
-#ignorer les commandes débiles dans l'historique, et en mettre un de taille correcte
+#ignorer les commandes triviales dans l'historique, et garder 2k commandes
 export HISTIGNORE="&:ls:[bf]g:cd:c"
 export HISTSIZE=2000
 export HISTFILESIZE=2000
 #standard mais on sait jamais
 export PATH=~/bin:$PATH
-#prompt
+#prompt user@host:~$
 export PS1='\u@\h:\w\$ '
 
 #M-q = effacer le dernier mot
@@ -45,11 +45,11 @@ alias enw='emacs -nw'
 alias ec='emacsclient --no-wait -a emacs'
 #connection à un emacs en cours
 alias re='emacsclient -c'
-#connection à un emacs en cours en console
+#connection à un emacs en cours, mode console
 alias renw='emacsclient -t'
 
 # -------------------- Autres --------------------
-#affichage de la progression dans le fichier en bas de less
+#affichage de la progression en % en bas de less
 alias less='less -M'
 #affichage d'un processus
 alias proc='ps aux | grep'
