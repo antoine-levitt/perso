@@ -91,21 +91,17 @@
 
 
 ;;paredit
-(autoload 'paredit-mode "paredit"
-  "Minor mode for pseudo-structurally editing Lisp code."
-  t)
+(require 'paredit)
 ;;undefine keys I use
-(eval-after-load 'paredit
-  '(progn
-     (define-key paredit-mode-map (kbd "M-<down>")
-       nil)
-     (define-key paredit-mode-map (kbd "M-<up>")
-       nil)
-     (define-key paredit-mode-map (kbd "M-\"")
-       nil)
-     (define-key paredit-mode-map (kbd "M-q")
-       'paredit-backward-kill-word)))
-;;paredit in specific modes
+(define-key paredit-mode-map (kbd "M-<down>")
+  nil)
+(define-key paredit-mode-map (kbd "M-<up>")
+  nil)
+(define-key paredit-mode-map (kbd "M-\"")
+  nil)
+(define-key paredit-mode-map (kbd "M-q")
+  'paredit-backward-kill-word)
+;;automatically run paredit in specific modes
 (mapc (lambda (mode)
 	(let ((hook (intern (concat (symbol-name mode)
 				    "-mode-hook"))))
