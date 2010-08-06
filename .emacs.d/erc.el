@@ -168,7 +168,7 @@ erc-modified-channels-alist. Should be executed on window change."
   chan if it is."
   (interactive "p")
   (require 'erc-track)
-  (if (erc-buffer-list)
+  (if (erc-channel-list nil)
       (my-track-switch-buffer arg)
     (irc)))
 (global-set-key [f8] 'irc-dwim)
@@ -377,7 +377,7 @@ erc-modified-channels-alist, filtered by erc-tray-ignored-channels."
 ;;--------------------
 (defun erc-setup-my-commands ()
   (interactive)
-  (global-set-key [escape] 'irc-dwim)
+  (global-set-key [escape] 'my-track-switch-buffer)
   (global-set-key (kbd "<menu>") 'irc-dwim)
   (global-set-key (kbd "s-&") (lambda () (interactive) (switch-to-buffer im-gateway-channel-name)))
   (local-set-key (kbd "C-c C-a") 'erc-toggle-away)
