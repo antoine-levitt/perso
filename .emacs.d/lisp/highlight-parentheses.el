@@ -150,6 +150,13 @@ This is used to prevent analyzing the same context over and over.")
     (kill-local-variable 'hl-paren-point)
     (remove-hook 'post-command-hook 'hl-paren-highlight t)))
 
+;;highlight-parentheses is a buffer-local minor mode : create a global
+;;minor mode of our own
+(define-globalized-minor-mode global-highlight-parentheses-mode
+  highlight-parentheses-mode
+  (lambda ()
+    (highlight-parentheses-mode t)))
+
 (provide 'highlight-parentheses)
 
 ;;; highlight-parentheses.el ends here
