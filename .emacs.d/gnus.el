@@ -230,5 +230,5 @@
 (setq message-tab-body-function (lambda () (interactive) (dabbrev-expand nil)))
 
 
-; Personal info in ~/.gnus_perso.el for password privacy
-(load "~/.gnus_perso.el" t)
+; Personal info for password privacy
+(load "~/.emacs.d/priv_gnus.el" t)
