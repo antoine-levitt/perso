@@ -1,4 +1,4 @@
-;;;; -*- coding: utf-8 -*-
+;;; -*- coding: utf-8 -*-
 ;; Emacs of Antoine Levitt. Homepage : http://github.com/antoine-levitt/perso
 ;; Mainly a mix of many things I found on the net, plus some stuff of mine
 
@@ -518,6 +518,10 @@ some other pops up with display-buffer), go back to only one window open"
 (setq outline-minor-mode-prefix (kbd "s-o"))
 (add-hook 'LaTeX-mode-hook 'outline-minor-mode)
 (add-hook 'emacs-lisp-mode-hook 'outline-minor-mode)
+(defun setup-outline-lisp ()
+  "Only outline on ;;;, thank you."
+  (setq outline-regexp ";;; "))
+(add-hook 'emacs-lisp-mode-hook 'setup-outline-lisp)
 (require 'fold-dwim)
 (setq fold-dwim-outline-style 'nested)
 ;; Have two toggles, one for the header we're in, and one general
