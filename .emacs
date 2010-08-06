@@ -518,6 +518,19 @@ some other pops up with display-buffer), go back to only one window open"
 (setq outline-minor-mode-prefix (kbd "s-o"))
 (add-hook 'LaTeX-mode-hook 'outline-minor-mode)
 (add-hook 'emacs-lisp-mode-hook 'outline-minor-mode)
+(require 'fold-dwim)
+(setq fold-dwim-outline-style 'nested)
+;; Have two toggles, one for the header we're in, and one general
+(global-set-key (kbd "<f5>")  'fold-dwim-toggle)
+(global-set-key (kbd "<f6>")  'fold-dwim-toggle-all)
+;; This is suboptimal, not buffer-local, etc. I don't care.
+(setq fold-dwim-general-toggle nil)
+(defun fold-dwim-toggle-all ()
+  (interactive)
+  (if fold-dwim-general-toggle
+      (fold-dwim-show-all)
+    (fold-dwim-hide-all))
+  (toggle-variable 'fold-dwim-general-toggle))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Reftex
