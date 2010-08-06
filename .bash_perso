@@ -53,6 +53,8 @@ alias renw='emacsclient -t'
 alias less='less -M'
 #affichage d'un processus
 alias proc='ps aux | grep'
+#connections ouvertes
+alias ns='sudo netstat -pnW --inet | less'
 #potentiellement l'alias le plus utile de tous
 alias c='cd ..'
 #normalement par défaut dans les distros sensées, mais bon
@@ -89,15 +91,3 @@ alias gd='git diff'
 alias gl='git pull'
 alias gp='git push'
 alias gst='git status | less'
-
-
-# -------------------- Latexmk --------------------
-#latexmk : compilateur latex automatique
-#nécessite la version patchée pour lui passer les options en paramètres cli
-alias latexmk="latexmk -pdfpreviewer gnome-open -dvipreviewer gnome-open -pspreviewer gnome-open"
-alias pdflmk="latexmk -pdf"
-alias pslmk="latexmk -ps"
-alias dvilmk="latexmk -dvi"
-alias l='pdflmk'
-#visionneur avec recompilation automatique quand changement dans les fichiers sources
-alias lview='pdflmk -pvc -silent'
