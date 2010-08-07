@@ -269,6 +269,7 @@ some other pops up with display-buffer), go back to only one window open"
 				    "-mode-hook"))))
 	  (add-hook hook (lambda () (paredit-mode 1)))))
       '(emacs-lisp lisp inferior-lisp scheme))
+(defalias 'par 'paredit-mode)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Autopair
@@ -456,6 +457,7 @@ some other pops up with display-buffer), go back to only one window open"
 ;;'electric' indentation : indent on newline
 (define-key c-mode-base-map "\C-m"
   'c-context-line-break)
+(define-key c-mode-base-map (kbd "M-q") nil)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Latex
