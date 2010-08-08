@@ -3,7 +3,7 @@
 ;;Settings
 ;;--------------------
 ; specific settings for IM gateways : minbif or bitlbee
-(setq im-gateway-channel-name "&bitlbee")
+(setq im-gateway-channel-name "&friends")
 ; erc general conf
 (setq erc-modules '(autojoin button completion irccontrols list
 			     log match menu move-to-prompt
@@ -317,11 +317,9 @@ erc-modified-channels-alist, filtered by erc-tray-ignored-channels."
 (defun erc-names-prompt ()
   "Get names of channel, either using /names or blist if using bitlbee"
   (interactive)
-  ;;just for bitlbee
-  (if (string= im-gateway-channel-name "&bitlbee")
-      (if (string-match im-gateway-channel-name (buffer-name))
-	  (erc-send-message "root: blist")
-	(erc-channel-names))
+  (if (or (string-match im-gateway-channel-name (buffer-name))
+	  (string-match "&bitlbee" (buffer-name)))
+      (erc-send-message "root: blist")
     (erc-channel-names)))
 
 ;;--------------------
