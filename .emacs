@@ -464,7 +464,6 @@ some other pops up with display-buffer), go back to only one window open"
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Latex
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(require 'tex)
 (condition-case err
     (progn (load "auctex.el" nil t t)
 	   (load "preview-latex.el" nil t t))
@@ -472,9 +471,6 @@ some other pops up with display-buffer), go back to only one window open"
    (message "Failed to load auctex")))
 ;;don't ask to cache preamble
 (setq preview-auto-cache-preamble t)
-;; undo TeX remaps, otherwise it interferes with compilation
-(define-key TeX-mode-map [remap next-error] nil)
-(define-key TeX-mode-map [remap previous-error] nil)
 ;;indent when pressing RET
 (setq TeX-newline-function 'newline-and-indent
       LaTeX-math-abbrev-prefix (kbd "ù"))
@@ -493,6 +489,9 @@ some other pops up with display-buffer), go back to only one window open"
   (local-set-key (kbd "C-c l") 'reftex-label)
   (local-set-key (kbd "C-c r") 'reftex-reference)
   (local-set-key (kbd "C-c b") 'reftex-citation)
+  ;; undo TeX remaps, otherwise it interferes with compilation
+  (define-key TeX-mode-map [remap next-error] nil)
+  (define-key TeX-mode-map [remap previous-error] nil)
 
   ;; If the file contains local variables defining TeX-master, respect that.
   ;; Otherwise, look for a master file in the current directory
