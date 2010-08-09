@@ -538,8 +538,8 @@ some other pops up with display-buffer), go back to only one window open"
 (require 'fold-dwim)
 (setq fold-dwim-outline-style 'nested)
 ;; Have two toggles, one for the header we're in, and one general
-(global-set-key (kbd "<f5>")  'fold-dwim-toggle)
-(global-set-key (kbd "<f6>")  'fold-dwim-toggle-all)
+(global-set-key (kbd "<f6>")  'fold-dwim-toggle)
+(global-set-key (kbd "<f7>")  'fold-dwim-toggle-all)
 ;; This is suboptimal, not buffer-local, etc. I don't care.
 (setq fold-dwim-general-toggle nil)
 (defun fold-dwim-toggle-all ()
@@ -796,8 +796,10 @@ Ignores CHAR at point."
 ;; seriously, when is the last time you used insert?
 (define-key function-key-map (kbd "<insert>") 'event-apply-super-modifier)
 (define-key function-key-map (kbd "<insertchar>") 'event-apply-super-modifier)
+(define-key function-key-map (kbd "<f5>") 'event-apply-super-modifier)
 (global-set-key (kbd "<insertchar>") nil)
 (global-set-key (kbd "<insert>") nil)
+(global-set-key (kbd "<f5>") nil)
 
 ;;shortcuts to two-keys commands I often use
 (global-set-key (kbd "s-s") 'save-buffer)
