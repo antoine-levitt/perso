@@ -792,6 +792,13 @@ Ignores CHAR at point."
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Super keybindings
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; to use on console environments, where s- just doesn't work.
+;; seriously, when is the last time you used insert?
+(define-key function-key-map (kbd "<insert>") 'event-apply-super-modifier)
+(define-key function-key-map (kbd "<insertchar>") 'event-apply-super-modifier)
+(global-set-key (kbd "<insertchar>") nil)
+(global-set-key (kbd "<insert>") nil)
+
 ;;shortcuts to two-keys commands I often use
 (global-set-key (kbd "s-s") 'save-buffer)
 (global-set-key (kbd "s-b") 'switch-to-buffer)
@@ -884,7 +891,8 @@ Ignores CHAR at point."
   (switch-to-nth-buffer 3 arg))
 
 ;;fast switching between two buffers
-(global-set-key [\s-tab] 'switch-to-most-recent-buffer)
+(global-set-key (kbd "<s-tab>") 'switch-to-most-recent-buffer)
+(global-set-key (kbd "s-TAB") 'switch-to-most-recent-buffer)
 ;;fast switching between three buffers
 (global-set-key (kbd "<C-tab>") 'switch-to-second-most-recent-buffer)
 (global-set-key (kbd "<C-s-tab>") 'switch-to-third-most-recent-buffer)
