@@ -101,6 +101,8 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; instead of / or whatever
 (setq default-directory (expand-file-name "~/"))
+;; OH MY GOD IT'S A SECURITY VULNERABILITY, WE ARE ALL GONNA DIE
+(setq enable-local-variables :all)
 ;;automatic indent
 (global-set-key (kbd "RET") 'newline-and-indent)
 ;;no transient mark
