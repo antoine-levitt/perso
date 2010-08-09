@@ -469,6 +469,9 @@ some other pops up with display-buffer), go back to only one window open"
    (message "Failed to load auctex")))
 ;;don't ask to cache preamble
 (setq preview-auto-cache-preamble t)
+;; undo TeX remaps, otherwise it interferes with compilation
+(define-key TeX-mode-map [remap next-error] nil)
+(define-key TeX-mode-map [remap previous-error] nil)
 ;;indent when pressing RET
 (setq TeX-newline-function 'newline-and-indent
       LaTeX-math-abbrev-prefix (kbd "ù"))
@@ -487,24 +490,31 @@ some other pops up with display-buffer), go back to only one window open"
   (local-set-key (kbd "C-c l") 'reftex-label)
   (local-set-key (kbd "C-c r") 'reftex-reference)
   (local-set-key (kbd "C-c b") 'reftex-citation)
-  ;; undo TeX remaps, otherwise it interferes with compilation
-  (define-key TeX-mode-map [remap next-error] nil)
-  (define-key TeX-mode-map [remap previous-error] nil)
-  ;; if a main.tex exists, assume it is a master file
-  (setq list-of-master-files '("main" "master"))
-  (dolist (name list-of-master-files)
-    (when (file-exists-p (concat name ".tex"))
-      (setq TeX-master name)))
-  ;; setup compilation
+
+  ;; If the file contains local variables defining TeX-master, respect that.
+  ;; Otherwise, look for a master file in the current directory
+  ;; Define a local variable by
+  ;; %%% Local Variables:
+  ;; %%% TeX-master: "something"
+  ;; %%% End:
+
+  ;; list of master files to look for, increasing order of priority
+  (setq list-of-master-files '("report" "master" "main"))
+  ;; OK, this is a hack, but we force parsing of the file local variables here
+  (hack-local-variables)
+  (unless (stringp TeX-master)
+    (dolist (name list-of-master-files)
+      (when (file-exists-p (concat name ".tex"))
+  	(setq TeX-master name))))
+  
+  ;; setup compilation, based on TeX-master
   (let ((master (if (stringp TeX-master)
-		    TeX-master
-		  (file-name-sans-extension (file-name-nondirectory (buffer-file-name))))))
+  		    TeX-master
+  		  (file-name-sans-extension (file-name-nondirectory (buffer-file-name))))))
     (set (make-local-variable 'compile-command)
-	 (format
-	  "rubber -d %s && (wmctrl -a %s || nohup gnome-open %s > /dev/null)"
-	  master
-	  (concat master ".pdf")
-	  (concat master ".pdf")))))
+  	 (format
+  	  "rubber -d %s && (wmctrl -a %s.pdf || nohup gnome-open %s.pdf > /dev/null)"
+  	  master master master))))
 (add-hook 'LaTeX-mode-hook 'my-tex-config)
 
 (defun my-bibtex-compilation-setup ()
