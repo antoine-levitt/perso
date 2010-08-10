@@ -106,8 +106,8 @@
   (gnus-group-save-newsrc)
   (gnus-unread-update-unread-count)
   (condition-case err
-      (kill-buffer "*Article*") ;sometimes, articles stay after gnus is quitted.
-				;I don't know why, I don't care, just kill them all!
+      (kill-buffer "*Article*") ;;sometimes, articles stay after gnus is quitted.
+					;I don't know why, I don't care, just kill them all!
     (error nil))
   (bury-buffer))
 ;; bury instead of gnus-group-exit.
@@ -122,6 +122,9 @@
       (with-current-buffer buf
 	(gnus-group-exit)))))
 
+;; fill long
+(require 'gnus-art)
+(define-key gnus-summary-mode-map "l" 'gnus-article-fill-long-lines)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;Receive mail
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
