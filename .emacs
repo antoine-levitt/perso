@@ -1103,7 +1103,12 @@ Additional support for inhibiting one activation (quick hack)"
 ;;; Gnus
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (setq gnus-init-file "~/.emacs.d/gnus.el")
-(global-set-key (kbd "s-g") 'gnus)
+(defun run-gnus ()
+  (interactive)
+  (if (get-buffer "*Group*")
+      (switch-to-buffer "*Group*")
+    (gnus)))
+(global-set-key (kbd "s-g") 'run-gnus)
 ;; compose mails with message-mode (C-x m)
 (setq mail-user-agent 'gnus-user-agent)
 
