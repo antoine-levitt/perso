@@ -83,9 +83,10 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;Notify. From Matthieu Moy, with modifs
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(require 'gnus-demon)
 ; set for a specific notification level
 (setq gnus-unread-level 3) ;to override in personal settings
-; will be updated
+; internal variables
 (setq gnus-previous-unread-count 0)
 (setq gnus-unread-count 0)
 
@@ -110,13 +111,26 @@
       (setq newsrc (cdr newsrc)))
     num-of-unread))
 
-(defun gnus-unread-demon-handler ()
-  "Checks new mail, and notify authorities"
+;;REDEFINED from gnus-demon to allow levels
+(defun gnus-demon-scan-news (&optional n)
+  (let ((win (current-window-configuration)))
+    (unwind-protect
+	(save-window-excursion
+	  (save-excursion
+	    (when (gnus-alive-p)
+	      (save-excursion
+		(set-buffer gnus-group-buffer)
+		(gnus-group-get-new-news n)))))
+      (set-window-configuration win))))
+
+(defun gnus-unread-demon-handler (&optional n)
+  "Checks new mail under priority n, and notify authorities"
   (interactive)
-  (gnus-demon-scan-news)
+  (gnus-demon-scan-news (if n n gnus-unread-level))
   (gnus-unread-update-unread-count))
 
 (defun gnus-unread-update-unread-count ()
+  (interactive)
   (setq gnus-previous-unread-count gnus-unread-count)
   (setq gnus-unread-count (gnus-group-number-of-unread-mail gnus-unread-level))
   (setq gnus-notify-modeline
@@ -129,12 +143,15 @@
 
 (add-hook 'gnus-after-getting-new-news-hook 'gnus-unread-update-unread-count t)
 (add-hook 'gnus-exit-group-hook 'gnus-unread-update-unread-count t)
+(add-hook 'gnus-select-article-hook 'gnus-unread-update-unread-count t)
 
 ; every 1 gnus-demon-timestep, do a check
-(gnus-demon-add-handler 'gnus-unread-demon-handler 1 nil)
-; check every 2 mins. Furthermore, a sync is done whenever offlineimap does a sync, with
+(defun gnus-unread-full-check ()
+  (gnus-unread-demon-handler 7))
+(gnus-demon-add-handler 'gnus-unread-full-check 1 nil)
+; check every 10 mins. Furthermore, a sync is done whenever offlineimap does a sync, with
 ; postsynchook = emacsclient -e '(gnus-unread-demon-handler)'
-(setq gnus-demon-timestep 120)
+(setq gnus-demon-timestep 600)
 (gnus-demon-init)
 ; if gnus doesn't respond in 10s, give up
 (defadvice gnus-demon-scan-news (around gnus-demon-timeout activate)
@@ -150,9 +167,9 @@
 
 (setq gnus-build-sparse-threads 'more)
 ;(setq gnus-thread-hide-subtree t)
-;; Gnus agent is buggy for imap. It's a known issue, but nobody seems
-;; to care. It's not really faster anyway, so disable
-(setq gnus-agent nil)
+;; Gnus agent is buggy for imap, so don't use this for imap (J r in server buffer)
+;; It's a known issue, but nobody seems to care.
+(setq gnus-agent t)
 
 (setq gnus-large-newsgroup 1000)
 
