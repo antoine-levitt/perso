@@ -225,8 +225,7 @@
 
 (defun gnus-unread-full-check ()
   (interactive)
-  (gnus-unread-check-news 5)
-  (message "Did a full check"))
+  (gnus-unread-check-news 5))
 ;; full check after one min of idleness
 (gnus-demon-add-handler 'gnus-unread-full-check 1 t)
 (setq gnus-demon-timestep 60)
