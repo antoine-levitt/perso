@@ -187,7 +187,7 @@ some other pops up with display-buffer), go back to only one window open"
 ;; the "Wrote %s" message, which is coded in C.
 (defadvice save-buffer (around save-omit-be-quiet)
   "Be quiet."
-  (flet ((message (&rest args) ))
+  (flet ((message (&rest args) nil))
     ad-do-it))
 (ad-activate 'save-buffer)
 

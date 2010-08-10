@@ -156,7 +156,7 @@
 ;; up with my "h" keybinding. Therefore, it must die.
 (defadvice gnus-group-get-new-news (around gnus-group-get-new-news-dont-redisplay)
   "Don't redisplay at the end."
-  (flet ((gnus-group-list-groups (&rest args) ))
+  (flet ((gnus-group-list-groups (&rest args) nil))
     ad-do-it))
 (ad-activate 'gnus-group-get-new-news)
 
