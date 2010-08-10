@@ -72,12 +72,14 @@
 (setq gnus-group-display-unread nil)
 (defun gnus-group-toggle-unread ()
   (interactive)
-  (if gnus-group-display-unread
-      (progn
-	(gnus-group-list-groups gnus-level-subscribed nil)
-	(setq gnus-group-display-unread nil))
-    (gnus-group-list-all-groups gnus-level-subscribed)
-    (setq gnus-group-display-unread t)))
+  (toggle-variable 'gnus-group-display-unread)
+  (gnus-group-redisplay))
+(defun gnus-group-redisplay ()
+  "Redisplay group according to gnus-group-display-unread"
+  (interactive)
+  (if (not gnus-group-display-unread)
+      (gnus-group-list-groups gnus-level-subscribed nil)
+    (gnus-group-list-all-groups gnus-level-subscribed)))
 (define-key gnus-group-mode-map (kbd "h") 'gnus-group-toggle-unread)
 
 
@@ -159,6 +161,14 @@
   (flet ((gnus-group-list-groups (&rest args) nil))
     ad-do-it))
 (ad-activate 'gnus-group-get-new-news)
+
+;; But when I do a "g" on the buffer, I probably mean it.
+(defun gnus-group-get-new-news-and-redisplay ()
+  (interactive)
+  (gnus-group-get-new-news)
+  (gnus-group-redisplay))
+(require 'gnus-group)
+(define-key gnus-group-mode-map (kbd "g") 'gnus-group-get-new-news-and-redisplay)
 
 (require 'gnus-demon)
 ;; set for a specific notification level
@@ -286,9 +296,7 @@
   (if (get-buffer "*Group*")
       (progn
 	(switch-to-buffer "*Group*")
-	(if (not gnus-group-display-unread)
-	    (gnus-group-list-groups gnus-level-subscribed nil)
-	  (gnus-group-list-all-groups gnus-level-subscribed)))
+	(gnus-group-redisplay))
     (gnus)))
 ;; this overrides the binding in my .emacs
 (global-set-key (kbd "s-g") 'run-gnus)
