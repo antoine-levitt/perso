@@ -42,7 +42,7 @@
 ;; stfu, kthx
 (setq gnus-verbose 4)
 ;; default : (setq gnus-group-line-format "%M%S%p%P%5y:%B%(%g%)%O\n")
-;;(setq gnus-group-line-format "%y %(%G %)%O\n")
+(setq gnus-group-line-format "%y %(%G %)%O\n")
 ;;(setq gnus-summary-line-format "%U%R%z%(%[%d: %-20,20n%]%)%B %s\n")
 ;;(setq gnus-summary-line-format "%&user-date; %-30,30n%B%s\n")
 ;; the %uB invokes a function which returns the author name from BBDB
@@ -183,13 +183,14 @@
 		(gnus-group-get-new-news n)))))
       (set-window-configuration win))))
 
-(defun gnus-unread-demon-handler (&optional n)
-  "Checks new mail under priority n, and notify authorities"
+(defun gnus-unread-check-news (&optional n)
+  "Checks new mail under priority n (default gnus-unread-level), and notify authorities"
   (interactive)
   (gnus-demon-scan-news (if n n gnus-unread-level))
   (gnus-unread-update-unread-count))
 
 (defun gnus-unread-update-unread-count ()
+  "Update read count in the modeline"
   (interactive)
   (setq gnus-previous-unread-count gnus-unread-count)
   (setq gnus-unread-count (gnus-group-number-of-unread-mail gnus-unread-level))
@@ -205,12 +206,12 @@
 (add-hook 'gnus-exit-group-hook 'gnus-unread-update-unread-count t)
 (add-hook 'gnus-select-article-hook 'gnus-unread-update-unread-count t)
 
-;; every 1 gnus-demon-timestep, do a check
-(defun gnus-unread-full-check ()
-  (gnus-unread-demon-handler 7))
-(gnus-demon-add-handler 'gnus-unread-full-check 1 nil)
-;; check every 10 mins. Furthermore, a sync is done whenever offlineimap does a sync, with
+;; full check every 10 mins. Furthermore, a sync is done whenever offlineimap does a sync, with
 ;; postsynchook = emacsclient -e '(gnus-unread-demon-handler)'
+(defun gnus-unread-full-check ()
+  (interactive)
+  (gnus-unread-check-news 5))
+(gnus-demon-add-handler 'gnus-unread-full-check 1 nil)
 (setq gnus-demon-timestep 600)
 (gnus-demon-init)
 ;; if gnus doesn't respond in 10s, give up
