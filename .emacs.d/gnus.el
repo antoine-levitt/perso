@@ -278,3 +278,17 @@
 
 ;; Personal info for password privacy
 (load "~/.emacs.d/priv_gnus.el" t)
+
+;; due to the advice above, gnus's view isn't refreshed unless I press g manually,
+;; so refresh when I come back. Refresh according to gnus-group-display-unread
+(defun run-gnus ()
+  (interactive)
+  (if (get-buffer "*Group*")
+      (progn
+	(switch-to-buffer "*Group*")
+	(if (not gnus-group-display-unread)
+	    (gnus-group-list-groups gnus-level-subscribed nil)
+	  (gnus-group-list-all-groups gnus-level-subscribed)))
+    (gnus)))
+;; this overrides the binding in my .emacs
+(global-set-key (kbd "s-g") 'run-gnus)
