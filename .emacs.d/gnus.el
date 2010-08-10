@@ -220,13 +220,16 @@
 (add-hook 'gnus-exit-group-hook 'gnus-unread-update-unread-count t)
 (add-hook 'gnus-select-article-hook 'gnus-unread-update-unread-count t)
 
-;; full check every 10 mins. Furthermore, a sync is done whenever offlineimap does a sync, with
-;; postsynchook = emacsclient -e '(gnus-unread-demon-handler)'
+;; full check once in a while. Furthermore, a sync is done whenever offlineimap does a sync, with something like
+;; postsynchook = emacsclient -e "(run-with-idle-timer 2 nil (lambda () (with-local-quit (gnus-unread-check-news))))"
+
 (defun gnus-unread-full-check ()
   (interactive)
-  (gnus-unread-check-news 5))
-(gnus-demon-add-handler 'gnus-unread-full-check 1 nil)
-(setq gnus-demon-timestep 600)
+  (gnus-unread-check-news 5)
+  (message "Did a full check"))
+;; full check after one min of idleness
+(gnus-demon-add-handler 'gnus-unread-full-check 1 t)
+(setq gnus-demon-timestep 60)
 (gnus-demon-init)
 ;; if gnus doesn't respond in 10s, give up
 (defadvice gnus-demon-scan-news (around gnus-demon-timeout activate)
