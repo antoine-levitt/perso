@@ -105,6 +105,10 @@
   (interactive)
   (gnus-group-save-newsrc)
   (gnus-unread-update-unread-count)
+  (condition-case err
+      (kill-buffer "*Article*") ;sometimes, articles stay after gnus is quitted.
+				;I don't know why, I don't care, just kill them all!
+    (error nil))
   (bury-buffer))
 ;; bury instead of gnus-group-exit.
 (define-key gnus-group-mode-map (kbd "q") 'gnus-group-bury)
@@ -143,6 +147,16 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;Notify. From Matthieu Moy, with modifs
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(require 'gnus-group)
+;; By default, gnus-group-get-new-news will force a redisplay of the group buffer
+;; It's extremely annoying if you're doing something at the same time, and it messes
+;; up with my "h" keybinding. Therefore, it must die.
+(defadvice gnus-group-get-new-news (around gnus-group-get-new-news-dont-redisplay)
+  "Don't redisplay at the end."
+  (flet ((gnus-group-list-groups (&rest args) ))
+    ad-do-it))
+(ad-activate 'gnus-group-get-new-news)
+
 (require 'gnus-demon)
 ;; set for a specific notification level
 (setq gnus-unread-level 3) ;to override in personal settings
