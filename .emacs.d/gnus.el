@@ -24,7 +24,9 @@
       (browse-url (concat "file://" file)))))
 (define-key gnus-summary-mode-map (kbd "K H")
   'my-gnus-summary-view-html-alternative)
-
+;; In summary, press m to go to the article in gwene
+(define-key gnus-summary-mode-map (kbd "m")
+  "\C-xo\276\C-rlink\C-mm\274\C-xo")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;Misc
@@ -34,12 +36,12 @@
       gnus-read-newsrc-file nil)
 ;; Please prefetch stuff
 (setq gnus-asynchronous t)
-					; default value was : "^to\\.\\|^[0-9. 	]+\\( \\|$\\)\\|^[\"][]\"[#'()]"
-					; must have been useful for some reason, around 1970.
+;; default value was : "^to\\.\\|^[0-9. 	]+\\( \\|$\\)\\|^[\"][]\"[#'()]"
+;; must have been useful for some reason, around 1970.
 (setq gnus-ignored-newsgroups "")
-					; stfu, kthx
+;; stfu, kthx
 (setq gnus-verbose 4)
-					;default : (setq gnus-group-line-format "%M%S%p%P%5y:%B%(%g%)%O\n")
+;; default : (setq gnus-group-line-format "%M%S%p%P%5y:%B%(%g%)%O\n")
 ;;(setq gnus-group-line-format "%y %(%G %)%O\n")
 ;;(setq gnus-summary-line-format "%U%R%z%(%[%d: %-20,20n%]%)%B %s\n")
 ;;(setq gnus-summary-line-format "%&user-date; %-30,30n%B%s\n")
