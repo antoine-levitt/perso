@@ -1,5 +1,5 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;Mime
+;;; Mime
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Display html or not?
 (setq mm-discouraged-alternatives '("text/html" "text/richtext"))
@@ -37,7 +37,7 @@
      (gnus-article-read-summary-keys nil (gnus-character-to-event ?n)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;Misc
+;;; Misc
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; I don't use any other newsreader
 (setq gnus-save-newsrc-file nil
@@ -136,7 +136,7 @@
 (require 'gnus-art)
 (define-key gnus-summary-mode-map "l" 'gnus-article-fill-long-lines)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;Receive mail
+;;; Receive mail
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; receive using dovecot as imap
 (setq gnus-select-method '(nnimap "Mail" (nnimap-stream shell)))
@@ -144,7 +144,7 @@
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;Send mail
+;;; Send mail
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; add Cc and Bcc headers to the message buffer
 (setq message-default-mail-headers "Cc: \nBcc: \n")
@@ -158,8 +158,9 @@
 ;; Configuration of smtp in priv_gnus, see emacswiki, for instance http://www.emacswiki.org/emacs/GnusGmail#toc2
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;Notify. From Matthieu Moy, with modifs
+;;; Notify
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Some of it is from Matthieu Moy, with modifs
 (require 'gnus-group)
 ;; By default, gnus-group-get-new-news will force a redisplay of the group buffer
 ;; It's extremely annoying if you're doing something at the same time, and it messes
@@ -259,7 +260,7 @@
     ad-do-it))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; BBDB
+;;; BBDB
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (require 'bbdb)
 (require 'bbdb-hooks)
