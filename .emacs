@@ -1052,7 +1052,6 @@ Ignores CHAR at point."
 (setq w3m-default-display-inline-images t)
 (setq w3m-toggle-inline-images-permanently nil)
 (setq mm-w3m-safe-url-regexp nil)
-(setq w3m-image-default-background "white")
 (define-key w3m-minor-mode-map "m"
   'w3m-view-url-with-external-browser)
 (defun w3m-switch ()
@@ -1060,6 +1059,7 @@ Ignores CHAR at point."
   (if (eq 'w3m-mode (current-mm))
       (w3m-close-window)
     (w3m)))
+(defalias 'w3m-ems-create-image 'create-image) ; this is only a workaround for emacs24, will be fixed
 (global-set-key (kbd "s-w") 'w3m-switch)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
