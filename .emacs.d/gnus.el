@@ -54,7 +54,7 @@
 ;;(setq gnus-summary-line-format "%U%R%z%(%[%d: %-20,20n%]%)%B %s\n")
 ;;(setq gnus-summary-line-format "%&user-date; %-30,30n%B%s\n")
 ;; the %uB invokes a function which returns the author name from BBDB
-(setq gnus-summary-line-format "%&user-date; %-30,30uB %B%s\n")
+(setq gnus-summary-line-format "%U%R%&user-date; %-30,30uB %*%B%s\n")
 (setq gnus-user-date-format-alist '((t . "%d.%m.%Y %H:%M")))
 
 ;; threading display
