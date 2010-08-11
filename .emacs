@@ -813,6 +813,9 @@ Ignores CHAR at point."
 (global-set-key (kbd "<insertchar>") nil)
 (global-set-key (kbd "<insert>") nil)
 (global-set-key (kbd "<f5>") nil)
+;; some packages, e.g. gnus-summary, don't define deletechar but only delete. Fix that by aliasing
+(global-set-key (kbd "<deletechar>") (kbd "<delete>"))
+
 
 ;;shortcuts to two-keys commands I often use
 (global-set-key (kbd "s-s") 'save-buffer)
