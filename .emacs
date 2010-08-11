@@ -172,6 +172,8 @@ some other pops up with display-buffer), go back to only one window open"
 ;;please add a final newline each time I save a buffer
 (setq require-final-newline 't)
 
+(require 'pastebin)
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Scrolling
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
