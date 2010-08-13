@@ -127,6 +127,15 @@
 ;; fill long
 (require 'gnus-art)
 (define-key gnus-summary-mode-map "l" 'gnus-article-fill-long-lines)
+
+
+;; if gnus doesn't respond in 15s, give up
+(defadvice gnus-demon-scan-news (around gnus-demon-timeout activate)
+  "Timeout for Gnus."
+  (with-timeout
+      (15 (message "Gnus timed out."))
+    ad-do-it))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Receive mail
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -234,22 +243,17 @@
 (add-hook 'gnus-exit-group-hook 'gnus-unread-update-unread-count t)
 (add-hook 'gnus-select-article-hook 'gnus-unread-update-unread-count t)
 
-;; full check once in a while. Furthermore, a sync is done whenever offlineimap does a sync, with something like
+;; full check once in a while. Furthermore, a sync for "important" news is done whenever offlineimap does a sync, with
 ;; postsynchook = emacsclient -e "(run-with-idle-timer 2 nil (lambda () (with-local-quit (gnus-unread-check-news))))"
-
-(defun gnus-unread-full-check ()
+;; the with-local-quit is because check-news is blocking, so we must provide a quit context
+(defun gnus-unread-schedule-full-check ()
   (interactive)
-  (gnus-unread-check-news 5))
-;; full check after one min of idleness
-(gnus-demon-add-handler 'gnus-unread-full-check 1 t)
+  ;; next time the user is busy doing something else, ie when idle for 30s
+  (run-with-idle-timer 30 nil (lambda () (with-local-quit (gnus-unread-check-news 5)))))
+;; schedule full check every 10mins
+(gnus-demon-add-handler 'gnus-unread-schedule-full-check 10 nil)
 (setq gnus-demon-timestep 60)
 (gnus-demon-init)
-;; if gnus doesn't respond in 10s, give up
-(defadvice gnus-demon-scan-news (around gnus-demon-timeout activate)
-  "Timeout for Gnus."
-  (with-timeout
-      (10 (message "Gnus timed out."))
-    ad-do-it))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; BBDB
