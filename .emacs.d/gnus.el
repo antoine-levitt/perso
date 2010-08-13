@@ -28,14 +28,6 @@
 (define-key gnus-summary-mode-map (kbd "m")
   "\C-xo\276\C-rlink\C-mm\274\C-xo")
 
-;; smoother scrolling for big images
-(defun gnus-article-next-page (&optional lines)
-  (interactive "P")
-  (condition-case err
-      (scroll-up-command lines)
-    (error 
-     (gnus-article-read-summary-keys nil (gnus-character-to-event ?n)))))
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Misc
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
