@@ -18,7 +18,7 @@
       erc-minibuffer-ignored t
       erc-query-display 'buffer
       erc-auto-query 'bury
-      erc-current-nick-highlight-type 'all
+      erc-current-nick-highlight-type 'keyword
       erc-interpret-mirc-color t
       erc-log-channels-directory "~/.erclogs"
       erc-log-write-after-insert t
