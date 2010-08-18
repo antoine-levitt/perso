@@ -77,8 +77,6 @@
 	  'attheend)
 (setq erc-complete-functions '(erc-pcomplete erc-complete-with-dabbrev))
 
-(add-to-list 'auto-coding-alist '("\\.erclogs/.*\\.txt" . utf-8))
-
 
 ;;--------------------
 ;;Colorize nick list
@@ -116,6 +114,34 @@
 				   (erc-get-color-for-nick nick)))))))
 
 (add-hook 'erc-insert-modify-hook 'erc-put-color-on-nick)
+
+;; Colorise logs
+(defun irc-log-colorize ()
+  "Colorise the match with the appropriate color"
+  (put-text-property
+   (match-beginning 1) (match-end 1)
+   'face `((:foreground ,(erc-get-color-for-nick (match-string 1)))
+	   (:weight bold))))
+
+(setq irc-log-keywords
+      `((,(format "<\\(%s\\)>" erc-valid-nick-regexp) 1 (irc-log-colorize))))
+
+;; undefine some syntax that's messing up with our coloring (for instance, "")
+(defvar irc-log-mode-syntax-table
+  (let ((st (make-syntax-table)))
+    (modify-syntax-entry ?\" ".   " st)
+    (modify-syntax-entry ?\\ ".   " st)
+    st)
+  "Syntax table used while in `irc-log-mode'.")
+
+(define-derived-mode irc-log-mode fundamental-mode
+  (setq font-lock-defaults '(irc-log-keywords))
+  (setq mode-name "IRC Log"))
+
+;; logs
+(add-to-list 'auto-coding-alist '("\\.erclogs/.*\\.txt" . utf-8))
+(add-to-list 'auto-mode-alist '("\\.erclogs/.*\\.txt" . irc-log-mode))
+
 
 ;;--------------------
 ;;Unread messages bar
