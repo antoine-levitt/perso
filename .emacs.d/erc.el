@@ -103,17 +103,41 @@
 	    (length erc-colors-list))
        erc-colors-list)))
 
-(defun erc-put-color-on-nick ()
-  "Modifies the color of nicks according to erc-get-color-for-nick"
-  (save-excursion
-    (goto-char (point-min))
-    (if (looking-at "<\\([^>]*\\)>")
-	(let ((nick (match-string 1)))
-	  (put-text-property (match-beginning 1) (match-end 1) 'face
+(defun erc-put-colors-on-line ()
+  "Colorise a message. First, we colorize the sender, then we go through
+the message looking for nicks to colorize. "
+  ;; makes word boundaries work
+  (with-syntax-table erc-button-syntax-table
+    (save-excursion
+      (goto-char (point-min))
+      ;; colorise the nick of the person talking, unless this is an outgoing message, in which case
+      ;; something else already does the coloring and we don't want to interfere
+      ;; erc-send-this is only t in send-modify-hook, see the lambdas below
+      (unless erc-is-sending
+	(if (looking-at "<\\([^>]*\\)>")
+	    (let ((nick (match-string 1)))
+	      (put-text-property (match-beginning 1) (match-end 1) 'face
+				 (cons 'foreground-color
+				       (erc-get-color-for-nick nick))))))
+      ;; go through the message, find nicks and colorise them.
+      ;; From erc-button with modifications
+      ;; ignore the author, already taken care of by the code above
+      (if (looking-at "<\\([^>]*\\)>")(forward-word))
+      (while (forward-word 1)
+	(setq bounds (bounds-of-thing-at-point 'word))
+	(setq word (buffer-substring-no-properties
+		    (car bounds) (cdr bounds)))
+	(when (or (and (erc-server-buffer-p) (erc-get-server-user word))
+		  (and erc-channel-users (erc-get-channel-user word)))
+	  (put-text-property (car bounds) (cdr bounds) 'face
 			     (cons 'foreground-color
-				   (erc-get-color-for-nick nick)))))))
+				   (erc-get-color-for-nick word))))))))
 
-(add-hook 'erc-insert-modify-hook 'erc-put-color-on-nick)
+
+;; put the hooks at the end
+(require 'erc-button)
+(add-hook 'erc-insert-modify-hook '(lambda () (let ((erc-is-sending nil)) (erc-put-colors-on-line))) 'attheend)
+(add-hook 'erc-send-modify-hook '(lambda () (let ((erc-is-sending t)) (erc-put-colors-on-line))) 'attheend)
 
 ;; Colorise logs
 (defun irc-log-colorize ()
