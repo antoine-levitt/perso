@@ -139,32 +139,16 @@ the message looking for nicks to colorize. "
 (add-hook 'erc-insert-modify-hook '(lambda () (let ((erc-is-sending nil)) (erc-put-colors-on-line))) 'attheend)
 (add-hook 'erc-send-modify-hook '(lambda () (let ((erc-is-sending t)) (erc-put-colors-on-line))) 'attheend)
 
-;; Colorise logs
-(defun irc-log-colorize ()
-  "Colorise the match with the appropriate color"
-  (put-text-property
-   (match-beginning 1) (match-end 1)
-   'face `((:foreground ,(erc-get-color-for-nick (match-string 1)))
-	   (:weight bold))))
-
-(setq irc-log-keywords
-      `((,(format "<\\(%s\\)>" erc-valid-nick-regexp) 1 (irc-log-colorize))))
-
-;; undefine some syntax that's messing up with our coloring (for instance, "")
-(defvar irc-log-mode-syntax-table
-  (let ((st (make-syntax-table)))
-    (modify-syntax-entry ?\" ".   " st)
-    (modify-syntax-entry ?\\ ".   " st)
-    st)
-  "Syntax table used while in `irc-log-mode'.")
-
-(define-derived-mode irc-log-mode fundamental-mode
-  (setq font-lock-defaults '(irc-log-keywords))
-  (setq mode-name "IRC Log"))
-
 ;; logs
+(require 'erc-view-log)
+(defun erc-get-face-for-nick (nick)
+  "Returns the face for the given nick."
+  `((:foreground ,(erc-get-color-for-nick nick))
+    (:weight bold)))
+(setq erc-view-log-nickname-face-function 'erc-get-face-for-nick)
+(setq erc-view-log-my-nickname-match `(,erc-nick)) ;set this one in your .priv_emacs with your other nicks if needed
 (add-to-list 'auto-coding-alist '("\\.erclogs/.*\\.txt" . utf-8))
-(add-to-list 'auto-mode-alist '("\\.erclogs/.*\\.txt" . irc-log-mode))
+(add-to-list 'auto-mode-alist '("\\.erclogs/.*\\.txt" . erc-view-log-mode))
 
 
 ;;--------------------
