@@ -71,11 +71,7 @@
 	(if (> (point) pointbefore)
 	    t
 	  nil)))))
-(defun erc-complete-with-dabbrev ()
-  (my-dabbrev-expand))
-(add-hook 'erc-complete-functions 'erc-complete-with-dabbrev
-	  'attheend)
-(setq erc-complete-functions '(erc-pcomplete erc-complete-with-dabbrev))
+(setq erc-complete-functions '(erc-pcomplete my-dabbrev-expand))
 
 
 ;;--------------------
