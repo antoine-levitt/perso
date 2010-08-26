@@ -479,6 +479,16 @@ some other pops up with display-buffer), go back to only one window open"
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Latex
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defun my-latex-environment (arg)
+  "Same as `LaTeX-environment', but overrides prefix arg to mean
+  insert environment around region. Use C-u C-u to override
+  environment (C-u with LaTeX-environment)"
+  (interactive "p*")
+  (pp arg)
+  (if (= arg 4)
+      (flet ((TeX-active-mark () t))
+	(LaTeX-environment nil))
+    (LaTeX-environment (if (= arg 16) t nil))))
 (condition-case err
     (progn (load "auctex.el" nil t t)
 	   (load "preview-latex.el" nil t t))
@@ -504,6 +514,7 @@ some other pops up with display-buffer), go back to only one window open"
   (local-set-key (kbd "C-c l") 'reftex-label)
   (local-set-key (kbd "C-c r") 'reftex-reference)
   (local-set-key (kbd "C-c b") 'reftex-citation)
+  (local-set-key (kbd "C-c C-e") 'my-latex-environment)
   ;; undo TeX remaps, otherwise it interferes with compilation
   (define-key TeX-mode-map [remap next-error] nil)
   (define-key TeX-mode-map [remap previous-error] nil)
