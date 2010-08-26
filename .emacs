@@ -523,23 +523,25 @@ some other pops up with display-buffer), go back to only one window open"
     (dolist (name list-of-master-files)
       (when (file-exists-p (concat name ".tex"))
   	(setq TeX-master name))))
-  
+
   ;; setup compilation, based on TeX-master
+  ;; needs raise_process, which raises (using wmctrl) a process whose invocation
+  ;; line matches the argument
   (let ((master (if (stringp TeX-master)
   		    TeX-master
   		  (file-name-sans-extension (file-name-nondirectory (buffer-file-name))))))
     (set (make-local-variable 'compile-command)
   	 (format
-  	  "rubber -d %s && (wmctrl -a %s.pdf || nohup gnome-open %s.pdf > /dev/null)"
+  	  "rubber -d %s && (raise_process.sh %s.pdf || nohup gnome-open %s.pdf > /dev/null)"
   	  master master master))))
 (add-hook 'LaTeX-mode-hook 'my-tex-config)
 
 (defun my-bibtex-compilation-setup ()
   (set (make-local-variable 'compile-command)
        (format
-	"rubber -d main && (wmctrl -a main.pdf || nohup gnome-open main.pdf > /dev/null)")))
+	"rubber -d main && (raise_process main.pdf || nohup gnome-open main.pdf > /dev/null)")))
 (add-hook 'bibtex-mode-hook 'my-bibtex-compilation-setup 'attheend)
-;
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Outline
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
