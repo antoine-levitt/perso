@@ -93,8 +93,7 @@
 (defun gnome-open-file (filename)
   "gnome-opens the specified file."
   (interactive "fFile to open: ")
-  (let ((process-connection-type nil))
-    (start-process "" nil "/usr/bin/gnome-open" filename)))
+  (launch-command  "/usr/bin/gnome-open" filename))
 
 (defun basename-cons(f)
   (cons (file-name-nondirectory f) f))
