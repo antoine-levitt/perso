@@ -153,7 +153,7 @@ some other pops up with display-buffer), go back to only one window open"
 (blink-cursor-mode -1)
 
 ;;don't display tooltips
-(tooltip-mode -1)
+(setq tooltip-delay 10000000)
 
 ;;display buffer name in title bar
 (setq frame-title-format "%b - Emacs")
