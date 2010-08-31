@@ -1076,7 +1076,6 @@ Ignores CHAR at point."
   (if (eq 'w3m-mode (current-mm))
       (w3m-close-window)
     (w3m)))
-(defalias 'w3m-ems-create-image 'create-image) ; this is only a workaround for emacs24, will be fixed
 (global-set-key (kbd "s-w") 'w3m-switch)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
