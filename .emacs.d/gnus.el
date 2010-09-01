@@ -147,7 +147,9 @@
 ;;; Receive mail
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; receive using dovecot as imap
-(setq gnus-select-method '(nnimap "Mail" (nnimap-stream shell)))
+;; enable search using nnir: G G to search a group
+(require 'nnir)
+(setq gnus-select-method '(nnimap "Mail" (nnimap-stream shell) (nnir-search-engine imap)))
 (setq imap-shell-program "/usr/sbin/dovecot --exec-mail imap")
 
 
