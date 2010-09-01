@@ -1,6 +1,18 @@
 ;; require stuff. Needed because I define-keys on keymaps that need to be loaded
 (require 'gnus-group)
 (require 'gnus-sum)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Mairix
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(require 'nnmairix)
+;; setup with http://www.randomsample.de/nnmairix-doc/nnmairix.html. My .mairixrc is
+;; base=~/Maildovecot
+;; maildir=.:.*
+;; mformat=maildir
+;; omit=.zz_mairix-*
+;; database=~/.mairixdatabase
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Mime
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -147,9 +159,7 @@
 ;;; Receive mail
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; receive using dovecot as imap
-;; enable search using nnir: G G to search a group
-(require 'nnir)
-(setq gnus-select-method '(nnimap "Mail" (nnimap-stream shell) (nnir-search-engine imap)))
+(setq gnus-select-method '(nnimap "Mail" (nnimap-stream shell)))
 (setq imap-shell-program "/usr/sbin/dovecot --exec-mail imap")
 
 
