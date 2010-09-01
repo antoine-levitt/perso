@@ -28,8 +28,12 @@
 (define-key gnus-summary-mode-map (kbd "K H")
   'my-gnus-summary-view-html-alternative)
 ;; In summary, press m to go to the article in gwene
+;; for w3m (setq mm-text-html-renderer 'w3m)
 (define-key gnus-summary-mode-map (kbd "m")
   "\C-xo\276\C-rlink\C-mm\274\C-xo")
+;; for gnus-html (setq mm-text-html-renderer 'gnus-article-html)
+(define-key gnus-summary-mode-map (kbd "m")
+  "\C-xo\276\C-rlink\C-m\C-m\274\C-xo")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Misc
