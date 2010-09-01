@@ -264,8 +264,13 @@
       (notify "New mail !")))
 
 (add-hook 'gnus-after-getting-new-news-hook 'gnus-unread-update-unread-count t)
-(add-hook 'gnus-exit-group-hook 'gnus-unread-update-unread-count t)
-(add-hook 'gnus-select-article-hook 'gnus-unread-update-unread-count t)
+(defun gnus-unread-refresh-and-update-unread-count ()
+  "If displaying the Group buffer, refresh it. TODO fix for multiple windows"
+  (interactive)
+  (when (string= (buffer-name) "*Group*")
+    (gnus-group-redisplay)
+    (gnus-unread-update-unread-count)))
+(add-hook 'window-configuration-change-hook 'gnus-unread-refresh-and-update-unread-count t)
 
 ;; full check once in a while. Furthermore, a sync for "important" news is done whenever offlineimap does a sync, with
 ;; postsynchook = emacsclient -e "(run-with-idle-timer 2 nil (lambda () (with-local-quit (gnus-unread-check-news))))"
