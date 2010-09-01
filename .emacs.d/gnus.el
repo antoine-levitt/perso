@@ -6,6 +6,8 @@
 ;;; Mairix
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (require 'nnmairix)
+(define-key gnus-group-mode-map (kbd "s")
+  'nnmairix-search)
 ;; setup with http://www.randomsample.de/nnmairix-doc/nnmairix.html. My .mairixrc is
 ;; base=~/Maildovecot
 ;; maildir=.:.*
