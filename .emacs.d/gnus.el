@@ -296,11 +296,7 @@
 (setq bbdb-always-add-addresses t)
 (setq bbdb-new-nets-always-primary t)
 (setq bbdb-offer-save 1) ; save without asking
-;; add recipients of mails to the bbdb, thanks to matthieu moy
-(autoload 'bbdb/send-hook "moy-bbdb"
-  "Function to be added to `message-send-hook' to notice records when sending messages" t)
-(add-hook 'message-send-hook 'bbdb/send-hook)
-;; add to bbdb if I'm recipient or cc'ed
+;; add to bbdb only if I'm recipient or cc'ed
 (setq bbdb-ignore-most-messages-alist '(("to" . "levitt")
 					("cc" . "levitt")))
 
