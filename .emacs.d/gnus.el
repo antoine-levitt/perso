@@ -8,6 +8,11 @@
 (require 'nnmairix)
 (define-key gnus-group-mode-map (kbd "s")
   'nnmairix-search)
+(defadvice nnmairix-request-group (around nnmairix-be-quiet activate)
+  "Be quiet. (avoids 'Matched n messages' when updating list)"
+  (flet ((message (&rest args) ))
+    ad-do-it))
+
 ;; setup with http://www.randomsample.de/nnmairix-doc/nnmairix.html. My .mairixrc is
 ;; base=~/Maildovecot
 ;; maildir=.:.*
