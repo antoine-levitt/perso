@@ -49,7 +49,7 @@
       erc-pcomplete-order-nickname-completions t
       erc-insert-timestamp-function 'erc-insert-timestamp-left
       erc-header-line-format nil
-      erc-auto-discard-away t
+      erc-auto-discard-away nil ;; use C-c C-a to discard away status
       erc-autoaway-idle-seconds (* 60 30)
       erc-autoaway-message "Away"
       erc-truncate-buffer-on-save t
@@ -360,7 +360,12 @@ erc-modified-channels-alist, filtered by erc-tray-ignored-channels."
   "Toggles away status in ERC."
   (interactive)
   (if (erc-away-time)
-      (erc-autoaway-set-back)
+      ;; could use erc-autoaway-set-back, but it sometimes fails, I don't know why
+      (progn
+	(let ((server-buffer (erc-autoaway-some-server-buffer)))
+	  (if (and (buffer-live-p server-buffer)
+		   (with-current-buffer server-buffer erc-away))
+	      (erc-cmd-GAWAY ""))))
     (erc-autoaway-set-away erc-autoaway-idle-seconds)))
 
 ;;--------------------
