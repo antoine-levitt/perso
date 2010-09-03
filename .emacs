@@ -120,7 +120,7 @@
 ;;no transient mark
 (transient-mark-mode -1)
 ;; fix behavior of quit-window
-(defadvice quit-window (around back-to-one-window)
+(defadvice quit-window (around back-to-one-window activate)
   "If there are exactly two windows open (typically, you're editing one file and
 some other pops up with display-buffer), go back to only one window open"
   (if (= 2 (length (window-list)))
@@ -131,7 +131,6 @@ some other pops up with display-buffer), go back to only one window open"
 	      (kill-buffer buffer)
 	    (bury-buffer buffer))))
     ad-do-it))
-(ad-activate 'quit-window)
 
 ;; bypass emacs broken mechanism to detect browser
 (setq browse-url-browser-function
@@ -186,11 +185,10 @@ some other pops up with display-buffer), go back to only one window open"
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Note that this can not prevent
 ;; the "Wrote %s" message, which is coded in C.
-(defadvice save-buffer (around save-omit-be-quiet)
+(defadvice save-buffer (around save-omit-be-quiet activate)
   "Be quiet."
   (flet ((message (&rest args) nil))
     ad-do-it))
-(ad-activate 'save-buffer)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Word wrapping
@@ -314,11 +312,10 @@ some other pops up with display-buffer), go back to only one window open"
       dired-free-space-args "-Pkm"
       dired-auto-revert-buffer t)
 ;; Omit, be quiet
-(defadvice dired-omit-expunge (around dired-omit-be-quiet)
+(defadvice dired-omit-expunge (around dired-omit-be-quiet activate)
   "Be quiet."
   (flet ((message (&rest args) ))
     ad-do-it))
-(ad-activate 'dired-omit-expunge)
 (add-hook 'dired-mode-hook 'dired-omit-mode)
 
 (require 'dired+)

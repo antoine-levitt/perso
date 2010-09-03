@@ -190,11 +190,10 @@
 ;; By default, gnus-group-get-new-news will force a redisplay of the group buffer
 ;; It's extremely annoying if you're doing something at the same time, and it messes
 ;; up with my "h" keybinding. Therefore, it must die.
-(defadvice gnus-group-get-new-news (around gnus-group-get-new-news-dont-redisplay)
+(defadvice gnus-group-get-new-news (around gnus-group-get-new-news-dont-redisplay activate)
   "Don't redisplay at the end."
   (flet ((gnus-group-list-groups (&rest args) nil))
     ad-do-it))
-(ad-activate 'gnus-group-get-new-news)
 
 ;; But when I do a "g" on the buffer, I probably mean it.
 (defun gnus-group-get-new-news-and-redisplay ()
