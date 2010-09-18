@@ -14,11 +14,15 @@
     ad-do-it))
 
 ;; setup with http://www.randomsample.de/nnmairix-doc/nnmairix.html. My .mairixrc is
-;; base=~/Maildovecot
+;; base=~/.Maildovecot
 ;; maildir=.:.*
 ;; mformat=maildir
 ;; omit=.zz_mairix-*
 ;; database=~/.mairixdatabase
+;; 
+;; and I've got
+;; @hourly mairix
+;; in crontab -e
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Mime
