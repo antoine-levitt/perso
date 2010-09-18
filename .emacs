@@ -364,6 +364,7 @@ some other pops up with display-buffer), go back to only one window open"
       egg-confirm-next-action nil
       egg-status-buffer-sections '(repo unstaged staged)
       egg-commit-buffer-sections '(staged unstaged))
+(defalias 'egg 'egg-status)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Winner
