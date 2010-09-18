@@ -178,8 +178,6 @@
 (setq message-send-mail-partially-limit nil)
 ;; add Cc and Bcc headers to the message buffer
 (setq message-default-mail-headers "Cc: \nBcc: \n")
-;; postponed message is put in the following draft file
-(setq message-auto-save-directory "~/Mail/drafts")
 ;; Use smtp for outgoing mail. Needs starttls. Under ubuntu, package starttls
 (setq send-mail-function 'smtpmail-send-it)
 (setq message-send-mail-function 'smtpmail-send-it)

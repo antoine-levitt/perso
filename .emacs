@@ -4,16 +4,24 @@
 ;; Can be viewed in outline mode
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; Path setup
+;;; Unclutter home directory
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; lisp files
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/lisp"))
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/lisp/dict"))
+;;byte-recompile elisp files if they need to be
+(byte-recompile-directory "~/.emacs.d/lisp" 0)
 
+;; gnus/mail directories
+(setq gnus-init-file "~/.emacs.d/gnus.el"
+      gnus-home-directory "~/.emacs.d"
+      mail-default-directory "~/.emacs.d"
+      message-directory "~/.emacs.d/Mail")
+
+;; customize
 (setq custom-file "~/.emacs.d/custom.el")
 (load custom-file)
 
-;;byte-recompile elisp files if they need to be
-(byte-recompile-directory "~/.emacs.d/lisp" 0)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Desktop and server
@@ -1134,7 +1142,6 @@ Additional support for inhibiting one activation (quick hack)"
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Gnus
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(setq gnus-init-file "~/.emacs.d/gnus.el")
 ;; compose mails with message-mode (C-x m)
 (setq mail-user-agent 'gnus-user-agent)
 ;; Run gnus or switch to an existing instance
