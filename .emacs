@@ -751,8 +751,12 @@ brake whatever split of windows we might have in the frame."
 (global-set-key (kbd "C-S-k") 'my-kill-whole-line)
 ;;sometimes useful (for query-replace and such)
 (global-set-key (kbd "C-c C-SPC") 'transient-mark-mode)
-;;easy window management for azerty keyboards
-(global-set-key (kbd "M-é") 'split-window-vertically)
+;;easy window management for azerty keyboards. This can fail
+;;on some terminals, so protect
+(condition-case err
+    (global-set-key (kbd "M-é") 'split-window-vertically)
+  (error
+   (message "Failed to bind M-é")))
 (global-set-key (kbd "M-\"") 'split-window-horizontally)
 (defun my-delete-other-windows ()
   "Delete other windows, and bury buffers that were displayed"
