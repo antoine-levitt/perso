@@ -1073,20 +1073,20 @@ Ignores CHAR at point."
 ;;; W3M
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; w3m
-(require 'w3m)
-(setq w3m-use-cookies t)
-(setq w3m-use-title-buffer-name t)
-(setq w3m-default-display-inline-images t)
-(setq w3m-toggle-inline-images-permanently nil)
-(setq mm-w3m-safe-url-regexp nil)
-(define-key w3m-minor-mode-map "m"
-  'w3m-view-url-with-external-browser)
-(defun w3m-switch ()
-  (interactive "")
-  (if (eq 'w3m-mode (current-mm))
-      (w3m-close-window)
-    (w3m)))
-(global-set-key (kbd "s-w") 'w3m-switch)
+(when (require 'w3m nil t)
+  (setq w3m-use-cookies t)
+  (setq w3m-use-title-buffer-name t)
+  (setq w3m-default-display-inline-images t)
+  (setq w3m-toggle-inline-images-permanently nil)
+  (setq mm-w3m-safe-url-regexp nil)
+  (define-key w3m-minor-mode-map "m"
+    'w3m-view-url-with-external-browser)
+  (defun w3m-switch ()
+    (interactive "")
+    (if (eq 'w3m-mode (current-mm))
+	(w3m-close-window)
+      (w3m)))
+  (global-set-key (kbd "s-w") 'w3m-switch))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Tab completion
