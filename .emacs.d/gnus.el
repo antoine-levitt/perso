@@ -321,6 +321,9 @@
 
 (setq message-tab-body-function (lambda () (interactive) (dabbrev-expand nil)))
 
+(setq message-citation-line-function 'message-insert-formatted-citation-line)
+(setq message-citation-line-format "%x %R, %N")
+
 
 ;; Personal info for password privacy
 (load "~/.emacs.d/priv_gnus.el" t)
