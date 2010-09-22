@@ -201,7 +201,6 @@ erc-modified-channels-alist. Should be executed on window change."
   (if (erc-channel-list nil)
       (my-track-switch-buffer arg)
     (irc)))
-(global-set-key [f8] 'irc-dwim)
 
 (defun my-track-switch-buffer (arg)
   "If there are unread messages, switch to them. Else, switch to latest seen non-erc buffer.
