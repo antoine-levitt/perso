@@ -655,8 +655,7 @@ some other pops up with display-buffer), go back to only one window open"
  org-agenda-repeating-timestamp-show-all t
  org-reverse-note-order t
  org-remember-store-without-prompt t
- org-remember-templates (quote ((116 "* TODO %?" "~/.emacs.d/org/todo.org" "Tasks")
-				(110 "* %?" "~/.emacs.d/org/notes.org" "Notes")))
+ org-remember-templates (quote ((116 "* TODO %?" "~/.emacs.d/org/todo.org" "Tasks")))
  remember-annotation-functions (quote (org-remember-annotation))
  remember-handler-functions (quote (org-remember-handler)))
 
