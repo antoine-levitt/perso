@@ -662,6 +662,11 @@ some other pops up with display-buffer), go back to only one window open"
  remember-annotation-functions (quote (org-remember-annotation))
  remember-handler-functions (quote (org-remember-handler)))
 
+(require 'google-weather)
+(require 'org-google-weather)
+(setq google-weather-unit-system-temperature-assoc '(("SI" . "°C")
+						     ("US" . "°F")))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Compilation
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
