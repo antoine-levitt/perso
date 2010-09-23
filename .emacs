@@ -624,8 +624,7 @@ some other pops up with display-buffer), go back to only one window open"
 (require 'org-install)
 (add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
 (setq org-startup-indented t)
-(require 'remember)
-(add-hook 'remember-mode-hook 'org-remember-apply-template)
+(org-remember-insinuate)
 (global-set-key "\C-cl" 'org-store-link)
 (global-set-key (kbd "s-r") 'remember)
 (global-set-key (kbd "s-a") 'org-agenda-list)
@@ -655,9 +654,7 @@ some other pops up with display-buffer), go back to only one window open"
  org-agenda-repeating-timestamp-show-all t
  org-reverse-note-order t
  org-remember-store-without-prompt t
- org-remember-templates (quote ((116 "* TODO %?" "~/.emacs.d/org/todo.org" "Tasks")))
- remember-annotation-functions (quote (org-remember-annotation))
- remember-handler-functions (quote (org-remember-handler)))
+ org-remember-templates (quote ((116 "* TODO %?" "~/.emacs.d/org/todo.org" "Tasks"))))
 
 (require 'google-weather)
 (require 'org-google-weather)
