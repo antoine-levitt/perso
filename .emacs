@@ -511,8 +511,6 @@ some other pops up with display-buffer), go back to only one window open"
 (defun my-tex-config ()
   (turn-on-reftex)
   (auto-fill-mode 1)
-  (flyspell-mode 1)
-  (flyspell-buffer)
   (TeX-PDF-mode 1)
   (LaTeX-math-mode 1)
   (local-set-key (kbd "C-c C-d") 'TeX-insert-braces)
