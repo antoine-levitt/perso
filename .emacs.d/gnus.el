@@ -324,10 +324,9 @@
 (setq message-citation-line-function 'message-insert-formatted-citation-line)
 (setq message-citation-line-format "%x %R, %N")
 
-;; user mail addresses, to be overwritten with yours
-(setq my-mail-addresses '())
-(setq message-dont-reply-to-names my-mail-addresses)
-
-
 ;; Personal info for password privacy
 (load "~/.emacs.d/priv_gnus.el" t)
+
+;; if defined in private gnus, don't reply to my addresses
+(when (boundp 'my-mail-addresses)
+  (setq message-dont-reply-to-names my-mail-addresses))
