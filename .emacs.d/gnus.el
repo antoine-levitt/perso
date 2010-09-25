@@ -60,6 +60,8 @@
 ;; see what client people use
 (setq gnus-visible-headers 
       (concat gnus-visible-headers "\\|^User-Agent:\\|^X-Mailer:"))
+;; add a separation between headers and body
+(setq gnus-treat-body-boundary 'head)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Misc
@@ -102,6 +104,12 @@
 (setq gnus-sum-thread-tree-leaf-with-other "├─► ")
 (setq gnus-sum-thread-tree-single-leaf "╰─► ")
 
+;; smaller window for summary
+(gnus-add-configuration
+ '(article
+   (vertical 1.0
+	     (summary 0.2 point)
+	     (article 1.0))))
 
 (setq gnus-inhibit-startup-message t
       gnus-interactive-exit nil
@@ -121,7 +129,8 @@
   (interactive)
   (if (not gnus-group-display-unread)
       (gnus-group-list-groups gnus-level-subscribed nil)
-    (gnus-group-list-all-groups gnus-level-subscribed)))
+    (gnus-group-list-all-groups gnus-level-subscribed))
+  (goto-char (point-min)))
 (define-key gnus-group-mode-map (kbd "h") 'gnus-group-toggle-unread)
 
 
