@@ -57,6 +57,9 @@
 ;; for gnus-html (setq mm-text-html-renderer 'gnus-article-html)
 (define-key gnus-summary-mode-map (kbd "m")
   "\C-xo\276\C-rlink\C-m\C-m\274\C-xo")
+;; see what client people use
+(setq gnus-visible-headers 
+      (concat gnus-visible-headers "\\|^User-Agent:\\|^X-Mailer:"))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Misc
@@ -71,13 +74,22 @@
 (setq gnus-ignored-newsgroups "")
 ;; stfu, kthx
 (setq gnus-verbose 4)
+;; format dates in an user-friendly way
+;; (setq gnus-user-date-format-alist '((t . "%d.%m.%Y %H:%M")))
+(setq gnus-user-date-format-alist
+      '(((gnus-seconds-today) . "Today, %H:%M")
+	((+ 86400 (gnus-seconds-today)) . "Yesterday, %H:%M")
+	(604800 . "%A %H:%M") ;;that's one week
+	((gnus-seconds-month) . "%A %d")
+	((gnus-seconds-year) . "%B %d")
+	(t . "%B %d '%y"))) ;;this one is used when no other does match
 ;; default : (setq gnus-group-line-format "%M%S%p%P%5y:%B%(%g%)%O\n")
 (setq gnus-group-line-format "%y %(%G %)%O\n")
 ;;(setq gnus-summary-line-format "%U%R%z%(%[%d: %-20,20n%]%)%B %s\n")
 ;;(setq gnus-summary-line-format "%&user-date; %-30,30n%B%s\n")
 ;; the %uB invokes a function which returns the author name from BBDB
-(setq gnus-summary-line-format "%U%R%&user-date; %-30,30uB %*%B%s\n")
-(setq gnus-user-date-format-alist '((t . "%d.%m.%Y %H:%M")))
+;;(setq gnus-summary-line-format "%U%R%&user-date; %-30,30uB %*%B%s\n")
+(setq gnus-summary-line-format "%U%R%~(max-right 17)~(pad-right 17)&user-date; %-30,30uB %*%B%s\n")
 
 ;; threading display
 (setq gnus-sum-thread-tree-root ""
