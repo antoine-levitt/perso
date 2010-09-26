@@ -101,6 +101,7 @@
 (set-face-foreground 'erc-my-nick-face zenburn-red-4)
 ;; special colors for some people
 ;; (setq erc-nick-color-alist '(("qdsklwhatever" . "somecolor")))
+(setq erc-nick-color-alist nil)
 
 (defun erc-get-color-for-nick (nick)
   "Gets a color for NICK. If NICK is specified in erc-nick-color-alist, use it, else hash the nick and get a color from that"
