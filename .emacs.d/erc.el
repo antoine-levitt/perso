@@ -89,7 +89,6 @@
 (setq erc-colors-list (list zenburn-bg+2
 			    zenburn-red
 			    zenburn-red-2
-			    zenburn-red-4
 			    zenburn-orange
 			    zenburn-green-1
 			    zenburn-green+1
@@ -98,8 +97,8 @@
 			    zenburn-blue-1
 			    zenburn-blue-3
 			    zenburn-blue-5
-			    zenburn-yellow-green
-			    ))
+			    zenburn-yellow-green))
+(set-face-foreground 'erc-my-nick-face zenburn-red-4)
 ;; special colors for some people
 ;; (setq erc-nick-color-alist '(("qdsklwhatever" . "somecolor")))
 
