@@ -57,9 +57,6 @@
 ;; for gnus-html (setq mm-text-html-renderer 'gnus-article-html)
 (define-key gnus-summary-mode-map (kbd "m")
   "\C-xo\276\C-rlink\C-m\C-m\274\C-xo")
-;; see what client people use
-(setq gnus-visible-headers 
-      (concat gnus-visible-headers "\\|^User-Agent:\\|^X-Mailer:"))
 ;; add a separation between headers and body
 (setq gnus-treat-body-boundary 'head)
 
@@ -179,6 +176,9 @@
 (require 'gnus-art)
 (define-key gnus-summary-mode-map "l" 'gnus-article-fill-long-lines)
 
+;; see what clients people use
+(setq gnus-visible-headers 
+      (concat gnus-visible-headers "\\|^User-Agent:\\|^X-Mailer:"))
 
 ;; if gnus doesn't respond in 15s, give up
 (defadvice gnus-demon-scan-news (around gnus-demon-timeout activate)
