@@ -85,10 +85,23 @@
 			"dark magenta" "maroon"
 			"indian red" "black" "forest green"
 			"midnight blue" "dark violet"))
+;;zenburn colors
+(setq erc-colors-list (list zenburn-bg+2
+			    zenburn-red
+			    zenburn-red-2
+			    zenburn-red-4
+			    zenburn-orange
+			    zenburn-green-1
+			    zenburn-green+1
+			    zenburn-green+3
+			    zenburn-blue+1
+			    zenburn-blue-1
+			    zenburn-blue-3
+			    zenburn-blue-5
+			    zenburn-yellow-green
+			    ))
 ;; special colors for some people
-(setq erc-nick-color-alist '(("Sam" . "blue")
-			     ("qdsklwhatever" . "somecolor")
-			     ))
+;; (setq erc-nick-color-alist '(("qdsklwhatever" . "somecolor")))
 
 (defun erc-get-color-for-nick (nick)
   "Gets a color for NICK. If NICK is specified in erc-nick-color-alist, use it, else hash the nick and get a color from that"
