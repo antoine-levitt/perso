@@ -17,6 +17,8 @@ export PATH=~/bin:$PATH
 #prompt user@host:~$
 export PS1='\u@\h:\w\$ '
 
+#enlever le binding C-w de bash, il sera défini dans readline
+stty werase undef
 #M-q = effacer le dernier mot
 bind '"\eq":backward-kill-word'
 

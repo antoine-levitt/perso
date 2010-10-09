@@ -1,1 +1,8 @@
 set completion-ignore-case on
+
+#C-w kill-region
+"\C-w":kill-region
+#M-w roughly the same as kill-ring-save
+"\M-w":copy-region-as-kill
+# C-space to set-mark
+"\C-Space":set-mark
