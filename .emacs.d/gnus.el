@@ -352,8 +352,16 @@
 (when (boundp 'my-mail-addresses)
   (setq message-dont-reply-to-names my-mail-addresses))
 
+;; ignore gwene (RSS to news gateway) messages. BBDB doesn't usually
+;; notice news messages, but it does if the sender name is someone it
+;; knows from mails.  Therefore, if I have a blog from someone I know
+;; in my RSS feeds, bbdb will detect a dummy gwene address for that
+;; person. This piece of code forbids it.
 (setq bbdb-ignore-some-messages-alist '(("From" . "gwene")))
 (setq bbdb-always-add-addresses 'bbdb-ignore-some-messages-hook)
+
+;; When I reply to a message, I want gnus to exit the corresponding
+;; summary buffer. 
 
 ;; advice that's used to exit the summary buffer
 (setq gnus-advice-exit-summary
