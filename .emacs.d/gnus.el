@@ -354,3 +354,33 @@
 
 (setq bbdb-ignore-some-messages-alist '(("From" . "gwene")))
 (setq bbdb-always-add-addresses 'bbdb-ignore-some-messages-hook)
+
+;; advice that's used to exit the summary buffer
+(setq gnus-advice-exit-summary
+      '(let ((sumbuf (current-buffer)))
+	 ad-do-it
+	 (let ((replybuf (current-buffer)))
+	   (with-current-buffer sumbuf
+	     (gnus-summary-exit))
+	   (switch-to-buffer replybuf))))
+
+(defmacro gnus-add-exit-summary-to-function (fun)
+  "Advices FUN so that it exits the summary buffer."
+  (let ((advice-name
+	 (make-symbol (concat (symbol-name (eval fun)) "-and-exit-summary"))))
+    ;; the doc page for ad-add-advice says it won't add the same advice twice,
+    ;; but it lies.
+    (unless (ad-get-advice-info-field (eval fun) 'around)
+      `(progn (ad-add-advice ,fun
+			     '(,advice-name
+			       nil
+			       t
+			       (lambda ()
+				 ,gnus-advice-exit-summary))
+			     'around
+			     'last)
+	      (ad-activate ,fun)))))
+
+(gnus-add-exit-summary-to-function 'gnus-summary-reply)
+(gnus-add-exit-summary-to-function 'gnus-summary-followup)
+(gnus-add-exit-summary-to-function 'gnus-summary-mail-forward)
