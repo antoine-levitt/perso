@@ -351,3 +351,6 @@
 ;; if defined in private gnus, don't reply to my addresses
 (when (boundp 'my-mail-addresses)
   (setq message-dont-reply-to-names my-mail-addresses))
+
+(setq bbdb-ignore-some-messages-alist '(("From" . "gwene")))
+(setq bbdb-always-add-addresses 'bbdb-ignore-some-messages-hook)
