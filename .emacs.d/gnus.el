@@ -201,8 +201,6 @@
 ;; Never split outgoing messages, most clients can't read them anyway.
 ;; It was probably very useful in the 70s.
 (setq message-send-mail-partially-limit nil)
-;; add Cc and Bcc headers to the message buffer
-(setq message-default-mail-headers "Cc: \nBcc: \n")
 ;; Use smtp for outgoing mail. Needs starttls. Under ubuntu, package starttls
 (setq send-mail-function 'smtpmail-send-it)
 (setq message-send-mail-function 'smtpmail-send-it)
