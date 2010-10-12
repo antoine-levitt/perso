@@ -8,10 +8,10 @@ fi
 
 #emacs : what else.
 export EDITOR='emacsclient -a emacs'
-#ignorer les commandes triviales dans l'historique, et garder 2k commandes
+#ignorer les commandes triviales dans l'historique, et garder 20k commandes
 export HISTIGNORE="&:ls:[bf]g:cd:c"
-export HISTSIZE=2000
-export HISTFILESIZE=2000
+export HISTSIZE=20000
+export HISTFILESIZE=20000
 #standard mais on sait jamais
 export PATH=~/bin:$PATH
 #prompt user@host:~$
