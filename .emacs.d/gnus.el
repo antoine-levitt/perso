@@ -320,12 +320,9 @@
 (setq bbdb-always-add-addresses t)
 (setq bbdb-new-nets-always-primary t)
 (setq bbdb-offer-save 1) ; save without asking
-;; add to bbdb only if I'm recipient or cc'ed
-(setq bbdb-ignore-most-messages-alist '(("to" . "levitt")
-					("cc" . "levitt")))
-
-(setq bbdb/mail-auto-create-p 'bbdb-ignore-most-messages-hook
-      bbdb/news-auto-create-p 'bbdb-ignore-most-messages-hook)
+;; add to bbdb only if I'm recipient or cc'ed. See below for bbdb-ignore-most-messages-alist
+(setq bbdb-ignore-most-messages-alist nil)
+(setq bbdb/mail-auto-create-p 'bbdb-ignore-most-messages-hook)
 (setq bbdb-use-pop-up nil
       bbdb-complete-name-allow-cycling t)
 (setq bbdb-dwim-net-address-allow-redundancy t)
@@ -345,9 +342,19 @@
 ;; Personal info for password privacy
 (load "~/.emacs.d/priv_gnus.el" t)
 
-;; if defined in private gnus, don't reply to my addresses
+;; define this variable in priv_gnus
 (when (boundp 'my-mail-addresses)
-  (setq message-dont-reply-to-names my-mail-addresses))
+  ;; don't reply to my addresses
+  (setq message-dont-reply-to-names my-mail-addresses)
+  (dolist (el my-mail-addresses)
+    ;; reply using the address the mail was sent to
+    (add-to-list 'gnus-posting-styles `((header "to" ,el) (address ,el)))
+    (add-to-list 'gnus-posting-styles `((header "cc" ,el) (address ,el)))
+    (add-to-list 'gnus-posting-styles `((header "bcc" ,el) (address ,el)))
+    ;; only add people who mail me directly to BBDB (no ML)
+    (add-to-list 'bbdb-ignore-most-messages-alist `("to" . ,el))
+    (add-to-list 'bbdb-ignore-most-messages-alist `("cc" . ,el))
+    (add-to-list 'bbdb-ignore-most-messages-alist `("bcc" . ,el))))
 
 ;; ignore gwene (RSS to news gateway) messages. BBDB doesn't usually
 ;; notice news messages, but it does if the sender name is someone it
