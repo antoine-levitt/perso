@@ -298,7 +298,7 @@
     (gnus-unread-update-unread-count)))
 (add-hook 'window-configuration-change-hook 'gnus-unread-refresh-and-update-unread-count t)
 
-;; full check once in a while. Furthermore, a sync for "important" news is done whenever offlineimap does a sync, with
+;; full check once in a while. Furthermore, a sync for mail is done whenever offlineimap does a sync, with
 ;; postsynchook = emacsclient -e "(run-with-idle-timer 2 nil (lambda () (with-local-quit (gnus-unread-check-news))))"
 ;; the with-local-quit is because check-news is blocking, so we must provide a quit context
 (defun gnus-unread-schedule-full-check ()
@@ -306,9 +306,7 @@
   ;; next time the user is busy doing something else, ie when idle for 30s
   (run-with-idle-timer 30 nil (lambda () (with-local-quit (gnus-unread-check-news 5)))))
 ;; schedule full check every 10mins
-(gnus-demon-add-handler 'gnus-unread-schedule-full-check 10 nil)
-(setq gnus-demon-timestep 60)
-(gnus-demon-init)
+(gnus-demon-add-handler 'gnus-unread-schedule-full-check 30 nil)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; BBDB
