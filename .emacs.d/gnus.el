@@ -35,6 +35,7 @@
 ;; Useful for webcomics and such
 (setq mm-inline-text-html-with-images t)
 (setq mm-attachment-override-types '("image/.*"))
+(setq gnus-blocked-images nil)
 
 ;; Use KH to view in a real browser
 (defun my-gnus-summary-view-html-alternative ()
