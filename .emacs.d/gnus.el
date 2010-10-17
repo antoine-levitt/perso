@@ -73,6 +73,7 @@
 (setq gnus-ignored-newsgroups "")
 ;; stfu, kthx
 (setq gnus-verbose 4)
+(setq gnus-verbose-backends 4)
 ;; format dates in an user-friendly way
 ;; (setq gnus-user-date-format-alist '((t . "%d.%m.%Y %H:%M")))
 (setq gnus-user-date-format-alist
