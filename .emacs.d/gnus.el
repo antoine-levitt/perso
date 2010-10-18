@@ -58,8 +58,6 @@
 ;; for gnus-html (setq mm-text-html-renderer 'gnus-article-html)
 (define-key gnus-summary-mode-map (kbd "m")
   "\C-xo\276\C-rlink\C-m\C-m\274\C-xo")
-;; add a separation between headers and body
-(setq gnus-treat-body-boundary 'head)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Misc
@@ -304,10 +302,10 @@
 ;; the with-local-quit is because check-news is blocking, so we must provide a quit context
 (defun gnus-unread-schedule-full-check ()
   (interactive)
-  ;; next time the user is busy doing something else, ie when idle for 30s
-  (run-with-idle-timer 30 nil (lambda () (with-local-quit (gnus-unread-check-news 5)))))
-;; schedule full check every 10mins
-(gnus-demon-add-handler 'gnus-unread-schedule-full-check 30 nil)
+  ;; next time the user is busy doing something else, ie when idle for 5s
+  (run-with-idle-timer 5 nil (lambda () (with-local-quit (gnus-unread-check-news 5)))))
+;; schedule full check every 5mins
+(gnus-demon-add-handler 'gnus-unread-schedule-full-check 5 nil)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; BBDB
