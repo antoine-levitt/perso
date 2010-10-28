@@ -7,7 +7,8 @@
                             lisp-interaction-mode
 			    scheme-mode
                             LaTeX-mode TeX-mode
-			    matlab-mode ada-mode)
+			    matlab-mode ada-mode
+			    fortran-mode f90-mode)
   "Modes in which to indent regions that are yanked (or yank-popped)")
 
 (defvar yank-advised-indent-threshold 1000
