@@ -707,7 +707,7 @@ some other pops up with display-buffer), go back to only one window open"
 	  (filter-visible-calendar-holidays day-list)))
     output-list))
 
-(setq holiday-local-holidays
+(setq calendar-holidays
       '((holiday-fixed 1 1 "Nouvel an")
 	(holiday-fixed 5 1 "Fête du travail")
 	(holiday-fixed 5 8 "Victoire 1945")
@@ -719,12 +719,13 @@ some other pops up with display-buffer), go back to only one window open"
 	(holiday-fixed 12 25 "Noël")
 	(holiday-float 5 0 2 "Fête des mères")
 	(holiday-float 6 0 3 "Fête des pères")
-	; à changer chaque année
-	(vacances "Vacances de la Toussaint" 23 10 2010 4 11 2010)
-	(vacances "Vacances de Noël" 18 12 2010 3 1 2011)
-	(vacances "Vacances d'hiver" 12 2 2011 28 2 2011)
-	(vacances "Vacances de printemps" 9 4 2011 26 4 2011)
-	(vacances "Vacances d'été" 2 7 2011 5 9 2011)))
+	;; ; à mettre selon les gouts
+	;; (vacances "Vacances de la Toussaint" 23 10 2010 4 11 2010)
+	;; (vacances "Vacances de Noël" 18 12 2010 3 1 2011)
+	;; (vacances "Vacances d'hiver" 12 2 2011 28 2 2011)
+	;; (vacances "Vacances de printemps" 9 4 2011 26 4 2011)
+	;; (vacances "Vacances d'été" 2 7 2011 5 9 2011)
+	))
 (setq calendar-mark-holidays-flag t)
 
 
