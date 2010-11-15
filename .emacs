@@ -656,6 +656,78 @@ some other pops up with display-buffer), go back to only one window open"
 			  (file+headline "~/.emacs.d/org/todo.org" "Tasks")
 			  "* TODO %?\nSCHEDULED: %t\n%a\n%i")))
 
+;; French holidays, all from http://www.drieu.org/blog/index.php/APRIL/101029
+(defun vacances (string sd sm sy ed em ey)
+  "Compute holiday lists"
+  (filter-visible-calendar-holidays
+   (vacances-i string 
+	       (calendar-absolute-from-gregorian (list sm sd sy))
+	       (calendar-absolute-from-gregorian (list em ed ey)))))
+ 
+(defun vacances-i (string s e)
+  "Holidays iterator"
+  (if (= s e)
+      nil
+    (cons (list (calendar-gregorian-from-absolute s) string)
+	  (vacances-i string (+ s 1) e))))
+ 
+(defun feries-paques ()
+  "Liste des jours de vacances  relatifs a paques."
+  (let* ((century (1+ (/ displayed-year 100)))
+	 (shifted-epact	;; Age of moon for April 5...
+	  (% (+ 14 (* 11 (% displayed-year 19))	;;     ...by Nicaean rule
+		(- ;; ...corrected for the Gregorian century rule
+		 (/ (* 3 century) 4))
+		(/ ;; ...corrected for Metonic cycle inaccuracy.
+		 (+ 5 (* 8 century)) 25)
+		(* 30 century))	;;              Keeps value positive.
+	     30))
+	 (adjusted-epact ;;  Adjust for 29.5 day month.
+	  (if (or (= shifted-epact 0)
+		  (and (= shifted-epact 1) (< 10 (% displayed-year 19))))
+	      (1+ shifted-epact)
+	    shifted-epact))
+	 (paschal-moon ;; Day after the full moon on or after March 21.
+	  (- (calendar-absolute-from-gregorian (list 4 19 displayed-year))
+	     adjusted-epact))
+	 (abs-easter (calendar-dayname-on-or-before 0 (+ paschal-moon 7)))
+	 (day-list
+	  (list
+	   (list (calendar-gregorian-from-absolute abs-easter)
+		 "Pâques")
+	   (list (calendar-gregorian-from-absolute (+ abs-easter 1))
+		 "Lundi de Pâques")
+	   (list (calendar-gregorian-from-absolute (+ abs-easter 39))
+		 "Jeudi de l'ascension")
+	   (list (calendar-gregorian-from-absolute (+ abs-easter 49))
+		 "Pentecôte")
+	   (list (calendar-gregorian-from-absolute (+ abs-easter 50))
+		 "Lundi de Pentecôte")))
+	 (output-list
+	  (filter-visible-calendar-holidays day-list)))
+    output-list))
+
+(setq holiday-local-holidays
+      '((holiday-fixed 1 1 "Nouvel an")
+	(holiday-fixed 5 1 "Fête du travail")
+	(holiday-fixed 5 8 "Victoire 1945")
+	(feries-paques)
+	(holiday-fixed 7 14 "Fête nationale")
+	(holiday-fixed 8 15 "Assomption")
+	(holiday-fixed 11 11 "Armistice 1918")
+	(holiday-fixed 11 1 "Toussaint")
+	(holiday-fixed 12 25 "Noël")
+	(holiday-float 5 0 2 "Fête des mères")
+	(holiday-float 6 0 3 "Fête des pères")
+	; à changer chaque année
+	(vacances "Vacances de la Toussaint" 23 10 2010 4 11 2010)
+	(vacances "Vacances de Noël" 18 12 2010 3 1 2011)
+	(vacances "Vacances d'hiver" 12 2 2011 28 2 2011)
+	(vacances "Vacances de printemps" 9 4 2011 26 4 2011)
+	(vacances "Vacances d'été" 2 7 2011 5 9 2011)))
+(setq calendar-mark-holidays-flag t)
+
+
 (require 'google-weather)
 (require 'org-google-weather)
 (setq google-weather-unit-system-temperature-assoc '(("SI" . "°C")
