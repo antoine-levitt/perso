@@ -960,6 +960,7 @@ Ignores CHAR at point."
 (global-set-key (kbd "s-y") (lambda ()
 			      (interactive)
 			      (popup-menu 'yank-menu)))
+(global-set-key (kbd "s-m") 'compose-mail)
 (defun duplicate-current-line ()
   (interactive)
   "Duplicate current line"
