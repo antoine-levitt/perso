@@ -261,6 +261,16 @@ some other pops up with display-buffer), go back to only one window open"
 ;;icomplete : completion for commands that don't use ido (like help)
 (icomplete-mode 1)
 
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Undo-tree
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(require 'undo-tree)
+(setq undo-tree-mode-lighter "")
+(global-undo-tree-mode)
+(add-hook 'fundamental-mode-hook 'turn-on-undo-tree-mode)
+
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Parenthesis editing
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -449,15 +459,6 @@ some other pops up with display-buffer), go back to only one window open"
       tags-revert-without-query t)
 ;;indent yanked code in programming languages modes
 (load-library "yank-indent")
-(setq yank-indent-modes '(emacs-lisp-mode
-			  c-mode c++-mode
-			  tcl-mode sql-mode
-			  perl-mode cperl-mode
-			  java-mode jde-mode
-			  lisp-interaction-mode
-			  scheme-mode
-			  LaTeX-mode TeX-mode
-			  matlab-mode ada-mode))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Matlab
