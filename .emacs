@@ -654,9 +654,15 @@ some other pops up with display-buffer), go back to only one window open"
  org-agenda-remove-tags t
  org-agenda-repeating-timestamp-show-all t
  org-reverse-note-order t
- org-capture-templates '(("t" "default" entry
+ org-capture-templates '(("t" "Scheduled task" entry
 			  (file+headline "~/.emacs.d/org/todo.org" "Tasks")
-			  "* TODO %?\nSCHEDULED: %t\n%a\n%i"))
+			  "* TODO %?\nSCHEDULED: %t\n%a\n%i")
+			 ("w" "Work" entry
+			  (file+headline "~/.emacs.d/org/todo.org" "Work")
+			  "* TODO %?\n%i")
+			 ("c" "Consume" entry
+			  (file+headline "~/.emacs.d/org/todo.org" "Consume")
+			  "* TODO %?\n%i"))
  org-agenda-custom-commands
  '(("z" "Agenda, work and consume"
     ((agenda "")
@@ -664,7 +670,7 @@ some other pops up with display-buffer), go back to only one window open"
      (tags-todo "Consume")
      ))))
 
-(global-set-key (kbd "s-z") [?\M-x ?o ?r ?g ?  ?a ?g ?e ?n ?d ?a return ?z])
+(global-set-key (kbd "s-z") (lambda () (interactive) (org-agenda nil "z")))
 
 ;; French holidays, all from http://www.drieu.org/blog/index.php/APRIL/101029
 (defun vacances (string sd sm sy ed em ey)
