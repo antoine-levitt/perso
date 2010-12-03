@@ -651,11 +651,20 @@ some other pops up with display-buffer), go back to only one window open"
  org-agenda-skip-deadline-if-done t
  org-agenda-skip-scheduled-if-done t
  org-agenda-start-on-weekday 1
+ org-agenda-remove-tags t
  org-agenda-repeating-timestamp-show-all t
  org-reverse-note-order t
  org-capture-templates '(("t" "default" entry
 			  (file+headline "~/.emacs.d/org/todo.org" "Tasks")
-			  "* TODO %?\nSCHEDULED: %t\n%a\n%i")))
+			  "* TODO %?\nSCHEDULED: %t\n%a\n%i"))
+ org-agenda-custom-commands
+ '(("z" "Agenda, work and consume"
+    ((agenda "")
+     (tags-todo "Work")
+     (tags-todo "Consume")
+     ))))
+
+(global-set-key (kbd "s-z") [?\M-x ?o ?r ?g ?  ?a ?g ?e ?n ?d ?a return ?z])
 
 ;; French holidays, all from http://www.drieu.org/blog/index.php/APRIL/101029
 (defun vacances (string sd sm sy ed em ey)
