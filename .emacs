@@ -662,12 +662,16 @@ some other pops up with display-buffer), go back to only one window open"
 			  "* TODO %?\n%i")
 			 ("c" "Consume" entry
 			  (file+headline "~/.emacs.d/org/todo.org" "Consume")
+			  "* TODO %?\n%i")
+			 ("m" "Misc" entry
+			  (file+headline "~/.emacs.d/org/todo.org" "Misc")
 			  "* TODO %?\n%i"))
  org-agenda-custom-commands
  '(("z" "Agenda, work and consume"
     ((agenda "")
      (tags-todo "Work")
      (tags-todo "Consume")
+     (tags-todo "Misc")
      ))))
 
 (global-set-key (kbd "s-z") (lambda () (interactive) (org-agenda nil "z")))
