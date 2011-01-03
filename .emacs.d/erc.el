@@ -34,7 +34,7 @@
       ;;329 : chan created on
       ;;324 : chan modes
       ;;333 : X set the topic
-      erc-track-exclude-types '("JOIN" "NICK" "PART" "QUIT" "305" "306" "333" "353" "324" "329" "MODE" "TOPIC")
+      erc-track-exclude-types '("JOIN" "NICK" "PART" "QUIT" "305" "306" "333" "353" "324" "329" "MODE" "TOPIC" "332")
       erc-track-position-in-mode-line t
       erc-track-showcount t
       erc-track-switch-direction 'leastactive
