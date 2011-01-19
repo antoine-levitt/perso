@@ -669,8 +669,10 @@ some other pops up with display-buffer), go back to only one window open"
 ;;bindings
 (add-hook 'org-load-hook
 	  (lambda ()
-	    (define-key org-mode-map (kbd "<C-tab>") nil)
+	    ; quick task add
+	    (define-key org-agenda-mode-map (kbd "a") (kbd "k c t"))
 	    (define-key org-mode-map (kbd "C-c C-r") 'org-refile)
+	    (define-key org-mode-map (kbd "<C-tab>") nil)
 	    (define-key org-mode-map (kbd "<S-up>") nil)
 	    (define-key org-mode-map (kbd "<S-down>") nil)
 	    (define-key org-mode-map (kbd "<S-right>") nil)
