@@ -670,6 +670,7 @@ some other pops up with display-buffer), go back to only one window open"
 (add-hook 'org-load-hook
 	  (lambda ()
 	    ; quick task add
+	    (require 'org-agenda)
 	    (define-key org-agenda-mode-map (kbd "a") (kbd "k c t"))
 	    (define-key org-mode-map (kbd "C-c C-r") 'org-refile)
 	    (define-key org-mode-map (kbd "<C-tab>") nil)
