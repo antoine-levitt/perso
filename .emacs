@@ -696,16 +696,7 @@ some other pops up with display-buffer), go back to only one window open"
  org-reverse-note-order t
  org-capture-templates '(("t" "Scheduled task" entry
 			  (file+headline "~/.emacs.d/org/todo.org" "Tasks")
-			  "* TODO %?\nSCHEDULED: %t\n%a\n%i")
-			 ("w" "Work" entry
-			  (file+headline "~/.emacs.d/org/todo.org" "Work")
-			  "* TODO %?\n%i")
-			 ("c" "Consume" entry
-			  (file+headline "~/.emacs.d/org/todo.org" "Consume")
-			  "* TODO %?\n%i")
-			 ("m" "Misc" entry
-			  (file+headline "~/.emacs.d/org/todo.org" "Misc")
-			  "* TODO %?\n%i"))
+			  "* TODO %?\nSCHEDULED: %t\n%a\n%i"))
  org-agenda-custom-commands
  '(("z" "Agenda, work and consume"
     ((agenda "")
