@@ -274,7 +274,9 @@ erc-modified-channels-alist, filtered by erc-tray-ignored-channels."
 (defun erc-notify-if-hl (matched-type nick msg)
   "Notify whenever someone highlights you and you're away"
   (when (and (eq matched-type 'current-nick)
-	     (not (eq t (frame-visible-p (selected-frame)))))
+	     (or (and (member (buffer-name (current-buffer)) erc-track-exclude)
+		      (not (equal (window-buffer) (current-buffer))))
+		 (not (eq t (frame-visible-p (selected-frame))))))
     (notify (format "\<%s\> %s" (erc-extract-nick nick) msg))))
 ;;notify if away and highlighted
 (add-hook 'erc-text-matched-hook 'erc-notify-if-hl)
