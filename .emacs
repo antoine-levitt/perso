@@ -693,6 +693,7 @@ some other pops up with display-buffer), go back to only one window open"
  org-agenda-skip-deadline-if-done t
  org-agenda-skip-scheduled-if-done t
  org-agenda-start-on-weekday 1
+ org-extend-today-until 4
  org-agenda-remove-tags t
  org-agenda-repeating-timestamp-show-all t
  org-reverse-note-order t
