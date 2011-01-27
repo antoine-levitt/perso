@@ -277,7 +277,8 @@ erc-modified-channels-alist, filtered by erc-tray-ignored-channels."
 	     (or (and (member (buffer-name (current-buffer)) erc-track-exclude)
 		      (not (equal (window-buffer) (current-buffer))))
 		 (not (eq t (frame-visible-p (selected-frame))))))
-    (notify (format "\<%s\> %s" (erc-extract-nick nick) msg))))
+    (unless (string-match "Users on " msg)
+      (notify (format "\<%s\> %s" (erc-extract-nick nick) msg)))))
 ;;notify if away and highlighted
 (add-hook 'erc-text-matched-hook 'erc-notify-if-hl)
 
