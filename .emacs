@@ -700,6 +700,7 @@ some other pops up with display-buffer), go back to only one window open"
  org-capture-templates '(("t" "Scheduled task" entry
 			  (file+headline "~/.emacs.d/org/todo.org" "Tasks")
 			  "* TODO %?\nSCHEDULED: %t\n%a\n%i"))
+ org-irc-link-to-logs t
  org-agenda-custom-commands
  '(("z" "Agenda, work and consume"
     ((agenda "")
