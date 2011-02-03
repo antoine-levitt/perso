@@ -99,3 +99,6 @@ alias gd='git diff'
 alias gl='git pull'
 alias gp='git push'
 alias gst='git status | less'
+
+# gfortran, mon ami, arrête d'être un gros blaireau et ne bufferise pas stdout
+export GFORTRAN_UNBUFFERED_PRECONNECTED='Y'
