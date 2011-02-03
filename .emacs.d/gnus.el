@@ -202,8 +202,6 @@
 ;; Use smtp for outgoing mail. Needs starttls. Under ubuntu, package starttls
 (setq send-mail-function 'smtpmail-send-it)
 (setq message-send-mail-function 'smtpmail-send-it)
-;; Please be a bit more verbose if the connection fails.
-(setq smtpmail-debug-info t)
 ;; Configuration of smtp in priv_gnus, see emacswiki, for instance http://www.emacswiki.org/emacs/GnusGmail#toc2
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
