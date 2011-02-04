@@ -48,12 +48,12 @@
     (gnus-summary-show-article)
     (set-buffer gnus-article-buffer)
     (let ((file (make-temp-file "html-message-" nil ".html"))
-	  (handle (cdr (assq 1 gnus-article-mime-handle-alist))))
+	  (handle (caddr (assq 1 gnus-article-mime-handle-alist))))
       (mm-save-part-to-file handle file)
       (browse-url (concat "file://" file)))))
 (define-key gnus-summary-mode-map (kbd "K H")
   'my-gnus-summary-view-html-alternative)
-;; In summary, press m to go to the article in gwene
+;; In summary buffer, press m to go to the article in gwene
 (define-key gnus-summary-mode-map (kbd "m")
   "\C-xo\276\C-rlink\C-m\C-m\274\C-xo")
 
