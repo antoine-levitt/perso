@@ -92,7 +92,9 @@
 
 ;; toggle between read and unread articles. this is a bit of a hack, and should be better integrated.
 ;; oh well.
-(setq gnus-group-display-unread nil)
+(with-current-buffer gnus-group-buffer
+  (make-local-variable 'gnus-group-display-unread)
+  (setq gnus-group-display-unread nil))
 (defun gnus-group-toggle-unread ()
   (interactive)
   (toggle-variable 'gnus-group-display-unread)
