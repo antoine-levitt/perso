@@ -163,6 +163,17 @@
       (15 (message "Gnus timed out."))
     ad-do-it))
 
+(defun gnus-summary-toggle-thread-hiding ()
+  (interactive)
+  (make-local-variable 'are-threads-hidden)
+  (if (and (boundp 'are-threads-hidden) are-threads-hidden)
+      (progn
+	(gnus-summary-show-all-threads)
+	(setq are-threads-hidden nil))
+    (gnus-summary-hide-all-threads)
+    (setq are-threads-hidden t)))
+(define-key gnus-summary-mode-map (kbd "h") 'gnus-summary-toggle-thread-hiding)
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Mairix
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
