@@ -120,6 +120,8 @@
   (bury-buffer))
 ;; bury instead of gnus-group-exit.
 (define-key gnus-group-mode-map (kbd "q") 'gnus-group-bury)
+;; bind Q to exit cleanly
+(define-key gnus-group-mode-map (kbd "Q") 'gnus-group-exit)
 
 ;; When I reply to a message, I want gnus to exit the corresponding
 ;; summary buffer. 
