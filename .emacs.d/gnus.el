@@ -228,6 +228,9 @@
 ;; In summary buffer, press m to go to the article in gwene
 (define-key gnus-summary-mode-map (kbd "m")
   "\C-xo\276\C-rlink\C-m\C-m\274\C-xo")
+;; Attach files in dired
+(require 'dired)
+(define-key dired-mode-map (kbd "a") 'gnus-dired-attach)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Receive mail
