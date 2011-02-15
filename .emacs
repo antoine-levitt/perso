@@ -12,11 +12,12 @@
 ;;byte-recompile elisp files if they need to be
 (byte-recompile-directory "~/.emacs.d/lisp" 0)
 
-;; gnus/mail directories
+;; put everything in ~/.emacs.d
 (setq gnus-init-file "~/.emacs.d/gnus.el"
       gnus-home-directory "~/.emacs.d"
       mail-default-directory "~/.emacs.d"
       message-directory "~/.emacs.d/Mail")
+(eval-after-load "bbdb" '(setq bbdb-file "~/.emacs.d/bbdb"))
 
 ;; customize
 (setq custom-file "~/.emacs.d/custom.el")
