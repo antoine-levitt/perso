@@ -207,27 +207,18 @@
       ;; Display images
       mm-inline-text-html-with-images t
       mm-attachment-override-types '("image/.*")
-      gnus-blocked-images nil)
+      gnus-blocked-images nil
+      gnus-summary-save-parts-only-non-display t)
 
-;; Use KH to view in a real browser
-(defun my-gnus-summary-view-html-alternative ()
-  "Display the HTML part of the current multipart/alternative MIME message
-    in current browser."
-  (interactive)
-  (save-current-buffer
-    (gnus-summary-show-article)
-    (set-buffer gnus-article-buffer)
-    (let ((file (make-temp-file "html-message-" nil ".html"))
-	  (handle (caddr (assq 1 gnus-article-mime-handle-alist))))
-      (mm-save-part-to-file handle file)
-      (browse-url (concat "file://" file)))))
-(define-key gnus-summary-mode-map (kbd "K H")
-  'my-gnus-summary-view-html-alternative)
+(define-key gnus-summary-mode-map (kbd "H")
+  'gnus-article-browse-html-article)
+(setq gnus-article-browse-delete-temp t)
 ;; In summary buffer, press m to go to the article in gwene
 (define-key gnus-summary-mode-map (kbd "m")
   "\C-xo\276\C-rlink\C-m\C-m\274\C-xo")
+(define-key gnus-summary-mode-map (kbd "o") 'gnus-summary-save-parts)
 ;; Attach files in dired
-(require 'dired)
+(require 'gnus-dired)
 (define-key dired-mode-map (kbd "a") 'gnus-dired-attach)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
