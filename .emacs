@@ -393,6 +393,7 @@ some other pops up with display-buffer), go back to only one window open"
   (interactive)
   (launch-command "smplayer" (dired-get-file-for-visit)))
 (define-key dired-mode-map (kbd "M-RET") 'smplayer-open-file)
+(define-key dired-mode-map (kbd "²") 'smplayer-open-file)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Psvn
