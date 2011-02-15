@@ -340,45 +340,45 @@
 (gnus-demon-add-handler 'gnus-unread-schedule-full-check 5 nil)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; BBDB
+;;; Private info
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(require 'bbdb)
-(require 'bbdb-hooks)
-(bbdb-initialize 'gnus 'message)
-(bbdb-insinuate-message)
-(bbdb-insinuate-gnus)
-(setq bbdb/gnus-summary-mark-known-posters nil
-      bbdb-always-add-addresses t
-      bbdb-new-nets-always-primary t
-      bbdb-offer-save 1 ; save without asking
-      ;; add to bbdb only if I'm recipient or cc'ed. See below for bbdb-ignore-most-messages-alist
-      bbdb-ignore-most-messages-alist nil
-      bbdb/mail-auto-create-p 'bbdb-ignore-most-messages-hook
-      bbdb-use-pop-up nil
-      bbdb-complete-name-allow-cycling t
-      bbdb-dwim-net-address-allow-redundancy t)
-
 ;; Personal info for password privacy
 (load "~/.emacs.d/priv_gnus.el" t)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; BBDB
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(require 'bbdb)
+(bbdb-initialize 'gnus 'message)
+
+(setq bbdb-update-records-p t ; don't prompt me for creation
+      bbdb/gnus-update-records-p 'bbdb-select-message ; filter incoming mail and add those who mail me
+      bbdb/message-update-records-p t ; automatically add everybody I send mail to
+      bbdb/gnus-summary-mark-known-posters nil ; I don't care about this feature
+      bbdb-mail-allow-redundancy t ; allow full-name completion
+      bbdb-complete-mail-allow-cycling t ; allow cycling
+      bbdb-new-mails-always-primary t ; always use newly added mails
+      bbdb-pop-up-window-size 5 ; small window
+      bbdb-completion-display-record nil
+      bbdb-message-pop-up nil) ; do not popup me
+
+(define-key bbdb-mode-map (kbd "q") 'quit-window)
+
+; add notices (might be patched sometimes in the future)
+(add-hook 'gnus-article-prepare-hook (lambda () (bbdb-mua-update-records nil 'bbdb-select-message)))
+(add-hook 'message-send-hook (lambda () (bbdb-mua-update-records nil 'bbdb-select-message)))
 
 ;; define this variable in priv_gnus
 (when (boundp 'my-mail-addresses)
   ;; don't reply to my addresses
   (setq message-dont-reply-to-names my-mail-addresses)
+  ;; only add to bbdb people who mail me directly (no mailing lists)
+  (setq bbdb-accept-message-alist `(("to" . ,(regexp-opt my-mail-addresses))
+				    ("cc" . ,(regexp-opt my-mail-addresses))
+				    ("bcc" . ,(regexp-opt my-mail-addresses))))
   (dolist (el my-mail-addresses)
     ;; reply using the address the mail was sent to
     (add-to-list 'gnus-posting-styles `((header "to" ,el) (address ,el)))
     (add-to-list 'gnus-posting-styles `((header "cc" ,el) (address ,el)))
-    (add-to-list 'gnus-posting-styles `((header "bcc" ,el) (address ,el)))
-    ;; only add people who mail me directly to BBDB (no ML)
-    (add-to-list 'bbdb-ignore-most-messages-alist `("to" . ,el))
-    (add-to-list 'bbdb-ignore-most-messages-alist `("cc" . ,el))
-    (add-to-list 'bbdb-ignore-most-messages-alist `("bcc" . ,el))))
-
-;; ignore gwene (RSS to news gateway) messages. BBDB doesn't usually
-;; notice news messages, but it does if the sender name is someone it
-;; knows from mails.  Therefore, if I have a blog from someone I know
-;; in my RSS feeds, bbdb will detect a dummy gwene address for that
-;; person. This piece of code forbids it.
-(setq bbdb-ignore-some-messages-alist '(("From" . "gwene")))
-(setq bbdb-always-add-addresses 'bbdb-ignore-some-messages-hook)
+    (add-to-list 'gnus-posting-styles `((header "bcc" ,el) (address ,el)))))
