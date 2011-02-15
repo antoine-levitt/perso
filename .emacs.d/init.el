@@ -153,8 +153,7 @@ From http://atomized.org/2011/01/toggle-between-root-non-root-in-emacs-with-tram
          (tramp-make-tramp-file-name "sudo" "root" "localhost" filename))))))
 (global-set-key (kbd "C-c C-r") 'toggle-alternate-file-as-root)
 
-(defun rde () (interactive) (load-file "~/.emacs"))
-(defun ede () (interactive) (find-file "~/.emacs"))
+(defun ede () (interactive) (find-file "~/.emacs.d/init.el"))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Misc. settings
