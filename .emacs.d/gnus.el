@@ -154,13 +154,6 @@
 (gnus-add-exit-summary-to-function 'gnus-summary-followup)
 (gnus-add-exit-summary-to-function 'gnus-summary-mail-forward)
 
-;; if gnus doesn't respond in 15s, give up
-(defadvice gnus-demon-scan-news (around gnus-demon-timeout activate)
-  "Timeout for Gnus."
-  (with-timeout
-      (15 (message "Gnus timed out."))
-    ad-do-it))
-
 (defun gnus-summary-toggle-thread-hiding ()
   (interactive)
   (make-local-variable 'are-threads-hidden)
@@ -338,6 +331,13 @@
   (run-with-idle-timer 5 nil (lambda () (with-local-quit (gnus-unread-check-news 5)))))
 ;; schedule full check every 5mins
 (gnus-demon-add-handler 'gnus-unread-schedule-full-check 5 nil)
+
+;; if gnus doesn't respond in 10s, give up
+(defadvice gnus-demon-scan-news (around gnus-demon-timeout activate)
+  "Timeout for Gnus."
+  (with-timeout
+      (10 (message "Gnus timed out."))
+    ad-do-it))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Private info
