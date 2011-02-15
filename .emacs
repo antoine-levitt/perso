@@ -194,6 +194,7 @@ some other pops up with display-buffer), go back to only one window open"
 
 ;;save last edit place in files
 (setq-default save-place t)
+(setq save-place-file "~/.emacs.d/places")
 (require 'saveplace)
 
 ;;blinking cursor is distracting and useless
@@ -206,10 +207,9 @@ some other pops up with display-buffer), go back to only one window open"
 (setq frame-title-format "%b - Emacs")
 (setq icon-title-format "%b - Emacs")
 
-
 ;;backups/autosaves : no autosaves, and backups in one centralised place
 (setq auto-save-default nil)
-(defvar backup-dir "~/.emacsbackups/")
+(defvar backup-dir "~/.emacs.d/backups/")
 (setq backup-directory-alist (list (cons "." backup-dir)))
 
 ;;move between windows with meta-arrows
