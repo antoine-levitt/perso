@@ -45,6 +45,8 @@
   ;; save every 10mins
   (run-with-timer (* 10 60) (* 10 60) (lambda () (flet ((message (&rest args) nil))
 						   (desktop-save-in-desktop-dir)))))
+;; greeting message
+(add-hook 'after-init-hook (lambda () (message "Welcome back.")) t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Graphical display
