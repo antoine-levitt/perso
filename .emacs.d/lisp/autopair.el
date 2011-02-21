@@ -325,7 +325,7 @@ For now, simply returns `last-command-event'"
 
 (define-minor-mode autopair-mode
   "Automagically pair braces and quotes like in TextMate."
-  nil " pair" nil
+  nil "" nil
   (cond (autopair-mode
          ;; Setup the dynamic emulation keymap
          ;;
