@@ -4,6 +4,8 @@
 ;; Copyright (C) 2008  Linh Dang
 ;; Copyright (C) 2008  Marius Vollmer
 ;; Copyright (C) 2009  Tim Moore
+;; Copyright (C) 2009  byplayer
+;; Copyright (C) 2010  Alexander Prusov
 ;;
 ;; Egg is free software; you can redistribute it and/or modify it
 ;; under the terms of the GNU General Public License as published by
@@ -24,11 +26,24 @@
 ;;;    This is my fork of Marius's excellent magit. his work is at:
 ;;;    http://zagadka.vm.bytemark.co.uk/magit
 ;;;
+;;;    This is my fork of bogolisk egg . his work is at
+;;     http://github.com/bogolisk/egg
+;;;
+
+;;; Options
+;;; If you want to auto-update egg-status on file save,
+;;;   you set follow value on your .emacs.
+;;; (setq egg-auto-update t)
+;;;
+;;;Set to nonnil for egg-status to switch to the status buffer in the same window.
+;;; (setq egg-switch-to-buffer t)
 
 (require 'cl)
 (require 'electric)
 (require 'ediff)
 (require 'ffap)
+
+(defconst egg-version "0.94")
 
 (defgroup egg nil
   "Controlling Git from Emacs."
@@ -230,7 +245,7 @@ Many Egg faces inherit from this one by default."
   '((((class color) (background light))
      :foreground "blue1")
     (((class color) (background dark))
-     :foreground "white"))
+     :foreground "ForestGreen"))
   "Face for lines in a diff that have been added."
   :group 'egg-faces)
 
@@ -382,7 +397,7 @@ Many Egg faces inherit from this one by default."
   :type 'boolean)
 
 (defcustom egg-enable-tooltip nil
-  "Whether to refresh the index in the background when emacs is idle."
+  "Whether to activate useful tooltips, showing the local keymap at the point."
   :group 'egg
   :type 'boolean)
 
@@ -701,15 +716,9 @@ END-RE is the regexp to match the end of a record."
 	    (goto-char end))))
       lst)))
 
-;; (defsubst egg-is-in-git ()
-;;   "is the default-directory in a git repo."
-;;   (= (call-process egg-git-command nil nil nil "rev-parse" "--git-dir") 0))
-
 (defsubst egg-is-in-git ()
   "is the default-directory in a git repo."
-  (let ((out (egg-git-to-string "ls-files")))
-    (and out
-	 (not (string= out "")))))
+  (= (call-process egg-git-command nil nil nil "rev-parse" "--git-dir") 0))
 
 (defsubst egg-is-dir-in-git (dir)
   "is DIR in a git repo."
@@ -1314,10 +1323,10 @@ OV-ATTRIBUTES are the extra decorations for each blame chunk."
 	  (unless commit-info
 	    (re-search-forward "^author \\(.+\\)$")
 	    (setq author (match-string-no-properties 1))
-	    (re-search-forward "^filename \\(.+\\)$")
-	    (setq old-file (match-string-no-properties 1))
 	    (re-search-forward "^summary \\(.+\\)$")
 	    (setq subject (match-string-no-properties 1))
+	    (re-search-forward "^filename \\(.+\\)$")
+	    (setq old-file (match-string-no-properties 1))
 	    (setq commit-info (nconc
 			       (list :sha1 commit :author author 
 				     :subject subject :file old-file)
@@ -1955,8 +1964,9 @@ HUNK-BEG is the starting position of the current hunk."
       (goto-char hunk-beg)
       (forward-line 1)
       (end-of-line)
-      (while (re-search-forward "^\\(?:\\+\\| \\).*" limit t)
-	(setq adjust (1+ adjust))))
+      (if (< (point) limit)
+          (while (re-search-forward "^\\(?:\\+\\| \\).*" limit t)
+            (setq adjust (1+ adjust)))))
     (+ line adjust)))
 
 (defsubst egg-hunk-info-at (pos)
@@ -1983,7 +1993,7 @@ physical offsets."
   "Visit FILE in other-window and goto the current line of the hunk."
   (interactive (egg-hunk-info-at (point)))
   (let ((line (egg-hunk-compute-line-no hunk-header hunk-beg)))
-    (find-file file)
+    (find-file-other-window file)
     (goto-line line)))
 
 (defun egg-section-cmd-toggle-hide-show (nav)
@@ -2145,7 +2155,7 @@ creat the buffer. FMT is used to construct the buffer name. The name is built as
 	 ,@body
 	 (set (make-local-variable 'egg-orig-window-config) 
 	      (current-window-configuration))
-	 (message "buffer %s win-cfg %s" (buffer-name) egg-orig-window-config)
+	 ;; (message "buffer %s win-cfg %s" (buffer-name) egg-orig-window-config)
 	 (set (make-local-variable 'egg-internal-buffer-obarray)
 	      (make-vector 67 0)))
 
@@ -2339,7 +2349,7 @@ rebase session."
     "\\<egg-unstaged-diff-section-map>\n"
     "\\[egg-diff-section-cmd-visit-file-other-window]:visit file/line  "
     "\\[egg-diff-section-cmd-stage]:stage/unstage file/hunk  "
-    "\\[egg-diff-section-cmd-undo]:undo file/hunk's modificatons\n")))
+    "\\[egg-diff-section-cmd-undo]:undo file/hunk's modifications\n")))
   
 (defun egg-sb-insert-repo-section ()
   "Insert the repo section into the status buffer."
@@ -2434,8 +2444,8 @@ rebase session."
 			 'help-echo (egg-tooltip-func))
 	    "\n")
     (setq inv-beg (1- (point)))
-    (call-process-shell-command egg-git-command nil t nil "ls-files" "--others"  
-			"--exclude-standard | head -n 20")
+    (call-process egg-git-command nil t nil "ls-files" "--others"  
+		  "--exclude-standard")
     (setq end (point))
     (egg-delimit-section :section 'untracked beg end 
 			  inv-beg egg-section-map 'untracked)
@@ -2741,6 +2751,8 @@ If INIT was not nil, then perform 1st-time initializations as well."
 					egg-commit-log-edit))
   (define-key menu [stage] '(menu-item "Stage All Modifications"
 					egg-stage-all-files))
+  (define-key menu [stage-untracked] '(menu-item "Stage All Untracked Files"
+					egg-stage-untracked-files))
   (define-key menu [sp1] '("--"))
   (define-key menu [hide-all] '(menu-item "Hide All" egg-buffer-hide-all))  
   (define-key menu [show-all] '(menu-item "Show All" egg-buffer-show-all))  
@@ -2755,6 +2767,7 @@ If INIT was not nil, then perform 1st-time initializations as well."
   (define-key menu [next] '(menu-item "Goto Next Block" egg-buffer-cmd-navigate-next
 				      :enable (egg-navigation-at-point))))
 
+(defvar egg-switch-to-buffer nil "Set to nonnil for egg-status to switch to the status buffer in the same window.")
 
 (defun egg-status (&optional select caller)
   (interactive "P")
@@ -2765,6 +2778,7 @@ If INIT was not nil, then perform 1st-time initializations as well."
       (egg-status-buffer-redisplay buf 'init))
     (cond ((eq caller :sentinel) (pop-to-buffer buf))
 	  (select (pop-to-buffer buf t))
+	  (egg-switch-to-buffer (switch-to-buffer buf))
 	  ((interactive-p) (display-buffer buf t))
 	  (t (pop-to-buffer buf t)))))
 
@@ -2992,6 +3006,13 @@ If INIT was not nil, then perform 1st-time initializations as well."
     (when (egg-sync-0 "add" "-u")
       (message "staged all tracked files's modifications"))))
 
+(defun egg-stage-untracked-files ()
+  (interactive)
+  (let* ((git-dir (egg-git-dir))
+	 (default-directory (file-name-directory git-dir)))
+    (when (egg-sync-0 "add" ".")
+      (message "staged all untracked files"))))
+
 (defun egg-do-stash-wip (msg)
   (let* ((git-dir (egg-git-dir))
 	 (default-directory (file-name-directory git-dir)))
@@ -3174,6 +3195,7 @@ If INIT was not nil, then perform 1st-time initializations as well."
   (set (make-local-variable 'egg-log-msg-diff-beg) nil))
 
 (define-key egg-log-msg-mode-map (kbd "C-c C-c") 'egg-log-msg-done)
+(define-key egg-log-msg-mode-map (kbd "C-c C-k") 'egg-log-msg-cancel)
 (define-key egg-log-msg-mode-map (kbd "M-p") 'egg-log-msg-older-text)
 (define-key egg-log-msg-mode-map (kbd "M-n") 'egg-log-msg-newer-text)
 (define-key egg-log-msg-mode-map (kbd "C-l") 'egg-buffer-cmd-refresh)
@@ -3213,6 +3235,12 @@ If INIT was not nil, then perform 1st-time initializations as well."
 	  (if (windowp win) (egg-quit-buffer win))))
     (message "Please enter a log message!")
     (ding)))
+
+(defun egg-log-msg-cancel ()
+  (interactive)
+  (if (> (length (window-list)) 1)
+      (delete-window)
+    (kill-buffer)))
 
 (defun egg-log-msg-hist-cycle (&optional forward)
   "Cycle through message log history."
@@ -3315,7 +3343,7 @@ If INIT was not nil, then perform 1st-time initializations as well."
 		    (t "Shit happens!"))
 	      "\n"
 	      "Repository: " (egg-text git-dir 'font-lock-constant-face) "\n"
-	      (egg-text "--------------- Commit Message (type C-c C-c when done) ---------------"
+	      (egg-text "-- Commit Message (type `C-c C-c` when done or `C-c C-k` when cancel) -"
 			'font-lock-comment-face))
       (put-text-property (point-min) (point) 'read-only t)
       (put-text-property (point-min) (point) 'rear-sticky nil)
@@ -3531,22 +3559,22 @@ If INIT was not nil, then perform 1st-time initializations as well."
   (if refs-only
       (egg-git-ok t "log" (format "--max-count=%d" egg-log-HEAD-max-len) 
 		  "--graph" "--topo-order" "--simplify-by-decoration"
-		  "--pretty=oneline" "--decorate")
+      "--pretty=oneline" "--decorate" "--no-color")
     (egg-git-ok t "log" (format "--max-count=%d" egg-log-HEAD-max-len) 
 		"--graph" "--topo-order"
-		"--pretty=oneline" "--decorate")))
+    "--pretty=oneline" "--decorate" "--no-color")))
 
 (defun egg-run-git-log-all (&optional refs-only)
   (if refs-only
       (egg-git-ok t "log" (format "--max-count=%d" egg-log-all-max-len)
 		  "--graph" "--topo-order" "--simplify-by-decoration"
-		  "--pretty=oneline" "--decorate" "--all")
+      "--pretty=oneline" "--decorate" "--all" "--no-color")
     (egg-git-ok t "log" (format "--max-count=%d" egg-log-all-max-len)
 		"--graph" "--topo-order"
-		"--pretty=oneline" "--decorate" "--all")))
+    "--pretty=oneline" "--decorate" "--all" "--no-color")))
 
 (defun egg-run-git-log-pickaxe (string)
-  (egg-git-ok t "log" "--pretty=oneline" "--decorate"
+  (egg-git-ok t "log" "--pretty=oneline" "--decorate" "--no-color"
 	      (concat "-S" string)))
 
 (defconst egg-log-commit-base-map
@@ -3667,8 +3695,9 @@ If INIT was not nil, then perform 1st-time initializations as well."
 	refs-start refs-end ref-alist
 	head-line)
     (setq ref-alist (mapcar (lambda (pair)
-			      (cons (car pair)
-				    (substring-no-properties (cdr pair))))
+			      (cons 
+			       (substring-no-properties (cdr pair))
+			       (car pair)))
 			    dec-ref-alist))
     (save-excursion
       (while (re-search-forward "\\([0-9a-f]\\{40\\}\\) .+$" nil t)
@@ -3687,27 +3716,22 @@ If INIT was not nil, then perform 1st-time initializations as well."
 			    (skip-chars-forward "^)")
 			    (setq refs-end (point))
 			    (+ (point) 2)))
-	(setq full-refs 
-	      (when refs-start
-		(save-match-data
-		  (delq nil
-			(mapcar (lambda (lref)
-				  (cond ((and (> (length lref) 5)
-					      (string-equal (substring lref 0 5)
-							    "tag: "))
-					 (substring lref 5))
-					((and (> (length lref) 6)
-					      (string-equal (substring lref -5)
-							    "/HEAD"))
-					 nil)
-					(t lref)))
-				(split-string 
-				 (buffer-substring-no-properties (+ sha-end 2)
-								 refs-end)
-				 ", +" t))))))
-	(setq refs (mapcar (lambda (full-ref-name) 
+	(setq refs (when refs-start
+			  (save-match-data
+			    (mapcar (lambda (lref)
+				      (if (and (>= (length lref) 5) (string-equal (substring lref 0 5) "tag: "))
+                          (substring lref 5)
+                      (if (and (>= (length lref) 6) (string-equal (substring lref -5) "/HEAD"))
+                          nil
+                        lref)))
+				    (split-string
+				     (buffer-substring-no-properties (+ sha-end 2)
+								     refs-end)
+				     ", +" t)))))
+
+	(setq full-refs (mapcar (lambda (full-ref-name) 
 			     (cdr (assoc full-ref-name ref-alist)))
-			   full-refs))
+			   refs))
 
 	;; common line decorations
 	(setq line-props (list :navigation sha1 :commit sha1))
@@ -3725,7 +3749,7 @@ If INIT was not nil, then perform 1st-time initializations as well."
 	      (if full-refs
 		  (propertize
 		   (mapconcat (lambda (full-ref-name)
-				(cdr (assoc full-ref-name 
+				(cdr (assoc full-ref-name
 					    dec-ref-alist)))
 			      full-refs separator)
 		   :navigation sha1 :commit sha1
@@ -4369,7 +4393,7 @@ If INIT was not nil, then perform 1st-time initializations as well."
       (goto-char pos)
       (goto-char (1+ (line-end-position)))
       (setq beg (point))
-      (unless (egg-git-ok t "log" "--max-count=1" "-p" "-M"
+      (unless (egg-git-ok t "log" "--max-count=1" "-p" "-M" "--no-color"
 			  (concat
 			     "--pretty=format:"
 			     indent-spaces "%ai%n"
@@ -4873,7 +4897,9 @@ Each remote ref on the commit line has extra extra extra keybindings:\\<egg-log-
 			   'egg-run-git-log-HEAD)))))
       (if help (plist-put egg-internal-log-buffer-closure :help help))
       (egg-log-buffer-redisplay buf 'init))
-    (pop-to-buffer buf t)))
+    (cond
+     (egg-switch-to-buffer (switch-to-buffer buf))
+     (t (pop-to-buffer buf t)))))
 ;;;========================================================
 ;;; file history
 ;;;========================================================
@@ -4893,12 +4919,12 @@ Each remote ref on the commit line has extra extra extra keybindings:\\<egg-log-
 
 (defsubst egg-run-git-file-log-HEAD (file)
   (egg-git-ok t "log" (format "--max-count=%d" egg-log-HEAD-max-len) 
-	      "--graph" "--topo-order"
+	      "--graph" "--topo-order" "--no-color"
 		"--pretty=oneline" "--decorate" "--" file))
 
 (defsubst egg-run-git-file-log-all (file)
   (egg-git-ok t "log" (format "--max-count=%d" egg-log-all-max-len)
-	      "--graph" "--topo-order"
+	      "--graph" "--topo-order" "--no-color"
 		"--pretty=oneline" "--decorate" "--all" "--" file))
 
 (defconst egg-log-commit-simple-map 
@@ -5013,7 +5039,7 @@ Each remote ref on the commit line has extra extra extra keybindings:\\<egg-log-
 		   (egg-log-buffer-insert-n-decorate-logs
 		    `(lambda ()
 		       (egg-git-ok t "log" "--max-count=10000" "--graph"
-				   "--topo-order" "--pretty=oneline"
+				   "--topo-order" "--pretty=oneline" "--no-color"
 				   "--decorate" "HEAD" sha1)))))) 
       (egg-log-buffer-redisplay buf)
       (setq pos (point-min))
@@ -5049,7 +5075,7 @@ Each remote ref on the commit line has extra extra extra keybindings:\\<egg-log-
 
 (defun egg-insert-n-decorate-pickaxed-logs (string)
   (let ((beg (point)))
-    (egg-git-ok t "log" "--pretty=oneline" "--decorate" 
+    (egg-git-ok t "log" "--pretty=oneline" "--decorate" "--no-color"
 		(concat "-S" string))
     (goto-char beg)
     (egg-decorate-log egg-query:commit-commit-map
@@ -5075,8 +5101,8 @@ Each remote ref on the commit line has extra extra extra keybindings:\\<egg-log-
 ;;; reflog
 ;;;========================================================
 (defsubst egg-run-reflog-branch (branch)
-  (egg-git-ok t "log" "-g" "--pretty=oneline" "--decorate"
-	      (format "--max-count=%d" egg-log-HEAD-max-len) 
+  (egg-git-ok t "log" "-g" "--pretty=oneline" "--decorate" "--no-color"
+	      (format "--max-count=%d" egg-log-HEAD-max-len)
 	      branch))
 
 (define-egg-buffer reflog "*%s-reflog@%s*"
@@ -5942,9 +5968,13 @@ egg in current buffer.\\<egg-minor-mode-map>
     (make-local-variable 'egg-minor-mode)
     (egg-minor-mode 1)))
 
-(when (string-match "\\`git version 1.6."
+(when (or
+			 (string-match "\\`git version 1.6."
 		    (shell-command-to-string 
 		     (concat egg-git-command " --version")))
+			 (string-match "\\`git version 1.7."
+		    (shell-command-to-string 
+		     (concat egg-git-command " --version"))))
   (or (assq 'egg-minor-mode minor-mode-alist)
       (setq minor-mode-alist
 	    (cons '(egg-minor-mode egg-minor-mode-name) minor-mode-alist)))
@@ -5954,12 +5984,6 @@ egg in current buffer.\\<egg-minor-mode-map>
 			 (cons (list 'egg-minor-mode)
 			       minor-mode-map-alist))))
 	  egg-minor-mode-map)
-
-  (if (and (boundp 'vc-handled-backends)
-	   (listp (symbol-value 'vc-handled-backends)))
-      (set 'vc-handled-backends
-	   (delq 'Git (symbol-value 'vc-handled-backends))))
-
 
   (add-hook 'find-file-hook 'egg-git-dir)
   (add-hook 'find-file-hook 'egg-minor-mode-find-file-hook))
@@ -6074,6 +6098,39 @@ egg in current buffer.\\<egg-minor-mode-map>
 		     (format "%s - %s\n" key-str (format fmt name))))
 	       ""))
 	   keymap "")))))
+
+;;;========================================================
+;;; auto-update
+;;;========================================================
+
+(defvar egg-auto-update nil)
+
+(defun egg-maybe-update-status ()
+  "Pull up the status buffer for the current buffer if there is one."
+  (let ((bufname (egg-buf-git-name)))
+    (when (and egg-auto-update bufname)
+      (egg-status t)
+      (egg-goto-block-filename bufname))))
+
+(add-hook 'after-save-hook 'egg-maybe-update-status)
+
+(defun egg-goto-block-filename (filename)
+  (interactive "sFilename: ")
+  (egg-goto-block-regexp (rx (or "staged" "unstaged") "-" (eval filename))))
+
+(defun egg-goto-block-regexp (nav-regexp)
+  "Takes `nav-regexp' as regexp and moves cursor there."
+  (let (nav-point)
+    (goto-char (point-min))
+    (let (prev-point)
+      (while (not (eql prev-point (point)))
+        (setq prev-point (point))
+        (egg-buffer-cmd-navigate-next)
+        (let ((prop-name (symbol-name (egg-navigation-at-point))))
+          (if (string-match nav-regexp prop-name)
+              (setq nav-point (point)
+                    prev-point (point))))))
+    nav-point))
 
 (run-hooks 'egg-load-hook)
 (provide 'egg)
