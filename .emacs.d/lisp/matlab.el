@@ -1209,10 +1209,6 @@ All Key Bindings:
   (matlab-enable-block-highlighting 1)
   (if window-system (matlab-frame-init))
 
-  ; If the buffer already has a function definition, figure out the correct
-  ; settings for matlab-functions-have-end and matlab-indent-function.
-  (goto-char (point-max))
-
   ;; If first function is terminated with an end statement, then functions have
   ;; ends.
   (if (matlab-do-functions-have-end-p)
@@ -1230,31 +1226,34 @@ All Key Bindings:
   ;;    - look at the first line of code and if indented, keep indentation
   ;;      otherwise use MathWorks-Standard
   ;;
-  (cond 
+  (cond
    ((eq matlab-indent-function-body 'MathWorks-Standard)
     )
 
    ((eq matlab-indent-function-body 'guess)
-    (if (re-search-backward matlab-defun-regex nil t)
-	(let ((beg (point))
-	      end			; filled in later
-	      (cc (current-column))
-              )
-	  (setq end (if matlab-functions-have-end 
-                        (progn (forward-line 0) (point)) 
-                      (point-max)))
-	  (goto-char beg)
-	  (catch 'done
-	    (while (progn (forward-line 1) (< (point) end))
-	      (if (looking-at "\\s-*\\(%\\|$\\)")
-		  nil			; go on to next line
-		(looking-at "\\s-*")
-		(goto-char (match-end 0))
-		(setq matlab-indent-function-body (> (current-column) cc))
-		(throw 'done nil))))
-          )
-      (setq matlab-indent-function-body 'MathWorks-Standard)
-      )
+    (save-excursion
+      (goto-char (point-max))
+
+      (if (re-search-backward matlab-defun-regex nil t)
+	  (let ((beg (point))
+		end			; filled in later
+		(cc (current-column))
+		)
+	    (setq end (if matlab-functions-have-end
+			  (progn (forward-line 0) (point))
+			(point-max)))
+	    (goto-char beg)
+	    (catch 'done
+	      (while (progn (forward-line 1) (< (point) end))
+		(if (looking-at "\\s-*\\(%\\|$\\)")
+		    nil			; go on to next line
+		  (looking-at "\\s-*")
+		  (goto-char (match-end 0))
+		  (setq matlab-indent-function-body (> (current-column) cc))
+		  (throw 'done nil))))
+	    )
+	(setq matlab-indent-function-body 'MathWorks-Standard)
+	))
     )
     
    (t)
@@ -1275,8 +1274,9 @@ All Key Bindings:
 	;; If there is an error loading the stuff, don't
 	;; continue.
 	(error nil)))
-  (goto-char (point-min))
-  (run-hooks 'matlab-mode-hook)
+  (save-excursion
+    (goto-char (point-min))
+    (run-hooks 'matlab-mode-hook))
   (if matlab-vers-on-startup (matlab-show-version)))
 
 ;;; Utilities =================================================================
@@ -3850,8 +3850,12 @@ If optional FAST is non-nil, do not perform usually lengthy checks."
   (if matlab-highlight-cross-function-variables
       (if matlab-show-mlint-warnings
           (mlint-buffer)        ; became true, recompute mlint info
-        (mlint-clear-warnings)) ; became false, just remove hilighting
-    (mlint-minor-mode)))        ; change mlint mode altogether
+        (mlint-clear-warnings))) ; became false, just remove hilighting
+  ;; change mlint mode altogether
+  (mlint-minor-mode 
+   (if (or matlab-highlight-cross-function-variables
+           matlab-show-mlint-warnings)
+       1 -1)))
 
 (defun matlab-toggle-highlight-cross-function-variables ()
   "Toggle `matlab-highlight-cross-function-variables'."
@@ -3862,8 +3866,11 @@ If optional FAST is non-nil, do not perform usually lengthy checks."
       (if matlab-highlight-cross-function-variables
           (mlint-buffer)        ; became true, recompute mlint info
                                 ; became false, just remove hilighting ...
-        (mlint-clear-cross-function-variable-highlighting))
-    (mlint-minor-mode)))        ; change mlint mode altogether
+        (mlint-clear-cross-function-variable-highlighting)))
+  (mlint-minor-mode 
+   (if (or matlab-highlight-cross-function-variables
+           matlab-show-mlint-warnings)
+       1 -1)))        ; change mlint mode altogether
 
 ;;
 ;; Add more auto verify/fix functions here!
@@ -4022,7 +4029,7 @@ desired.  Optional argument FAST is not used."
   "Keymap used in MATLAB mode to provide a menu.")
 
 (defun matlab-frame-init ()
-  "Initialize Emacs 19+ menu system."
+  "Initialize Emacs menu system."
   (interactive)
   ;; make a menu keymap
   (easy-menu-define
@@ -4030,7 +4037,12 @@ desired.  Optional argument FAST is not used."
    matlab-mode-map
    "MATLAB menu"
    '("MATLAB"
-     ["Start MATLAB" matlab-shell (not (matlab-with-emacs-link)) ]
+     ["Start MATLAB" matlab-shell
+      :active (not (or (matlab-with-emacs-link) (matlab-shell-active-p)))
+      :visible (not (matlab-shell-active-p)) ]
+     ["Switch to MATLAB" matlab-shell
+      :active (and (not (matlab-with-emacs-link)) (matlab-shell-active-p))
+      :visible (matlab-shell-active-p) ]
      ["Save and go" matlab-shell-save-and-go t]
      ["Run Region" matlab-shell-run-region t]
      ["Run Cell" matlab-shell-run-cell t]
@@ -4531,7 +4543,7 @@ Argument STR is the text for the anchor."
 ;; Warning: In <filename> at line # <stuff>
 (defvar gud-matlab-error-regexp
   (concat "\\(Error \\(?:in\\|using\\) ==>\\|Syntax error in ==>\\|In\\) "
-	  "\\([-@.a-zA-Z_0-9/ \\\\:]+\\)\\(?:>[^ ]+\\).*[\n ]\\(?:On\\|at\\)\\(?: line\\)? "
+	  "\\([-@.a-zA-Z_0-9/ \\\\:]+\\)\\(?:>[^ ]+\\)?.*[\n ]\\(?:On\\|at\\)\\(?: line\\)? "
 	  "\\([0-9]+\\) ?")
   "Regular expression finding where an error occurred.")
 
@@ -4954,6 +4966,10 @@ This command requires an active MATLAB shell."
  		     (setq str (concat (substring str 0 (match-beginning 0))
  				       "\n"
  				       (substring str (match-end 0)))))
+		   ;; HACK FOR NOSHOW
+		   (while (string-match "\n" str)
+		     (setq str (replace-match ", " t t str)))
+		   (setq str (concat str "\n"))
  		   str))
  	(msbn nil)
  	(lastcmd)
@@ -5283,7 +5299,7 @@ To reference old errors, put the cursor just after the error text."
                      (match-beginning 2) (match-end 2)))
                 (el (buffer-substring-no-properties
                      (match-beginning 3) (match-end 3))))
-            (matlab-find-other-window-file-line-column ef el 0)))))))
+            (matlab-find-other-window-file-line-column ef el "0")))))))
 
 (defun matlab-shell-html-click (e)
   "Go to the error at the location of event E."
