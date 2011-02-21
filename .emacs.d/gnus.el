@@ -54,6 +54,8 @@
       gnus-group-line-format "%y %(%G %)%O\n"
       ;; the %uB invokes a function which returns the author name from BBDB
       gnus-summary-line-format "%U%R%~(max-right 17)~(pad-right 17)&user-date; %-30,30uB %*%B%s\n"
+      ;; simpler group mode line
+      gnus-group-mode-line-format "Gnus"
       
       ;; Performance-related settings
       ;; How large is large?
@@ -164,6 +166,11 @@
     (gnus-summary-hide-all-threads)
     (setq are-threads-hidden t)))
 (define-key gnus-summary-mode-map (kbd "h") 'gnus-summary-toggle-thread-hiding)
+
+;; kill agent info
+(defadvice gnus-agent-make-mode-line-string (before dont-display-agent-info (string mouse-button mouse-func) activate)
+  "Suppress agent info"
+  (setq string ""))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Mairix
