@@ -74,8 +74,8 @@
       message-citation-line-function 'message-insert-formatted-citation-line
       ;; 01/01/1970, XX
       message-citation-line-format "%x %R, %N"
-      ;; Default to top post
-      message-cite-reply-above 'is-evil)
+      ;; don't bug me with cancel locks
+      message-insert-canlock nil)
 
 ;; compile stuff. No idea what it does, but it's supposed to be faster
 (gnus-compile)
