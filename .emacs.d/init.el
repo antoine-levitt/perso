@@ -406,15 +406,44 @@ some other pops up with display-buffer), go back to only one window open"
 (setq svn-status-hide-unmodified t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; Egg for git
+;;; Magit : git from emacs
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(require 'egg)
-(setq egg-buffer-hide-help-on-start (quote (egg-status-buffer-mode egg-log-buffer-mode egg-file-log-buffer-mode egg-reflog-buffer-mode egg-diff-buffer-mode egg-commit-buffer-mode))
-      egg-buffer-hide-section-type-on-start (quote ((egg-status-buffer-mode . :diff)))
-      egg-confirm-next-action nil
-      egg-status-buffer-sections '(repo unstaged staged)
-      egg-commit-buffer-sections '(staged unstaged))
-(defalias 'egg 'egg-status)
+(require 'magit)
+(require 'magit-svn)
+;; don't save stuff
+(setq magit-save-some-buffers nil)
+;; go up
+(define-key magit-mode-map (kbd "o") 'magit-goto-parent-section)
+;; don't bug me with untracked files
+(setq magit-omit-untracked-dir-contents t)
+(defun my-magit-hide-untracked ()
+  "Hide untracked section."
+  (let ((untracked (magit-find-section '(untracked) magit-top-section)))
+    (if untracked
+	(magit-section-set-hidden untracked t))))
+(add-hook 'magit-status-mode-hook 'my-magit-hide-untracked)
+;; display staged diff when writing commit log
+(defun my-magit-display-diff ()
+  "Show magit-status window and make staged section visible."
+  (let ((buf (magit-find-buffer 'status default-directory)))
+    (unless buf
+      ;; no magit-status, create it
+      (let ((curbuf (current-buffer)))
+	(magit-status default-directory)
+	(setq buf (current-buffer))
+	(switch-to-buffer curbuf)))
+    (unless buf
+      (error "Error finding/creating magit-status buffer"))
+    ;; we now have the right magit-status in buf
+    (display-buffer buf t)
+    (with-selected-window (get-buffer-window buf)
+      (magit-jump-to-staged)
+      (magit-section-expand (magit-find-section '(staged) magit-top-section))
+      (recenter 0))))
+(add-hook 'magit-log-edit-mode-hook 'my-magit-display-diff)
+
+(global-set-key (kbd "C-x v s") 'magit-status)
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Winner
