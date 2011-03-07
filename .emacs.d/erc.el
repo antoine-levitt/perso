@@ -225,7 +225,8 @@ Differs a bit from erc's implementation : robust to buffer kills and stuff like 
     (let ((blist (buffer-list)))
       (while blist
 	(unless (or (eq 'erc-mode (buffer-local-value 'major-mode (car blist)))
-		    (minibufferp (car blist)))
+		    (minibufferp (car blist))
+		    (string-match "^ " (buffer-name (car blist))))
 	  (switch-to-buffer (car blist))
 	  (setq blist nil))
 	(setq blist (cdr blist))))))
