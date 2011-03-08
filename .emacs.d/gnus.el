@@ -167,11 +167,6 @@
     (setq are-threads-hidden t)))
 (define-key gnus-summary-mode-map (kbd "h") 'gnus-summary-toggle-thread-hiding)
 
-;; kill agent info
-(defadvice gnus-agent-make-mode-line-string (before dont-display-agent-info (string mouse-button mouse-func) activate)
-  "Suppress agent info"
-  (setq string ""))
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Mairix
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
