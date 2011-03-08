@@ -75,7 +75,10 @@
       ;; 01/01/1970, XX
       message-citation-line-format "%x %R, %N"
       ;; don't bug me with cancel locks
-      message-insert-canlock nil)
+      message-insert-canlock nil
+      message-generate-new-buffers 'unique
+      message-make-forward-subject-function 'message-forward-subject-fwd
+      message-wash-forwarded-subjects t)
 
 ;; compile stuff. No idea what it does, but it's supposed to be faster
 (gnus-compile)
