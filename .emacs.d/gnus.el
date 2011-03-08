@@ -353,6 +353,7 @@
 
 (require 'bbdb)
 (bbdb-initialize 'gnus 'message)
+(bbdb-mua-auto-update-init 'gnus 'message)
 
 (setq bbdb-update-records-p t ; don't prompt me for creation
       bbdb/gnus-update-records-p 'bbdb-select-message ; filter incoming mail and add those who mail me
