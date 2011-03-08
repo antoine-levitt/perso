@@ -367,10 +367,6 @@
 
 (define-key bbdb-mode-map (kbd "q") 'quit-window)
 
-; add notices (might be patched sometimes in the future)
-(add-hook 'gnus-article-prepare-hook (lambda () (bbdb-mua-update-records nil 'bbdb-select-message)))
-(add-hook 'message-send-hook (lambda () (bbdb-mua-update-records nil 'bbdb-select-message)))
-
 ;; define this variable in priv_gnus
 (when (boundp 'my-mail-addresses)
   ;; don't reply to my addresses
