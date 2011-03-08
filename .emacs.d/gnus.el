@@ -384,3 +384,6 @@
     (add-to-list 'gnus-posting-styles `((header "to" ,el) (address ,el)))
     (add-to-list 'gnus-posting-styles `((header "cc" ,el) (address ,el)))
     (add-to-list 'gnus-posting-styles `((header "bcc" ,el) (address ,el)))))
+(add-hook 'bbdb-after-change-hook (lambda (arg)
+				    (flet ((message (&rest args) nil))
+				      (bbdb-save))))
