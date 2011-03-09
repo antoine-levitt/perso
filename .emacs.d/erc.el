@@ -437,7 +437,9 @@ erc-modified-channels-alist, filtered by erc-tray-ignored-channels."
   (local-set-key (kbd "C-c C-q") 'erc-query-prompt)
   (local-set-key (kbd "C-c C-n") 'erc-names-prompt)
   (local-set-key (kbd "C-c C-w") 'erc-whois-prompt)
-  (local-set-key (kbd "C-c C-l") 'erc-browse-log))
+  (local-set-key (kbd "C-c C-l") 'erc-browse-log)
+  (local-set-key (kbd "s-o") (lambda () (interactive) (insert "\\o/")))
+  (local-set-key (kbd "s-²") (lambda () (interactive) (insert ":-|"))))
 (add-hook 'erc-mode-hook 'erc-setup-my-commands)
 
 ;; I don't know why, something messes up with erc-bol, so I'm redefining it
