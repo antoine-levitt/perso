@@ -227,11 +227,6 @@ some other pops up with display-buffer), go back to only one window open"
 ;;keep cursor at current position when scrolling
 (setq scroll-preserve-screen-position 42)
 
-(require 'sml-modeline)
-(setq sml-modeline-borders '("[" . "]"))
-(setq sml-modeline-len 20)
-(sml-modeline-mode 1)
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Silent saves
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
