@@ -27,6 +27,8 @@
       gnus-thread-sort-functions '(gnus-thread-sort-by-most-recent-date)
       gnus-article-sort-functions '((not gnus-article-sort-by-date))
       gnus-group-sort-function '(gnus-group-sort-by-alphabet gnus-group-sort-by-level)
+      ;; Don't display groups without unread messages
+      gnus-list-groups-with-ticked-articles nil
       ;; Try to fill gaps in threads
       gnus-build-sparse-threads 'some
       gnus-summary-thread-gathering-function 'gnus-gather-threads-by-references
