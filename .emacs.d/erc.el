@@ -55,7 +55,8 @@
       erc-autoaway-message "Away"
       erc-truncate-buffer-on-save t
       erc-max-buffer-size 6000
-      erc-quit-reason (lambda (arg) (or arg "")))
+      erc-quit-reason (lambda (arg) (or arg ""))
+      erc-part-reason (lambda (arg) (or arg "")))
 
 ;; modify return value of erc-pcomplete: return t if completed
 ;; something, nil otherwise
