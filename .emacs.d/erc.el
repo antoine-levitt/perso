@@ -51,7 +51,7 @@
       erc-insert-timestamp-function 'erc-insert-timestamp-left
       erc-header-line-format nil
       erc-auto-discard-away nil ;; use C-c C-a to discard away status
-      erc-autoaway-idle-seconds (* 60 30)
+      erc-autoaway-idle-seconds (* 60 120)
       erc-autoaway-message "Away"
       erc-truncate-buffer-on-save t
       erc-max-buffer-size 6000
