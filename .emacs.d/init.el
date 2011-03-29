@@ -225,7 +225,7 @@ some other pops up with display-buffer), go back to only one window open"
 ;;scroll one line at a time
 (setq scroll-conservatively 100000000)
 ;;keep cursor at current position when scrolling
-(setq scroll-preserve-screen-position 42)
+(setq scroll-preserve-screen-position 'stay)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Silent saves
