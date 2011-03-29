@@ -443,6 +443,8 @@ some other pops up with display-buffer), go back to only one window open"
 (add-hook 'magit-log-edit-mode-hook 'my-magit-display-diff)
 
 (global-set-key (kbd "C-x v s") 'magit-status)
+(global-set-key (kbd "C-x v p") 'magit-push)
+(global-set-key (kbd "C-x v f") 'magit-pull)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
