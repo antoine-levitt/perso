@@ -61,7 +61,7 @@
       
       ;; Performance-related settings
       ;; How large is large?
-      gnus-large-newsgroup 1000
+      gnus-large-newsgroup 400
       ;; suggested in the man. Not sure that's useful though.
       gc-cons-threshold 3500000
       ;; don't silently hide messages
