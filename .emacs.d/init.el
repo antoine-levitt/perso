@@ -558,6 +558,13 @@ some other pops up with display-buffer), go back to only one window open"
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Latex
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; load auctex
+(condition-case err
+    (progn (load "auctex.el" nil t t)
+	   (load "preview-latex.el" nil t t))
+  (error
+   (message "Failed to load auctex")))
+
 (defun my-latex-environment (arg)
   "Same as `LaTeX-environment', but overrides prefix arg to mean
   insert environment around region. Use C-u C-u to override
@@ -568,11 +575,6 @@ some other pops up with display-buffer), go back to only one window open"
       (flet ((TeX-active-mark () t))
 	(LaTeX-environment nil))
     (LaTeX-environment (if (= arg 16) t nil))))
-(condition-case err
-    (progn (load "auctex.el" nil t t)
-	   (load "preview-latex.el" nil t t))
-  (error
-   (message "Failed to load auctex")))
 ;;don't ask to cache preamble
 (setq preview-auto-cache-preamble t)
 ;;use synctex for synchronisation with viewer
