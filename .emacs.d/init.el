@@ -868,7 +868,7 @@ some other pops up with display-buffer), go back to only one window open"
  compilation-read-command nil
  compilation-scroll-output 'first-error
  compilation-ask-about-save nil
- compilation-window-height nil
+ compilation-window-height 10
  compilation-auto-jump-to-first-error t
  compilation-disable-input t)
 
