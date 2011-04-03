@@ -597,43 +597,69 @@ some other pops up with display-buffer), go back to only one window open"
   (local-set-key (kbd "C-c r") 'reftex-reference)
   (local-set-key (kbd "C-c b") 'reftex-citation)
   (local-set-key (kbd "C-c C-e") 'my-latex-environment)
+  (local-set-key (kbd "s-c") 'my-latex-compile)
+
   ;; undo TeX remaps, otherwise it interferes with compilation
   (define-key TeX-mode-map [remap next-error] nil)
   (define-key TeX-mode-map [remap previous-error] nil)
 
+  ;; Try to guess a smart value for TeX-master
   ;; If the file contains local variables defining TeX-master, respect that.
   ;; Otherwise, look for a master file in the current directory
   ;; Define a local variable by
   ;; %%% Local Variables:
   ;; %%% TeX-master: "something"
   ;; %%% End:
-
   ;; list of master files to look for, increasing order of priority
   (setq list-of-master-files '("report" "master" "main"))
   ;; OK, this is a hack, but we force parsing of the file local variables here
   (hack-local-variables)
+  ;; if a master file exists in the current directory, set it
   (unless (stringp TeX-master)
     (dolist (name list-of-master-files)
       (when (file-exists-p (concat name ".tex"))
-  	(setq TeX-master name))))
-
-  ;; setup compilation, based on TeX-master
-  ;; needs raise_process, which raises (using wmctrl) a process whose invocation
-  ;; line matches the argument
-  (let ((master (if (stringp TeX-master)
-  		    TeX-master
-  		  (file-name-sans-extension (file-name-nondirectory (buffer-file-name))))))
-    (set (make-local-variable 'compile-command)
-  	 (format
-  	  "rubber -d %s && (raise_process.sh %s.pdf || nohup gnome-open %s.pdf > /dev/null)"
-  	  master master master))))
+  	(setq TeX-master name)))))
 (add-hook 'LaTeX-mode-hook 'my-tex-config)
 
 (defun my-bibtex-compilation-setup ()
   (set (make-local-variable 'compile-command)
        (format
-	"rubber -d main && (raise_process main.pdf || nohup gnome-open main.pdf > /dev/null)")))
+	"rubber -d main && (raise_process.sh main.pdf || nohup gnome-open main.pdf > /dev/null)")))
 (add-hook 'bibtex-mode-hook 'my-bibtex-compilation-setup 'attheend)
+
+(defun my-latex-compile ()
+  "Run a special compile for latex files"
+  (interactive)
+  (setq my-latex-compiling-buffer (current-buffer))
+  (compile
+   (format
+    "rubber -d %s"
+    (if (stringp TeX-master)
+	TeX-master
+      (file-name-sans-extension (file-name-nondirectory (buffer-file-name)))))))
+
+(defun my-after-latex-compile (buf stat)
+  "Display viewer after compilation"
+  (when (and (equal my-latex-compiling-buffer (window-buffer))
+	     (equal stat "finished\n"))
+    (with-current-buffer my-latex-compiling-buffer
+      (shell-command-to-string
+       ;; calls evince with synctex information
+       ;; TODO rewrite this one in emacs/dbus
+       (format "evince_forward_search %s.pdf %d %s"
+	       (if (stringp TeX-master)
+		   TeX-master
+		 (file-name-sans-extension (file-name-nondirectory (buffer-file-name))))
+	       (line-number-at-pos)
+	       (buffer-file-name)))
+      ;; put evince to front
+      (shell-command-to-string
+       (format "raise_process.sh %s.pdf"
+	       (if (stringp TeX-master)
+		   TeX-master
+		 (file-name-sans-extension (file-name-nondirectory (buffer-file-name))))))
+      (setq my-latex-compiling-buffer nil))))
+(add-hook 'compilation-finish-functions 'my-after-latex-compile)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Outline
