@@ -570,7 +570,6 @@ some other pops up with display-buffer), go back to only one window open"
   insert environment around region. Use C-u C-u to override
   environment (C-u with LaTeX-environment)"
   (interactive "p*")
-  (pp arg)
   (if (= arg 4)
       (flet ((TeX-active-mark () t))
 	(LaTeX-environment nil))
@@ -582,10 +581,6 @@ some other pops up with display-buffer), go back to only one window open"
 ;;indent when pressing RET
 (setq TeX-newline-function 'newline-and-indent
       LaTeX-math-abbrev-prefix (kbd "ù"))
-;;always preview using gnome-open
-(setq TeX-output-view-style
-      '(("pdf" "." "gnome-open %o")
-	("dvi" "." "dvipdf %o && gnome-open $(basename %o dvi)pdf")))
 (defun my-tex-config ()
   (turn-on-reftex)
   (auto-fill-mode 1)
