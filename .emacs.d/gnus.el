@@ -335,20 +335,21 @@
 (add-hook 'window-configuration-change-hook 'gnus-unread-refresh-and-update-unread-count t)
 
 ;; full check once in a while. Furthermore, a sync for mail is done whenever offlineimap does a sync, with
-;; postsynchook = emacsclient -e "(run-with-idle-timer 2 nil (lambda () (with-local-quit (gnus-unread-check-news))))"
+;; emacsclient -e "(run-with-idle-timer 2 nil (lambda () (with-local-quit (gnus-unread-check-news))))"
 ;; the with-local-quit is because check-news is blocking, so we must provide a quit context
 (defun gnus-unread-schedule-full-check ()
   (interactive)
-  ;; next time the user is busy doing something else, ie when idle for 5s
-  (run-with-idle-timer 5 nil (lambda () (with-local-quit (gnus-unread-check-news 5)))))
-;; schedule full check every 5mins
-(gnus-demon-add-handler 'gnus-unread-schedule-full-check 5 nil)
+  ;; next time the user is busy doing something else, ie when idle for 2s
+  (run-with-idle-timer 2 nil (lambda () (with-local-quit (gnus-unread-check-news 5)))))
+;; schedule full check every once in a while minute (should not be necessary since things that update
+;; gnus call the update via emacsclient)
+(gnus-demon-add-handler 'gnus-unread-schedule-full-check 30 nil)
 
-;; if gnus doesn't respond in 10s, give up
+;; if gnus doesn't respond in 5s, give up
 (defadvice gnus-demon-scan-news (around gnus-demon-timeout activate)
   "Timeout for Gnus."
   (with-timeout
-      (10 (message "Gnus timed out."))
+      (5 (message "Gnus timed out."))
     ad-do-it))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
