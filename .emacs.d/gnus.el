@@ -53,7 +53,7 @@
 	((gnus-seconds-year) . "%B %d")
 	(t . "%B %d '%y"))
       ;; Cleaner format for groups and summaries
-      gnus-group-line-format "%y %(%G %)%O\n"
+      gnus-group-line-format "%y %(%G %)\n"
       ;; the %uB invokes a function which returns the author name from BBDB
       gnus-summary-line-format "%U%R%~(max-right 17)~(pad-right 17)&user-date; %-30,30uB %*%B%s\n"
       ;; simpler group mode line
