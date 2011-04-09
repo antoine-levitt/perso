@@ -745,6 +745,7 @@ some other pops up with display-buffer), go back to only one window open"
 (setq
  org-agenda-files (list "~/.emacs.d/org/todo.org")
  org-default-notes-file "~/.emacs.d/org/notes.org"
+ org-completion-use-ido t
  org-agenda-ndays 7
  org-log-done 'time
  org-startup-folded 'content
