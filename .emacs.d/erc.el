@@ -181,7 +181,7 @@ erc-modified-channels-alist. Should be executed on window change."
 	 (if (and info (>= count erc-bar-threshold) (not (erc-query-buffer-p)))
 	     (save-excursion
 	       (end-of-buffer)
-	       (when (erc-bar-move-back count)
+	       (when (erc-bar-move-back (- count 1))
 		 (let ((inhibit-field-text-motion t))
 		   (move-overlay erc-bar-overlay
 				 (line-beginning-position)
@@ -194,7 +194,8 @@ erc-modified-channels-alist. Should be executed on window change."
      (defvar erc-bar-overlay nil
        "Overlay used to set bar")
      (setq erc-bar-overlay (make-overlay 0 0))
-     (overlay-put erc-bar-overlay 'face '(:underline "black"))
+     (require 'hl-line)
+     (overlay-put erc-bar-overlay 'face hl-line-face)
      ;;put the hook before erc-modified-channels-update
      (defadvice erc-track-mode (after erc-bar-setup-hook
 				      (&rest args) activate)
