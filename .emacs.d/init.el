@@ -638,7 +638,8 @@ some other pops up with display-buffer), go back to only one window open"
 
 (defun my-after-latex-compile (buf stat)
   "Display viewer after compilation"
-  (when (and (equal my-latex-compiling-buffer (window-buffer))
+  (when (and (boundp 'my-latex-compiling-buffer)
+	     (equal my-latex-compiling-buffer (window-buffer))
 	     (equal stat "finished\n"))
     (with-current-buffer my-latex-compiling-buffer
       (shell-command-to-string
