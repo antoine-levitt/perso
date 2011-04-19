@@ -92,7 +92,7 @@ alias mnw=matlabnw
 #xfig with latex fonts
 alias xfig='xfig -specialtext -latexfonts -startlatexFont default'
 #synchroniser manuellement les mails d'offlineimap
-alias s='killall -s SIGUSR1 offlineimap'
+alias s='killall -s SIGUSR1 offlineimap && ~/.check-news.sh'
 
 
 # -------------------- Git dans tous ses états --------------------
