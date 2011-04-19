@@ -178,7 +178,7 @@ erc-modified-channels-alist. Should be executed on window change."
        (interactive)
        (let* ((info (assq (current-buffer) erc-modified-channels-alist))
 	      (count (cadr info)))
-	 (if (and info (> count erc-bar-threshold))
+	 (if (and info (>= count erc-bar-threshold) (not (erc-query-buffer-p)))
 	     (save-excursion
 	       (end-of-buffer)
 	       (when (erc-bar-move-back count)
@@ -189,8 +189,8 @@ erc-modified-channels-alist. Should be executed on window change."
 				 (current-buffer)))))
 	   (delete-overlay erc-bar-overlay))))
 
-     (defvar erc-bar-threshold 1
-       "Display bar when there are more than erc-bar-threshold unread messages.")
+     (defvar erc-bar-threshold 3
+       "Display bar when there are at least erc-bar-threshold unread messages.")
      (defvar erc-bar-overlay nil
        "Overlay used to set bar")
      (setq erc-bar-overlay (make-overlay 0 0))
