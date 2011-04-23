@@ -207,8 +207,7 @@
       ;; Display images
       mm-inline-text-html-with-images t
       mm-attachment-override-types '("image/.*")
-      gnus-blocked-images nil
-      gnus-summary-save-parts-only-non-display t)
+      gnus-blocked-images nil)
 
 (define-key gnus-summary-mode-map (kbd "H")
   'gnus-article-browse-html-article)
