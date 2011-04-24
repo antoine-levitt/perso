@@ -62,13 +62,12 @@
   (interactive)
   (let ((current-value (frame-parameter nil 'fullscreen)))
     (set-frame-parameter nil 'fullscreen
-			 (if (equal 'fullboth current-value)
-			     (if (boundp 'old-fullscreen) old-fullscreen nil)
-			   (progn (setq old-fullscreen current-value)
-				  'fullboth)))))
+			 (if (equal 'fullboth (frame-parameter nil 'fullscreen))
+			     nil
+			   'fullboth))))
 ;; one emacs to rule them all and in fullscreen bind them
 (when emacs-is-master
-  (toggle-fullscreen))
+  (set-frame-parameter nil 'fullscreen 'fullboth))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Colour theme and fonts
