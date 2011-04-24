@@ -169,7 +169,7 @@
 	(setq are-threads-hidden nil))
     (gnus-summary-hide-all-threads)
     (setq are-threads-hidden t)))
-(define-key gnus-summary-mode-map (kbd "h") 'gnus-summary-toggle-thread-hiding)
+(define-key gnus-summary-mode-map (kbd "H") 'gnus-summary-toggle-thread-hiding)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Mairix
@@ -208,7 +208,7 @@
       mm-attachment-override-types '("image/.*")
       gnus-blocked-images nil)
 
-(define-key gnus-summary-mode-map (kbd "H")
+(define-key gnus-summary-mode-map (kbd "h")
   'gnus-article-browse-html-article)
 (setq gnus-article-browse-delete-temp t)
 ;; In summary buffer, press m to go to the article in gwene
