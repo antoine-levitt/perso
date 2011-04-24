@@ -66,9 +66,8 @@
       gc-cons-threshold 3500000
       ;; don't silently hide messages
       gnus-newsgroup-maximum-articles nil
-      ;; Gnus agent is buggy for imap, so don't use this for imap (J r in server buffer)
-      ;; It's a known issue, but nobody seems to care.
-      gnus-agent t
+      ;; Never use agent, since all my groups are local
+      gnus-agent nil
 
       ;; Message
       ;; Complete using dabbrev
