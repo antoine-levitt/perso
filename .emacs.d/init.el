@@ -772,6 +772,7 @@ some other pops up with display-buffer), go back to only one window open"
      (tags-todo "Consume")
      (tags-todo "Misc")
      ))))
+(add-hook 'org-capture-after-finalize-hook 'org-save-all-org-buffers)
 
 (global-set-key (kbd "s-z") (lambda () (interactive) (org-agenda nil "z")))
 
