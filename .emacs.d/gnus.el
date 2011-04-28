@@ -203,11 +203,11 @@
       ;; Offer to save in ~
       mm-default-directory "~/"
       ;; Render with gnus-w3m. Also available is shr
-      mm-text-html-renderer 'gnus-w3m
+      mm-text-html-renderer 'shr
       ;; Display images
       mm-inline-text-html-with-images t
       mm-attachment-override-types '("image/.*")
-      gnus-blocked-images nil)
+      gnus-blocked-images "doubleclick\\.net\\|feedsportal\\|hits\\.guardian\\|rss\\.lemonde")
 
 (define-key gnus-summary-mode-map (kbd "h")
   'gnus-article-browse-html-article)
