@@ -10,7 +10,8 @@
       gnus-interactive-exit nil
       gnus-use-dribble-file nil
       ;; don't bother querying the server about unsubscribed groups
-      gnus-activate-level gnus-level-subscribed
+      gnus-activate-level gnus-level-unsubscribed
+      gnus-activate-foreign-newsgroups gnus-level-unsubscribed
       ;; I don't use any other newsreader, so don't clutter ~
       gnus-save-newsrc-file nil
       gnus-read-newsrc-file nil
