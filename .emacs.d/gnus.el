@@ -284,7 +284,8 @@
 
 (require 'gnus-demon)
 ;; set for a specific notification level
-(setq gnus-unread-level 3) ;to override in personal settings
+(defvar gnus-notify-level 3
+  "Notify for unread articles at this level or under")
 ;; internal variables
 (setq gnus-previous-unread-count 0)
 (setq gnus-unread-count 0)
@@ -310,29 +311,11 @@
 	(setq newsrc (cdr newsrc)))
       num-of-unread)))
 
-;;REDEFINED from gnus-demon to allow levels
-(defun gnus-demon-scan-news (&optional n)
-  (let ((win (current-window-configuration)))
-    (unwind-protect
-	(save-window-excursion
-	  (save-excursion
-	    (when (gnus-alive-p)
-	      (save-excursion
-		(set-buffer gnus-group-buffer)
-		(gnus-group-get-new-news n)))))
-      (set-window-configuration win))))
-
-(defun gnus-unread-check-news (&optional n)
-  "Checks new mail under priority n (default gnus-unread-level), and notify authorities"
-  (interactive)
-  (gnus-demon-scan-news (if n n gnus-unread-level))
-  (gnus-unread-update-unread-count))
-
 (defun gnus-unread-update-unread-count ()
   "Update read count in the modeline"
   (interactive)
   (setq gnus-previous-unread-count gnus-unread-count)
-  (setq gnus-unread-count (gnus-group-number-of-unread-mail gnus-unread-level))
+  (setq gnus-unread-count (gnus-group-number-of-unread-mail gnus-notify-level))
   (setq gnus-notify-modeline
 	( if (not (= 0 gnus-unread-count))
 	    (format " Mail (%d)" gnus-unread-count)
@@ -350,19 +333,12 @@
     (gnus-unread-update-unread-count)))
 (add-hook 'window-configuration-change-hook 'gnus-unread-refresh-and-update-unread-count t)
 
-;; full check once in a while. Furthermore, a sync for mail is done whenever offlineimap does a sync, with
-;; emacsclient -e "(run-with-idle-timer 2 nil (lambda () (with-local-quit (gnus-unread-check-news))))"
-;; the with-local-quit is because check-news is blocking, so we must provide a quit context
-(defun gnus-unread-schedule-full-check ()
-  (interactive)
-  ;; next time the user is busy doing something else, ie when idle for 2s
-  (run-with-idle-timer 2 nil (lambda () (with-local-quit (gnus-unread-check-news 5)))))
-;; schedule full check every once in a while minute (should not be necessary since things that update
+;; full check every once in a while (should not be necessary since things that update
 ;; gnus call the update via emacsclient)
-(gnus-demon-add-handler 'gnus-unread-schedule-full-check 30 nil)
+(gnus-demon-add-handler 'gnus-group-get-new-news 30 nil)
 
 ;; if gnus doesn't respond in 5s, give up
-(defadvice gnus-demon-scan-news (around gnus-demon-timeout activate)
+(defadvice gnus-group-get-new-news (around gnus-demon-timeout activate)
   "Timeout for Gnus."
   (with-timeout
       (5 (message "Gnus timed out."))
