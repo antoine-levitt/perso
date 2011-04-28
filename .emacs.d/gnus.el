@@ -106,7 +106,7 @@
   (interactive)
   (case gnus-group-display-state
     ('unread (gnus-group-list-groups gnus-level-subscribed nil))
-    ('read (gnus-group-list-groups gnus-level-subscribed t))
+    ('read (gnus-group-list-groups gnus-level-unsubscribed t))
     ('unsubscribed (gnus-group-list-groups gnus-level-unsubscribed nil)))
   (goto-char (point-min))
   )
