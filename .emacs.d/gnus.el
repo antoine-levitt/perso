@@ -97,21 +97,38 @@
 	     (summary 0.2 point)
 	     (article 1.0))))
 
-;; toggle between read and unread articles. this is a bit of a hack, and should be better integrated.
+;; toggle between read, unread and subscribed articles. this is a bit of a hack, and should be better integrated.
 ;; oh well.
-(setq gnus-group-display-unread nil)
-(defun gnus-group-toggle-unread ()
-  (interactive)
-  (toggle-variable 'gnus-group-display-unread)
-  (gnus-group-redisplay))
+(defvar gnus-group-display-state 'unread
+  "What to display in the group buffer.")
 (defun gnus-group-redisplay ()
   "Redisplay group according to gnus-group-display-unread"
   (interactive)
-  (if (not gnus-group-display-unread)
-      (gnus-group-list-groups gnus-level-subscribed nil)
-    (gnus-group-list-all-groups gnus-level-subscribed))
+  (case gnus-group-display-state
+    ('unread (gnus-group-list-groups gnus-level-subscribed nil))
+    ('read (gnus-group-list-groups gnus-level-subscribed t))
+    ('unsubscribed (gnus-group-list-groups gnus-level-unsubscribed nil)))
+  (goto-char (point-min))
+  )
+(defun gnus-group-toggle-read ()
+  (interactive)
+  (setq gnus-group-display-state
+	(if (equal gnus-group-display-state 'read)
+	    'unread
+	  'read))
+  (gnus-group-redisplay))
+(defun gnus-group-toggle-unsubscribed ()
+  (interactive)
+  (setq gnus-group-display-state
+	(if (equal gnus-group-display-state 'unsubscribed)
+	    'unread
+	  'unsubscribed))
+  (gnus-group-redisplay)
   (goto-char (point-min)))
-(define-key gnus-group-mode-map (kbd "h") 'gnus-group-toggle-unread)
+(define-key gnus-group-mode-map (kbd "h") 'gnus-group-toggle-read)
+(define-key gnus-group-mode-map (kbd "j") 'gnus-group-toggle-unsubscribed)
+
+(define-key gnus-group-mode-map (kbd "A !") (lambda () (interactive) (gnus-group-list-ticked 10)))
 
 (defun gnus-group-bury ()
   (interactive)
