@@ -54,17 +54,17 @@
 	((gnus-seconds-year) . "%B %d")
 	(t . "%B %d '%y"))
       ;; Cleaner format for groups and summaries
-      gnus-group-line-format "%y %(%G %)\n"
+      gnus-group-line-format "%-3,3y%(%G %)\n"
       ;; the %uB invokes a function which returns the author name from BBDB
       gnus-summary-line-format "%U%R%~(max-right 17)~(pad-right 17)&user-date; %-30,30uB %*%B%s\n"
       ;; simpler group mode line
       gnus-group-mode-line-format "Gnus"
+      ;; make n and p ignore unread status
+      gnus-group-goto-unread nil
       
       ;; Performance-related settings
       ;; How large is large?
-      gnus-large-newsgroup 400
-      ;; suggested in the man. Not sure that's useful though.
-      gc-cons-threshold 3500000
+      gnus-large-newsgroup 200
       ;; don't silently hide messages
       gnus-newsgroup-maximum-articles nil
       ;; Never use agent, since all my groups are local
