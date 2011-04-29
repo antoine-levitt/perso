@@ -57,6 +57,8 @@
       gnus-group-line-format "%-3,3y%(%G %)\n"
       ;; the %uB invokes a function which returns the author name from BBDB
       gnus-summary-line-format "%U%R%~(max-right 17)~(pad-right 17)&user-date; %-30,30uB %*%B%s\n"
+      gnus-summary-mode-line-format "Gnus: %g %Z"
+      gnus-article-mode-line-format "Gnus: %S"
       ;; simpler group mode line
       gnus-group-mode-line-format "Gnus"
       ;; make n and p ignore unread status
