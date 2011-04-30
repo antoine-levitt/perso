@@ -106,12 +106,16 @@
 (defun gnus-group-redisplay ()
   "Redisplay group according to gnus-group-display-unread"
   (interactive)
+  ; override mode line to put indicators
+  (setq gnus-group-mode-line-format (concat "Gnus"
+					    (case gnus-group-display-state
+					      ('unread "")
+					      ('read " R")
+					      ('unsubscribed " U"))))
   (case gnus-group-display-state
     ('unread (gnus-group-list-groups gnus-level-subscribed nil))
     ('read (gnus-group-list-groups gnus-level-unsubscribed t))
-    ('unsubscribed (gnus-group-list-groups gnus-level-unsubscribed nil)))
-  (goto-char (point-min))
-  )
+    ('unsubscribed (gnus-group-list-groups gnus-level-unsubscribed nil))))
 (defun gnus-group-toggle-read ()
   (interactive)
   (setq gnus-group-display-state
@@ -125,8 +129,7 @@
 	(if (equal gnus-group-display-state 'unsubscribed)
 	    'unread
 	  'unsubscribed))
-  (gnus-group-redisplay)
-  (goto-char (point-min)))
+  (gnus-group-redisplay))
 (define-key gnus-group-mode-map (kbd "h") 'gnus-group-toggle-read)
 (define-key gnus-group-mode-map (kbd "j") 'gnus-group-toggle-unsubscribed)
 
