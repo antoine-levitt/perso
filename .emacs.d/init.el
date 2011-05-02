@@ -658,6 +658,8 @@ some other pops up with display-buffer), go back to only one window open"
 		 (file-name-sans-extension (file-name-nondirectory (buffer-file-name))))))
       (setq my-latex-compiling-buffer nil))))
 (add-hook 'compilation-finish-functions 'my-after-latex-compile)
+;; add ~/.tex to the inputs
+(setenv "TEXINPUTS" ":~/.tex")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Outline

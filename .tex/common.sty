@@ -1,0 +1,95 @@
+\author{Antoine Levitt}
+
+%% common packages
+\usepackage{enumerate}
+%\usepackage{indentfirst} % use this to indent first paragraphs
+\usepackage{graphicx}
+\usepackage{epstopdf} % run pdflatex with --shell-escape to
+                      % automatically convert eps into pdf
+\usepackage{cite}
+\usepackage{float} % allows "H" in floats
+\usepackage{color}
+\usepackage{mathdots}
+\usepackage{empheq}
+\usepackage{subfigure}
+\usepackage[colorlinks=true]{hyperref} %get rid of these stupid boxes,
+                                %but sometimes causes trouble at printing
+\usepackage{verbatim}
+%\usepackage[normal]{caption} %use this to get normal-sized captions
+\usepackage{caption}
+\usepackage{todonotes}
+% inline todos
+\let\todobis\todo
+\renewcommand\todo[1]{
+\todobis[inline]{#1}}
+\usepackage{amsmath, amssymb, amsthm}
+
+  % commands not to use in beamer mode
+\@ifclassloaded{beamer}{}
+{
+  \newtheorem{theorem}{Theorem}
+  \newtheorem{definition}{Definition}
+  \newtheorem{lemma}{Lemma}
+  \usepackage{fullpage}
+}
+
+%% Math commands and shortcuts
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\N}{\mathbb{N}}
+% partial and total derivatives
+\newcommand{\pdn}[3]{\ensuremath{\frac{\partial^{#3} #1}{\partial
+      #2^{#3}}}}
+\newcommand{\pd}[2]{\ensuremath{\frac{\partial #1}{\partial #2}}}
+\newcommand{\dern}[3]{\ensuremath{\frac{\dd^{#3} #1}{\dd
+      #2^{#3}}}}
+\newcommand{\der}[2]{\ensuremath{\frac{\dd #1}{\dd #2}}}
+
+\newcommand{\eps}{\varepsilon}
+\renewcommand{\O}{\mathcal O}
+\newcommand{\inv}[1]{\frac 1 {#1}}
+
+\DeclareMathOperator{\cotan}{cotan}
+\DeclareMathOperator{\sinc}{sinc}
+\DeclareMathOperator{\Tr}{Tr}
+\DeclareMathOperator{\Gram}{Gram}
+\DeclareMathOperator{\diag}{diag}
+
+\newcommand{\lela}{\left \langle}
+\newcommand{\rira}{\right \rangle}
+
+\newcommand{\lp}{\left(}
+\newcommand{\rp}{\right)}
+
+\newcommand{\dd}{\mathrm d}% for use in integrals and derivatives
+\newcommand{\vb}[1]{\mathbf #1}% bold for vectors
+\newcommand{\weaklyto}{\rightharpoonup}
+\newcommand{\norm}[1]{\left\Vert#1\right\Vert}
+
+% matrices
+\newcommand{\mat}[1]{\begin{pmatrix}#1\end{pmatrix}}
+\newcommand{\mattwo}[4]{\mat{#1 & #2\\#3 & #4}}
+\newcommand{\matthree}[9]{\mat{#1 & #2 & #3 \\ #4 & #5 & #6\\ #7 & #8
+    & #9}}
+
+% use xspace to get spaces at end of macros
+\usepackage{xspace}
+\newcommand{\ie}{\textit{i.e.\xspace}}
+\newcommand{\matlab}{MATLAB\@}
+\newcommand{\iif}{if and only if\xspace}
+% wlog is already defined in tex ...
+\newcommand{\wlg}{without loss of generality\xspace}
+\newcommand{\Wlg}{Without loss of generality\xspace}
+
+% figures
+% \fig{.5\textwidth}{nicefig}{My nice figure.}
+\newcommand{\fig}[3]{
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=#1]{#2}
+  \caption{#3}
+  \label{fig:#2}
+\end{figure}
+}
+\newcommand{\figref}[1]{\figurename~\ref{fig:#1}}

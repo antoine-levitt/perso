@@ -14,6 +14,8 @@ export HISTSIZE=20000
 export HISTFILESIZE=20000
 #standard mais on sait jamais
 export PATH=~/bin:$PATH
+#~/.tex pour les fichiers tex
+export TEXINPUTS=:~/.tex
 #prompt user@host:~$
 export PS1='\u@\h:\w\$ '
 
