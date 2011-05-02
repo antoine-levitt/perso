@@ -103,19 +103,21 @@
 ;; oh well.
 (defvar gnus-group-display-state 'unread
   "What to display in the group buffer.")
+(setq gnus-group-display-state 'unread)
 (defun gnus-group-redisplay ()
   "Redisplay group according to gnus-group-display-unread"
   (interactive)
   ; override mode line to put indicators
   (setq gnus-group-mode-line-format (concat "Gnus"
 					    (case gnus-group-display-state
-					      ('unread "")
+					      ('unread "  ")
 					      ('read " R")
 					      ('unsubscribed " U"))))
   (case gnus-group-display-state
     ('unread (gnus-group-list-groups gnus-level-subscribed nil))
     ('read (gnus-group-list-groups gnus-level-unsubscribed t))
     ('unsubscribed (gnus-group-list-groups gnus-level-unsubscribed nil))))
+(gnus-group-redisplay) ;; force one redisplay
 (defun gnus-group-toggle-read ()
   (interactive)
   (setq gnus-group-display-state
