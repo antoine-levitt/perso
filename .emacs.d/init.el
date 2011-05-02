@@ -736,9 +736,6 @@ some other pops up with display-buffer), go back to only one window open"
 ;;bindings
 (add-hook 'org-load-hook
 	  (lambda ()
-	    ; quick task add
-	    (require 'org-agenda)
-	    (define-key org-agenda-mode-map (kbd "a") (kbd "k c"))
 	    (define-key org-mode-map (kbd "C-c C-r") 'org-refile)
 	    (define-key org-mode-map (kbd "<C-tab>") nil)
 	    (define-key org-mode-map (kbd "<S-up>") nil)
@@ -772,11 +769,18 @@ some other pops up with display-buffer), go back to only one window open"
     ((agenda "")
      (tags-todo "Work")
      (tags-todo "Consume")
-     (tags-todo "Misc")
-     ))))
+     (tags-todo "Misc")))
+   ("l" "Agenda with done items"
+    agenda "" ((org-agenda-skip-scheduled-if-done nil)))))
 (add-hook 'org-capture-after-finalize-hook 'org-save-all-org-buffers)
 
 (global-set-key (kbd "s-z") (lambda () (interactive) (org-agenda nil "z")))
+(add-hook 'org-agenda-hook
+	  (lambda ()
+	    (require 'org-agenda)
+	    (define-key org-agenda-mode-map (kbd "a") (kbd "k c"))
+	    (define-key org-agenda-mode-map (kbd "z") (lambda () (interactive) (org-agenda nil "z")))
+	    (define-key org-agenda-mode-map (kbd "l") (lambda () (interactive) (org-agenda nil "l")))))
 
 ;; French holidays, all from http://www.drieu.org/blog/index.php/APRIL/101029
 (defun vacances (string sd sm sy ed em ey)
