@@ -621,7 +621,7 @@ some other pops up with display-buffer), go back to only one window open"
 (defun my-bibtex-compilation-setup ()
   (set (make-local-variable 'compile-command)
        (format
-	"rubber -d main && (raise_process.sh main.pdf || nohup gnome-open main.pdf > /dev/null)")))
+	"rubber -df main && (raise_process.sh main.pdf || nohup gnome-open main.pdf > /dev/null)")))
 (add-hook 'bibtex-mode-hook 'my-bibtex-compilation-setup 'attheend)
 
 (defun my-latex-compile ()
@@ -630,7 +630,7 @@ some other pops up with display-buffer), go back to only one window open"
   (setq my-latex-compiling-buffer (current-buffer))
   (compile
    (format
-    "rubber -d %s"
+    "rubber -df %s"
     (if (stringp TeX-master)
 	TeX-master
       (file-name-sans-extension (file-name-nondirectory (buffer-file-name)))))))
