@@ -1310,8 +1310,12 @@ Ignores CHAR at point."
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;notification
 (setq do-not-disturb nil)
-;;set this if you don't want to be disturbed by notifications
-;;(setq do-not-disturb t)
+(defun dnd ()
+  (interactive)
+  (toggle-variable 'do-not-disturb)
+  (if do-not-disturb
+      (message "Do not disturb")
+    (message "Do disturb")))
 (require 'xml)
 (defun notify (message)
   "Notify user by graphical display"
