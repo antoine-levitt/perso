@@ -276,24 +276,23 @@ erc-modified-channels-alist, filtered by erc-tray-ignored-channels."
 ;;--------------------
 (defun erc-notify-if-hl (matched-type nick msg)
   "Notify whenever someone highlights you and you're away"
-  (when (and (eq matched-type 'current-nick)
-	     (or (and (member (buffer-name (current-buffer)) erc-track-exclude)
-		      (not (equal (window-buffer) (current-buffer))))
-		 (not (eq t (frame-visible-p (selected-frame))))))
-    (unless (string-match "Users on " msg)
-      (notify (format "\<%s\> %s" (erc-extract-nick nick) msg)))))
+    (when (and (eq matched-type 'current-nick) ; only when someone mentions my nick
+	       (not (erc-server-buffer-p)) ; don't display server messages
+	       (or (not (eq t (frame-visible-p (selected-frame))))
+		   (not (equal (window-buffer) (current-buffer)))))
+      (set-text-properties 0 (length msg) nil msg) ; strip properties
+      (unless (or (string-match "Server" nick) ; list of useless things
+		  (string-match "nickserv" nick)
+		  (string-match "Users on " msg)
+		  (string-match "has changed mode " msg)
+		  (string-match "has set the topic " msg))
+	(when (string= (substring msg -1) "\n") ; strip \n
+	  (setq msg (substring msg 0 (- (length msg) 1))))
+	(notify (format "\<%s\> %s" (erc-extract-nick nick) msg))
+	(when (member (buffer-name (current-buffer)) erc-track-exclude)
+	  (message (format "\<%s\> %s" (erc-extract-nick nick) msg))))))
 ;;notify if away and highlighted
 (add-hook 'erc-text-matched-hook 'erc-notify-if-hl)
-
-(defun my-notify-JOIN (proc parsed)
-  "Display notification of user connections on bitlbee"
-  (let ((nick (erc-extract-nick (erc-response.sender parsed)))
-	(chan (erc-response.contents parsed)))
-    (when (string= chan im-gateway-channel-name)
-      (notify (format "%s s'est connecté" nick))))
-  nil)
-;;notify if someone joins on bitlbee
-;(add-hook 'erc-server-JOIN-functions 'my-notify-JOIN)
 
 (defun my-notify-PRIVMSG (proc parsed)
   "Popup whenever someone privmsgs you and you're not seeing it"
