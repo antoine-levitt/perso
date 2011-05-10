@@ -338,7 +338,6 @@
   (when (string= (buffer-name) "*Group*")
     (gnus-group-redisplay)
     (gnus-unread-update-unread-count)))
-(add-hook 'window-configuration-change-hook 'gnus-unread-refresh-and-update-unread-count t)
 
 ;; full check every once in a while (should not be necessary since things that update
 ;; gnus call the update via emacsclient)
