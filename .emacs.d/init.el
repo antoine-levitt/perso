@@ -843,7 +843,7 @@ some other pops up with display-buffer), go back to only one window open"
 	(holiday-fixed 11 11 "Armistice 1918")
 	(holiday-fixed 11 1 "Toussaint")
 	(holiday-fixed 12 25 "Noël")
-	(holiday-float 5 0 2 "Fête des mères")
+	(holiday-float 6 0 -1 "Fête des mères" 1)
 	(holiday-float 6 0 3 "Fête des pères")
 	;; ; à mettre selon les gouts
 	;; (vacances "Vacances de la Toussaint" 23 10 2010 4 11 2010)
