@@ -731,7 +731,8 @@ some other pops up with display-buffer), go back to only one window open"
 (setq org-startup-indented t)
 (global-set-key "\C-cl" 'org-store-link)
 (global-set-key (kbd "s-r") 'org-capture)
-(global-set-key (kbd "s-a") 'org-agenda-list)
+(global-set-key (kbd "s-a") (lambda () (interactive) (org-agenda nil "a")))
+(global-set-key (kbd "s-z") (lambda () (interactive) (org-agenda nil "z")))
 
 ;;bindings
 (add-hook 'org-load-hook
@@ -775,13 +776,11 @@ some other pops up with display-buffer), go back to only one window open"
     agenda "" ((org-agenda-skip-scheduled-if-done nil)))))
 (add-hook 'org-capture-after-finalize-hook 'org-save-all-org-buffers)
 
-(global-set-key (kbd "s-z") (lambda () (interactive) (org-agenda nil "z")))
-(add-hook 'org-agenda-hook
-	  (lambda ()
-	    (require 'org-agenda)
-	    (define-key org-agenda-mode-map (kbd "a") (kbd "k c"))
-	    (define-key org-agenda-mode-map (kbd "z") (lambda () (interactive) (org-agenda nil "z")))
-	    (define-key org-agenda-mode-map (kbd "l") (lambda () (interactive) (org-agenda nil "l")))))
+(require 'org)
+(require 'org-agenda)
+(define-key org-agenda-mode-map (kbd "a") (kbd "k c t"))
+(define-key org-agenda-mode-map (kbd "z") (lambda () (interactive) (org-agenda nil "z")))
+(define-key org-agenda-mode-map (kbd "l") (lambda () (interactive) (org-agenda nil "l")))
 
 ;; French holidays, all from http://www.drieu.org/blog/index.php/APRIL/101029
 (defun vacances (string sd sm sy ed em ey)
