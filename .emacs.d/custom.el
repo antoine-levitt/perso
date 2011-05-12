@@ -19,7 +19,8 @@
  `(diredp-rare-priv ((t nil)))
  `(diredp-read-priv ((t nil)))
  `(diredp-symlink ((t (:foreground ,zenburn-blue-3))))
- `(diredp-write-priv ((t nil))))
+ `(diredp-write-priv ((t nil)))
+ '(link ((((class color) (min-colors 88) (background light)) (:underline t)) (((class color) (background light)) (:underline t)) (((class color) (min-colors 88) (background dark)) (:underline t)) (((class color) (background dark)) (:underline t)) (t (:inherit underline)))))
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
