@@ -393,3 +393,8 @@
 (add-hook 'bbdb-after-change-hook (lambda (arg)
 				    (flet ((message (&rest args) nil))
 				      (bbdb-save))))
+
+(add-hook 'kill-emacs-hook
+	  (lambda ()
+	    (when (get-buffer "*Group*")
+	      (gnus-group-exit))))
