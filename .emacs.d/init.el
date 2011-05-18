@@ -279,6 +279,7 @@ some other pops up with display-buffer), go back to only one window open"
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Ido
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(setq ido-save-directory-list-file "~/.emacs.d/ido.last")
 ;;makes C-x C-f and C-x b a lot easier
 (require 'ido)
 (setq ido-create-new-buffer 'always
@@ -475,6 +476,7 @@ some other pops up with display-buffer), go back to only one window open"
 		   nil t)))
 	(when file
 	  (find-file (cdr (assoc file file-alist))))))))
+(setq recentf-save-file "~/.emacs.d/recentf")
 (setq recentf-max-saved-items nil)
 (recentf-mode 1)
 (global-set-key (kbd "C-x C-r") 'recentf-ido-find-file-or-maybe-list)
