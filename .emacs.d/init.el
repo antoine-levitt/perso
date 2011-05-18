@@ -759,6 +759,7 @@ some other pops up with display-buffer), go back to only one window open"
  org-agenda-skip-deadline-if-done t
  org-agenda-skip-scheduled-if-done t
  org-agenda-start-on-weekday 1
+ calendar-week-start-day 1
  org-agenda-show-current-time-in-grid nil
  org-extend-today-until 4
  org-agenda-remove-tags t
