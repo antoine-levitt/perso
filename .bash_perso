@@ -82,6 +82,8 @@ alias w='w | sort | uniq -w 4 | grep -v USER | grep -v "load average"'
 alias gdb='gdb --args'
 #attacher gdb quand valgrind détecte une erreur
 alias valgrind='valgrind --db-attach=yes'
+#make multithread par défaut
+alias make='make -j3'
 #installer plus vite
 alias install='sudo apt-get install'
 #maj complète pour les debian-like
