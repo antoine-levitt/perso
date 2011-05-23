@@ -45,6 +45,8 @@
       gnus-sum-thread-tree-single-leaf "╰─► "
       ;; See what client people use
       gnus-visible-headers (concat gnus-visible-headers "\\|^User-Agent:\\|^X-Mailer:")
+      ;; strip trailing lines
+      gnus-treat-strip-trailing-blank-lines 'last
       ;; Dates for humans
       gnus-user-date-format-alist
       '(((gnus-seconds-today) . "Today, %H:%M")
