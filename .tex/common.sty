@@ -23,6 +23,17 @@
 \renewcommand\todo[1]{
 \todobis[inline]{#1}}
 \usepackage{amsmath, amssymb, amsthm}
+\usepackage{commath}
+% commath's guessing of the display size is wrong, just let \frac decide
+\renewcommand{\pd}[3][]{\ensuremath{\mathinner{
+\frac{\partial{^{#1}}#2}{\partial{#3^{#1}}}
+}}}
+\renewcommand{\md}[6]{\ensuremath{\mathinner{
+\frac{\partial{^{#2}}#1}{\partial{#3^{#4}}\partial{#5^{#6}}}
+}}}
+\renewcommand{\od}[3][]{\ensuremath{\mathinner{
+\frac{\dif{^{#1}}#2}{\dif{#3^{#1}}}
+}}}
 
   % commands not to use in beamer mode
 \@ifclassloaded{beamer}{}
@@ -38,13 +49,14 @@
 \newcommand{\C}{\mathbb{C}}
 \newcommand{\Z}{\mathbb{Z}}
 \newcommand{\N}{\mathbb{N}}
-% partial and total derivatives
-\newcommand{\pdn}[3]{\ensuremath{\frac{\partial^{#3} #1}{\partial
-      #2^{#3}}}}
-\newcommand{\pd}[2]{\ensuremath{\frac{\partial #1}{\partial #2}}}
-\newcommand{\dern}[3]{\ensuremath{\frac{\dd^{#3} #1}{\dd
-      #2^{#3}}}}
-\newcommand{\der}[2]{\ensuremath{\frac{\dd #1}{\dd #2}}}
+% % partial and total derivatives
+% \newcommand{\pdn}[3]{\ensuremath{\frac{\partial^{#3} #1}{\partial
+%       #2^{#3}}}}
+% \newcommand{\pd}[2]{\ensuremath{\frac{\partial #1}{\partial #2}}}
+% \newcommand{\dern}[3]{\ensuremath{\frac{\dif^{#3} #1}{\dif
+%       #2^{#3}}}}
+% \newcommand{\der}[2]{\ensuremath{\frac{\dif #1}{\dif #2}}}
+% \newcommand{\dertwo}[2]{\ensuremath{\frac{\dif^2 #1}{\dif {#2}^2}}}
 
 \newcommand{\eps}{\varepsilon}
 \renewcommand{\O}{\mathcal O}
@@ -62,10 +74,8 @@
 \newcommand{\lp}{\left(}
 \newcommand{\rp}{\right)}
 
-\newcommand{\dd}{\mathrm d}% for use in integrals and derivatives
 \newcommand{\vb}[1]{\mathbf #1}% bold for vectors
 \newcommand{\weaklyto}{\rightharpoonup}
-\newcommand{\norm}[1]{\left\Vert#1\right\Vert}
 
 % matrices
 \newcommand{\mat}[1]{\begin{pmatrix}#1\end{pmatrix}}
@@ -89,7 +99,6 @@
   \centering
   \includegraphics[width=#1]{#2}
   \caption{#3}
-  \label{fig:#2}
+  \label{#2}
 \end{figure}
 }
-\newcommand{\figref}[1]{\figurename~\ref{fig:#1}}
