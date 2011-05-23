@@ -286,8 +286,9 @@
 ;; But when I do a "g" on the buffer, I probably mean it.
 (defun gnus-group-get-new-news-and-redisplay ()
   (interactive)
-  (gnus-group-get-new-news)
-  (gnus-group-redisplay))
+  (with-current-buffer "*Group*"
+    (gnus-group-get-new-news)
+    (gnus-group-redisplay)))
 (require 'gnus-group)
 (define-key gnus-group-mode-map (kbd "g") 'gnus-group-get-new-news-and-redisplay)
 
@@ -340,6 +341,8 @@
   (when (string= (buffer-name) "*Group*")
     (gnus-group-redisplay)
     (gnus-unread-update-unread-count)))
+;(add-hook 'window-configuration-change-hook 'gnus-unread-refresh-and-update-unread-count t)
+;(remove-hook 'window-configuration-change-hook 'gnus-unread-refresh-and-update-unread-count)
 
 ;; full check every once in a while (should not be necessary since things that update
 ;; gnus call the update via emacsclient)
