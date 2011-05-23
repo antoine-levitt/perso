@@ -106,5 +106,11 @@ alias gl='git pull'
 alias gp='git push'
 alias gst='git status | less'
 
+
+# bzr
+alias bl='bzr pull'
+alias bd='bzr diff'
+alias blo='bzr log | less'
+
 # gfortran, mon ami, arrête d'être un gros blaireau et ne bufferise pas stdout
 export GFORTRAN_UNBUFFERED_PRECONNECTED='Y'
