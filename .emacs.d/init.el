@@ -1309,7 +1309,8 @@ Ignores CHAR at point."
 (defadvice completion-at-point (after completion-at-point-complete-if-failed activate)
   "Fallback on dabbrev if completion didn't do anything useful."
   (unless ad-return-value
-    (my-dabbrev-expand)))
+    (my-dabbrev-expand)
+    (setq ad-return-value t)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Notification framework (used in ERC)
