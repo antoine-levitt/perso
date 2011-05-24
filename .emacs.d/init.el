@@ -1297,16 +1297,19 @@ Ignores CHAR at point."
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Tab completion
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; need 23.2
+;; needs 23.2
 (setq tab-always-indent 'complete)
+
 (defun my-dabbrev-expand ()
+  "Expand using dabbrev, with a few safeguards"
   (when (and (not (bolp))
 	     (looking-at "\\_>"))
     (dabbrev-expand nil)))
-(defun my-dabbrev-expand-and-nil ()
-  (my-dabbrev-expand)
-  nil)
-(setq completion-at-point-functions '(my-dabbrev-expand-and-nil))
+
+(defadvice completion-at-point (after completion-at-point-complete-if-failed activate)
+  "Fallback on dabbrev if completion didn't do anything useful."
+  (unless ad-return-value
+    (my-dabbrev-expand)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Notification framework (used in ERC)
