@@ -580,11 +580,13 @@ some other pops up with display-buffer), go back to only one window open"
     (LaTeX-environment (if (= arg 16) t nil))))
 ;;don't ask to cache preamble
 (setq preview-auto-cache-preamble t)
+(setq preview-preserve-counters t)
 ;;use synctex for synchronisation with viewer
 (setq TeX-source-correlate-method 'synctex)
 ;;indent when pressing RET
 (setq TeX-newline-function 'newline-and-indent
-      LaTeX-math-abbrev-prefix (kbd "ù"))
+      LaTeX-math-abbrev-prefix (kbd "ù")
+      TeX-electric-sub-and-superscript t)
 (defun my-tex-config ()
   (turn-on-reftex)
   (auto-fill-mode 1)
