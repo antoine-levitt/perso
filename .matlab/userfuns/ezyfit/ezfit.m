@@ -540,11 +540,12 @@ end
 % fitting itself
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+opts = optimset('TolX',1e-12,'TolFun',1e-12,'MaxFunEvals',10000);
 switch f.fitmode,
     case 'lin',
         x__ref = x;
         try
-            m=fminsearch(@fitlin, m0);
+            m=fminsearch(@fitlin, m0,opts);
         catch
             error('Ezyfit:ezfit:fminsearchError','Fit: error during the fminsearch procedure');
         end        
@@ -555,7 +556,7 @@ switch f.fitmode,
     case 'log',
         x__ref = x;
         try
-          m=fminsearch(@fitlin, m0);
+          m=fminsearch(@fitlin, m0,opts);
         catch
             error('Ezyfit:ezfit:fminsearchError','Fit: error during the fminsearch procedure');
         end
