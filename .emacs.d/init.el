@@ -1097,6 +1097,9 @@ Ignores CHAR at point."
       (newline)
       (insert text))))
 (global-set-key (kbd "s-d") 'duplicate-current-line)
+;; pretty smileys
+(global-set-key (kbd "s-o") (lambda () (interactive) (insert "\\o/")))
+(global-set-key (kbd "s-²") (lambda () (interactive) (insert ":-|")))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Easy buffer switching
