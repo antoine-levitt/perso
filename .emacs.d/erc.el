@@ -58,24 +58,6 @@
       erc-quit-reason (lambda (arg) (or arg ""))
       erc-part-reason (lambda (arg) (or arg "")))
 
-;; modify return value of erc-pcomplete: return t if completed
-;; something, nil otherwise
-(require 'erc-pcomplete)
-(defun erc-pcomplete ()
-  "Complete the nick before point."
-  (interactive)
-  (let ((pointbefore (point)))
-    (when (> (point) (erc-beg-of-input-line))
-      (let ((last-command (if (eq last-command 'erc-complete-word)
-			      'pcomplete
-			    last-command)))
-	(call-interactively 'pcomplete)
-	(if (> (point) pointbefore)
-	    t
-	  nil)))))
-(setq erc-complete-functions '(erc-pcomplete my-dabbrev-expand))
-
-
 ;;--------------------
 ;;Colorize nick list
 ;;--------------------
