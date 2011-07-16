@@ -1111,7 +1111,7 @@ Ignores CHAR at point."
   (message "Now %s"
 	   (if switch-include-erc "including erc" "excluding erc")))
 ;;quickly switch buffers
-(defun switch-to-nth-buffer (n arg)
+(defun switch-to-nth-buffer (n)
   "Switches to nth most recent buffer. Ignores erc buffers unless switch-include-erc is non-nil."
   (catch 'tag
     (mapcar (lambda (b)
@@ -1125,17 +1125,17 @@ Ignores CHAR at point."
 				(switch-to-buffer b)
 				(throw 'tag nil))
 			    (setq n (- n 1))))))))
-	      (cdr (buffer-list)))))
+	    (buffer-list))))
 
-(defun switch-to-most-recent-buffer (&optional arg)
-  (interactive "P")
-  (switch-to-nth-buffer 1 arg))
-(defun switch-to-second-most-recent-buffer (&optional arg)
-  (interactive "P")
-  (switch-to-nth-buffer 2 arg))
-(defun switch-to-third-most-recent-buffer (&optional arg)
-  (interactive "P")
-  (switch-to-nth-buffer 3 arg))
+(defun switch-to-most-recent-buffer ()
+  (interactive)
+  (switch-to-nth-buffer 1))
+(defun switch-to-second-most-recent-buffer ()
+  (interactive)
+  (switch-to-nth-buffer 2))
+(defun switch-to-third-most-recent-buffer ()
+  (interactive)
+  (switch-to-nth-buffer 3))
 
 ;;fast switching between two buffers
 (global-set-key (kbd "<s-tab>") 'switch-to-most-recent-buffer)
