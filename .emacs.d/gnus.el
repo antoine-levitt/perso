@@ -93,6 +93,8 @@
 (define-key gnus-group-mode-map (kbd "M-&") nil)
 (define-key gnus-summary-mode-map (kbd "M-&") nil)
 (define-key gnus-article-mode-map (kbd "M-&") nil)
+(require 'message)
+(define-key message-mode-map (kbd "M-n") nil)
 
 ;; smaller window for summary
 (gnus-add-configuration
