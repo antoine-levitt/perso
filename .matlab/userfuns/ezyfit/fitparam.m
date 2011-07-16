@@ -47,7 +47,7 @@ fp.extrapol = 'none';
 
 % Number of X points used to compute and display the fitted curve:
 % (typically 20 to 500, default=200)
-fp.npt = 200;
+fp.npt = 500;
 
 
 % Display the equation in the command windows: 'on' or 'off'
