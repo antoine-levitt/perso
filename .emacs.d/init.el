@@ -532,7 +532,7 @@ some other pops up with display-buffer), go back to only one window open"
 ;;ignore case when matching a suffix (such as .F90)
 (setq auto-mode-case-fold t)
 ;;tags
-(setq tags-table-list '("~/.emacs.d" ".")
+(setq tags-table-list nil
       tags-revert-without-query t)
 ;;indent yanked code in programming languages modes
 (load-library "yank-indent")
