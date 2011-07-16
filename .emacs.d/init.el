@@ -1114,11 +1114,12 @@ Ignores CHAR at point."
 		      (not (eq (buffer-local-value 'major-mode b) 'erc-mode)))
 		  (unless (minibufferp b)
 		    (unless (string-match "^ " (buffer-name b))
-		      (if (= n 1)
-			  (progn
-			    (switch-to-buffer b)
-			    (throw 'tag nil))
-			(setq n (- n 1)))))))
+		      (unless (equal b (current-buffer))
+			  (if (= n 1)
+			      (progn
+				(switch-to-buffer b)
+				(throw 'tag nil))
+			    (setq n (- n 1))))))))
 	      (cdr (buffer-list)))))
 
 (defun switch-to-most-recent-buffer (&optional arg)
