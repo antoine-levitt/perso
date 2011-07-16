@@ -1308,15 +1308,20 @@ Ignores CHAR at point."
 
 (defun my-dabbrev-expand ()
   "Expand using dabbrev, with a few safeguards"
+  (interactive)
   (when (and (not (bolp))
 	     (looking-at "\\_>"))
     (dabbrev-expand nil)))
 
+(defun completion-at-point-using-dabbrev ()
+  'my-dabbrev-expand)
+
+(setq-default completion-at-point-functions '(completion-at-point-using-dabbrev))
+
 (defadvice completion-at-point (after completion-at-point-complete-if-failed activate)
   "Fallback on dabbrev if completion didn't do anything useful."
   (unless ad-return-value
-    (my-dabbrev-expand)
-    (setq ad-return-value t)))
+    (setq ad-return-value (my-dabbrev-expand))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Notification framework (used in ERC)

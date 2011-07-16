@@ -76,7 +76,7 @@
 
       ;; Message
       ;; Complete using dabbrev
-      message-tab-body-function (lambda () (interactive) (dabbrev-expand nil))
+      message-tab-body-function nil
       message-citation-line-function 'message-insert-formatted-citation-line
       ;; 01/01/1970, XX
       message-citation-line-format "%x %R, %N"
