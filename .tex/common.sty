@@ -22,7 +22,10 @@
 % inline todos
 \let\todobis\todo
 \renewcommand\todo[1]{
-\todobis[inline]{#1}}
+  \todobis[inline]{#1}}
+\newcommand\note[1]{
+  \todobis[inline,color=green!40]{#1}
+}
 \usepackage{amsmath, amssymb, amsthm}
 \usepackage{commath}
 % commath's guessing of the display size is wrong, just let \frac decide
