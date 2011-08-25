@@ -253,9 +253,7 @@
 ;;; Receive mail
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; receive using dovecot as imap
-(setq gnus-select-method '(nnimap "Mail" (nnimap-stream shell)))
-(setq imap-shell-program "/usr/sbin/dovecot --exec-mail imap")
-
+(setq gnus-select-method '(nnimap "Mail" (nnimap-address "localhost") (nnimap-stream network)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Send mail
