@@ -235,7 +235,8 @@
       ;; Display images
       mm-inline-text-html-with-images t
       mm-attachment-override-types '("image/.*")
-      gnus-blocked-images "doubleclick\\.net\\|feedsportal\\|hits\\.guardian\\|rss\\.lemonde")
+      gnus-blocked-images "doubleclick\\.net\\|feedsportal\\|hits\\.guardian\\|rss\\.lemonde"
+      url-cookie-file nil)
 
 (define-key gnus-summary-mode-map (kbd "h")
   'gnus-article-browse-html-article)
