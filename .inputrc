@@ -6,3 +6,5 @@ set completion-ignore-case on
 "\M-w":copy-region-as-kill
 # C-space to set-mark
 "\C-Space":set-mark
+#M-q = delete backward
+"\eq": backward-kill-word
