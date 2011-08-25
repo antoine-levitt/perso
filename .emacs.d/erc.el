@@ -21,7 +21,7 @@
       erc-auto-query 'bury
       erc-current-nick-highlight-type 'keyword
       erc-interpret-mirc-color t
-      erc-log-channels-directory "~/.erclogs"
+      erc-log-channels-directory "~/.emacs.d/logs"
       erc-log-write-after-insert t
       erc-log-write-after-send t
       erc-log-file-coding-system 'utf-8
@@ -140,8 +140,8 @@ the message looking for nicks to colorize. "
     (:weight bold)))
 (setq erc-view-log-nickname-face-function 'erc-get-face-for-nick)
 (setq erc-view-log-my-nickname-match `(,erc-nick)) ;set this one in your .priv_emacs with your other nicks if needed
-(add-to-list 'auto-coding-alist '("\\.erclogs/.*\\.txt" . utf-8))
-(add-to-list 'auto-mode-alist '("\\.erclogs/.*\\.txt" . erc-view-log-mode))
+(add-to-list 'auto-coding-alist '("\\.emacs.d/logs/.*\\.txt" . utf-8))
+(add-to-list 'auto-mode-alist '("\\.emacs.d/logs/.*\\.txt" . erc-view-log-mode))
 
 
 ;;--------------------
