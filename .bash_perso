@@ -94,7 +94,7 @@ alias mnw=matlabnw
 #xfig with latex fonts
 alias xfig='xfig -specialtext -latexfonts -startlatexFont default'
 #synchroniser manuellement les mails d'offlineimap
-alias s='getmail -v && ~/.check-news.sh'
+alias s='((fetchmail && emacsclient -e "(gnus-group-get-new-news-and-redisplay)")&) ; (~/.check-news.sh &)'
 
 
 # -------------------- Git dans tous ses états --------------------
