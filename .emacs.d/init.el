@@ -725,7 +725,7 @@ some other pops up with display-buffer), go back to only one window open"
 (add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
 (setq org-startup-indented t)
 (global-set-key "\C-cl" 'org-store-link)
-(global-set-key (kbd "s-r") 'org-capture)
+(global-set-key (kbd "s-r") (lambda () (interactive) (org-capture nil "t")))
 (global-set-key (kbd "s-a") (lambda () (interactive) (org-agenda nil "a")))
 (global-set-key (kbd "s-z") (lambda () (interactive) (org-agenda nil "z")))
 
