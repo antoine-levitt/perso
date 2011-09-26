@@ -379,7 +379,9 @@
       bbdb-new-mails-always-primary t ; always use newly added mails
       bbdb-pop-up-window-size 5 ; small window
       bbdb-completion-display-record nil
-      bbdb-message-pop-up nil) ; do not popup me
+      bbdb-message-pop-up nil ; do not popup me
+      bbdb-add-mails t ; handle multiple email addresses per contact
+      bbdb-accept-name-mismatch t)
 
 (define-key bbdb-mode-map (kbd "q") 'quit-window)
 
