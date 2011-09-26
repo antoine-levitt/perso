@@ -152,12 +152,13 @@ def do_cns(line, file, linenum, phra_hash)
       matchedlines = ( m.end(0) <= ( line.index("\n") or 0 ) ) ? line.gsub(/\n.*/,'') : line.chomp
       # MODIFIED don't output column number
       # puts "%s:%d:%d: %s (%s)" % [ file, linenum, m.begin(0)+1, matchedlines, m.to_s.tr("\n", ' ') ]
-      puts "%s:%d: %s (%s)" % [ file, linenum, matchedlines, m.to_s.tr("\n", ' ') ]
+      puts "%s:%d: %s : %s" % [ file, linenum, m.to_s.tr("\n", ' '), matchedlines ]
       $exit_status = 1
       if($VERBOSE && phra_hash[r]) then
         puts "  " + phra_hash[r]
         phra_hash[r] = nil # don't print the reason more than once
       end
+      puts
       $exit_status = 1 if(!phra_hash[r] =~ /\?\s*$/) 
     end
   # end
