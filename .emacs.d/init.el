@@ -1256,7 +1256,7 @@ Ignores CHAR at point."
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Dictionnaries
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(setq my-languages '("british" "french"))
+(setq my-languages '("american" "french"))
 (setq my-languages-index 0)
 (defun icd ()
   "Cycle between dictionaries"
