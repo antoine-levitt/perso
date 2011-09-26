@@ -266,15 +266,6 @@ some other pops up with display-buffer), go back to only one window open"
 (setq global-auto-revert-non-file-buffers t)
 (setq auto-revert-interval 30) ;30s is enough
 (setq auto-revert-verbose nil)
-;; redefine file-remote-p to add a special rule to consider "/net" as remote
-(defun file-remote-p (file &optional identification connected)
-  ;; might cause false positive. I'll care when I see one
-  (if (string-match-p "net/" file)
-      t
-    (let ((handler (find-file-name-handler file 'file-remote-p)))
-      (if handler
-	  (funcall handler 'file-remote-p file identification connected)
-	nil))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Ido
