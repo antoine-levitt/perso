@@ -25,8 +25,8 @@
       gnus-verbose 4
       gnus-verbose-backends 4
       ;; Sort things
-      gnus-thread-sort-functions '(gnus-thread-sort-by-most-recent-date)
-      gnus-article-sort-functions '((not gnus-article-sort-by-date))
+      gnus-thread-sort-functions '(gnus-thread-sort-by-most-recent-number)
+      gnus-article-sort-functions '((not gnus-article-sort-by-number))
       gnus-group-sort-function '(gnus-group-sort-by-alphabet gnus-group-sort-by-level)
       ;; Don't display groups without unread messages
       gnus-list-groups-with-ticked-articles nil
@@ -68,7 +68,7 @@
       
       ;; Performance-related settings
       ;; How large is large?
-      gnus-large-newsgroup 200
+      gnus-large-newsgroup 100
       ;; don't silently hide messages
       gnus-newsgroup-maximum-articles nil
       ;; Never use agent, since all my groups are local
@@ -105,9 +105,9 @@
 
 ;; toggle between read, unread and subscribed articles. this is a bit of a hack, and should be better integrated.
 ;; oh well.
-(defvar gnus-group-display-state 'unread
+(defvar gnus-group-display-state 'unsubscribed
   "What to display in the group buffer.")
-(setq gnus-group-display-state 'unread)
+(setq gnus-group-display-state 'unsubscribed)
 (defun gnus-group-redisplay ()
   "Redisplay group according to gnus-group-display-unread"
   (interactive)
@@ -166,6 +166,8 @@
 	 (let ((replybuf (current-buffer)))
 	   (with-current-buffer sumbuf
 	     (gnus-summary-exit))
+	   (with-current-buffer "*Group*"
+	     (gnus-group-get-new-news-and-redisplay))
 	   (switch-to-buffer replybuf))))
 
 (defmacro gnus-add-exit-summary-to-function (fun)
@@ -350,8 +352,9 @@
 (defadvice gnus-group-get-new-news (around gnus-demon-timeout activate)
   "Timeout for Gnus."
   (with-timeout
-      (5 (message "Gnus timed out."))
+      (5 (message "Gnus timed out.") (debug))
     ad-do-it))
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Private info
