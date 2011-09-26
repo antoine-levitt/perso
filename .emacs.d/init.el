@@ -744,7 +744,7 @@ some other pops up with display-buffer), go back to only one window open"
  org-agenda-files (list "~/.emacs.d/org/todo.org")
  org-default-notes-file "~/.emacs.d/org/notes.org"
  org-completion-use-ido t
- org-agenda-ndays 7
+ org-agenda-span 'week
  org-log-done 'time
  org-startup-folded 'content
  org-deadline-warning-days 4
@@ -757,6 +757,7 @@ some other pops up with display-buffer), go back to only one window open"
  org-extend-today-until 4
  org-agenda-remove-tags t
  org-agenda-repeating-timestamp-show-all t
+ org-agenda-use-time-grid nil
  org-reverse-note-order t
  org-capture-templates '(("t" "Scheduled task" entry
 			  (file+headline "~/.emacs.d/org/todo.org" "Tasks")
