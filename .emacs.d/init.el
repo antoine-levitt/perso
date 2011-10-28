@@ -1016,7 +1016,7 @@ brake whatever split of windows we might have in the frame."
 	(bury-buffer (window-buffer win))))
     (delete-other-windows)))
 (global-set-key (kbd "M-&") 'my-delete-other-windows)
-(global-set-key (kbd "C-x 1") 'my-delete-other-windows)
+(global-set-key (kbd "C-x 1") 'delete-other-windows)
 
 ;;make use of that useless ^2 key to do something useful. This can fail on some terminals,
 ;;so protect
