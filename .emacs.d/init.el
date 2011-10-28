@@ -1319,7 +1319,7 @@ Ignores CHAR at point."
   (setq ispell-dictionary (nth my-languages-index my-languages))
   (message ispell-dictionary))
 ;;english dictionary, change it with M-x ispell-change-dictionary or M-x icd
-(setq ispell-dictionary "british"
+(setq ispell-dictionary "french"
       ispell-silently-savep t
       ispell-program-name "aspell")
 
