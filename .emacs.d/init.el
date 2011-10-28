@@ -772,6 +772,24 @@ some other pops up with display-buffer), go back to only one window open"
    ("l" "Agenda with done items"
     agenda "" ((org-agenda-skip-scheduled-if-done nil)))))
 (add-hook 'org-capture-after-finalize-hook 'org-save-all-org-buffers)
+(defadvice org-agenda-quit (after org-agenda-save-org-buffers activate)
+  "Save all org buffers"
+  (org-save-all-org-buffers))
+
+(require 'appt)
+(setq appt-audible nil
+      appt-display-diary nil
+      appt-display-format nil
+      appt-message-warning-time 10)
+(defun my-org-agenda-to-appt ()
+  (interactive)
+  (setq appt-time-msg-list nil)
+  (flet ((message (&rest args) ))
+    (org-agenda-to-appt))
+  (appt-check))
+(my-org-agenda-to-appt)
+(add-hook 'org-finalize-agenda-hook 'my-org-agenda-to-appt)
+(appt-activate t)
 
 (require 'org)
 (require 'org-agenda)
