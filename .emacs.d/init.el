@@ -799,6 +799,34 @@ some other pops up with display-buffer), go back to only one window open"
   "Save all org buffers"
   (org-save-all-org-buffers))
 
+(setq org-agenda-prefix-format '((agenda . " %i %-12:c%-13t")
+				 (timeline . "  % s")
+				 (todo . " %i %-12:c")
+				 (tags . " %i %-12:c")
+				 (search . " %i %-12:c")))
+(setq org-agenda-compact-blocks t)
+
+
+(defun org-agenda-format-date-aligned (date)
+  "Format a date string for display in the daily/weekly agenda, or timeline.
+This function makes sure that dates are aligned for easy reading."
+  (require 'cal-iso)
+  (let* ((dayname (calendar-day-name date))
+	 (day (cadr date))
+	 (day-of-week (calendar-day-of-week date))
+	 (month (car date))
+	 (monthname (calendar-month-name month))
+	 (year (nth 2 date))
+	 (iso-week (org-days-to-iso-week
+		    (calendar-absolute-from-gregorian date)))
+	 (weekyear (cond ((and (= month 1) (>= iso-week 52))
+			  (1- year))
+			 ((and (= month 12) (<= iso-week 1))
+			  (1+ year))
+			 (t year))))
+    (format "%-10s %2d %s %4d"
+	    dayname day monthname year)))
+
 (require 'appt)
 (setq appt-audible nil
       appt-display-diary nil
