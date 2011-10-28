@@ -804,6 +804,19 @@ some other pops up with display-buffer), go back to only one window open"
       appt-display-diary nil
       appt-display-format nil
       appt-message-warning-time 10)
+(defun appt-mode-line (min-to-app &optional abbrev)
+  "Return an appointment string suitable for use in the mode-line."
+  (let* ((multiple (> (length min-to-app) 1))
+	 (abbrev nil)
+         (imin (if (or (not multiple)
+                       (not (delete (car min-to-app) min-to-app)))
+                   (car min-to-app))))
+    (format "Appointment %s"
+            (if (equal imin "0") "now"
+              (format "in %s %s"
+                      (or imin (mapconcat 'identity min-to-app ","))
+                      (if abbrev "min."
+                        (format "minute%s" (if (equal imin "1") "" "s"))))))))
 (defun my-org-agenda-to-appt ()
   (interactive)
   (setq appt-time-msg-list nil)
