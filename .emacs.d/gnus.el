@@ -167,7 +167,7 @@
 	   (with-current-buffer sumbuf
 	     (gnus-summary-exit))
 	   (with-current-buffer "*Group*"
-	     (gnus-group-get-new-news-and-redisplay))
+	     (gnus-group-get-new-news))
 	   (switch-to-buffer replybuf))))
 
 (defmacro gnus-add-exit-summary-to-function (fun)
@@ -275,24 +275,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Some of it is from Matthieu Moy, with modifs
 (require 'gnus-group)
-;; By default, gnus-group-get-new-news will force a redisplay of the group buffer
-;; It's extremely annoying if you're doing something at the same time, and it messes
-;; up with my "h" keybinding. Therefore, it must die.
-(defadvice gnus-group-get-new-news (around gnus-group-get-new-news-dont-redisplay activate)
-  "Don't redisplay at the end."
-  (flet ((gnus-group-list-groups (&rest args) nil))
-    ad-do-it))
 
-;; But when I do a "g" on the buffer, I probably mean it.
-(defun gnus-group-get-new-news-and-redisplay ()
-  (interactive)
-  (with-current-buffer "*Group*"
-    (gnus-group-get-new-news)
-    (gnus-group-redisplay)))
-(require 'gnus-group)
-(define-key gnus-group-mode-map (kbd "g") 'gnus-group-get-new-news-and-redisplay)
-
-(require 'gnus-demon)
 ;; set for a specific notification level
 (defvar gnus-notify-level 3
   "Notify for unread articles at this level or under")
@@ -335,21 +318,9 @@
       (notify "New mail !")))
 
 (add-hook 'gnus-after-getting-new-news-hook 'gnus-unread-update-unread-count t)
-(defun gnus-unread-refresh-and-update-unread-count ()
-  "If displaying the Group buffer, refresh it. TODO fix for multiple windows"
-  (interactive)
-  (when (string= (buffer-name) "*Group*")
-    (gnus-group-redisplay)
-    (gnus-unread-update-unread-count)))
-;(add-hook 'window-configuration-change-hook 'gnus-unread-refresh-and-update-unread-count t)
-;(remove-hook 'window-configuration-change-hook 'gnus-unread-refresh-and-update-unread-count)
-
-;; full check every once in a while (should not be necessary since things that update
-;; gnus call the update via emacsclient)
-(gnus-demon-add-handler 'gnus-group-get-new-news 30 nil)
 
 ;; if gnus doesn't respond in 5s, give up
-(defadvice gnus-group-get-new-news (around gnus-demon-timeout activate)
+(defadvice gnus-group-get-new-news (around gnus-timeout activate)
   "Timeout for Gnus."
   (with-timeout
       (5 (message "Gnus timed out.") (debug))
