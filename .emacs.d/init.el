@@ -160,6 +160,8 @@ From http://atomized.org/2011/01/toggle-between-root-non-root-in-emacs-with-tram
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Misc. settings
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; I don't use bidi stuff
+(setq-default bidi-display-reordering nil)
 ;; instead of / or whatever
 (setq default-directory (expand-file-name "~/"))
 ;; OH MY GOD IT'S A SECURITY VULNERABILITY, WE ARE ALL GONNA DIE
