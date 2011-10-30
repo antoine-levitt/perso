@@ -742,7 +742,8 @@ some other pops up with display-buffer), go back to only one window open"
 ;;; Shell
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (setq-default comint-scroll-to-bottom-on-input 'all
-	      comint-move-point-for-output t)
+	      comint-move-point-for-output t
+	      comint-input-ring-file-name "~/.emacs.d/comint_history")
 (ansi-color-for-comint-mode-on)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
