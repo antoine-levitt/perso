@@ -114,3 +114,5 @@ alias blo='bzr log | less'
 
 # gfortran, mon ami, arrête d'être un gros blaireau et ne bufferise pas stdout
 export GFORTRAN_UNBUFFERED_PRECONNECTED='Y'
+
+alias pprof="python -m cProfile -s cumulative"
