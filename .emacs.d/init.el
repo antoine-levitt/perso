@@ -570,12 +570,29 @@ some other pops up with display-buffer), go back to only one window open"
  python-shell-completion-string-code
  "';'.join(get_ipython().Completer.all_completions('''%s'''))\n")
 
-(defun python-shell-switch-to-shell ()
-  "Switch to inferior Python process buffer."
+(defun ipython-run ()
   (interactive)
-  (if (comint-check-proc (concat "*" (python-shell-get-process-name nil) "*"))
-      (pop-to-buffer (process-buffer (python-shell-get-or-create-process)))
-    (run-python nil (python-shell-parse-command))))
+  (unless (get-buffer "*ipython*")
+    (setq ipython-buffer-name (term-ansi-make-term "*ipython*" "ipython"))
+    (with-current-buffer ipython-buffer-name
+      (term-mode)
+      (term-char-mode))))
+
+(defun ipython-run-or-switch ()
+  (interactive)
+  (ipython-run)
+  (display-buffer (get-buffer "*ipython*")))
+(defun ipython-send-current-buffer ()
+  (interactive)
+  (ipython-run)
+  (term-send-string (get-buffer-process "*ipython*")
+		    (format "run %s\n" (buffer-file-name))))
+(defun ipython-send-current-buffer-and-switch ()
+  (interactive)
+  (ipython-send-current-buffer)
+  (ipython-run-or-switch))
+(define-key python-mode-map (kbd "C-c C-c") 'ipython-send-current-buffer-and-switch)
+(define-key python-mode-map (kbd "C-c C-z") 'ipython-run-or-switch)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Latex
