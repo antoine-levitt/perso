@@ -1194,14 +1194,32 @@ Ignores CHAR at point."
   (save-excursion
     (replace-match (number-to-string (+ quantity (string-to-number (match-string 0)))))))
 
+(defun multiply-number-at-point (quantity)
+  (skip-chars-backward ".0123456789")
+  (or (looking-at "[\\.0123456789]+")
+      (error "No number at point"))
+  (let ((num (* quantity (string-to-number (match-string 0)))))
+    (when (= (floor num) num)
+      (setq num (floor num)))
+    (save-excursion
+      (replace-match (number-to-string num)))))
+
 (defun inc-at-point ()
   (interactive)
   (add-digit-at-point 1))
 (defun dec-at-point ()
   (interactive)
   (add-digit-at-point -1))
+(defun double-at-point ()
+  (interactive)
+  (multiply-number-at-point 2))
+(defun halve-at-point ()
+  (interactive)
+  (multiply-number-at-point 0.5))
 (global-set-key (kbd "<s-up>") 'inc-at-point)
 (global-set-key (kbd "<s-down>") 'dec-at-point)
+(global-set-key (kbd "<s-left>") 'halve-at-point)
+(global-set-key (kbd "<s-right>") 'double-at-point)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
