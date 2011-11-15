@@ -1187,6 +1187,23 @@ Ignores CHAR at point."
 (global-set-key (kbd "s-o") (lambda () (interactive) (insert "\\o/")))
 (global-set-key (kbd "s-²") (lambda () (interactive) (insert ":-|")))
 
+;; increment/decrement
+(defun add-digit-at-point (quantity)
+  (or (looking-at "[0123456789]")
+      (error "No number at point"))
+  (save-excursion
+    (replace-match (number-to-string (+ quantity (string-to-number (match-string 0)))))))
+
+(defun inc-at-point ()
+  (interactive)
+  (add-digit-at-point 1))
+(defun dec-at-point ()
+  (interactive)
+  (add-digit-at-point -1))
+(global-set-key (kbd "<s-up>") 'inc-at-point)
+(global-set-key (kbd "<s-down>") 'dec-at-point)
+
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Easy buffer switching
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
