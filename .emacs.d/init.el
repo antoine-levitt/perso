@@ -849,6 +849,7 @@ This function makes sure that dates are aligned for easy reading."
 	    dayname day monthname year)))
 
 (require 'appt)
+(require 'org-agenda)
 (setq appt-audible nil
       appt-display-diary nil
       appt-display-format nil
