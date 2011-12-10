@@ -559,6 +559,8 @@ some other pops up with display-buffer), go back to only one window open"
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (require 'python)
+(require 'cython-mode)
+(require 'term)
 
 (defun ipython-run ()
   (interactive)
