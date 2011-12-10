@@ -171,7 +171,7 @@
      (vector 'unspecified zenburn-bg
        zenburn-red zenburn-green
        zenburn-yellow zenburn-blue+1
-       zenburn-magenta zenburn-cyan)))
+       zenburn-magenta zenburn-cyan "white")))
 
 (defvar font-lock-pseudo-keyword-face 'font-lock-pseudo-keyword-face)
 (defvar font-lock-operator-face 'font-lock-operator-face)
