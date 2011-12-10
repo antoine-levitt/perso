@@ -349,6 +349,8 @@ some other pops up with display-buffer), go back to only one window open"
 ;; not in ERC
 (add-hook 'erc-mode-hook
 	  #'(lambda () (setq autopair-dont-activate t)))
+(add-hook 'term-mode-hook
+	  #'(lambda () (setq autopair-dont-activate t)))
 ;; pair $ correctly
 (add-hook 'LaTeX-mode-hook
           #'(lambda ()
@@ -568,7 +570,11 @@ some other pops up with display-buffer), go back to only one window open"
     (setq ipython-buffer-name (term-ansi-make-term "*ipython*" "ipython"))
     (with-current-buffer ipython-buffer-name
       (term-mode)
-      (term-char-mode))))
+      (term-char-mode)
+      (local-set-key (kbd "<prior>") 'scroll-down-command)
+      (local-set-key (kbd "<next>") 'scroll-up-command)
+      (local-set-key (kbd "C-q") (kbd "<backspace>"))
+      )))
 
 (defun ipython-run-or-switch ()
   (interactive)
@@ -576,9 +582,10 @@ some other pops up with display-buffer), go back to only one window open"
   (display-buffer (get-buffer "*ipython*")))
 (defun ipython-send-current-buffer ()
   (interactive)
+  (save-buffer)
   (ipython-run)
   (term-send-string (get-buffer-process "*ipython*")
-		    (format "run %s\n" (buffer-file-name))))
+		    (format "%%run -i %s\n" (buffer-file-name))))
 (defun ipython-send-current-buffer-and-switch ()
   (interactive)
   (ipython-send-current-buffer)
