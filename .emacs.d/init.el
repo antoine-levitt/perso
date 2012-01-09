@@ -592,7 +592,7 @@ some other pops up with display-buffer), go back to only one window open"
 (defun ipython-run-or-switch ()
   (interactive)
   (ipython-run)
-  (display-buffer (get-buffer "*ipython*")))
+  (switch-to-buffer (get-buffer "*ipython*")))
 (defun ipython-send-current-buffer ()
   (interactive)
   (save-buffer)
