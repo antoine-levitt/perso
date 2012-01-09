@@ -567,6 +567,16 @@ some other pops up with display-buffer), go back to only one window open"
 (require 'cython-mode)
 (require 'term)
 
+(define-key python-mode-map (kbd "TAB")
+  (lambda ()
+    (interactive)
+    (if (and (not (bolp))
+	     (looking-at "\\_>"))
+	(my-dabbrev-expand)
+      ;; jedi mind trick: no, I'm not really there
+      (setq this-command 'indent-for-tab-command) 
+      (python-indent-line))))
+
 (defun ipython-run ()
   (interactive)
   (unless (get-buffer "*ipython*")
