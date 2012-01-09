@@ -324,14 +324,10 @@ some other pops up with display-buffer), go back to only one window open"
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (require 'paredit)
 ;;undefine some keys I use for other things
-(define-key paredit-mode-map (kbd "M-<down>")
-  nil)
-(define-key paredit-mode-map (kbd "M-<up>")
-  nil)
-(define-key paredit-mode-map (kbd "M-\"")
-  nil)
-(define-key paredit-mode-map (kbd "M-q")
-  'paredit-backward-kill-word)
+(define-key paredit-mode-map (kbd "M-<down>") nil)
+(define-key paredit-mode-map (kbd "M-<up>") nil)
+(define-key paredit-mode-map (kbd "M-\"") nil)
+(define-key paredit-mode-map (kbd "M-q") 'paredit-backward-kill-word)
 ;;automatically run paredit in specific modes
 (mapc (lambda (mode)
 	(let ((hook (intern (concat (symbol-name mode)
@@ -339,6 +335,13 @@ some other pops up with display-buffer), go back to only one window open"
 	  (add-hook hook (lambda () (paredit-mode 1)))))
       '(emacs-lisp lisp inferior-lisp scheme))
 (defalias 'par 'paredit-mode)
+
+;; globally define cool things
+(global-set-key (kbd "M-(") 'paredit-wrap-round)
+(global-set-key (kbd "C-(") 'paredit-backward-slurp-sexp)
+(global-set-key (kbd "C-)") 'paredit-forward-slurp-sexp)
+(global-set-key (kbd "M-S") 'paredit-splice-sexp)
+(global-set-key (kbd "s-w") 'paredit-wrap-sexp)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Autopair
