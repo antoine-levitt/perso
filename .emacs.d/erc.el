@@ -56,7 +56,8 @@
       erc-truncate-buffer-on-save t
       erc-max-buffer-size 6000
       erc-quit-reason (lambda (arg) (or arg ""))
-      erc-part-reason (lambda (arg) (or arg "")))
+      erc-part-reason (lambda (arg) (or arg ""))
+      erc-flood-protect nil)
 
 ;;--------------------
 ;;Colorize nick list
