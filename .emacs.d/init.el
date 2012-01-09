@@ -1260,19 +1260,20 @@ Ignores CHAR at point."
 	   (if switch-include-erc "including erc" "excluding erc")))
 ;;quickly switch buffers
 (defun switch-to-nth-buffer (n)
-  "Switches to nth most recent buffer. Ignores erc buffers unless switch-include-erc is non-nil."
+  "Switches to nth most recent buffer. Ignores a bunch of stuff."
   (catch 'tag
     (mapcar (lambda (b)
-	      (if (or switch-include-erc
-		      (not (eq (buffer-local-value 'major-mode b) 'erc-mode)))
-		  (unless (minibufferp b)
-		    (unless (string-match "^ " (buffer-name b))
-		      (unless (equal b (current-buffer))
-			  (if (= n 1)
-			      (progn
-				(switch-to-buffer b)
-				(throw 'tag nil))
-			    (setq n (- n 1))))))))
+	      (unless
+		  (or
+		   (and (not switch-include-erc) (eq (buffer-local-value 'major-mode b) 'erc-mode))
+		   (minibufferp b)
+		   (string-match "^ " (buffer-name b))
+		   (equal b (current-buffer)))
+		(if (= n 1)
+		    (progn
+		      (switch-to-buffer b)
+		      (throw 'tag nil))
+		  (setq n (- n 1)))))
 	    (buffer-list))))
 
 (defun switch-to-most-recent-buffer ()
