@@ -779,6 +779,7 @@ some other pops up with display-buffer), go back to only one window open"
 ;;; Org
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (require 'org-install)
+(add-hook 'org-mode-hook 'auto-fill-mode)
 (add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
 (setq org-startup-indented t)
 (global-set-key "\C-cl" 'org-store-link)
