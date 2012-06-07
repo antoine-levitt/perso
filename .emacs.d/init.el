@@ -602,13 +602,21 @@ some other pops up with display-buffer), go back to only one window open"
   (save-buffer)
   (ipython-run)
   (term-send-string (get-buffer-process "*ipython*")
-		    (format "%%run -i %s\n" (buffer-file-name))))
+		    (format "%%run -i %s\n" (buffer-file-name)))
+  (switch-to-buffer (get-buffer "*ipython*")))
+(defun ipython-send-current-region (beg end)
+  (interactive "r")
+  (ipython-run)
+  (term-send-string (get-buffer-process "*ipython*")
+		    (buffer-substring-no-properties beg end))
+  (switch-to-buffer (get-buffer "*ipython*")))
 (defun ipython-send-current-buffer-and-switch ()
   (interactive)
   (ipython-send-current-buffer)
   (ipython-run-or-switch))
 (define-key python-mode-map (kbd "C-c C-c") 'ipython-send-current-buffer-and-switch)
 (define-key python-mode-map (kbd "C-c C-z") 'ipython-run-or-switch)
+(define-key python-mode-map (kbd "C-c C-r") 'ipython-send-current-region)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Latex
