@@ -1548,6 +1548,8 @@ Ignores CHAR at point."
   (unless ad-return-value
     (setq ad-return-value (my-dabbrev-expand))))
 
+(setq completion-show-inline-help nil)
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Notification framework (used in ERC)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
