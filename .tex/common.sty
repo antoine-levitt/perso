@@ -11,6 +11,7 @@
 \usepackage{color}
 \usepackage{mathdots}
 \usepackage{empheq}
+\usepackage{braket}
 \usepackage{subfigure}
 % \usepackage[colorlinks=true]{hyperref} %get rid of these stupid boxes,
 %                                 %but sometimes causes trouble at printing
@@ -22,7 +23,7 @@
 % inline todos
 \let\todobis\todo
 \renewcommand\todo[1]{
-  \todobis[inline]{#1}}
+  \todobis[inline]{TODO: #1}}
 \usepackage{amsmath, amssymb, amsthm}
 \usepackage{commath}
 % commath's guessing of the display size is wrong, just let \frac decide
@@ -41,8 +42,9 @@
 {
   \newtheorem{theorem}{Theorem}
   \newtheorem{definition}{Definition}
+  \newtheorem{proposition}{Proposition}
   \newtheorem{lemma}{Lemma}
-  \usepackage{fullpage}
+  % \usepackage{fullpage}
 }
 
 %% Math commands and shortcuts
@@ -68,6 +70,7 @@
 \DeclareMathOperator{\cotan}{cotan}
 \DeclareMathOperator{\sinc}{sinc}
 \DeclareMathOperator{\Tr}{Tr}
+\DeclareMathOperator{\tr}{tr}
 \DeclareMathOperator{\Gram}{Gram}
 \DeclareMathOperator{\diag}{diag}
 
