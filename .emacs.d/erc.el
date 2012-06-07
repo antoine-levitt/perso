@@ -9,7 +9,7 @@
 			     log match menu move-to-prompt
 			     netsplit networks noncommands
 			     readonly ring scrolltobottom
-			     services stamp track smiley
+			     services stamp track
 			     autoaway truncate))
 (require 'erc-dcc)
 (setq erc-hide-list '("301" "305" "306" "324" "329" "333")
