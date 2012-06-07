@@ -1254,6 +1254,10 @@ Ignores CHAR at point."
 (defun open-shell-here ()
   (interactive)
   (launch-command "gnome-terminal" ""))
+(defun open-shell-here ()
+  (interactive)
+  (launch-command "terminator" nil))
+
 (global-set-key (kbd "s-h") 'open-shell-here)
 (defun note ()
   (interactive)
