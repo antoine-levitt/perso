@@ -162,14 +162,16 @@ erc-modified-channels-alist. Should be executed on window change."
        (let* ((info (assq (current-buffer) erc-modified-channels-alist))
 	      (count (cadr info)))
 	 (if (and info (>= count erc-bar-threshold) (not (erc-query-buffer-p)))
-	     (save-excursion
-	       (end-of-buffer)
-	       (when (erc-bar-move-back (- count 1))
-		 (let ((inhibit-field-text-motion t))
-		   (move-overlay erc-bar-overlay
-				 (line-beginning-position)
-				 (line-end-position)
-				 (current-buffer)))))
+	     (progn
+	       (save-excursion
+		 (end-of-buffer)
+		 (when (erc-bar-move-back (- count 1))
+		   (let ((inhibit-field-text-motion t))
+		     (move-overlay erc-bar-overlay
+				   (line-beginning-position)
+				   (line-end-position)
+				   (current-buffer)))))
+	       (erc-scroll-to-bottom))
 	   (delete-overlay erc-bar-overlay))))
 
      (defvar erc-bar-threshold 3
@@ -440,3 +442,21 @@ This places `point' just after the prompt, or at the beginning of the line."
   (when (string-match "^<.*> m+h$" s)
     (setq erc-insert-this nil)))
 (add-hook 'erc-insert-pre-hook 'should-ignore)
+
+(add-hook 'erc-insert-modify-hook 'strip-unbreakable)
+(defun strip-unbreakable ()
+  (save-excursion
+    (goto-char (point-min))
+    (while (search-forward " " nil t)
+      (replace-match " " nil t))))
+
+(defun add-reply (string)
+  (when (equal (buffer-name) "SMS")
+    (if (string-match "^/" string)
+	(setq str (substring string 1))
+      (setq str (concat "reply: " string)))))
+(add-hook 'erc-send-pre-hook 'add-reply)
+
+(add-hook 'erc-server-INVITE-functions 'erc-answer-invite 'attheend)
+(defun erc-answer-invite (proc message)
+  (erc-join-channel erc-invitation))
