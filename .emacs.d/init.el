@@ -354,9 +354,9 @@ some other pops up with display-buffer), go back to only one window open"
 (setq autopair-blink nil)
 ;; not in ERC
 (add-hook 'erc-mode-hook
-	  #'(lambda () (setq autopair-dont-activate t)))
+	  #'(lambda () (setq autopair-dont-activate t) (autopair-mode -1)))
 (add-hook 'term-mode-hook
-	  #'(lambda () (setq autopair-dont-activate t)))
+	  #'(lambda () (setq autopair-dont-activate t) (autopair-mode -1)))
 ;; pair $ correctly
 (add-hook 'LaTeX-mode-hook
           #'(lambda ()
