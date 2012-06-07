@@ -587,10 +587,11 @@ some other pops up with display-buffer), go back to only one window open"
     (with-current-buffer ipython-buffer-name
       (term-mode)
       (term-char-mode)
+      (setq term-prompt-regexp "^\\$ *")
+      (define-key term-mode-map (kbd "C-a") 'term-bol)
       (local-set-key (kbd "<prior>") 'scroll-down-command)
       (local-set-key (kbd "<next>") 'scroll-up-command)
-      (local-set-key (kbd "C-q") (kbd "<backspace>"))
-      )))
+      (local-set-key (kbd "C-q") (kbd "<backspace>")))))
 
 (defun ipython-run-or-switch ()
   (interactive)
