@@ -65,6 +65,9 @@
 			 (if (equal 'fullboth (frame-parameter nil 'fullscreen))
 			     nil
 			   'fullboth))))
+(defun fs ()
+  (interactive)
+  (set-frame-parameter nil 'fullscreen 'fullboth))
 ;; one emacs to rule them all and in fullscreen bind them
 (when emacs-is-master
   (set-frame-parameter nil 'fullscreen 'fullboth))
