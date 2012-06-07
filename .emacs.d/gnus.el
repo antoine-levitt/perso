@@ -100,7 +100,7 @@
 (gnus-add-configuration
  '(article
    (vertical 1.0
-	     (summary 0.2 point)
+	     (summary 0.35 point)
 	     (article 1.0))))
 
 ;; toggle between read, unread and subscribed articles. this is a bit of a hack, and should be better integrated.
