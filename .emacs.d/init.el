@@ -987,6 +987,66 @@ This function makes sure that dates are aligned for easy reading."
 (setq google-weather-unit-system-temperature-assoc '(("SI" . "°C")
 						     ("US" . "°F")))
 
+
+
+(require 'org-clock)
+(setq org-clock-in-resume t)
+(setq org-clock-report-include-clocking-task t)
+(setq org-clock-modeline-total 'today)
+(setq org-clock-out-remove-zero-time-clocks t)
+
+(add-hook 'kill-emacs-hook (lambda ()
+			     (when (org-clock-is-active)
+				 (org-clock-out)
+				 (org-save-all-org-buffers))))
+
+(setq org-work-id "eb155a82-92b2-4f25-a3c6-0304591af2f9")
+(defun org-clock-in-default-task ()
+  (interactive)
+  (with-current-buffer "todo.org"
+    (org-with-point-at (org-id-find org-work-id 'marker)
+      (org-clock-in '(16)))))
+
+(defun org-toggle-clock ()
+  (interactive)
+  (if (org-clock-is-active)
+      (org-clock-out)
+    (org-clock-in-default-task))
+  (org-save-all-org-buffers))
+
+(global-set-key (kbd "s-e") 'org-toggle-clock)
+;;duplicate to have custom string
+
+;; overwrite for simpler display
+(defun org-clock-get-clock-string ()
+  "Form a clock-string, that will be shown in the mode line.
+If an effort estimate was defined for the current item, use
+01:30/01:50 format (clocked/estimated).
+If not, show simply the clocked time like 01:50."
+  (let* ((clocked-time (org-clock-get-clocked-time))
+	 (h (floor clocked-time 60))
+	 (m (- clocked-time (* 60 h))))
+    (if org-clock-effort
+	(let* ((effort-in-minutes
+		(org-duration-string-to-minutes org-clock-effort))
+	       (effort-h (floor effort-in-minutes 60))
+	       (effort-m (- effort-in-minutes (* effort-h 60)))
+	       (work-done-str
+		(org-propertize
+		 (format org-time-clocksum-format h m)
+		 'face (if (and org-clock-task-overrun (not org-clock-task-overrun-text))
+			   'org-mode-line-clock-overrun 'org-mode-line-clock)))
+	       (effort-str (format org-time-clocksum-format effort-h effort-m))
+	       (clockstr (org-propertize
+			  (concat  "[%s/" effort-str
+				   "] (" (replace-regexp-in-string "%" "%%" org-clock-heading) ")")
+			  'face 'org-mode-line-clock)))
+	  (format clockstr work-done-str))
+      (format
+       ;;(concat "[" org-time-clocksum-format " (%s)]")
+       (concat " %s " org-time-clocksum-format)
+       org-clock-heading h m))))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Compilation
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
