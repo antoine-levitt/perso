@@ -65,9 +65,7 @@
 			 (if (equal 'fullboth (frame-parameter nil 'fullscreen))
 			     nil
 			   'fullboth))))
-(defun fs ()
-  (interactive)
-  (set-frame-parameter nil 'fullscreen 'fullboth))
+(defalias 'fs 'toggle-fullscreen)
 ;; one emacs to rule them all and in fullscreen bind them
 (when emacs-is-master
   (set-frame-parameter nil 'fullscreen 'fullboth))
@@ -397,6 +395,8 @@ some other pops up with display-buffer), go back to only one window open"
 (define-key dired-mode-map (kbd "M-w") 'wuxch-dired-copy)
 (define-key dired-mode-map (kbd "C-w") 'wuxch-dired-cut)
 (define-key dired-mode-map (kbd "C-y") 'wuxch-dired-paste)
+(define-key dired-mode-map (kbd "o") 'dired-find-alternate-file)
+(put 'dired-find-alternate-file 'disabled nil)
 ;;add gnome-open as C-ret
 (defun dired-gnome-open-file ()
   "Opens the current file in a Dired buffer."
