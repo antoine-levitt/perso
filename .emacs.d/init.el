@@ -714,15 +714,8 @@ some other pops up with display-buffer), go back to only one window open"
 	     (equal my-latex-compiling-buffer (window-buffer))
 	     (equal stat "finished\n"))
     (with-current-buffer my-latex-compiling-buffer
-      (shell-command-to-string
-       ;; calls evince with synctex information
-       ;; TODO rewrite this one in emacs/dbus
-       (format "evince_forward_search %s.pdf %d %s"
-	       (if (stringp TeX-master)
-		   TeX-master
-		 (file-name-sans-extension (file-name-nondirectory (buffer-file-name))))
-	       (line-number-at-pos)
-	       (buffer-file-name)))
+      (let ((file (file-name-sans-extension (buffer-file-name))))
+	(TeX-evince-sync-view))
       ;; put evince to front
       (shell-command-to-string
        (format "raise_process.sh %s.pdf"
