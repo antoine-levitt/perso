@@ -390,6 +390,7 @@ erc-modified-channels-alist, filtered by erc-tray-ignored-channels."
 	(add-to-list 'erc-track-exclude name)
 	(message "Tracking off")))))
 (defalias 'tr 'toggle-channel-track)
+(define-key erc-mode-map (kbd "C-c C-z") 'toggle-channel-track)
 
 ;;--------------------
 ;; browse url before point with just a keystroke
