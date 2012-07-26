@@ -726,7 +726,7 @@ some other pops up with display-buffer), go back to only one window open"
 
       (setq my-latex-compiling-buffer nil))))
 (add-hook 'compilation-finish-functions 'my-after-latex-compile)
-;; add ~/.tex to the inputs
+;; add ~/.tex to the inputs; also in bashrc
 (setenv "TEXINPUTS" ":~/.tex")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
