@@ -717,11 +717,13 @@ some other pops up with display-buffer), go back to only one window open"
       (let ((file (file-name-sans-extension (buffer-file-name))))
 	(TeX-evince-sync-view))
       ;; put evince to front
-      (shell-command-to-string
-       (format "raise_process.sh %s.pdf"
-	       (if (stringp TeX-master)
-		   TeX-master
-		 (file-name-sans-extension (file-name-nondirectory (buffer-file-name))))))
+      (let ((file (if (stringp TeX-master)
+		      TeX-master
+		    (file-name-sans-extension (file-name-nondirectory (buffer-file-name))))))
+	(shell-command-to-string
+	 (format "wmctrl -r %s.pdf -t 3 && wmctrl -a %s.pdf"
+		 file file)))
+
       (setq my-latex-compiling-buffer nil))))
 (add-hook 'compilation-finish-functions 'my-after-latex-compile)
 ;; add ~/.tex to the inputs
