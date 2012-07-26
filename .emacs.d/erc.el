@@ -165,7 +165,8 @@ erc-modified-channels-alist. Should be executed on window change."
 	     (progn
 	       (save-excursion
 		 (end-of-buffer)
-		 (when (erc-bar-move-back (- count 1))
+		 ;; (when (erc-bar-move-back (- count 1))
+		 (when (erc-bar-move-back count)
 		   (let ((inhibit-field-text-motion t))
 		     (move-overlay erc-bar-overlay
 				   (line-beginning-position)
