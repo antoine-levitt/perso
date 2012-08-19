@@ -86,9 +86,6 @@
       message-make-forward-subject-function 'message-forward-subject-fwd
       message-wash-forwarded-subjects t)
 
-;; compile stuff. No idea what it does, but it's supposed to be faster
-(gnus-compile)
-
 ;; Unbind stuff I use for something else
 (define-key gnus-group-mode-map (kbd "M-&") nil)
 (define-key gnus-summary-mode-map (kbd "M-&") nil)
