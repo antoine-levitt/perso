@@ -463,3 +463,22 @@ This places `point' just after the prompt, or at the beginning of the line."
 (add-hook 'erc-server-INVITE-functions 'erc-answer-invite 'attheend)
 (defun erc-answer-invite (proc message)
   (erc-join-channel erc-invitation))
+
+
+
+;; fix timestamp intangible thingies
+(defun erc-format-timestamp (time format)
+  "Return TIME formatted as string according to FORMAT.
+Return the empty string if FORMAT is nil."
+  (if format
+      (let ((ts (format-time-string format time)))
+	(erc-put-text-property 0 (length ts) 'face 'erc-timestamp-face ts)
+	(erc-put-text-property 0 (length ts) 'invisible 'timestamp ts)
+	(erc-put-text-property 0 (length ts)
+			       'isearch-open-invisible 'timestamp ts)
+	;; N.B. Later use categories instead of this harmless, but
+	;; inelegant, hack. -- BPT
+	(when (and erc-timestamp-intangible (not erc-hide-timestamps))
+	  (erc-put-text-property 0 (length ts) 'intangible t ts))
+	ts)
+    ""))
