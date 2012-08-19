@@ -240,6 +240,77 @@
       gnus-blocked-images "doubleclick\\.net\\|feedsportal\\|hits\\.guardian\\|rss\\.lemonde"
       url-cookie-file nil)
 
+
+
+;; Hack to use xdg-open instead of mime
+(defun mm-display-part (handle &optional no-default force)
+  "Display the MIME part represented by HANDLE.
+Returns nil if the part is removed; inline if displayed inline;
+external if displayed external."
+  (save-excursion
+    (mailcap-parse-mailcaps)
+    (if (and (not force)
+	     (mm-handle-displayed-p handle))
+	(mm-remove-part handle)
+      (let* ((ehandle (if (equal (mm-handle-media-type handle)
+				 "message/external-body")
+			  (progn
+			    (unless (mm-handle-cache handle)
+			      (mm-extern-cache-contents handle))
+			    (mm-handle-cache handle))
+			handle))
+	     (type (mm-handle-media-type ehandle))
+	     (method (mailcap-mime-info type))
+	     ;; HACKED. Use my own opener, and bypass mime
+	     (method "~/bin/open '%s'")
+	     (filename (or (mail-content-type-get
+			    (mm-handle-disposition handle) 'filename)
+			   (mail-content-type-get
+			    (mm-handle-type handle) 'name)
+			   "<file>"))
+	     (external mm-enable-external)
+	     (decoder (assoc (car (mm-handle-type handle))
+			     (mm-archive-decoders))))
+	(cond
+	 ((and decoder
+	       (executable-find (caddr decoder)))
+	  (mm-archive-dissect-and-inline handle)
+	  'inline)
+	 ((and (mm-inlinable-p ehandle)
+	       (mm-inlined-p ehandle))
+	  (forward-line 1)
+	  (mm-display-inline handle)
+	  'inline)
+	 ((or method
+	      (not no-default))
+	  (if (and (not method)
+		   (equal "text" (car (split-string type "/"))))
+	      (progn
+		(forward-line 1)
+		(mm-insert-inline handle (mm-get-part handle))
+		'inline)
+	    (setq external
+		  (and method	      ;; If nil, we always use "save".
+		       (stringp method) ;; 'mailcap-save-binary-file
+		       (or (eq mm-enable-external t)
+			   (and (eq mm-enable-external 'ask)
+				(y-or-n-p
+				 (concat
+				  "Display part (" type
+				  ") using external program"
+				  ;; Can non-string method ever happen?
+				  (if (stringp method)
+				      (concat
+				       " \"" (format method filename) "\"")
+				    "")
+				  "? "))))))
+	    (if external
+		(mm-display-external
+		 handle (or method 'mailcap-save-binary-file))
+	      (mm-display-external
+	       handle 'mailcap-save-binary-file)))))))))
+
+
 (define-key gnus-summary-mode-map (kbd "h")
   'gnus-article-browse-html-article)
 (setq gnus-article-browse-delete-temp t)
