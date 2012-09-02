@@ -125,8 +125,7 @@ the message looking for nicks to colorize. "
 		  (and erc-channel-users (erc-get-channel-user word)))
 	  (put-text-property (car bounds) (cdr bounds) 'face
 			     (cons 'foreground-color
-				   (erc-get-color-for-nick word))))))))
-
+				   (erc-get-color-for-nick (erc-server-user-nickname (car (erc-get-channel-user word)))))))))))
 
 ;; put the hooks at the end
 (require 'erc-button)
