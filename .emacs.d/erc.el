@@ -352,12 +352,29 @@ erc-modified-channels-alist, filtered by erc-tray-ignored-channels."
       (erc-cmd-WHOIS target))))
 
 (defun erc-names-prompt ()
-  "Get names of channel, either using /names or blist if using bitlbee"
+  "Displays users on channel, using blist if on bitlbee"
   (interactive)
   (if (or (string-match im-gateway-channel-name (buffer-name))
 	  (string-match "&bitlbee" (buffer-name)))
       (erc-send-message "root: blist")
-    (erc-channel-names)))
+
+    (setq mylist nil)
+    (maphash
+     (lambda (key value)
+       (setq mylist (cons (erc-server-user-nickname (car value)) mylist)))
+     erc-channel-users)
+    (message "%s" (mapconcat (lambda (m)
+			       (propertize m
+					   'face
+					   (if (string= (erc-current-nick) m)
+					       'erc-current-nick-face
+					     (list
+					      (cons 'weight 'bold)
+					      (cons 'foreground-color
+						    (erc-get-color-for-nick m))
+					      ))))
+			  (sort mylist 'string<)
+			  " "))))
 
 ;;--------------------
 ;; Setting away
