@@ -368,7 +368,9 @@ external if displayed external."
 	      clevel (gnus-info-level info))
 	(when (<= clevel level)
 	  (setq num-of-unread
-		(+ num-of-unread (car (gnus-gethash (gnus-info-group info) gnus-newsrc-hashtb)))))
+		(+ num-of-unread
+		   (or (car (gnus-gethash (gnus-info-group info) gnus-newsrc-hashtb))
+		       0))))
 	(setq newsrc (cdr newsrc)))
       num-of-unread)))
 
@@ -406,6 +408,9 @@ external if displayed external."
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (require 'bbdb)
+(require 'bbdb-mua)
+(require 'bbdb-gnus)
+(require 'bbdb-message)
 (bbdb-initialize 'gnus 'message)
 (bbdb-mua-auto-update-init 'gnus 'message)
 
@@ -420,7 +425,8 @@ external if displayed external."
       bbdb-completion-display-record nil
       bbdb-message-pop-up nil ; do not popup me
       bbdb-add-mails t ; handle multiple email addresses per contact
-      bbdb-accept-name-mismatch t)
+      bbdb-accept-name-mismatch t
+      bbdb-allow-duplicates t)
 
 (define-key bbdb-mode-map (kbd "q") 'quit-window)
 
