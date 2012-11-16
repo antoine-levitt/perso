@@ -23,6 +23,8 @@
 (setq custom-file "~/.emacs.d/custom.el")
 (load custom-file)
 
+;; I like flet. Unobsolete it.
+(put 'flet 'byte-obsolete-info nil)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Desktop and server
@@ -223,8 +225,6 @@ some other pops up with display-buffer), go back to only one window open"
 
 ;;please add a final newline each time I save a buffer
 (setq require-final-newline 't)
-
-(require 'pastebin)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Scrolling
@@ -795,7 +795,7 @@ some other pops up with display-buffer), go back to only one window open"
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Org
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(require 'org-install)
+(require 'org)
 (add-hook 'org-mode-hook 'auto-fill-mode)
 (add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
 (setq org-startup-indented t)
@@ -816,7 +816,7 @@ some other pops up with display-buffer), go back to only one window open"
 
 ;;settings
 (setq
- org-agenda-files (list "~/.emacs.d/org/todo.org")
+ org-agenda-files (list "~/.emacs.d/org/todo.org" "~/.emacs.d/org/anniversaires.org")
  org-default-notes-file "~/.emacs.d/org/notes.org"
  org-completion-use-ido t
  org-agenda-span 'week
@@ -829,6 +829,7 @@ some other pops up with display-buffer), go back to only one window open"
  org-agenda-start-on-weekday 1
  calendar-week-start-day 1
  org-agenda-show-current-time-in-grid nil
+ org-icalendar-include-todo t
  org-extend-today-until 4
  org-agenda-remove-tags t
  org-agenda-repeating-timestamp-show-all t
@@ -950,13 +951,6 @@ This function makes sure that dates are aligned for easy reading."
 	 "Fête des mères")))
 
 (setq calendar-mark-holidays-flag t)
-
-
-(require 'google-weather)
-(require 'org-google-weather)
-(setq google-weather-unit-system-temperature-assoc '(("SI" . "°C")
-						     ("US" . "°F")))
-
 
 
 (require 'org-clock)
@@ -1224,9 +1218,6 @@ Ignores CHAR at point."
 (defun open-shell-here ()
   (interactive)
   (launch-command "gnome-terminal" ""))
-(defun open-shell-here ()
-  (interactive)
-  (launch-command "terminator" nil))
 
 (global-set-key (kbd "s-h") 'open-shell-here)
 (defun note ()
@@ -1538,8 +1529,8 @@ Ignores CHAR at point."
     (shell-command-to-string (format
 			      "gnome-osd-client %s"
 			      (shell-quote-argument (concat "" (xml-escape-string
-								(if (> (length message) 45)
-								    (concat (substring message  0 45) "...")
+								(if (> (length message) 55)
+								    (concat (substring message  0 55) "...")
 								  message))))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
