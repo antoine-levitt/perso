@@ -714,17 +714,24 @@ some other pops up with display-buffer), go back to only one window open"
 	     (equal my-latex-compiling-buffer (window-buffer))
 	     (equal stat "finished\n"))
     (with-current-buffer my-latex-compiling-buffer
-      (let ((file (file-name-sans-extension (buffer-file-name))))
-	(TeX-evince-sync-view))
+      
       ;; put evince to front
-      (let ((file (if (stringp TeX-master)
-		      TeX-master
-		    (file-name-sans-extension (file-name-nondirectory (buffer-file-name))))))
-	(shell-command-to-string
-	 (format "wmctrl -r %s.pdf -t 3 && wmctrl -a %s.pdf"
-		 file file)))
-
+      ;; get master file name
+      (let* ((file (if (stringp TeX-master)
+		       (concat default-directory TeX-master)
+		     (file-name-sans-extension (buffer-file-name))))
+	     (filenopath (file-name-nondirectory file)))
+	(TeX-evince-sync-view)
+	(run-with-timer 1
+			nil
+			(lambda (f)
+			  (shell-command-to-string
+			   (format "wmctrl -r %s.pdf -t 3 && wmctrl -a %s.pdf"
+				   f f)))
+			filenopath))
+      
       (setq my-latex-compiling-buffer nil))))
+
 (add-hook 'compilation-finish-functions 'my-after-latex-compile)
 ;; add ~/.tex to the inputs; also in bashrc
 (setenv "TEXINPUTS" ":~/.tex")
