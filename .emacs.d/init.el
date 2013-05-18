@@ -7,10 +7,12 @@
 ;;; Unclutter home directory
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; lisp files
+(setq debug-on-quit nil)
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/lisp"))
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/lisp/dict"))
 ;;byte-recompile elisp files if they need to be
 (byte-recompile-directory "~/.emacs.d/lisp" 0)
+;; (byte-recompile-directory "~/.emacs.d/lisp" 0 t)
 
 ;; put everything in ~/.emacs.d
 (setq gnus-init-file "~/.emacs.d/gnus.el"
@@ -71,6 +73,9 @@
 ;; one emacs to rule them all and in fullscreen bind them
 (when emacs-is-master
   (set-frame-parameter nil 'fullscreen 'fullboth))
+
+;; I won't have none of that multiple windows nonsense
+(setq display-buffer-base-action '(display-buffer-same-window . nil))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Colour theme and fonts
@@ -135,27 +140,27 @@ From http://atomized.org/2011/01/toggle-between-root-non-root-in-emacs-with-tram
          (parsed (when (tramp-tramp-file-p filename)
                    (coerce (tramp-dissect-file-name filename)
                            'list)))
-		 (old-pnt (point)))
+	 (old-pnt (point)))
     (unless filename
       (error "No file in this buffer."))
 
-	(unwind-protect
-		(find-alternate-file
-		 (if (equal '("sudo" "root") (butlast parsed 2))
-			 ;; As non-root
-			 (if (or
-				  (string= "localhost" (nth 2 parsed))
-				  (string= (system-name) (nth 2 parsed)))
-				 (nth 3 parsed)
-			   (apply 'tramp-make-tramp-file-name
-					  (append (list tramp-default-method nil) (cddr parsed))))
+    (unwind-protect
+	(find-alternate-file
+	 (if (equal '("sudo" "root") (butlast parsed 2))
+	     ;; As non-root
+	     (if (or
+		  (string= "localhost" (nth 2 parsed))
+		  (string= (system-name) (nth 2 parsed)))
+		 (nth 3 parsed)
+	       (apply 'tramp-make-tramp-file-name
+		      (append (list tramp-default-method nil) (cddr parsed))))
 
-		   ;; As root
-		   (if parsed
-			   (apply 'tramp-make-tramp-file-name
-					  (append '("sudo" "root") (cddr parsed)))
-			 (tramp-make-tramp-file-name "sudo" "root" "localhost" filename))))
-	  (goto-char old-pnt))))
+	   ;; As root
+	   (if parsed
+	       (apply 'tramp-make-tramp-file-name
+		      (append '("sudo" "root") (cddr parsed)))
+	     (tramp-make-tramp-file-name "sudo" "root" "localhost" filename))))
+      (goto-char old-pnt))))
 (global-set-key (kbd "C-c C-r") 'toggle-alternate-file-as-root)
 
 (defun ede () (interactive) (find-file "~/.emacs.d/init.el"))
@@ -295,6 +300,8 @@ some other pops up with display-buffer), go back to only one window open"
       ido-read-file-name-non-ido '(gnus-mime-save-part))
 (ido-mode 1)
 (ido-everywhere 1)
+;;consistency with ido
+(setq completion-ignore-case t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Uniquify
@@ -489,6 +496,90 @@ some other pops up with display-buffer), go back to only one window open"
 		   nil t)))
 	(when file
 	  (find-file (cdr (assoc file file-alist))))))))
+;; plus some useful functions
+(defun uniquify-get-filename (filename depth)
+  "Get 'uniquified' filename, given a filename and a prefix depth."
+  (let ((dir (file-name-directory filename))
+	(file (file-name-nondirectory filename)))
+    ;; remove trailing slash
+    (if (string-match "/$" dir)
+	(setq dir (substring dir 0 -1)))
+    (uniquify-get-proposed-name file dir depth)))
+(defun uniquify-filename-list (file-list &optional depth)
+  "Uniquify a list of filenames by returning an alist of filename and uniquified filenames.
+Optional depth is for internal use."
+  (unless depth
+    (setq depth 0))
+  (let ((conflicting-list ())
+	(final-uniq-file-alist ())
+	(uniq-file-alist (mapcar
+			  (lambda (file)
+			    `(,file . ,(uniquify-get-filename file depth)))
+			  file-list))
+	uniq-file-alist2
+	item
+	item2
+	conflict)
+    (while uniq-file-alist
+      (setq item (car uniq-file-alist)
+	    uniq-file-alist (cdr uniq-file-alist)
+	    conflict nil
+	    uniq-file-alist2 uniq-file-alist)
+      ;; Search for and remove all conflicts from remaining list
+      (while uniq-file-alist2
+	(setq item2 (car uniq-file-alist2)
+	      uniq-file-alist2 (cdr uniq-file-alist2))
+	(when (string= (cdr item) (cdr item2))
+	  ;; Found conflict
+	  (setq conflict t)
+	  (push (car item2) conflicting-list)
+	  (setq uniq-file-alist (delq item2 uniq-file-alist))
+	  (setq uniq-file-alist2 (delq item2 uniq-file-alist2))))
+      (if conflict
+	  (push (car item) conflicting-list)
+	(push item final-uniq-file-alist)))
+    ;; now recurse with colliding files
+    (if conflicting-list
+	(setq final-uniq-file-alist
+	      (append
+	       final-uniq-file-alist
+	       (uniquify-filename-list conflicting-list (+ 1 depth)))))
+    final-uniq-file-alist))
+
+(defun truncate-list (list n)
+  "Truncate LIST to at most N elements destructively."
+  (when n
+    (let ((here (nthcdr (1- n) list)))
+      (when (consp here)
+	(setcdr here nil))))
+  list)
+
+(defcustom recentf-ido-max-items 200
+  "Maximum number of items of the recent list selection with ido
+(recentf-ido-find-file-or-maybe-list).
+If nil, do not limit."
+  :group 'recentf)
+(defun recentf-ido-find-file-or-maybe-list (&optional arg)
+  "Find a recent file using Ido and uniquify,
+or list all recent files if prefixed"
+  (interactive "P")
+  (if arg
+      (recentf-open-files)
+    (let* ((file-list (truncate-list
+		       (copy-list recentf-list)
+		       recentf-ido-max-items))
+	   (uniq-file-alist (uniquify-filename-list file-list))
+	   ;; ask user
+	   (file (ido-completing-read
+		  (format "%s: " recentf-menu-title)
+		  (mapcar (lambda (filename)
+			    (cdr (assoc filename uniq-file-alist)))
+			  file-list)
+		  nil t)))
+      ;; now find full filename back
+      (when file
+	(find-file (car (rassoc file uniq-file-alist)))))))
+
 (setq recentf-save-file "~/.emacs.d/recentf")
 (setq recentf-max-saved-items nil)
 (recentf-mode 1)
@@ -587,7 +678,7 @@ some other pops up with display-buffer), go back to only one window open"
 	     (looking-at "\\_>"))
 	(my-dabbrev-expand)
       ;; jedi mind trick: no, I'm not really there
-      (setq this-command 'indent-for-tab-command) 
+      (setq this-command 'indent-for-tab-command)
       (python-indent-line))))
 
 (defun ipython-run ()
@@ -714,7 +805,7 @@ some other pops up with display-buffer), go back to only one window open"
 	     (equal my-latex-compiling-buffer (window-buffer))
 	     (equal stat "finished\n"))
     (with-current-buffer my-latex-compiling-buffer
-      
+
       ;; put evince to front
       ;; get master file name
       (let* ((file (if (stringp TeX-master)
@@ -722,14 +813,10 @@ some other pops up with display-buffer), go back to only one window open"
 		     (file-name-sans-extension (buffer-file-name))))
 	     (filenopath (file-name-nondirectory file)))
 	(TeX-evince-sync-view)
-	(run-with-timer 1
-			nil
-			(lambda (f)
-			  (shell-command-to-string
-			   (format "wmctrl -r %s.pdf -t 3 && wmctrl -a %s.pdf"
-				   f f)))
-			filenopath))
-      
+	(shell-command-to-string
+	 (format "wmctrl -r %s.pdf -t 3 && wmctrl -a %s.pdf"
+		 filenopath filenopath)))
+
       (setq my-latex-compiling-buffer nil))))
 
 (add-hook 'compilation-finish-functions 'my-after-latex-compile)
@@ -968,8 +1055,8 @@ This function makes sure that dates are aligned for easy reading."
 
 (add-hook 'kill-emacs-hook (lambda ()
 			     (when (org-clock-is-active)
-				 (org-clock-out)
-				 (org-save-all-org-buffers))))
+			       (org-clock-out)
+			       (org-save-all-org-buffers))))
 
 (setq org-work-id "eb155a82-92b2-4f25-a3c6-0304591af2f9")
 (defun org-clock-in-default-task ()
@@ -1233,12 +1320,8 @@ Ignores CHAR at point."
 (defun todos ()
   (interactive)
   (find-file "~/.emacs.d/org/todo.org"))
-(defun journal ()
-  (interactive)
-  (find-file "~/.emacs.d/org/journal.org"))
 (global-set-key (kbd "s-n") 'note)
 (global-set-key (kbd "s-t") 'todos)
-(global-set-key (kbd "s-j") 'journal)
 (global-set-key (kbd "s-l") 'bury-buffer)
 ;; ghosts of past yanks
 (global-set-key (kbd "s-y") (lambda ()
@@ -1457,7 +1540,7 @@ Ignores CHAR at point."
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Dictionnaries
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(setq my-languages '("american" "french"))
+(setq my-languages '("french" "american"))
 (setq my-languages-index 0)
 (defun icd ()
   "Cycle between dictionaries"
@@ -1584,3 +1667,10 @@ Additional support for inhibiting one activation (quick hack)"
 (load "~/.emacs.d/erc.el")
 ;;read personal info (ERC stuff)
 (load "~/.emacs.d/priv_emacs.el" t)
+
+;; one emacs to rule them all and in fullscreen bind them, 2nd time (in case I was away for the first one)
+(when emacs-is-master
+  (set-frame-parameter nil 'fullscreen 'fullboth))
+
+;; must have been useful at some point, maybe.
+(setenv "LD_LIBRARY_PATH" ".")
