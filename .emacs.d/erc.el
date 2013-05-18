@@ -1,4 +1,3 @@
-(require 'erc)
 ;;--------------------
 ;;Settings
 ;;--------------------
@@ -11,7 +10,7 @@
 			     readonly ring scrolltobottom
 			     services stamp track
 			     autoaway truncate))
-(require 'erc-dcc)
+(require 'erc)
 (setq erc-hide-list '("301" "305" "306" "324" "329" "333")
       erc-server-reconnect-attempts t
       erc-prompt ">"
@@ -131,7 +130,6 @@ the message looking for nicks to colorize. "
 				     (erc-get-color-for-nick nick)))))))))
 
 ;; put the hooks at the end
-(require 'erc-button)
 (add-hook 'erc-insert-modify-hook '(lambda () (let ((erc-is-sending nil)) (erc-put-colors-on-line))) 'attheend)
 (add-hook 'erc-send-modify-hook '(lambda () (let ((erc-is-sending t)) (erc-put-colors-on-line))) 'attheend)
 
@@ -276,7 +274,8 @@ erc-modified-channels-alist, filtered by erc-tray-ignored-channels."
 		  (string-match "has set the topic " msg))
 	(when (string= (substring msg -1) "\n") ; strip \n
 	  (setq msg (substring msg 0 (- (length msg) 1))))
-	(notify (format "\<%s\> %s" (erc-extract-nick nick) msg))
+	;; UNCOMMENT THIS FOR NOTIFICATIONS
+	;; (notify (format "\<%s\> %s" (erc-extract-nick nick) msg))
 	(when (member (buffer-name (current-buffer)) erc-track-exclude)
 	  (message (format "\<%s\> %s" (erc-extract-nick nick) msg))))))
 ;;notify if away and highlighted
@@ -294,7 +293,9 @@ erc-modified-channels-alist, filtered by erc-tray-ignored-channels."
       ;;prevents from blinking on messages for which there is already
       ;;a notification
       ;; (setq erc-tray-inhibit-one-activation t)
-      (notify (format "\<%s\> %s" nick msg))))
+      ;; UNCOMMENT THIS FOR NOTIFICATIONS
+      ;; (notify (format "\<%s\> %s" nick msg))
+      ))
   nil)
 ;;notify if away and pmed
 (add-hook 'erc-server-PRIVMSG-functions 'my-notify-PRIVMSG)
@@ -415,6 +416,12 @@ erc-modified-channels-alist, filtered by erc-tray-ignored-channels."
 ;; browse url before point with just a keystroke
 ;;--------------------
 (require 'thingatpt)
+;; was defined before, now removed in new implementation
+(defvar thing-at-point-url-regexp
+  (concat
+   "\\(https?://\\|ftp://\\|gopher://\\|telnet://\\|wais://\\|file:/\\|s?news:\\|mailto:\\)"
+   thing-at-point-url-path-regexp)
+  "A regular expression probably matching a complete URL.")
 (defun browse-url-before-point ()
   (interactive)
   (save-excursion
