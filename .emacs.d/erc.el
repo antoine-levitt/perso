@@ -10,7 +10,7 @@
 			     readonly ring scrolltobottom
 			     services stamp track
 			     autoaway truncate))
-(require 'erc)
+
 (setq erc-hide-list '("301" "305" "306" "324" "329" "333")
       erc-server-reconnect-attempts t
       erc-prompt ">"
@@ -57,6 +57,8 @@
       erc-quit-reason (lambda (arg) (or arg ""))
       erc-part-reason (lambda (arg) (or arg ""))
       erc-flood-protect nil)
+
+(require 'erc)
 
 ;;--------------------
 ;;Colorize nick list
