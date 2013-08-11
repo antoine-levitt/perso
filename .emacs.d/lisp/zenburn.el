@@ -166,12 +166,12 @@
 (defvar zenburn-purple+1 "#814c9e")
 (defvar zenburn-purple+2 "#8959a4")
 
-(eval-after-load 'term
-  '(setq ansi-term-color-vector
-     (vector 'unspecified zenburn-bg
-       zenburn-red zenburn-green
-       zenburn-yellow zenburn-blue+1
-       zenburn-magenta zenburn-cyan "white")))
+;; (eval-after-load 'term
+;;   '(setq ansi-term-color-vector
+;;      (vector 'term-face 'zenburn-bg
+;;        'zenburn-red 'zenburn-green
+;;        'zenburn-yellow 'zenburn-blue+1
+;;        'zenburn-magenta 'zenburn-cyan 'term-color-white)))
 
 (defvar font-lock-pseudo-keyword-face 'font-lock-pseudo-keyword-face)
 (defvar font-lock-operator-face 'font-lock-operator-face)
