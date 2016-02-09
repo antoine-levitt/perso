@@ -58,7 +58,8 @@
       ;; Cleaner format for groups and summaries
       gnus-group-line-format "%-3,3y%(%G %)\n"
       ;; the %uB invokes a function which returns the author name from BBDB
-      gnus-summary-line-format "%U%R%~(max-right 17)~(pad-right 17)&user-date; %-20,20uB %*%B%s\n"
+      ;; gnus-summary-line-format "%U%R%~(max-right 17)~(pad-right 17)&user-date; %-20,20uB %*%B%s\n"
+      gnus-summary-line-format "%U%R%~(max-right 17)~(pad-right 17)&user-date; %-20,20n %*%B%s\n"
       gnus-summary-mode-line-format "Gnus: %g %Z"
       gnus-article-mode-line-format "Gnus: %S"
       ;; simpler group mode line
@@ -104,7 +105,7 @@
 ;; oh well.
 (defvar gnus-group-display-state 'unsubscribed
   "What to display in the group buffer.")
-(setq gnus-group-display-state 'unsubscribed)
+(setq gnus-group-display-state 'unread)
 (defun gnus-group-redisplay ()
   "Redisplay group according to gnus-group-display-unread"
   (interactive)
@@ -141,7 +142,7 @@
 (defun gnus-group-bury ()
   (interactive)
   (gnus-group-save-newsrc)
-  (gnus-unread-update-unread-count)
+  ;; (gnus-unread-update-unread-count)
   (condition-case err
       ;;sometimes, articles stay after gnus is quitted.
       ;;I don't know why, I don't care, just kill them all!
@@ -323,7 +324,7 @@ external if displayed external."
 ;;; Receive mail
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; receive using dovecot as imap
-(setq gnus-select-method '(nnimap "Mail" (nnimap-address "localhost") (nnimap-stream network)))
+;; (setq gnus-select-method '(nnimap "Mail" (nnimap-address "localhost") (nnimap-stream network)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Send mail
@@ -344,57 +345,55 @@ external if displayed external."
 ;; Some of it is from Matthieu Moy, with modifs
 (require 'gnus-group)
 
-;; set for a specific notification level
-(defvar gnus-notify-level 3
-  "Notify for unread articles at this level or under")
-;; internal variables
-(setq gnus-previous-unread-count 0)
-(setq gnus-unread-count 0)
-(defvar gnus-notify-modeline ""
-  "Stuff that should be added to the modeline.")
+;; ;; set for a specific notification level
+;; (defvar gnus-notify-level 3
+;;   "Notify for unread articles at this level or under")
+;; ;; internal variables
+;; (setq gnus-previous-unread-count 0)
+;; (setq gnus-unread-count 0)
+;; (defvar gnus-notify-modeline ""
+;;   "Stuff that should be added to the modeline.")
 
-(add-to-list 'global-mode-string
-	     'gnus-notify-modeline
-	     t)
+;; (add-to-list 'global-mode-string
+;; 	     'gnus-notify-modeline
+;; 	     t)
 
-(defun gnus-group-number-of-unread-mail (level)
-  "*Returns the number of unread mails in groups of subscription level LEVEL and below."
-  (with-current-buffer "*Group*"
-    (let ((num-of-unread 0)
-	  (newsrc (cdr gnus-newsrc-alist))
-	  info clevel)
-      (while newsrc
-	(setq info (car newsrc)
-	      clevel (gnus-info-level info))
-	(when (<= clevel level)
-	  (setq num-of-unread
-		(+ num-of-unread
-		   (or (car (gnus-gethash (gnus-info-group info) gnus-newsrc-hashtb))
-		       0))))
-	(setq newsrc (cdr newsrc)))
-      num-of-unread)))
+;; (defun gnus-group-number-of-unread-mail (level)
+;;   "*Returns the number of unread mails in groups of subscription level LEVEL and below."
+;;   (with-current-buffer "*Group*"
+;;     (let ((num-of-unread 0)
+;; 	  (newsrc (cdr gnus-newsrc-alist))
+;; 	  info clevel)
+;;       (while newsrc
+;; 	(setq info (car newsrc)
+;; 	      clevel (gnus-info-level info))
+;; 	(when (<= clevel level)
+;; 	  (setq num-of-unread
+;; 		(+ num-of-unread (car (gnus-gethash (gnus-info-group info) gnus-newsrc-hashtb)))))
+;; 	(setq newsrc (cdr newsrc)))
+;;       num-of-unread)))
 
-(defun gnus-unread-update-unread-count ()
-  "Update read count in the modeline"
-  (interactive)
-  (setq gnus-previous-unread-count gnus-unread-count)
-  (setq gnus-unread-count (gnus-group-number-of-unread-mail gnus-notify-level))
-  (setq gnus-notify-modeline
-	( if (not (= 0 gnus-unread-count))
-	    (format " Mail (%d)" gnus-unread-count)
-	  ""))
-  (if (and (> gnus-unread-count gnus-previous-unread-count)
-	   (not (eq t (frame-visible-p (selected-frame)))))
-      (notify "New mail !")))
+;; (defun gnus-unread-update-unread-count ()
+;;   "Update read count in the modeline"
+;;   (interactive)
+;;   (setq gnus-previous-unread-count gnus-unread-count)
+;;   (setq gnus-unread-count (gnus-group-number-of-unread-mail gnus-notify-level))
+;;   (setq gnus-notify-modeline
+;; 	( if (not (= 0 gnus-unread-count))
+;; 	    (format " Mail (%d)" gnus-unread-count)
+;; 	  ""))
+;;   (if (and (> gnus-unread-count gnus-previous-unread-count)
+;; 	   (not (eq t (frame-visible-p (selected-frame)))))
+;;       (notify "New mail !")))
 
-(add-hook 'gnus-after-getting-new-news-hook 'gnus-unread-update-unread-count t)
+;; (add-hook 'gnus-after-getting-new-news-hook 'gnus-unread-update-unread-count t)
 
-;; if gnus doesn't respond in 5s, give up
-(defadvice gnus-group-get-new-news (around gnus-timeout activate)
-  "Timeout for Gnus."
-  (with-timeout
-      (5 (message "Gnus timed out.") (debug))
-    ad-do-it))
+;; ;; if gnus doesn't respond in 5s, give up
+;; (defadvice gnus-group-get-new-news (around gnus-timeout activate)
+;;   "Timeout for Gnus."
+;;   (with-timeout
+;;       (5 (message "Gnus timed out.") (debug))
+;;     ad-do-it))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -407,28 +406,24 @@ external if displayed external."
 ;;; BBDB
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(require 'bbdb)
-(require 'bbdb-mua)
-(require 'bbdb-gnus)
-(require 'bbdb-message)
-(bbdb-initialize 'gnus 'message)
-(bbdb-mua-auto-update-init 'gnus 'message)
+;; (require 'bbdb)
+;; (bbdb-initialize 'gnus 'message)
+;; (bbdb-mua-auto-update-init 'gnus 'message)
 
-(setq bbdb-update-records-p t ; don't prompt me for creation
-      bbdb/gnus-update-records-p 'bbdb-select-message ; filter incoming mail and add those who mail me
-      bbdb/message-update-records-p t ; automatically add everybody I send mail to
-      bbdb/gnus-summary-mark-known-posters nil ; I don't care about this feature
-      bbdb-mail-allow-redundancy t ; allow full-name completion
-      bbdb-complete-mail-allow-cycling t ; allow cycling
-      bbdb-new-mails-always-primary t ; always use newly added mails
-      bbdb-pop-up-window-size 5 ; small window
-      bbdb-completion-display-record nil
-      bbdb-message-pop-up nil ; do not popup me
-      bbdb-add-mails t ; handle multiple email addresses per contact
-      bbdb-accept-name-mismatch t
-      bbdb-allow-duplicates t)
+;; (setq bbdb-update-records-p t ; don't prompt me for creation
+;;       bbdb/gnus-update-records-p 'bbdb-select-message ; filter incoming mail and add those who mail me
+;;       bbdb/message-update-records-p t ; automatically add everybody I send mail to
+;;       bbdb/gnus-summary-mark-known-posters nil ; I don't care about this feature
+;;       bbdb-mail-allow-redundancy t ; allow full-name completion
+;;       bbdb-complete-mail-allow-cycling t ; allow cycling
+;;       bbdb-new-mails-always-primary t ; always use newly added mails
+;;       bbdb-pop-up-window-size 5 ; small window
+;;       bbdb-completion-display-record nil
+;;       bbdb-message-pop-up nil ; do not popup me
+;;       bbdb-add-mails t ; handle multiple email addresses per contact
+;;       bbdb-accept-name-mismatch t)
 
-(define-key bbdb-mode-map (kbd "q") 'quit-window)
+;; (define-key bbdb-mode-map (kbd "q") 'quit-window)
 
 ;; define this variable in priv_gnus
 (when (boundp 'my-mail-addresses)
@@ -443,11 +438,95 @@ external if displayed external."
     (add-to-list 'gnus-posting-styles `((header "to" ,el) (address ,el)))
     (add-to-list 'gnus-posting-styles `((header "cc" ,el) (address ,el)))
     (add-to-list 'gnus-posting-styles `((header "bcc" ,el) (address ,el)))))
-(add-hook 'bbdb-after-change-hook (lambda (arg)
-				    (flet ((message (&rest args) nil))
-				      (bbdb-save))))
+
+(add-to-list 'gnus-posting-styles '("gmane" (Mail-Copies-To "never")))
+
+(setq gnus-article-update-date-headers 60) ; update date every minute
+
+(defun article-lapsed-string (time &optional max-segments)
+  ;; If the date is seriously mangled, the timezone functions are
+  ;; liable to bug out, so we ignore all errors.
+  (let* ((now (current-time))
+	 (real-time (subtract-time now time))
+	 (real-sec (and real-time
+			(+ (* (float (car real-time)) 65536)
+			   (cadr real-time))))
+	 (sec (and real-time (abs real-sec)))
+	 (segments 0)
+	 num prev)
+    (unless max-segments
+      (setq max-segments (length article-time-units)))
+    (setq max-segments 1)
+    (cond
+     ((null real-time)
+      "Unknown")
+     ((zerop sec)
+      "Now")
+     (t
+      (concat
+       ;; This is a bit convoluted, but basically we go
+       ;; through the time units for years, weeks, etc,
+       ;; and divide things to see whether that results
+       ;; in positive answers.
+       (mapconcat
+	(lambda (unit)
+	  (if (or (zerop (setq num (ffloor (/ sec (cdr unit)))))
+		  (>= segments max-segments))
+	      ;; The (remaining) seconds are too few to
+	      ;; be divided into this time unit.
+	      ""
+	    ;; It's big enough, so we output it.
+	    (setq sec (- sec (* num (cdr unit))))
+	    (prog1
+		(concat (if prev ", " "") (int-to-string
+					   (floor num))
+			" " (symbol-name (car unit))
+			(if (> num 1) "s" ""))
+	      (setq prev t
+		    segments (1+ segments)))))
+	article-time-units "")
+       ;; If dates are odd, then it might appear like the
+       ;; article was sent in the future.
+       (if (> real-sec 0)
+	   " ago"
+	 " in the future"))))))
+
+;; (add-hook 'bbdb-after-change-hook (lambda (arg)
+;; 				    (flet ((message (&rest args) nil))
+;; 				      (bbdb-save))))
 
 (add-hook 'kill-emacs-hook
 	  (lambda ()
 	    (when (get-buffer "*Group*")
 	      (gnus-group-exit))))
+
+
+(setq       gnus-verbose 4
+	    gnus-verbose-backends 4
+	    gnus-asynchronous nil)
+
+
+;; (defun my-check-mail ()
+;;   (interactive)
+;;   (shell-command-to-string "fetchmail")
+;;   (message "Fetched mail")
+;;   (gnus-group-get-new-news)
+;;   (shell-command-to-string "sudo /usr/sbin/fetchnews")
+;;   (message "Fetched news")
+;;   (gnus-group-get-new-news)
+;;   (shell-command-to-string "sh /home/antoine/.gwene/run-gwene.sh")
+;;   (message "Fetched custom news")
+;;   (gnus-group-get-new-news))
+
+;; (define-key gnus-group-mode-map (kbd "d") 'my-check-mail)
+(define-key gnus-group-mode-map (kbd "g") (lambda ()
+					    (interactive)
+					    (gnus-group-get-new-news 1)))
+(define-key gnus-group-mode-map (kbd "d") 'gnus-group-get-new-news)
+
+
+(setq gnus-select-method
+      '(nnimap "gmail"
+	       (nnimap-address "imap.gmail.com")  ; it could also be imap.googlemail.com if that's your server.
+	       (nnimap-server-port "imaps")
+	       (nnimap-stream ssl)))
