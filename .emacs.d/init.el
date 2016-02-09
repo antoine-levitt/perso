@@ -1529,10 +1529,11 @@ Additional support for inhibiting one activation (quick hack)"
 (setq completion-ignore-case t)
 
 
-(defun hbin-remove-mm-lighter (mm)
+(defun remove-mm-lighter (mm)
   "Remove minor lighter from the mode line."
   (setcar (cdr (assq mm minor-mode-alist)) nil))
-(hbin-remove-mm-lighter 'visual-line-mode)
+(remove-mm-lighter 'visual-line-mode)
+(remove-mm-lighter 'autopair-mode)
 ;; (hbin-remove-mm-lighter 'global-visual-line-mode)
 
 (global-set-key (kbd "C-x v p") (lambda () (interactive) (async-shell-command "git push")))
