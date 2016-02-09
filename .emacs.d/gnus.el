@@ -106,6 +106,7 @@
 (defvar gnus-group-display-state 'unsubscribed
   "What to display in the group buffer.")
 (setq gnus-group-display-state 'unread)
+(require 'cl)
 (defun gnus-group-redisplay ()
   "Redisplay group according to gnus-group-display-unread"
   (interactive)
