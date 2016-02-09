@@ -14,4 +14,6 @@ elif [ "$(cat /tmp/$NAME.ref | md5sum)" != "$(cat /tmp/$NAME.new | md5sum)" ]; t
     mv "/tmp/$NAME.new" "/tmp/$NAME.ref"
 else
     rm "/tmp/$NAME.new"
+    echo "NOPE"
+    sleep 5
 fi
