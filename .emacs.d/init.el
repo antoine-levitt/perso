@@ -6,6 +6,7 @@
 
 ;; Packages
 (require 'package)
+(require 'cl)
 (add-to-list 'package-archives
 	     '("melpa" . "http://melpa.org/packages/") t)
 
@@ -254,9 +255,9 @@ some other pops up with display-buffer), go back to only one window open"
 ;; Note that this can not prevent
 ;; the "Wrote %s" message, which is coded in C.
 (defadvice save-buffer (around save-be-quiet activate)
-  "Be quiet."
-  (cl-flet ((message (&rest args) nil))
-    ad-do-it))
+ "Be quiet."
+ (flet ((message (&rest args) nil))
+   ad-do-it))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Word wrapping
@@ -394,7 +395,7 @@ some other pops up with display-buffer), go back to only one window open"
 ;; Omit, be quiet
 (defadvice dired-omit-expunge (around dired-omit-be-quiet activate)
   "Be quiet."
-  (cl-flet ((message (&rest args) ))
+  (flet ((message (&rest args) ))
     ad-do-it))
 (add-hook 'dired-mode-hook 'dired-omit-mode)
 
@@ -457,7 +458,7 @@ some other pops up with display-buffer), go back to only one window open"
   (imenu--make-index-alist)
   (let ((name-and-pos '())
         (symbol-names '()))
-    (cl-flet ((addsymbols (symbol-list)
+    (flet ((addsymbols (symbol-list)
                        (when (listp symbol-list)
                          (dolist (symbol symbol-list)
                            (let ((name nil) (position nil))
@@ -588,7 +589,7 @@ some other pops up with display-buffer), go back to only one window open"
   environment (C-u with LaTeX-environment)"
   (interactive "p*")
   (if (= arg 4)
-      (cl-flet ((TeX-active-mark () t))
+      (flet ((TeX-active-mark () t))
 	(LaTeX-environment nil))
     (LaTeX-environment (if (= arg 16) t nil))))
 ;;don't ask to cache preamble
@@ -1534,8 +1535,8 @@ Additional support for inhibiting one activation (quick hack)"
   (setcar (cdr (assq mm minor-mode-alist)) nil))
 (remove-mm-lighter 'visual-line-mode)
 (remove-mm-lighter 'autopair-mode)
+(require 'paredit-everywhere)
 (remove-mm-lighter 'paredit-everywhere-mode)
-;; (hbin-remove-mm-lighter 'global-visual-line-mode)
 
 (global-set-key (kbd "C-x v p") (lambda () (interactive) (async-shell-command "git push")))
 
