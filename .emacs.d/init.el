@@ -6,7 +6,6 @@
 
 ;; Packages
 (require 'package)
-(require 'cl)
 (add-to-list 'package-archives
 	     '("melpa" . "http://melpa.org/packages/") t)
 
@@ -254,10 +253,13 @@ some other pops up with display-buffer), go back to only one window open"
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Note that this can not prevent
 ;; the "Wrote %s" message, which is coded in C.
+(defun dummy-function (&rest args)nil)
+
 (defadvice save-buffer (around save-be-quiet activate)
- "Be quiet."
- (flet ((message (&rest args) nil))
-   ad-do-it))
+  "Be quiet."
+  (cl-letf (((symbol-function 'message) 'dummy-function))
+    ad-do-it))
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Word wrapping
@@ -395,7 +397,7 @@ some other pops up with display-buffer), go back to only one window open"
 ;; Omit, be quiet
 (defadvice dired-omit-expunge (around dired-omit-be-quiet activate)
   "Be quiet."
-  (flet ((message (&rest args) ))
+  (cl-letf (((symbol-function 'message) 'dummy-function))
     ad-do-it))
 (add-hook 'dired-mode-hook 'dired-omit-mode)
 
@@ -583,15 +585,6 @@ some other pops up with display-buffer), go back to only one window open"
 ;;   (error
 ;;    (message "Failed to load auctex")))
 
-(defun my-latex-environment (arg)
-  "Same as `LaTeX-environment', but overrides prefix arg to mean
-  insert environment around region. Use C-u C-u to override
-  environment (C-u with LaTeX-environment)"
-  (interactive "p*")
-  (if (= arg 4)
-      (flet ((TeX-active-mark () t))
-	(LaTeX-environment nil))
-    (LaTeX-environment (if (= arg 16) t nil))))
 ;;don't ask to cache preamble
 (setq preview-auto-cache-preamble t)
 (setq preview-preserve-counters t)
@@ -611,7 +604,6 @@ some other pops up with display-buffer), go back to only one window open"
   (local-set-key (kbd "C-c l") 'reftex-label)
   (local-set-key (kbd "C-c r") 'reftex-reference)
   (local-set-key (kbd "C-c b") 'reftex-citation)
-  (local-set-key (kbd "C-c C-e") 'my-latex-environment)
   (local-set-key (kbd "s-c") 'my-latex-compile)
 
   ;; undo TeX remaps, otherwise it interferes with compilation
