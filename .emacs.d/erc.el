@@ -1,8 +1,9 @@
+(require 'erc)
 ;;--------------------
 ;;Settings
 ;;--------------------
 ; specific settings for IM gateways : minbif or bitlbee
-(setq im-gateway-channel-name "&friends")
+(setq im-gateway-channel-name "&bitlbee")
 ; erc general conf
 (setq erc-modules '(autojoin button completion irccontrols list
 			     log match menu move-to-prompt
@@ -10,7 +11,7 @@
 			     readonly ring scrolltobottom
 			     services stamp track
 			     autoaway truncate))
-
+(require 'erc-dcc)
 (setq erc-hide-list '("301" "305" "306" "324" "329" "333")
       erc-server-reconnect-attempts t
       erc-prompt ">"
@@ -58,8 +59,6 @@
       erc-part-reason (lambda (arg) (or arg ""))
       erc-flood-protect nil)
 
-(require 'erc)
-
 ;;--------------------
 ;;Colorize nick list
 ;;--------------------
@@ -85,7 +84,6 @@
 			    zenburn-blue-5
 			    zenburn-yellow-green))
 (set-face-foreground 'erc-my-nick-face zenburn-red-4)
-
 ;; special colors for some people
 ;; (setq erc-nick-color-alist '(("qdsklwhatever" . "somecolor")))
 (setq erc-nick-color-alist nil)
@@ -99,29 +97,41 @@
 	    (length erc-colors-list))
        erc-colors-list)))
 
-(require 'erc-button)
-;; modified from erc-button
-(defun erc-button-add-nickname-buttons (entry)
-  "Search through the buffer for nicknames, and add buttons."
-  (let ((form (nth 2 entry))
-        (fun (nth 3 entry))
-        bounds word)
-    (when (or (eq t form)
-              (eval form))
+(defun erc-put-colors-on-line ()
+  "Colorise a message. First, we colorize the sender, then we go through
+the message looking for nicks to colorize. "
+  ;; makes word boundaries work
+  (with-syntax-table erc-button-syntax-table
+    (save-excursion
       (goto-char (point-min))
+      ;; colorise the nick of the person talking, unless this is an outgoing message, in which case
+      ;; something else already does the coloring and we don't want to interfere
+      ;; erc-send-this is only t in send-modify-hook, see the lambdas below
+      (unless erc-is-sending
+	(if (looking-at "<\\([^>]*\\)>")
+	    (let ((nick (match-string 1)))
+	      (put-text-property (match-beginning 1) (match-end 1) 'face
+				 (cons 'foreground-color
+				       (erc-get-color-for-nick nick))))))
+      ;; go through the message, find nicks and colorise them.
+      ;; From erc-button with modifications
+      ;; ignore the author, already taken care of by the code above
+      (if (looking-at "<\\([^>]*\\)>")(forward-word))
       (while (forward-word 1)
-        (setq bounds (bounds-of-thing-at-point 'word))
-        (setq word (buffer-substring-no-properties
-                    (car bounds) (cdr bounds)))
-        (when (or (and (erc-server-buffer-p) (erc-get-server-user word))
-                  (and erc-channel-users (erc-get-channel-user word)))
-	  ;; this adds color
-	  (unless (equal (erc-current-nick) word)
-	    (put-text-property (car bounds) (cdr bounds) 'face
-			       (cons 'foreground-color
-				     (erc-get-color-for-nick word))))
-	  (erc-button-add-button (car bounds) (cdr bounds)
-                                 fun t (list word)))))))
+	(setq bounds (bounds-of-thing-at-point 'word))
+	(setq word (buffer-substring-no-properties
+		    (car bounds) (cdr bounds)))
+	(when (or (and (erc-server-buffer-p) (erc-get-server-user word))
+		  (and erc-channel-users (erc-get-channel-user word)))
+	  (put-text-property (car bounds) (cdr bounds) 'face
+			     (cons 'foreground-color
+				   (erc-get-color-for-nick word))))))))
+
+
+;; put the hooks at the end
+(require 'erc-button)
+(add-hook 'erc-insert-modify-hook '(lambda () (let ((erc-is-sending nil)) (erc-put-colors-on-line))) 'attheend)
+(add-hook 'erc-send-modify-hook '(lambda () (let ((erc-is-sending t)) (erc-put-colors-on-line))) 'attheend)
 
 ;; logs
 (require 'erc-view-log)
@@ -264,7 +274,6 @@ erc-modified-channels-alist, filtered by erc-tray-ignored-channels."
 		  (string-match "has set the topic " msg))
 	(when (string= (substring msg -1) "\n") ; strip \n
 	  (setq msg (substring msg 0 (- (length msg) 1))))
-	;; UNCOMMENT THIS FOR NOTIFICATIONS
 	;; (notify (format "\<%s\> %s" (erc-extract-nick nick) msg))
 	(when (member (buffer-name (current-buffer)) erc-track-exclude)
 	  (message (format "\<%s\> %s" (erc-extract-nick nick) msg))))))
@@ -283,7 +292,6 @@ erc-modified-channels-alist, filtered by erc-tray-ignored-channels."
       ;;prevents from blinking on messages for which there is already
       ;;a notification
       ;; (setq erc-tray-inhibit-one-activation t)
-      ;; UNCOMMENT THIS FOR NOTIFICATIONS
       ;; (notify (format "\<%s\> %s" nick msg))
       ))
   nil)
@@ -343,29 +351,12 @@ erc-modified-channels-alist, filtered by erc-tray-ignored-channels."
       (erc-cmd-WHOIS target))))
 
 (defun erc-names-prompt ()
-  "Displays users on channel, using blist if on bitlbee"
+  "Get names of channel, either using /names or blist if using bitlbee"
   (interactive)
   (if (or (string-match im-gateway-channel-name (buffer-name))
 	  (string-match "&bitlbee" (buffer-name)))
       (erc-send-message "root: blist")
-
-    (setq mylist nil)
-    (maphash
-     (lambda (key value)
-       (setq mylist (cons (erc-server-user-nickname (car value)) mylist)))
-     erc-channel-users)
-    (message "%s" (mapconcat (lambda (m)
-			       (propertize m
-					   'face
-					   (if (string= (erc-current-nick) m)
-					       'erc-current-nick-face
-					     (list
-					      (cons 'weight 'bold)
-					      (cons 'foreground-color
-						    (erc-get-color-for-nick m))
-					      ))))
-			  (sort mylist 'string<)
-			  " "))))
+    (erc-channel-names)))
 
 ;;--------------------
 ;; Setting away
@@ -406,12 +397,6 @@ erc-modified-channels-alist, filtered by erc-tray-ignored-channels."
 ;; browse url before point with just a keystroke
 ;;--------------------
 (require 'thingatpt)
-;; was defined before, now removed in new implementation
-(defvar thing-at-point-url-regexp
-  (concat
-   "\\(https?://\\|ftp://\\|gopher://\\|telnet://\\|wais://\\|file:/\\|s?news:\\|mailto:\\)"
-   thing-at-point-url-path-regexp)
-  "A regular expression probably matching a complete URL.")
 (defun browse-url-before-point ()
   (interactive)
   (save-excursion
@@ -479,3 +464,22 @@ This places `point' just after the prompt, or at the beginning of the line."
 (add-hook 'erc-server-INVITE-functions 'erc-answer-invite 'attheend)
 (defun erc-answer-invite (proc message)
   (erc-join-channel erc-invitation))
+
+
+
+;; fix timestamp intangible thingies
+(defun erc-format-timestamp (time format)
+  "Return TIME formatted as string according to FORMAT.
+Return the empty string if FORMAT is nil."
+  (if format
+      (let ((ts (format-time-string format time)))
+	(erc-put-text-property 0 (length ts) 'face 'erc-timestamp-face ts)
+	(erc-put-text-property 0 (length ts) 'invisible 'timestamp ts)
+	(erc-put-text-property 0 (length ts)
+			       'isearch-open-invisible 'timestamp ts)
+	;; N.B. Later use categories instead of this harmless, but
+	;; inelegant, hack. -- BPT
+	(when (and erc-timestamp-intangible (not erc-hide-timestamps))
+	  (erc-put-text-property 0 (length ts) 'intangible t ts))
+	ts)
+    ""))
