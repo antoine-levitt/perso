@@ -1534,6 +1534,7 @@ Additional support for inhibiting one activation (quick hack)"
   (setcar (cdr (assq mm minor-mode-alist)) nil))
 (remove-mm-lighter 'visual-line-mode)
 (remove-mm-lighter 'autopair-mode)
+(remove-mm-lighter 'paredit-everywhere-mode)
 ;; (hbin-remove-mm-lighter 'global-visual-line-mode)
 
 (global-set-key (kbd "C-x v p") (lambda () (interactive) (async-shell-command "git push")))
