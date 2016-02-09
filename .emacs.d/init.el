@@ -3,16 +3,41 @@
 
 ;; Can be viewed in outline mode
 
+
+;; Packages
+(require 'package)
+(add-to-list 'package-archives
+	     '("melpa" . "http://melpa.org/packages/") t)
+
+(package-initialize)
+(when (not package-archive-contents)
+  (package-refresh-contents))
+
+
+(setq myPackages
+  '(better-defaults
+    material-theme
+    auctex
+    rainbow-delimiters
+    autopair
+    julia-mode
+    matlab-mode
+    paredit
+    paredit-everywhere
+    cython-mode
+    undo-tree))
+(mapc #'(lambda (package)
+    (unless (package-installed-p package)
+      (package-install package)))
+      myPackages)
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Unclutter home directory
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; lisp files
-(setq debug-on-quit nil)
-(add-to-list 'load-path (expand-file-name "~/.emacs.d/lisp"))
-(add-to-list 'load-path (expand-file-name "~/.emacs.d/lisp/dict"))
+;(add-to-list 'load-path (expand-file-name "~/.emacs.d/lisp"))
 ;;byte-recompile elisp files if they need to be
-(byte-recompile-directory "~/.emacs.d/lisp" 0)
-;; (byte-recompile-directory "~/.emacs.d/lisp" 0 t)
+;(byte-recompile-directory "~/.emacs.d/lisp" 0)
 
 ;; put everything in ~/.emacs.d
 (setq gnus-init-file "~/.emacs.d/gnus.el"
@@ -24,9 +49,6 @@
 ;; customize
 (setq custom-file "~/.emacs.d/custom.el")
 (load custom-file)
-
-;; I like flet. Unobsolete it.
-(put 'flet 'byte-obsolete-info nil)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Desktop and server
@@ -47,8 +69,8 @@
 	desktop-base-file-name "emacs.desktop")
   (desktop-save-mode 1)
   ;; save every 10mins
-  (run-with-timer (* 10 60) (* 10 60) (lambda () (flet ((message (&rest args) nil))
-						   (desktop-save-in-desktop-dir)))))
+  (run-with-timer (* 10 60) (* 10 60) (lambda () (desktop-save-in-desktop-dir)))
+  )
 ;; greeting message
 (add-hook 'after-init-hook (lambda () (message "Welcome back.")) t)
 
@@ -74,25 +96,12 @@
 (when emacs-is-master
   (set-frame-parameter nil 'fullscreen 'fullboth))
 
-;; I won't have none of that multiple windows nonsense
-(setq display-buffer-base-action '(display-buffer-same-window . nil))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; Colour theme and fonts
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(require 'zenburn)
-(zenburn)
-(setq font-use-system-font t)
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Mouse
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;mouse use : paste at point position. Do not highlight
-(setq mouse-yank-at-point t
-      mouse-highlight 1)
+;;mouse use : do not highlight
+(setq mouse-highlight 1)
 ;; control mouse clipboard. In particular, select-active-regions, activated in 23.2, sucks.
-(setq x-select-enable-primary t)
-(setq x-select-enable-clipboard nil)
 (setq select-active-regions nil)
 
 
@@ -113,9 +122,9 @@
 	(window-buffer (previous-window)) (window-buffer (next-window)))))
 
 (defun launch-command (command filename)
-  "Launches command with argument filename, discarding all output"
-  (let ((process-connection-type nil))
-    (start-process-shell-command command nil (concat "nohup " (shell-quote-argument command) " " (when filename (shell-quote-argument filename)) " &"))))
+"Launches command with argument filename, discarding all output"
+(call-process command nil 0 nil filename)
+)
 
 (defun gnome-open-file (filename)
   "gnome-opens the specified file."
@@ -140,27 +149,27 @@ From http://atomized.org/2011/01/toggle-between-root-non-root-in-emacs-with-tram
          (parsed (when (tramp-tramp-file-p filename)
                    (coerce (tramp-dissect-file-name filename)
                            'list)))
-	 (old-pnt (point)))
+		 (old-pnt (point)))
     (unless filename
       (error "No file in this buffer."))
 
-    (unwind-protect
-	(find-alternate-file
-	 (if (equal '("sudo" "root") (butlast parsed 2))
-	     ;; As non-root
-	     (if (or
-		  (string= "localhost" (nth 2 parsed))
-		  (string= (system-name) (nth 2 parsed)))
-		 (nth 3 parsed)
-	       (apply 'tramp-make-tramp-file-name
-		      (append (list tramp-default-method nil) (cddr parsed))))
+	(unwind-protect
+		(find-alternate-file
+		 (if (equal '("sudo" "root") (butlast parsed 2))
+			 ;; As non-root
+			 (if (or
+				  (string= "localhost" (nth 2 parsed))
+				  (string= (system-name) (nth 2 parsed)))
+				 (nth 3 parsed)
+			   (apply 'tramp-make-tramp-file-name
+					  (append (list tramp-default-method nil) (cddr parsed))))
 
-	   ;; As root
-	   (if parsed
-	       (apply 'tramp-make-tramp-file-name
-		      (append '("sudo" "root") (cddr parsed)))
-	     (tramp-make-tramp-file-name "sudo" "root" "localhost" filename))))
-      (goto-char old-pnt))))
+		   ;; As root
+		   (if parsed
+			   (apply 'tramp-make-tramp-file-name
+					  (append '("sudo" "root") (cddr parsed)))
+			 (tramp-make-tramp-file-name "sudo" "root" "localhost" filename))))
+	  (goto-char old-pnt))))
 (global-set-key (kbd "C-c C-r") 'toggle-alternate-file-as-root)
 
 (defun ede () (interactive) (find-file "~/.emacs.d/init.el"))
@@ -168,8 +177,8 @@ From http://atomized.org/2011/01/toggle-between-root-non-root-in-emacs-with-tram
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Misc. settings
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; I don't use bidi stuff
-(setq-default bidi-display-reordering nil)
+;; ;; I don't use bidi stuff
+;; (setq-default bidi-display-reordering nil)
 ;; No fancy new messages that stay for a while
 (setq minibuffer-message-timeout 0)
 ;; instead of / or whatever
@@ -244,9 +253,9 @@ some other pops up with display-buffer), go back to only one window open"
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Note that this can not prevent
 ;; the "Wrote %s" message, which is coded in C.
-(defadvice save-buffer (around save-omit-be-quiet activate)
+(defadvice save-buffer (around save-be-quiet activate)
   "Be quiet."
-  (flet ((message (&rest args) nil))
+  (cl-flet ((message (&rest args) nil))
     ad-do-it))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -254,6 +263,7 @@ some other pops up with display-buffer), go back to only one window open"
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; amazing new variable in e23. No need to worry about longlines any more
 (setq-default word-wrap t)
+(global-visual-line-mode)
 ;; ... but still use ll sometimes for reading dense text
 (defalias 'll 'longlines-mode)
 
@@ -270,20 +280,11 @@ some other pops up with display-buffer), go back to only one window open"
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; Keyfreq
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(require 'keyfreq)
-(setq keyfreq-file "~/.emacs.d/keyfreq")
-(keyfreq-mode 1)
-(keyfreq-autosave-mode 1)
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Auto revert
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; automatically update buffers when changed
 (global-auto-revert-mode t)
-(setq global-auto-revert-non-file-buffers t)
+(setq global-auto-revert-non-file-buffers nil)
 (setq auto-revert-interval 30) ;30s is enough
 (setq auto-revert-verbose nil)
 
@@ -300,8 +301,6 @@ some other pops up with display-buffer), go back to only one window open"
       ido-read-file-name-non-ido '(gnus-mime-save-part))
 (ido-mode 1)
 (ido-everywhere 1)
-;;consistency with ido
-(setq completion-ignore-case t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Uniquify
@@ -332,10 +331,10 @@ some other pops up with display-buffer), go back to only one window open"
 ;;visual paren matching
 (show-paren-mode t)
 ;;rainbow parentheses highlighting ! \o/
-(require 'highlight-parentheses)
-(setq hl-paren-colors
-      '("red" "orange" "yellow" "green" "light blue" "dark blue" "black"))
-(global-highlight-parentheses-mode t)
+;; (require 'highlight-parentheses)
+;; (setq hl-paren-colors
+;;       '("red" "orange" "yellow" "green" "light blue" "dark blue" "black"))
+;; (global-highlight-parentheses-mode t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Paredit
@@ -360,6 +359,9 @@ some other pops up with display-buffer), go back to only one window open"
 (global-set-key (kbd "C-)") 'paredit-forward-slurp-sexp)
 (global-set-key (kbd "M-S") 'paredit-splice-sexp)
 (global-set-key (kbd "s-w") 'paredit-wrap-sexp)
+
+(add-hook 'prog-mode-hook 'paredit-everywhere-mode)
+(setq paredit-lighter "")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Autopair
@@ -386,22 +388,17 @@ some other pops up with display-buffer), go back to only one window open"
 (setq dired-omit-files
       (concat dired-omit-files "\\|^\\..+$"))
 ;;clean dired default view : omit hidden files, don't display groups, use human-readable sizes
-(setq dired-listing-switches "-alhG"
+(setq dired-listing-switches "-alhGv"
       dired-free-space-args "-Pkm"
       dired-auto-revert-buffer t)
 ;; Omit, be quiet
 (defadvice dired-omit-expunge (around dired-omit-be-quiet activate)
   "Be quiet."
-  (flet ((message (&rest args) ))
+  (cl-flet ((message (&rest args) ))
     ad-do-it))
 (add-hook 'dired-mode-hook 'dired-omit-mode)
 
-(require 'dired+)
 ;; copy/pasting in dired
-(require 'wuxch-dired-copy-paste)
-(define-key dired-mode-map (kbd "M-w") 'wuxch-dired-copy)
-(define-key dired-mode-map (kbd "C-w") 'wuxch-dired-cut)
-(define-key dired-mode-map (kbd "C-y") 'wuxch-dired-paste)
 (define-key dired-mode-map (kbd "o") 'dired-find-alternate-file)
 (put 'dired-find-alternate-file 'disabled nil)
 ;;add gnome-open as C-ret
@@ -416,59 +413,8 @@ some other pops up with display-buffer), go back to only one window open"
   (launch-command "smplayer" (dired-get-file-for-visit)))
 (define-key dired-mode-map (kbd "M-RET") 'smplayer-open-file)
 (define-key dired-mode-map (kbd "²") 'smplayer-open-file)
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; Psvn
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;C-x v s as main svn entry point
-;;note : dired customisations have to be done BEFORE this
-(require 'psvn)
-(global-set-key (kbd "C-x v s") 'svn-examine)
-;;default to a clean view.
-(setq svn-status-hide-unknown t)
-(setq svn-status-hide-unmodified t)
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; Magit : git from emacs
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(require 'magit)
-(require 'magit-svn)
-;; don't save stuff
-(setq magit-save-some-buffers nil)
-;; go up
-(define-key magit-mode-map (kbd "o") 'magit-goto-parent-section)
-;; don't bug me with untracked files
-(setq magit-omit-untracked-dir-contents t)
-(defun my-magit-hide-untracked ()
-  "Hide untracked section."
-  (let ((untracked (magit-find-section '(untracked) magit-top-section)))
-    (if untracked
-	(magit-section-set-hidden untracked t))))
-(add-hook 'magit-status-mode-hook 'my-magit-hide-untracked)
-;; display staged diff when writing commit log
-(defun my-magit-display-diff ()
-  "Show magit-status window and make staged section visible."
-  (let ((buf (magit-find-buffer 'status default-directory)))
-    (unless buf
-      ;; no magit-status, create it
-      (let ((curbuf (current-buffer)))
-	(magit-status default-directory)
-	(setq buf (current-buffer))
-	(switch-to-buffer curbuf)))
-    (unless buf
-      (error "Error finding/creating magit-status buffer"))
-    ;; we now have the right magit-status in buf
-    (display-buffer buf t)
-    (with-selected-window (get-buffer-window buf)
-      (magit-jump-to-staged)
-      (magit-section-expand (magit-find-section '(staged) magit-top-section))
-      (recenter 0))))
-(add-hook 'magit-log-edit-mode-hook 'my-magit-display-diff)
-
-(global-set-key (kbd "C-x v s") 'magit-status)
-(global-set-key (kbd "C-x v p") 'magit-push)
-(global-set-key (kbd "C-x v f") 'magit-pull)
-
+(define-key dired-mode-map (kbd "œ") 'smplayer-open-file)
+(define-key dired-mode-map (kbd "M-o") 'dired-omit-mode)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Winner
@@ -496,90 +442,6 @@ some other pops up with display-buffer), go back to only one window open"
 		   nil t)))
 	(when file
 	  (find-file (cdr (assoc file file-alist))))))))
-;; plus some useful functions
-(defun uniquify-get-filename (filename depth)
-  "Get 'uniquified' filename, given a filename and a prefix depth."
-  (let ((dir (file-name-directory filename))
-	(file (file-name-nondirectory filename)))
-    ;; remove trailing slash
-    (if (string-match "/$" dir)
-	(setq dir (substring dir 0 -1)))
-    (uniquify-get-proposed-name file dir depth)))
-(defun uniquify-filename-list (file-list &optional depth)
-  "Uniquify a list of filenames by returning an alist of filename and uniquified filenames.
-Optional depth is for internal use."
-  (unless depth
-    (setq depth 0))
-  (let ((conflicting-list ())
-	(final-uniq-file-alist ())
-	(uniq-file-alist (mapcar
-			  (lambda (file)
-			    `(,file . ,(uniquify-get-filename file depth)))
-			  file-list))
-	uniq-file-alist2
-	item
-	item2
-	conflict)
-    (while uniq-file-alist
-      (setq item (car uniq-file-alist)
-	    uniq-file-alist (cdr uniq-file-alist)
-	    conflict nil
-	    uniq-file-alist2 uniq-file-alist)
-      ;; Search for and remove all conflicts from remaining list
-      (while uniq-file-alist2
-	(setq item2 (car uniq-file-alist2)
-	      uniq-file-alist2 (cdr uniq-file-alist2))
-	(when (string= (cdr item) (cdr item2))
-	  ;; Found conflict
-	  (setq conflict t)
-	  (push (car item2) conflicting-list)
-	  (setq uniq-file-alist (delq item2 uniq-file-alist))
-	  (setq uniq-file-alist2 (delq item2 uniq-file-alist2))))
-      (if conflict
-	  (push (car item) conflicting-list)
-	(push item final-uniq-file-alist)))
-    ;; now recurse with colliding files
-    (if conflicting-list
-	(setq final-uniq-file-alist
-	      (append
-	       final-uniq-file-alist
-	       (uniquify-filename-list conflicting-list (+ 1 depth)))))
-    final-uniq-file-alist))
-
-(defun truncate-list (list n)
-  "Truncate LIST to at most N elements destructively."
-  (when n
-    (let ((here (nthcdr (1- n) list)))
-      (when (consp here)
-	(setcdr here nil))))
-  list)
-
-(defcustom recentf-ido-max-items 200
-  "Maximum number of items of the recent list selection with ido
-(recentf-ido-find-file-or-maybe-list).
-If nil, do not limit."
-  :group 'recentf)
-(defun recentf-ido-find-file-or-maybe-list (&optional arg)
-  "Find a recent file using Ido and uniquify,
-or list all recent files if prefixed"
-  (interactive "P")
-  (if arg
-      (recentf-open-files)
-    (let* ((file-list (truncate-list
-		       (copy-list recentf-list)
-		       recentf-ido-max-items))
-	   (uniq-file-alist (uniquify-filename-list file-list))
-	   ;; ask user
-	   (file (ido-completing-read
-		  (format "%s: " recentf-menu-title)
-		  (mapcar (lambda (filename)
-			    (cdr (assoc filename uniq-file-alist)))
-			  file-list)
-		  nil t)))
-      ;; now find full filename back
-      (when file
-	(find-file (car (rassoc file uniq-file-alist)))))))
-
 (setq recentf-save-file "~/.emacs.d/recentf")
 (setq recentf-max-saved-items nil)
 (recentf-mode 1)
@@ -595,7 +457,7 @@ or list all recent files if prefixed"
   (imenu--make-index-alist)
   (let ((name-and-pos '())
         (symbol-names '()))
-    (flet ((addsymbols (symbol-list)
+    (cl-flet ((addsymbols (symbol-list)
                        (when (listp symbol-list)
                          (dolist (symbol symbol-list)
                            (let ((name nil) (position nil))
@@ -624,13 +486,6 @@ or list all recent files if prefixed"
 (global-set-key (kbd "C-x C-i") 'ido-goto-symbol)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; Ibuffer
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(require 'al-ibuffer)
-;;entry point
-(global-set-key (kbd "C-x C-b") 'ibuffer)
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Programming modes
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;ignore case when matching a suffix (such as .F90)
@@ -638,8 +493,6 @@ or list all recent files if prefixed"
 ;;tags
 (setq tags-table-list nil
       tags-revert-without-query t)
-;;indent yanked code in programming languages modes
-(load-library "yank-indent")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Matlab
@@ -667,67 +520,67 @@ or list all recent files if prefixed"
 ;;; Python
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(require 'python)
-(require 'cython-mode)
-(require 'term)
+;; (require 'python)
+;; (require 'cython-mode)
+;; (require 'term)
 
-(define-key python-mode-map (kbd "TAB")
-  (lambda ()
-    (interactive)
-    (if (and (not (bolp))
-	     (looking-at "\\_>"))
-	(my-dabbrev-expand)
-      ;; jedi mind trick: no, I'm not really there
-      (setq this-command 'indent-for-tab-command)
-      (python-indent-line))))
+;; ;; (define-key python-mode-map (kbd "TAB")
+;; ;;   (lambda ()
+;; ;;     (interactive)
+;; ;;     (if (and (not (bolp))
+;; ;; 	     (looking-at "\\_>"))
+;; ;; 	(my-dabbrev-expand)
+;; ;;       ;; jedi mind trick: no, I'm not really there
+;; ;;       (setq this-command 'indent-for-tab-command) 
+;; ;;       (python-indent-line))))
 
-(defun ipython-run ()
-  (interactive)
-  (unless (get-buffer "*ipython*")
-    (setq ipython-buffer-name (term-ansi-make-term "*ipython*" "ipython"))
-    (with-current-buffer ipython-buffer-name
-      (term-mode)
-      (term-char-mode)
-      (setq term-prompt-regexp "^\\$ *")
-      (define-key term-mode-map (kbd "C-a") 'term-bol)
-      (local-set-key (kbd "<prior>") 'scroll-down-command)
-      (local-set-key (kbd "<next>") 'scroll-up-command)
-      (local-set-key (kbd "C-q") (kbd "<backspace>")))))
+;; (defun ipython-run ()
+;;   (interactive)
+;;   (unless (get-buffer "*ipython*")
+;;     (setq ipython-buffer-name (term-ansi-make-term "*ipython*" "ipython"))
+;;     (with-current-buffer ipython-buffer-name
+;;       (term-mode)
+;;       (term-char-mode)
+;;       (setq term-prompt-regexp "^\\$ *")
+;;       (define-key term-mode-map (kbd "C-a") 'term-bol)
+;;       (local-set-key (kbd "<prior>") 'scroll-down-command)
+;;       (local-set-key (kbd "<next>") 'scroll-up-command)
+;;       (local-set-key (kbd "C-q") (kbd "<backspace>")))))
 
-(defun ipython-run-or-switch ()
-  (interactive)
-  (ipython-run)
-  (switch-to-buffer (get-buffer "*ipython*")))
-(defun ipython-send-current-buffer ()
-  (interactive)
-  (save-buffer)
-  (ipython-run)
-  (term-send-string (get-buffer-process "*ipython*")
-		    (format "%%run -i %s\n" (buffer-file-name)))
-  (switch-to-buffer (get-buffer "*ipython*")))
-(defun ipython-send-current-region (beg end)
-  (interactive "r")
-  (ipython-run)
-  (term-send-string (get-buffer-process "*ipython*")
-		    (buffer-substring-no-properties beg end))
-  (switch-to-buffer (get-buffer "*ipython*")))
-(defun ipython-send-current-buffer-and-switch ()
-  (interactive)
-  (ipython-send-current-buffer)
-  (ipython-run-or-switch))
-(define-key python-mode-map (kbd "C-c C-c") 'ipython-send-current-buffer-and-switch)
-(define-key python-mode-map (kbd "C-c C-z") 'ipython-run-or-switch)
-(define-key python-mode-map (kbd "C-c C-r") 'ipython-send-current-region)
+;; (defun ipython-run-or-switch ()
+;;   (interactive)
+;;   (ipython-run)
+;;   (switch-to-buffer (get-buffer "*ipython*")))
+;; (defun ipython-send-current-buffer ()
+;;   (interactive)
+;;   (save-buffer)
+;;   (ipython-run)
+;;   (term-send-string (get-buffer-process "*ipython*")
+;; 		    (format "%%run -i %s\n" (buffer-file-name)))
+;;   (switch-to-buffer (get-buffer "*ipython*")))
+;; (defun ipython-send-current-region (beg end)
+;;   (interactive "r")
+;;   (ipython-run)
+;;   (term-send-string (get-buffer-process "*ipython*")
+;; 		    (buffer-substring-no-properties beg end))
+;;   (switch-to-buffer (get-buffer "*ipython*")))
+;; (defun ipython-send-current-buffer-and-switch ()
+;;   (interactive)
+;;   (ipython-send-current-buffer)
+;;   (ipython-run-or-switch))
+;; (define-key python-mode-map (kbd "C-c C-c") 'ipython-send-current-buffer-and-switch)
+;; (define-key python-mode-map (kbd "C-c C-z") 'ipython-run-or-switch)
+;; (define-key python-mode-map (kbd "C-c C-r") 'ipython-send-current-region)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Latex
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; load auctex
-(condition-case err
-    (progn (load "auctex.el" nil t t)
-	   (load "preview-latex.el" nil t t))
-  (error
-   (message "Failed to load auctex")))
+;; (condition-case err
+;;     (progn (load "auctex.el" nil t t)
+;; 	   (load "preview-latex.el" nil t t))
+;;   (error
+;;    (message "Failed to load auctex")))
 
 (defun my-latex-environment (arg)
   "Same as `LaTeX-environment', but overrides prefix arg to mean
@@ -735,7 +588,7 @@ or list all recent files if prefixed"
   environment (C-u with LaTeX-environment)"
   (interactive "p*")
   (if (= arg 4)
-      (flet ((TeX-active-mark () t))
+      (cl-flet ((TeX-active-mark () t))
 	(LaTeX-environment nil))
     (LaTeX-environment (if (= arg 16) t nil))))
 ;;don't ask to cache preamble
@@ -805,20 +658,17 @@ or list all recent files if prefixed"
 	     (equal my-latex-compiling-buffer (window-buffer))
 	     (equal stat "finished\n"))
     (with-current-buffer my-latex-compiling-buffer
-
+      (let ((file (file-name-sans-extension (buffer-file-name))))
+	(TeX-atril-sync-view))
       ;; put evince to front
-      ;; get master file name
-      (let* ((file (if (stringp TeX-master)
-		       (concat default-directory TeX-master)
-		     (file-name-sans-extension (buffer-file-name))))
-	     (filenopath (file-name-nondirectory file)))
-	(TeX-evince-sync-view)
+      (let ((file (if (stringp TeX-master)
+		      TeX-master
+		    (file-name-sans-extension (file-name-nondirectory (buffer-file-name))))))
 	(shell-command-to-string
 	 (format "wmctrl -r %s.pdf -t 3 && wmctrl -a %s.pdf"
-		 filenopath filenopath)))
+		 file file)))
 
       (setq my-latex-compiling-buffer nil))))
-
 (add-hook 'compilation-finish-functions 'my-after-latex-compile)
 ;; add ~/.tex to the inputs; also in bashrc
 (setenv "TEXINPUTS" ":~/.tex")
@@ -833,19 +683,6 @@ or list all recent files if prefixed"
   "Only outline on ;;;, thank you."
   (setq outline-regexp ";;; "))
 (add-hook 'emacs-lisp-mode-hook 'setup-outline-lisp)
-(require 'fold-dwim)
-(setq fold-dwim-outline-style 'nested)
-;; Have two toggles, one for the header we're in, and one general
-(global-set-key (kbd "<f6>")  'fold-dwim-toggle)
-(global-set-key (kbd "<f7>")  'fold-dwim-toggle-all)
-;; This is suboptimal, not buffer-local, etc. I don't care.
-(setq fold-dwim-general-toggle nil)
-(defun fold-dwim-toggle-all ()
-  (interactive)
-  (if fold-dwim-general-toggle
-      (fold-dwim-show-all)
-    (fold-dwim-hide-all))
-  (toggle-variable 'fold-dwim-general-toggle))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Reftex
@@ -889,14 +726,14 @@ or list all recent files if prefixed"
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Org
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(require 'org)
+(require 'org-install)
 (add-hook 'org-mode-hook 'auto-fill-mode)
 (add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
 (setq org-startup-indented t)
 (global-set-key "\C-cl" 'org-store-link)
 (global-set-key (kbd "s-r") (lambda () (interactive) (org-capture nil "t")))
-(global-set-key (kbd "s-a") (lambda () (interactive) (org-agenda nil "a")))
-(global-set-key (kbd "s-z") (lambda () (interactive) (org-agenda nil "z")))
+;; (global-set-key (kbd "s-a") (lambda () (interactive) (org-agenda nil "a")))
+;; (global-set-key (kbd "s-z") (lambda () (interactive) (org-agenda nil "z")))
 
 ;;bindings
 (add-hook 'org-load-hook
@@ -910,7 +747,7 @@ or list all recent files if prefixed"
 
 ;;settings
 (setq
- org-agenda-files (list "~/.emacs.d/org/todo.org" "~/.emacs.d/org/anniversaires.org")
+ org-agenda-files (list "~/.emacs.d/org/todo.org")
  org-default-notes-file "~/.emacs.d/org/notes.org"
  org-completion-use-ido t
  org-agenda-span 'week
@@ -923,7 +760,6 @@ or list all recent files if prefixed"
  org-agenda-start-on-weekday 1
  calendar-week-start-day 1
  org-agenda-show-current-time-in-grid nil
- org-icalendar-include-todo t
  org-extend-today-until 4
  org-agenda-remove-tags t
  org-agenda-repeating-timestamp-show-all t
@@ -996,8 +832,7 @@ This function makes sure that dates are aligned for easy reading."
 (defun my-org-agenda-to-appt ()
   (interactive)
   (setq appt-time-msg-list nil)
-  (flet ((message (&rest args) ))
-    (org-agenda-to-appt))
+  (org-agenda-to-appt)
   (appt-check))
 (my-org-agenda-to-appt)
 (add-hook 'org-finalize-agenda-hook 'my-org-agenda-to-appt)
@@ -1055,8 +890,8 @@ This function makes sure that dates are aligned for easy reading."
 
 (add-hook 'kill-emacs-hook (lambda ()
 			     (when (org-clock-is-active)
-			       (org-clock-out)
-			       (org-save-all-org-buffers))))
+				 (org-clock-out)
+				 (org-save-all-org-buffers))))
 
 (setq org-work-id "eb155a82-92b2-4f25-a3c6-0304591af2f9")
 (defun org-clock-in-default-task ()
@@ -1218,8 +1053,15 @@ brake whatever split of windows we might have in the frame."
     (progn
       ;;normal
       (global-set-key (kbd "²") (lambda () (interactive) (insert "\\")))
+      (global-set-key (kbd "œ") (lambda () (interactive) (insert "\\")))
       ;;isearch
       (define-key isearch-mode-map (kbd "²")
+	(lambda ()
+	  (interactive)
+	  (if current-input-method
+	      (isearch-process-search-multibyte-characters ?\\)
+	    (isearch-process-search-char ?\\))))
+      (define-key isearch-mode-map (kbd "œ")
 	(lambda ()
 	  (interactive)
 	  (if current-input-method
@@ -1296,6 +1138,7 @@ Ignores CHAR at point."
 (global-set-key (kbd "s-x") 'exchange-point-and-mark)
 (global-set-key (kbd "s-SPC") 'pop-global-mark)
 (global-set-key (kbd "s-;") 'ede)
+(global-set-key (kbd "s-v") (lambda () (interactive) (find-file "~/.emacs.d/org/nanowrimo.org")))
 (defun kill-whitespace ()
   "Kill the whitespace between two non-whitespace characters"
   (interactive "*")
@@ -1311,7 +1154,7 @@ Ignores CHAR at point."
 (global-set-key (kbd "<s-right>") 'winner-redo)
 (defun open-shell-here ()
   (interactive)
-  (launch-command "gnome-terminal" ""))
+  (launch-command "mate-terminal" ""))
 
 (global-set-key (kbd "s-h") 'open-shell-here)
 (defun note ()
@@ -1320,8 +1163,12 @@ Ignores CHAR at point."
 (defun todos ()
   (interactive)
   (find-file "~/.emacs.d/org/todo.org"))
+(defun journal ()
+  (interactive)
+  (find-file "~/.emacs.d/org/journal.org"))
 (global-set-key (kbd "s-n") 'note)
 (global-set-key (kbd "s-t") 'todos)
+(global-set-key (kbd "s-j") 'journal)
 (global-set-key (kbd "s-l") 'bury-buffer)
 ;; ghosts of past yanks
 (global-set-key (kbd "s-y") (lambda ()
@@ -1340,6 +1187,7 @@ Ignores CHAR at point."
 ;; pretty smileys
 (global-set-key (kbd "s-o") (lambda () (interactive) (insert "\\o/")))
 (global-set-key (kbd "s-²") (lambda () (interactive) (insert ":-|")))
+(global-set-key (kbd "s-œ") (lambda () (interactive) (insert ":-|")))
 
 ;; increment/decrement
 (defun add-digit-at-point (quantity)
@@ -1540,7 +1388,7 @@ Ignores CHAR at point."
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Dictionnaries
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(setq my-languages '("french" "american"))
+(setq my-languages '("american" "french"))
 (setq my-languages-index 0)
 (defun icd ()
   "Cycle between dictionaries"
@@ -1552,10 +1400,6 @@ Ignores CHAR at point."
 (setq ispell-dictionary "french"
       ispell-silently-savep t
       ispell-program-name "aspell")
-
-;; true dictionary : look up words on the internet
-(load "dictionary-init")
-(global-set-key (kbd "s-w") 'dictionary-search)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; W3M
@@ -1617,11 +1461,12 @@ Ignores CHAR at point."
   "Notify user by graphical display"
   (unless do-not-disturb
     (shell-command-to-string (format
-			      "gnome-osd-client %s"
-			      (shell-quote-argument (concat "" (xml-escape-string
-								(if (> (length message) 55)
-								    (concat (substring message  0 55) "...")
-								  message))))))))
+  			      "gnome-osd-client %s"
+  			      (shell-quote-argument (concat "" (xml-escape-string
+  								(if (> (length message) 45)
+  								    (concat (substring message  0 45) "...")
+  								  message)))))))
+  )
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; System tray
@@ -1656,7 +1501,9 @@ Additional support for inhibiting one activation (quick hack)"
 (defun run-gnus ()
   (interactive)
   (if (get-buffer "*Group*")
-      (switch-to-buffer "*Group*")
+      (progn
+	(switch-to-buffer "*Group*")
+	(gnus-group-get-new-news 1))
     (gnus)))
 (global-set-key (kbd "s-g") 'run-gnus)
 
@@ -1664,13 +1511,233 @@ Additional support for inhibiting one activation (quick hack)"
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ERC
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(load "~/.emacs.d/erc.el")
+;(load "~/.emacs.d/erc.el")
 ;;read personal info (ERC stuff)
-(load "~/.emacs.d/priv_emacs.el" t)
+;(load "~/.emacs.d/priv_emacs.el" t)
 
-;; one emacs to rule them all and in fullscreen bind them, 2nd time (in case I was away for the first one)
+;; (setq debug-on-error t)
+
+(setq display-buffer-base-action '(display-buffer-same-window . nil))
+;; (setq display-buffer-base-action nil)
+
 (when emacs-is-master
   (set-frame-parameter nil 'fullscreen 'fullboth))
+(setq do-not-disturb nil)
 
-;; must have been useful at some point, maybe.
 (setenv "LD_LIBRARY_PATH" ".")
+
+(setq completion-ignore-case t)
+
+
+(defun hbin-remove-mm-lighter (mm)
+  "Remove minor lighter from the mode line."
+  (setcar (cdr (assq mm minor-mode-alist)) nil))
+(hbin-remove-mm-lighter 'visual-line-mode)
+;; (hbin-remove-mm-lighter 'global-visual-line-mode)
+
+(global-set-key (kbd "C-x v p") (lambda () (interactive) (async-shell-command "git push")))
+
+
+(add-hook 'prog-mode-hook #'rainbow-delimiters-mode)
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Colour theme and fonts
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; (require 'zenburn)
+;; (zenburn)
+
+;(add-to-list 'custom-theme-load-path "~/.emacs.d/lisp/")
+;; (add-to-list 'custom-theme-load-path "~/.emacs.d/elpa/material-theme-20160206.1012")
+;; (load-theme 'zenburn t)
+
+(load-theme 'material t) ;; load material theme
+
+;; (setq font-use-system-font t)
+
+(setq visible-bell nil)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+;;; wuxch-dired-copy-paste.el
+(require 'dired)
+(require 'dired-aux)
+
+(define-key dired-mode-map [(control c)(control c)] 'ignore)
+(define-key dired-mode-map [(control c)(control c)] 'wuxch-dired-copy)
+
+(define-key dired-mode-map [(control c)(control x)] 'ignore)
+(define-key dired-mode-map [(control c)(control x)] 'wuxch-dired-cut)
+
+(define-key dired-mode-map [(control c)(control v)] 'ignore)
+(define-key dired-mode-map [(control c)(control v)] 'wuxch-dired-paste)
+
+
+(defvar dired-copied-cutted-files-pool nil "global variable to store copied or cutted files")
+(defvar dired-is-copied nil "t:copy  nil:cut")
+
+(defun wuxch-dired-copy()
+  ""
+  (interactive)
+  (wuxch-dired-do-copy-cut t)
+  )
+
+(defun wuxch-dired-cut()
+  ""
+  (interactive)
+  (wuxch-dired-do-copy-cut nil)
+  )
+
+(defun wuxch-dired-do-copy-cut(is-copy)
+  "wuxch-dired-do-copy-cut:"
+  (wuxch-clear-copied-cutted-files-pool)
+  (wuxch-put-marked-files-name-to-pool)
+  (let ((copy-cut-string)(num (safe-length dired-copied-cutted-files-pool)))
+    (setq dired-is-copied is-copy)
+    (if is-copy
+        (setq copy-cut-string "copied")
+      (setq copy-cut-string "cut")
+      )
+    (if (eq num 1)
+        (progn
+          (message "%s is %s" (car dired-copied-cutted-files-pool) copy-cut-string)
+          )
+      (progn
+        (message "%d file/dir(s) %s" num copy-cut-string)
+        )
+      )
+    )
+  )
+(defun wuxch-dired-paste()
+  "wuxch-dired-paste:"
+  (interactive)
+  (if (not (eq dired-copied-cutted-files-pool nil))
+      (let ((copy-cut-string)(current-file-number 0)(file-number (safe-length dired-copied-cutted-files-pool)))
+        (if dired-is-copied
+            (setq copy-cut-string "copied")
+          (setq copy-cut-string "moved"))
+        (dolist (src-file dired-copied-cutted-files-pool)
+          (let ((dst-file))
+            (setq dst-file (concat (dired-current-directory) (file-name-nondirectory src-file)))
+            (if dired-is-copied
+                (dired-copy-file src-file dst-file t)
+              (dired-rename-file src-file dst-file t)
+              )
+	    ;; MODIFIED simply revert buffer, without anything fancy
+            ;; revert buffer.
+	    (revert-buffer)
+	    ; MODIFIED don't mark
+            ;(dired-mark-files-regexp (file-name-nondirectory src-file))
+            ;; show some information
+            (setq current-file-number (+ current-file-number 1))
+            (message "%d of %d file/dir(s) %s" current-file-number file-number copy-cut-string)
+            )
+          )
+        (if (not dired-is-copied)
+            (wuxch-clear-copied-cutted-files-pool))
+        )
+    )
+  )
+
+(defun wuxch-clear-copied-cutted-files-pool()
+  "wuxch-clear-copied-cutted-files-pool: clear the pool if it's not nil"
+  (if (not (eq dired-copied-cutted-files-pool nil))
+      (progn
+        (setq dired-copied-cutted-files-pool nil)
+        )
+    )
+  )
+
+(defun wuxch-put-marked-files-name-to-pool()
+  "wuxch-put-marked-files-name-to-pool:"
+  (let ((files))
+    (setq files (dired-get-marked-files t))
+    (if (listp files)
+        (dolist (element files)
+          (setq dired-copied-cutted-files-pool
+                (append dired-copied-cutted-files-pool (list (concat (dired-current-directory) element))))
+          )
+      )
+    )
+  )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+;; automatically indent yanked text if in programming-modes : found somewhere on the net
+(defvar yank-indent-modes '(emacs-lisp-mode
+                            c-mode c++-mode
+                            tcl-mode sql-mode
+                            perl-mode cperl-mode
+                            java-mode jde-mode
+                            lisp-interaction-mode
+			    scheme-mode
+                            LaTeX-mode TeX-mode
+			    matlab-mode ada-mode
+			    fortran-mode f90-mode)
+  "Modes in which to indent regions that are yanked (or yank-popped)")
+
+(defvar yank-advised-indent-threshold 1000
+  "Threshold (# chars) over which indentation does not automatically occur.")
+
+(defun yank-advised-indent-function (beg end)
+  "Do indentation, as long as the region isn't too large."
+  (if (<= (- end beg) yank-advised-indent-threshold)
+      (indent-region beg end nil)))
+
+(defadvice yank (after yank-indent activate)
+  "If current mode is one of 'yank-indent-modes, indent yanked text (with prefix arg don't indent)."
+  (if (and (not (ad-get-arg 0))
+           (member major-mode yank-indent-modes))
+      (let ((transient-mark-mode nil))
+    (yank-advised-indent-function (region-beginning) (region-end)))))
+
+(defadvice yank-pop (after yank-pop-indent activate)
+  "If current mode is one of 'yank-indent-modes, indent yanked text (with prefix arg don't indent)."
+  (if (and (not (ad-get-arg 0))
+           (member major-mode yank-indent-modes))
+    (let ((transient-mark-mode nil))
+    (yank-advised-indent-function (region-beginning) (region-end)))))
+
+
+(define-key dired-mode-map (kbd "M-w") 'wuxch-dired-copy)
+(define-key dired-mode-map (kbd "C-w") 'wuxch-dired-cut)
+(define-key dired-mode-map (kbd "C-y") 'wuxch-dired-paste)
+
