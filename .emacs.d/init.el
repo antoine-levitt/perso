@@ -31,6 +31,8 @@
       (package-install package)))
       myPackages)
 
+(defun dummy-function (&rest args)nil)
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Unclutter home directory
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -69,7 +71,9 @@
 	desktop-base-file-name "emacs.desktop")
   (desktop-save-mode 1)
   ;; save every 10mins
-  (run-with-timer (* 10 60) (* 10 60) (lambda () (desktop-save-in-desktop-dir)))
+  (run-with-timer (* 10 60) (* 10 60) (lambda ()
+                                        (cl-letf (((symbol-function 'message) 'dummy-function))
+                                          (desktop-save-in-desktop-dir))))
   )
 ;; greeting message
 (add-hook 'after-init-hook (lambda () (message "Welcome back.")) t)
@@ -253,8 +257,6 @@ some other pops up with display-buffer), go back to only one window open"
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Note that this can not prevent
 ;; the "Wrote %s" message, which is coded in C.
-(defun dummy-function (&rest args)nil)
-
 (defadvice save-buffer (around save-be-quiet activate)
   "Be quiet."
   (cl-letf (((symbol-function 'message) 'dummy-function))
