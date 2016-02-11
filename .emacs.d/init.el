@@ -176,8 +176,6 @@ From http://atomized.org/2011/01/toggle-between-root-non-root-in-emacs-with-tram
 	  (goto-char old-pnt))))
 (global-set-key (kbd "C-c C-r") 'toggle-alternate-file-as-root)
 
-(defun ede () (interactive) (find-file "~/.emacs.d/init.el"))
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Misc. settings
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1132,7 +1130,7 @@ Ignores CHAR at point."
 (global-set-key (kbd "s-i") 'iwb)
 (global-set-key (kbd "s-x") 'exchange-point-and-mark)
 (global-set-key (kbd "s-SPC") 'pop-global-mark)
-(global-set-key (kbd "s-;") 'ede)
+(global-set-key (kbd "s-;") (lambda () (interactive) (find-file "~/.emacs.d/init.el")))
 (global-set-key (kbd "s-v") (lambda () (interactive) (find-file "~/.emacs.d/org/nanowrimo.org")))
 (defun kill-whitespace ()
   "Kill the whitespace between two non-whitespace characters"
@@ -1737,4 +1735,3 @@ Additional support for inhibiting one activation (quick hack)"
 (define-key dired-mode-map (kbd "M-w") 'wuxch-dired-copy)
 (define-key dired-mode-map (kbd "C-w") 'wuxch-dired-cut)
 (define-key dired-mode-map (kbd "C-y") 'wuxch-dired-paste)
-
