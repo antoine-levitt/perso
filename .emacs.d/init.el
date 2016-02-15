@@ -25,13 +25,20 @@
     paredit
     paredit-everywhere
     cython-mode
-    undo-tree))
+    undo-tree
+    highlight-indent-guides))
 (mapc #'(lambda (package)
     (unless (package-installed-p package)
       (package-install package)))
       myPackages)
 
 (defun dummy-function (&rest args)nil)
+
+;; Better better defaults
+(global-set-key (kbd "C-s") 'isearch-forward)
+(global-set-key (kbd "C-r") 'isearch-backward)
+(global-set-key (kbd "C-M-s") 'isearch-forward-regexp)
+(global-set-key (kbd "C-M-r") 'isearch-backward-regexp)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Unclutter home directory
@@ -1738,3 +1745,7 @@ Additional support for inhibiting one activation (quick hack)"
 (define-key dired-mode-map (kbd "C-w") 'wuxch-dired-cut)
 (define-key dired-mode-map (kbd "C-y") 'wuxch-dired-paste)
 
+
+
+(require 'highlight-indent-guides)
+(add-hook 'prog-mode-hook 'highlight-indent-guides-mode)
