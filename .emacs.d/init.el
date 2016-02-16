@@ -3,6 +3,9 @@
 
 ;; Can be viewed in outline mode
 
+;; customize
+(setq custom-file "~/.emacs.d/custom.el")
+(load custom-file)
 
 ;; Packages
 (require 'package)
@@ -54,10 +57,6 @@
       mail-default-directory "~/.emacs.d"
       message-directory "~/.emacs.d/Mail"
       bbdb-file "~/.emacs.d/bbdb")
-
-;; customize
-(setq custom-file "~/.emacs.d/custom.el")
-(load custom-file)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Desktop and server
