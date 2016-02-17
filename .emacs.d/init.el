@@ -18,21 +18,22 @@
 
 
 (setq myPackages
-  '(better-defaults
-    material-theme
-    auctex
-    rainbow-delimiters
-    autopair
-    julia-mode
-    matlab-mode
-    paredit
-    paredit-everywhere
-    cython-mode
-    undo-tree
-    highlight-indent-guides))
+      '(better-defaults
+        material-theme
+        auctex
+        rainbow-delimiters
+        autopair
+        julia-mode
+        matlab-mode
+        paredit
+        paredit-everywhere
+        cython-mode
+        undo-tree
+        highlight-indent-guides
+        magit))
 (mapc #'(lambda (package)
-    (unless (package-installed-p package)
-      (package-install package)))
+          (unless (package-installed-p package)
+            (package-install package)))
       myPackages)
 
 (defun dummy-function (&rest args)nil)
@@ -47,9 +48,9 @@
 ;;; Unclutter home directory
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; lisp files
-;(add-to-list 'load-path (expand-file-name "~/.emacs.d/lisp"))
+                                        ;(add-to-list 'load-path (expand-file-name "~/.emacs.d/lisp"))
 ;;byte-recompile elisp files if they need to be
-;(byte-recompile-directory "~/.emacs.d/lisp" 0)
+                                        ;(byte-recompile-directory "~/.emacs.d/lisp" 0)
 
 ;; put everything in ~/.emacs.d
 (setq gnus-init-file "~/.emacs.d/gnus.el"
@@ -132,9 +133,9 @@
 	(window-buffer (previous-window)) (window-buffer (next-window)))))
 
 (defun launch-command (command filename)
-"Launches command with argument filename, discarding all output"
-(call-process command nil 0 nil filename)
-)
+  "Launches command with argument filename, discarding all output"
+  (call-process command nil 0 nil filename)
+  )
 
 (defun gnome-open-file (filename)
   "gnome-opens the specified file."
@@ -159,34 +160,34 @@ From http://atomized.org/2011/01/toggle-between-root-non-root-in-emacs-with-tram
          (parsed (when (tramp-tramp-file-p filename)
                    (coerce (tramp-dissect-file-name filename)
                            'list)))
-		 (old-pnt (point)))
+         (old-pnt (point)))
     (unless filename
       (error "No file in this buffer."))
 
-	(unwind-protect
-		(find-alternate-file
-		 (if (equal '("sudo" "root") (butlast parsed 2))
-			 ;; As non-root
-			 (if (or
-				  (string= "localhost" (nth 2 parsed))
-				  (string= (system-name) (nth 2 parsed)))
-				 (nth 3 parsed)
-			   (apply 'tramp-make-tramp-file-name
-					  (append (list tramp-default-method nil) (cddr parsed))))
+    (unwind-protect
+        (find-alternate-file
+         (if (equal '("sudo" "root") (butlast parsed 2))
+             ;; As non-root
+             (if (or
+                  (string= "localhost" (nth 2 parsed))
+                  (string= (system-name) (nth 2 parsed)))
+                 (nth 3 parsed)
+               (apply 'tramp-make-tramp-file-name
+                      (append (list tramp-default-method nil) (cddr parsed))))
 
-		   ;; As root
-		   (if parsed
-			   (apply 'tramp-make-tramp-file-name
-					  (append '("sudo" "root") (cddr parsed)))
-			 (tramp-make-tramp-file-name "sudo" "root" "localhost" filename))))
-	  (goto-char old-pnt))))
+           ;; As root
+           (if parsed
+               (apply 'tramp-make-tramp-file-name
+                      (append '("sudo" "root") (cddr parsed)))
+             (tramp-make-tramp-file-name "sudo" "root" "localhost" filename))))
+      (goto-char old-pnt))))
 (global-set-key (kbd "C-c C-r") 'toggle-alternate-file-as-root)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Misc. settings
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; ;; I don't use bidi stuff
-;; (setq-default bidi-display-reordering nil)
+;; I don't use bidi stuff
+(setq-default bidi-display-reordering nil)
 ;; No fancy new messages that stay for a while
 (setq minibuffer-message-timeout 0)
 ;; instead of / or whatever
@@ -272,9 +273,7 @@ some other pops up with display-buffer), go back to only one window open"
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; amazing new variable in e23. No need to worry about longlines any more
 (setq-default word-wrap t)
-(global-visual-line-mode)
-;; ... but still use ll sometimes for reading dense text
-(defalias 'll 'longlines-mode)
+(global-visual-line-mode 1)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Display time
@@ -291,7 +290,7 @@ some other pops up with display-buffer), go back to only one window open"
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Auto revert
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; automatically update buffers when changed
+;;automatically update buffers when changed
 (global-auto-revert-mode t)
 (setq global-auto-revert-non-file-buffers nil)
 (setq auto-revert-interval 30) ;30s is enough
@@ -305,18 +304,11 @@ some other pops up with display-buffer), go back to only one window open"
 (require 'ido)
 (setq ido-create-new-buffer 'always
       ido-enable-flex-matching t
-      ido-max-prospects 12
+      ido-max-prospects 20
       ido-max-window-height 1
       ido-read-file-name-non-ido '(gnus-mime-save-part))
 (ido-mode 1)
 (ido-everywhere 1)
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; Uniquify
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; uniquify buffer names
-(require 'uniquify)
-(setq uniquify-buffer-name-style 'post-forward)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Icomplete
@@ -338,12 +330,7 @@ some other pops up with display-buffer), go back to only one window open"
 ;;; Parenthesis editing
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;visual paren matching
-(show-paren-mode t)
-;;rainbow parentheses highlighting ! \o/
-;; (require 'highlight-parentheses)
-;; (setq hl-paren-colors
-;;       '("red" "orange" "yellow" "green" "light blue" "dark blue" "black"))
-;; (global-highlight-parentheses-mode t)
+(show-paren-mode 1)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Paredit
@@ -360,16 +347,14 @@ some other pops up with display-buffer), go back to only one window open"
 				    "-mode-hook"))))
 	  (add-hook hook (lambda () (paredit-mode 1)))))
       '(emacs-lisp lisp inferior-lisp scheme))
-(defalias 'par 'paredit-mode)
 
 ;; globally define cool things
-(global-set-key (kbd "M-(") 'paredit-wrap-round)
-(global-set-key (kbd "C-(") 'paredit-backward-slurp-sexp)
-(global-set-key (kbd "C-)") 'paredit-forward-slurp-sexp)
-(global-set-key (kbd "M-S") 'paredit-splice-sexp)
-(global-set-key (kbd "s-w") 'paredit-wrap-sexp)
-
+(require 'paredit-everywhere)
 (add-hook 'prog-mode-hook 'paredit-everywhere-mode)
+(define-key paredit-everywhere-mode-map (kbd "M-S") 'paredit-splice-sexp)
+(define-key paredit-everywhere-mode-map (kbd "C-(") 'paredit-backward-slurp-sexp)
+(define-key paredit-everywhere-mode-map (kbd "M-s") nil)
+
 (setq paredit-lighter "")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -407,7 +392,6 @@ some other pops up with display-buffer), go back to only one window open"
     ad-do-it))
 (add-hook 'dired-mode-hook 'dired-omit-mode)
 
-;; copy/pasting in dired
 (define-key dired-mode-map (kbd "o") 'dired-find-alternate-file)
 (put 'dired-find-alternate-file 'disabled nil)
 ;;add gnome-open as C-ret
@@ -457,44 +441,6 @@ some other pops up with display-buffer), go back to only one window open"
 (global-set-key (kbd "C-x C-r") 'recentf-ido-find-file-or-maybe-list)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; Imenu: jump between indexes
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(require 'imenu)
-(defun ido-goto-symbol ()
-  "Update the imenu index and then use ido to select a symbol to navigate to."
-  (interactive)
-  (imenu--make-index-alist)
-  (let ((name-and-pos '())
-        (symbol-names '()))
-    (flet ((addsymbols (symbol-list)
-                       (when (listp symbol-list)
-                         (dolist (symbol symbol-list)
-                           (let ((name nil) (position nil))
-                             (cond
-                              ((and (listp symbol) (imenu--subalist-p symbol))
-                               (addsymbols symbol))
-
-                              ((listp symbol)
-                               (setq name (car symbol))
-                               (setq position (cdr symbol)))
-
-                              ((stringp symbol)
-                               (setq name symbol)
-                               (setq position (get-text-property 1 'org-imenu-marker symbol))))
-
-                             (unless (or (null position) (null name))
-                               (add-to-list 'symbol-names name)
-                               (add-to-list 'name-and-pos (cons name position))))))))
-      (addsymbols imenu--index-alist))
-    (let* ((selected-symbol (if (and (thing-at-point 'symbol) (assoc (thing-at-point 'symbol) name-and-pos))
-				(thing-at-point 'symbol)
-			      (ido-completing-read "Symbol? " symbol-names)))
-           (position (cdr (assoc selected-symbol name-and-pos))))
-      (push-mark)
-      (goto-char position))))
-(global-set-key (kbd "C-x C-i") 'ido-goto-symbol)
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Programming modes
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;ignore case when matching a suffix (such as .F90)
@@ -526,62 +472,6 @@ some other pops up with display-buffer), go back to only one window open"
 (define-key c-mode-base-map (kbd "M-q") nil)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; Python
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;; (require 'python)
-;; (require 'cython-mode)
-;; (require 'term)
-
-;; ;; (define-key python-mode-map (kbd "TAB")
-;; ;;   (lambda ()
-;; ;;     (interactive)
-;; ;;     (if (and (not (bolp))
-;; ;; 	     (looking-at "\\_>"))
-;; ;; 	(my-dabbrev-expand)
-;; ;;       ;; jedi mind trick: no, I'm not really there
-;; ;;       (setq this-command 'indent-for-tab-command) 
-;; ;;       (python-indent-line))))
-
-;; (defun ipython-run ()
-;;   (interactive)
-;;   (unless (get-buffer "*ipython*")
-;;     (setq ipython-buffer-name (term-ansi-make-term "*ipython*" "ipython"))
-;;     (with-current-buffer ipython-buffer-name
-;;       (term-mode)
-;;       (term-char-mode)
-;;       (setq term-prompt-regexp "^\\$ *")
-;;       (define-key term-mode-map (kbd "C-a") 'term-bol)
-;;       (local-set-key (kbd "<prior>") 'scroll-down-command)
-;;       (local-set-key (kbd "<next>") 'scroll-up-command)
-;;       (local-set-key (kbd "C-q") (kbd "<backspace>")))))
-
-;; (defun ipython-run-or-switch ()
-;;   (interactive)
-;;   (ipython-run)
-;;   (switch-to-buffer (get-buffer "*ipython*")))
-;; (defun ipython-send-current-buffer ()
-;;   (interactive)
-;;   (save-buffer)
-;;   (ipython-run)
-;;   (term-send-string (get-buffer-process "*ipython*")
-;; 		    (format "%%run -i %s\n" (buffer-file-name)))
-;;   (switch-to-buffer (get-buffer "*ipython*")))
-;; (defun ipython-send-current-region (beg end)
-;;   (interactive "r")
-;;   (ipython-run)
-;;   (term-send-string (get-buffer-process "*ipython*")
-;; 		    (buffer-substring-no-properties beg end))
-;;   (switch-to-buffer (get-buffer "*ipython*")))
-;; (defun ipython-send-current-buffer-and-switch ()
-;;   (interactive)
-;;   (ipython-send-current-buffer)
-;;   (ipython-run-or-switch))
-;; (define-key python-mode-map (kbd "C-c C-c") 'ipython-send-current-buffer-and-switch)
-;; (define-key python-mode-map (kbd "C-c C-z") 'ipython-run-or-switch)
-;; (define-key python-mode-map (kbd "C-c C-r") 'ipython-send-current-region)
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Latex
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; load auctex
@@ -607,9 +497,6 @@ some other pops up with display-buffer), go back to only one window open"
   (TeX-source-correlate-mode)
   (LaTeX-math-mode 1)
   (local-set-key (kbd "C-c C-d") 'TeX-insert-braces)
-  (local-set-key (kbd "C-c l") 'reftex-label)
-  (local-set-key (kbd "C-c r") 'reftex-reference)
-  (local-set-key (kbd "C-c b") 'reftex-citation)
   (local-set-key (kbd "s-c") 'my-latex-compile)
 
   ;; undo TeX remaps, otherwise it interferes with compilation
@@ -672,48 +559,6 @@ some other pops up with display-buffer), go back to only one window open"
 ;; add ~/.tex to the inputs; also in bashrc
 (setenv "TEXINPUTS" ":~/.tex")
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; Outline
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(setq outline-minor-mode-prefix (kbd "s-o"))
-(add-hook 'LaTeX-mode-hook 'outline-minor-mode)
-(add-hook 'emacs-lisp-mode-hook 'outline-minor-mode)
-(defun setup-outline-lisp ()
-  "Only outline on ;;;, thank you."
-  (setq outline-regexp ";;; "))
-(add-hook 'emacs-lisp-mode-hook 'setup-outline-lisp)
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; Reftex
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(require 'reftex)
-(require 'reftex-toc)
-(setq reftex-plug-into-AUCTeX t)
-(add-hook 'reftex-toc-mode-hook 'delete-other-windows)
-;; I need to add a save-window-excursion, or else it'll display the buffer whenever
-;; the buffer is reverted
-(defun reftex-toc-revert (&rest ignore)
-  "Regenerate the *toc* from the internal lists."
-  (interactive)
-  (save-window-excursion
-    (let ((unsplittable
-	   (if (fboundp 'frame-property)
-	       (frame-property (selected-frame) 'unsplittable)
-	     (frame-parameter (selected-frame) 'unsplittable)))
-	  (reftex-rebuilding-toc t))
-      (if unsplittable
-	  (switch-to-buffer
-	   (reftex-get-file-buffer-force reftex-last-toc-file))
-	(switch-to-buffer
-	 (reftex-get-file-buffer-force reftex-last-toc-file))
-	)
-      )
-    (reftex-erase-buffer "*toc*")
-    (setq current-prefix-arg nil)
-    (reftex-toc t)
-    ))
-(define-key reftex-toc-map (kbd "q") 'reftex-toc-quit-and-kill)
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Shell
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -730,9 +575,6 @@ some other pops up with display-buffer), go back to only one window open"
 (add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
 (setq org-startup-indented t)
 (global-set-key "\C-cl" 'org-store-link)
-(global-set-key (kbd "s-r") (lambda () (interactive) (org-capture nil "t")))
-;; (global-set-key (kbd "s-a") (lambda () (interactive) (org-agenda nil "a")))
-;; (global-set-key (kbd "s-z") (lambda () (interactive) (org-agenda nil "z")))
 
 ;;bindings
 (add-hook 'org-load-hook
@@ -767,177 +609,7 @@ some other pops up with display-buffer), go back to only one window open"
  org-capture-templates '(("t" "Scheduled task" entry
 			  (file+headline "~/.emacs.d/org/todo.org" "Tasks")
 			  "* TODO %?\nSCHEDULED: %t\n%a\n%i"))
- org-irc-link-to-logs t
- org-agenda-custom-commands
- '(("z" "Agenda, work and consume"
-    ((agenda "")
-     (tags-todo "Work")
-     (tags-todo "Consume")
-     (tags-todo "Misc")))
-   ("l" "Agenda with done items"
-    agenda "" ((org-agenda-skip-scheduled-if-done nil)))))
-(add-hook 'org-capture-after-finalize-hook 'org-save-all-org-buffers)
-(defadvice org-agenda-quit (after org-agenda-save-org-buffers activate)
-  "Save all org buffers"
-  (org-save-all-org-buffers))
-
-(setq org-agenda-prefix-format '((agenda . " %i %-12:c%-13t")
-				 (timeline . "  % s")
-				 (todo . " %i %-12:c")
-				 (tags . " %i %-12:c")
-				 (search . " %i %-12:c")))
-(setq org-agenda-compact-blocks t)
-
-
-(defun org-agenda-format-date-aligned (date)
-  "Format a date string for display in the daily/weekly agenda, or timeline.
-This function makes sure that dates are aligned for easy reading."
-  (require 'cal-iso)
-  (let* ((dayname (calendar-day-name date))
-	 (day (cadr date))
-	 (day-of-week (calendar-day-of-week date))
-	 (month (car date))
-	 (monthname (calendar-month-name month))
-	 (year (nth 2 date))
-	 (iso-week (org-days-to-iso-week
-		    (calendar-absolute-from-gregorian date)))
-	 (weekyear (cond ((and (= month 1) (>= iso-week 52))
-			  (1- year))
-			 ((and (= month 12) (<= iso-week 1))
-			  (1+ year))
-			 (t year))))
-    (format "%-10s %2d %s %4d"
-	    dayname day monthname year)))
-
-(require 'appt)
-(require 'org-agenda)
-(setq appt-audible nil
-      appt-display-diary nil
-      appt-display-format nil
-      appt-message-warning-time 10)
-(defun appt-mode-line (min-to-app &optional abbrev)
-  "Return an appointment string suitable for use in the mode-line."
-  (let* ((multiple (> (length min-to-app) 1))
-	 (abbrev nil)
-         (imin (if (or (not multiple)
-                       (not (delete (car min-to-app) min-to-app)))
-                   (car min-to-app))))
-    (format "Appointment %s"
-            (if (equal imin "0") "now"
-              (format "in %s %s"
-                      (or imin (mapconcat 'identity min-to-app ","))
-                      (if abbrev "min."
-                        (format "minute%s" (if (equal imin "1") "" "s"))))))))
-(defun my-org-agenda-to-appt ()
-  (interactive)
-  (setq appt-time-msg-list nil)
-  (org-agenda-to-appt)
-  (appt-check))
-(my-org-agenda-to-appt)
-(add-hook 'org-finalize-agenda-hook 'my-org-agenda-to-appt)
-(appt-activate t)
-
-(require 'org)
-(require 'org-agenda)
-(define-key org-agenda-mode-map (kbd "a") (kbd "k c t"))
-(define-key org-agenda-mode-map (kbd "z") (lambda () (interactive) (org-agenda nil "z")))
-(define-key org-agenda-mode-map (kbd "l") (lambda () (interactive) (org-agenda nil "l")))
-
-(setq calendar-holidays
-      '((holiday-fixed 1 1 "Jour de l'an")
-	(holiday-fixed 1 6 "Épiphanie")
-	(holiday-fixed 2 2 "Chandeleur")
-	(holiday-fixed 2 14 "Saint Valentin")
-	(holiday-fixed 5 1 "Fête du travail")
-	(holiday-fixed 5 8 "Commémoration de la capitulation de l'Allemagne en 1945")
-	(holiday-fixed 6 21 "Fête de la musique")
-	(holiday-fixed 7 14 "Fête nationale - Prise de la Bastille")
-	(holiday-fixed 8 15 "Assomption (Religieux)")
-	(holiday-fixed 11 11 "Armistice de 1918")
-	(holiday-fixed 11 1 "Toussaint")
-	(holiday-fixed 11 2 "Commémoration des fidèles défunts")
-	(holiday-fixed 12 25 "Noël")
-	;; fêtes à date variable
-	(holiday-easter-etc 0 "Pâques")
-	(holiday-easter-etc 1 "Lundi de Pâques")
-	(holiday-easter-etc 39 "Ascension")
-	(holiday-easter-etc 49 "Pentecôte")
-	(holiday-easter-etc 50 "Lundi de Pentecôte")
-	(holiday-easter-etc -47 "Mardi gras")
-	(holiday-float 6 0 3 "Fête des pères") ;; troisième dimanche de juin
-	;; Fête des mères
-	(holiday-sexp
-	 '(if (equal
-	       ;; Pentecôte
-	       (holiday-easter-etc 49)
-	       ;; Dernier dimanche de mai
-	       (holiday-float 5 0 -1 nil))
-	      ;; -> Premier dimanche de juin si coïncidence
-	      (car (car (holiday-float 6 0 1 nil)))
-	    ;; -> Dernier dimanche de mai sinon
-	    (car (car (holiday-float 5 0 -1 nil))))
-	 "Fête des mères")))
-
-(setq calendar-mark-holidays-flag t)
-
-
-(require 'org-clock)
-(setq org-clock-in-resume t)
-(setq org-clock-report-include-clocking-task t)
-(setq org-clock-modeline-total 'today)
-(setq org-clock-out-remove-zero-time-clocks t)
-
-(add-hook 'kill-emacs-hook (lambda ()
-			     (when (org-clock-is-active)
-				 (org-clock-out)
-				 (org-save-all-org-buffers))))
-
-(setq org-work-id "eb155a82-92b2-4f25-a3c6-0304591af2f9")
-(defun org-clock-in-default-task ()
-  (interactive)
-  (with-current-buffer "todo.org"
-    (org-with-point-at (org-id-find org-work-id 'marker)
-      (org-clock-in '(16)))))
-
-(defun org-toggle-clock ()
-  (interactive)
-  (if (org-clock-is-active)
-      (org-clock-out)
-    (org-clock-in-default-task))
-  (org-save-all-org-buffers))
-
-(global-set-key (kbd "s-e") 'org-toggle-clock)
-;;duplicate to have custom string
-
-;; overwrite for simpler display
-(defun org-clock-get-clock-string ()
-  "Form a clock-string, that will be shown in the mode line.
-If an effort estimate was defined for the current item, use
-01:30/01:50 format (clocked/estimated).
-If not, show simply the clocked time like 01:50."
-  (let* ((clocked-time (org-clock-get-clocked-time))
-	 (h (floor clocked-time 60))
-	 (m (- clocked-time (* 60 h))))
-    (if org-clock-effort
-	(let* ((effort-in-minutes
-		(org-duration-string-to-minutes org-clock-effort))
-	       (effort-h (floor effort-in-minutes 60))
-	       (effort-m (- effort-in-minutes (* effort-h 60)))
-	       (work-done-str
-		(org-propertize
-		 (format org-time-clocksum-format h m)
-		 'face (if (and org-clock-task-overrun (not org-clock-task-overrun-text))
-			   'org-mode-line-clock-overrun 'org-mode-line-clock)))
-	       (effort-str (format org-time-clocksum-format effort-h effort-m))
-	       (clockstr (org-propertize
-			  (concat  "[%s/" effort-str
-				   "] (" (replace-regexp-in-string "%" "%%" org-clock-heading) ")")
-			  'face 'org-mode-line-clock)))
-	  (format clockstr work-done-str))
-      (format
-       ;;(concat "[" org-time-clocksum-format " (%s)]")
-       (concat " %s " org-time-clocksum-format)
-       org-clock-heading h m))))
+ org-irc-link-to-logs t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Compilation
@@ -964,16 +636,6 @@ If not, show simply the clocked time like 01:50."
 
 ;;compilation by C-c C-c in modes that don't shadow it
 (global-set-key (kbd "C-c C-c") 'compile)
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; Style check
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(defun compile-with-style-check ()
-  "Use compile's interface for style check, but do not memorise as last compilation command"
-  (interactive)
-  (let ((cmd compile-command))
-    (compile (format "style-check.rb -v %s" buffer-file-name))
-    (setq compile-command cmd)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Keybindings
@@ -1162,9 +824,6 @@ Ignores CHAR at point."
 (defun todos ()
   (interactive)
   (find-file "~/.emacs.d/org/todo.org"))
-(defun journal ()
-  (interactive)
-  (find-file "~/.emacs.d/org/journal.org"))
 (global-set-key (kbd "s-n") 'note)
 (global-set-key (kbd "s-t") 'todos)
 (global-set-key (kbd "s-j") 'journal)
@@ -1270,24 +929,6 @@ Ignores CHAR at point."
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Misc editing commands without keybindings
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(defun duplicate-region (beg end &optional sep)
-  "Duplicate the region"
-  (interactive "*r")
-  (let ((p (point)))
-    (copy-region-as-kill beg end)
-    (message "%d" (point))
-    (goto-char end)
-    (if (stringp sep) (insert sep))
-    (yank)
-    (goto-char p)))
-
-(defun exchange-lines ()
-  "Exchanges line at point with line at mark"
-  (interactive)
-  (save-excursion
-    (transpose-lines 0)))
-
 ;;huge hack, but emacs internals are quite messy concerning
 ;;this. Don't even try to use regexps in the arguments :)
 (defun query-exchange (str1 str2 &optional delimited start end)
@@ -1377,13 +1018,6 @@ Ignores CHAR at point."
       (occur (if isearch-regexp isearch-string
 	       (regexp-quote isearch-string))))))
 
-;; isearch ends at the beginning of word
-(add-hook 'isearch-mode-end-hook 'my-goto-match-beginning)
-(defun my-goto-match-beginning ()
-  (when (and isearch-forward
-	     (not isearch-mode-end-hook-quit))
-    (goto-char isearch-other-end)))
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Dictionnaries
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1396,28 +1030,9 @@ Ignores CHAR at point."
   (setq ispell-dictionary (nth my-languages-index my-languages))
   (message ispell-dictionary))
 ;;english dictionary, change it with M-x ispell-change-dictionary or M-x icd
-(setq ispell-dictionary "french"
+(setq ispell-dictionary "american"
       ispell-silently-savep t
       ispell-program-name "aspell")
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; W3M
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; w3m
-(when (require 'w3m nil t)
-  (setq w3m-use-cookies t)
-  (setq w3m-use-title-buffer-name t)
-  (setq w3m-default-display-inline-images t)
-  (setq w3m-toggle-inline-images-permanently nil)
-  (setq mm-w3m-safe-url-regexp nil)
-  (define-key w3m-minor-mode-map "m"
-    'w3m-view-url-with-external-browser)
-  (defun w3m-switch ()
-    (interactive "")
-    (if (eq 'w3m-mode (current-mm))
-	(w3m-close-window)
-      (w3m)))
-  (global-set-key (kbd "s-w") 'w3m-switch))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Tab completion
@@ -1443,29 +1058,7 @@ Ignores CHAR at point."
     (setq ad-return-value (my-dabbrev-expand))))
 
 (setq completion-show-inline-help nil)
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; Notification framework (used in ERC)
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;notification
-(setq do-not-disturb nil)
-(defun dnd ()
-  (interactive)
-  (toggle-variable 'do-not-disturb)
-  (if do-not-disturb
-      (message "Do not disturb")
-    (message "Do disturb")))
-(require 'xml)
-(defun notify (message)
-  "Notify user by graphical display"
-  (unless do-not-disturb
-    (shell-command-to-string (format
-  			      "gnome-osd-client %s"
-  			      (shell-quote-argument (concat "" (xml-escape-string
-  								(if (> (length message) 45)
-  								    (concat (substring message  0 45) "...")
-  								  message)))))))
-  )
+(setq completion-ignore-case t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; System tray
@@ -1510,23 +1103,17 @@ Additional support for inhibiting one activation (quick hack)"
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ERC
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;(load "~/.emacs.d/erc.el")
+;;(load "~/.emacs.d/erc.el")
 ;;read personal info (ERC stuff)
-;(load "~/.emacs.d/priv_emacs.el" t)
-
-;; (setq debug-on-error t)
+;;(load "~/.emacs.d/priv_emacs.el" t)
 
 (setq display-buffer-base-action '(display-buffer-same-window . nil))
 ;; (setq display-buffer-base-action nil)
 
 (when emacs-is-master
   (set-frame-parameter nil 'fullscreen 'fullboth))
-(setq do-not-disturb nil)
 
 (setenv "LD_LIBRARY_PATH" ".")
-
-(setq completion-ignore-case t)
-
 
 (defun remove-mm-lighter (mm)
   "Remove minor lighter from the mode line."
@@ -1536,25 +1123,10 @@ Additional support for inhibiting one activation (quick hack)"
 (require 'paredit-everywhere)
 (remove-mm-lighter 'paredit-everywhere-mode)
 
-(global-set-key (kbd "C-x v p") (lambda () (interactive) (async-shell-command "git push")))
-
-
 (add-hook 'prog-mode-hook #'rainbow-delimiters-mode)
 
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; Colour theme and fonts
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; (require 'zenburn)
-;; (zenburn)
-
-;(add-to-list 'custom-theme-load-path "~/.emacs.d/lisp/")
-;; (add-to-list 'custom-theme-load-path "~/.emacs.d/elpa/material-theme-20160206.1012")
-;; (load-theme 'zenburn t)
-
 (load-theme 'material t) ;; load material theme
-
-;; (setq font-use-system-font t)
 
 (setq visible-bell nil)
 
@@ -1654,8 +1226,8 @@ Additional support for inhibiting one activation (quick hack)"
 	    ;; MODIFIED simply revert buffer, without anything fancy
             ;; revert buffer.
 	    (revert-buffer)
-	    ; MODIFIED don't mark
-            ;(dired-mark-files-regexp (file-name-nondirectory src-file))
+                                        ; MODIFIED don't mark
+                                        ;(dired-mark-files-regexp (file-name-nondirectory src-file))
             ;; show some information
             (setq current-file-number (+ current-file-number 1))
             (message "%d of %d file/dir(s) %s" current-file-number file-number copy-cut-string)
@@ -1728,14 +1300,14 @@ Additional support for inhibiting one activation (quick hack)"
   (if (and (not (ad-get-arg 0))
            (member major-mode yank-indent-modes))
       (let ((transient-mark-mode nil))
-    (yank-advised-indent-function (region-beginning) (region-end)))))
+        (yank-advised-indent-function (region-beginning) (region-end)))))
 
 (defadvice yank-pop (after yank-pop-indent activate)
   "If current mode is one of 'yank-indent-modes, indent yanked text (with prefix arg don't indent)."
   (if (and (not (ad-get-arg 0))
            (member major-mode yank-indent-modes))
-    (let ((transient-mark-mode nil))
-    (yank-advised-indent-function (region-beginning) (region-end)))))
+      (let ((transient-mark-mode nil))
+        (yank-advised-indent-function (region-beginning) (region-end)))))
 
 
 (define-key dired-mode-map (kbd "M-w") 'wuxch-dired-copy)
@@ -1744,3 +1316,19 @@ Additional support for inhibiting one activation (quick hack)"
 
 (require 'highlight-indent-guides)
 (add-hook 'prog-mode-hook 'highlight-indent-guides-mode)
+
+
+
+(require 'magit)
+(global-set-key (kbd "C-x v s") 'magit-status)
+(global-set-key (kbd "C-x v p") 'magit-push-implicitly)
+(global-set-key (kbd "C-x v f") 'magit-pull-from-upstream)
+
+(setq magit-status-sections-hook
+      '(magit-insert-status-headers magit-insert-merge-log magit-insert-rebase-sequence magit-insert-am-sequence magit-insert-sequencer-sequence magit-insert-bisect-output magit-insert-bisect-rest magit-insert-bisect-log magit-insert-unstaged-changes magit-insert-staged-changes magit-insert-stashes magit-insert-unpulled-from-upstream magit-insert-unpulled-from-pushremote magit-insert-unpushed-to-upstream magit-insert-unpushed-to-pushremote))
+
+(magit-auto-revert-mode -1)
+
+
+(add-hook 'python-mode-hook
+          (lambda () (setq forward-sexp-function nil)))
