@@ -525,7 +525,7 @@ some other pops up with display-buffer), go back to only one window open"
   ;; %%% TeX-master: "something"
   ;; %%% End:
   ;; list of master files to look for, increasing order of priority
-  (setq list-of-master-files '("report" "master" "main"))
+  (setq list-of-master-files '("poly" "report" "master" "main"))
   ;; OK, this is a hack, but we force parsing of the file local variables here
   (hack-local-variables)
   ;; if a master file exists in the current directory, set it
@@ -806,7 +806,6 @@ Ignores CHAR at point."
 (global-set-key (kbd "s-x") 'exchange-point-and-mark)
 (global-set-key (kbd "s-SPC") 'pop-global-mark)
 (global-set-key (kbd "s-;") (lambda () (interactive) (find-file "~/.emacs.d/init.el")))
-(global-set-key (kbd "s-v") (lambda () (interactive) (find-file "~/.emacs.d/org/nanowrimo.org")))
 (defun kill-whitespace ()
   "Kill the whitespace between two non-whitespace characters"
   (interactive "*")
@@ -1109,7 +1108,6 @@ Additional support for inhibiting one activation (quick hack)"
     (gnus)))
 (global-set-key (kbd "s-g") 'run-gnus)
 
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ERC
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1344,4 +1342,3 @@ Additional support for inhibiting one activation (quick hack)"
 
 (when (get-buffer "*scratch*") (kill-buffer "*scratch*"))
 (setq initial-buffer-choice "~/") 
-
