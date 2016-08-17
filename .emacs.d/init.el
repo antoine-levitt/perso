@@ -365,6 +365,7 @@ some other pops up with display-buffer), go back to only one window open"
 ;; globally define cool things
 (require 'paredit-everywhere)
 (add-hook 'prog-mode-hook 'paredit-everywhere-mode)
+(add-hook 'LaTeX-mode-hook 'paredit-everywhere-mode)
 (define-key paredit-everywhere-mode-map (kbd "M-S") 'paredit-splice-sexp)
 (define-key paredit-everywhere-mode-map (kbd "C-(") 'paredit-backward-slurp-sexp)
 (define-key paredit-everywhere-mode-map (kbd "M-s") nil)
@@ -1138,6 +1139,7 @@ Additional support for inhibiting one activation (quick hack)"
 (remove-mm-lighter 'paredit-everywhere-mode)
 
 (add-hook 'prog-mode-hook #'rainbow-delimiters-mode)
+(add-hook 'LaTeX-mode-hook #'rainbow-delimiters-mode)
 
 
 (load-theme 'material t) ;; load material theme
