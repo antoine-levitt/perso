@@ -535,12 +535,6 @@ some other pops up with display-buffer), go back to only one window open"
   	(setq TeX-master name)))))
 (add-hook 'LaTeX-mode-hook 'my-tex-config)
 
-(defun my-bibtex-compilation-setup ()
-  (set (make-local-variable 'compile-command)
-       (format
-	"rubber -df main && (raise_process.sh main.pdf || nohup gnome-open main.pdf > /dev/null)")))
-(add-hook 'bibtex-mode-hook 'my-bibtex-compilation-setup 'attheend)
-
 (defun my-latex-compile ()
   "Run a special compile for latex files"
   (interactive)
@@ -549,7 +543,7 @@ some other pops up with display-buffer), go back to only one window open"
    (format
     "rubber -df %s"
     (if (stringp TeX-master)
-	TeX-master
+        TeX-master
       (file-name-sans-extension (file-name-nondirectory (buffer-file-name)))))))
 
 (defun my-after-latex-compile (buf stat)
@@ -558,13 +552,12 @@ some other pops up with display-buffer), go back to only one window open"
 	     (equal my-latex-compiling-buffer (window-buffer))
 	     (equal stat "finished\n"))
     (with-current-buffer my-latex-compiling-buffer
-      (let ((file (file-name-sans-extension (buffer-file-name))))
-	(TeX-atril-sync-view))
-      ;; put evince to front
       (let ((file (if (stringp TeX-master)
 		      TeX-master
 		    (file-name-sans-extension (file-name-nondirectory (buffer-file-name))))))
-	(shell-command-to-string
+	(TeX-evince-sync-view)
+      ;; put evince to front
+        (shell-command-to-string
 	 (format "wmctrl -r %s.pdf -t 3 && wmctrl -a %s.pdf"
 		 file file)))
 
