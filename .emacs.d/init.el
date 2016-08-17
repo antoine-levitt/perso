@@ -512,6 +512,12 @@ some other pops up with display-buffer), go back to only one window open"
   (LaTeX-math-mode 1)
   (local-set-key (kbd "C-c C-d") 'TeX-insert-braces)
   (local-set-key (kbd "s-c") 'my-latex-compile)
+  (setq reftex-plug-into-AUCTeX t)
+  (setq reftex-label-alist '(AMSTeX)) ;; eqref
+  (setq reftex-ref-macro-prompt nil)
+  (fset 'reftex-toc-quit 'reftex-toc-quit-and-kill)
+  (set-default 'preview-scale-function 1.6)
+  ;; (setq reftex-label-alist nil)
 
   ;; undo TeX remaps, otherwise it interferes with compilation
   (define-key TeX-mode-map [remap next-error] nil)
