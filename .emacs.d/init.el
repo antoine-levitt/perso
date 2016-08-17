@@ -1012,6 +1012,9 @@ Ignores CHAR at point."
 ;;; Isearch
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;; match \n when searching spaces
+(setq search-whitespace-regexp "[[:space:]\n]+")
+
 ;;zap to isearch
 (defun zap-to-isearch ()
   (interactive)
@@ -1287,7 +1290,7 @@ Additional support for inhibiting one activation (quick hack)"
 
 
 ;; automatically indent yanked text if in programming-modes : found somewhere on the net
-(defvar yank-indent-modes '(emacs-lisp-mode
+(defvar yank-indent-modes '(emacs-lisp-mode python-mode
                             c-mode c++-mode
                             tcl-mode sql-mode
                             perl-mode cperl-mode
