@@ -25,6 +25,7 @@
 (require 'package)
 (add-to-list 'package-archives
 	     '("melpa" . "http://melpa.org/packages/") t)
+(add-to-list 'load-path (expand-file-name "~/.emacs.d/lisp"))
 
 (package-initialize)
 (when (not package-archive-contents)
@@ -501,6 +502,11 @@ some other pops up with display-buffer), go back to only one window open"
 (setq preview-preserve-counters t)
 ;;use synctex for synchronisation with viewer
 (setq TeX-source-correlate-method 'synctex)
+
+(require 'magic-latex-buffer)
+(add-hook 'LaTeX-mode-hook 'magic-latex-buffer)
+(setq magic-latex-enable-suscript nil)
+
 ;;indent when pressing RET
 (setq TeX-newline-function 'newline-and-indent
       LaTeX-math-abbrev-prefix (kbd "ù")
