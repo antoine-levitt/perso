@@ -519,6 +519,8 @@ some other pops up with display-buffer), go back to only one window open"
   (LaTeX-math-mode 1)
   (local-set-key (kbd "C-c C-d") 'TeX-insert-braces)
   (local-set-key (kbd "s-c") 'my-latex-compile)
+  (local-set-key (kbd "C-c s") (lambda () (interactive) (reftex-reference "s")))
+  (local-set-key (kbd "C-c e") (lambda () (interactive) (reftex-reference "e")))
   (setq reftex-plug-into-AUCTeX t)
   (setq reftex-label-alist '(AMSTeX)) ;; eqref
   (setq reftex-ref-macro-prompt nil)
