@@ -521,6 +521,7 @@ some other pops up with display-buffer), go back to only one window open"
   (local-set-key (kbd "s-c") 'my-latex-compile)
   (local-set-key (kbd "C-c s") (lambda () (interactive) (reftex-reference "s")))
   (local-set-key (kbd "C-c e") (lambda () (interactive) (reftex-reference "e")))
+  (local-set-key (kbd "C-c f") (lambda () (interactive) (reftex-reference "f")))
   (setq reftex-plug-into-AUCTeX t)
   (setq reftex-label-alist '(AMSTeX)) ;; eqref
   (setq reftex-ref-macro-prompt nil)
