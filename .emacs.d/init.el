@@ -9,13 +9,14 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- ;; '(custom-safe-themes
- ;;   (quote
- ;;    ("82e83c9ed132341b83ca8b856ffc6ccadf48b8bf9a16e38ba084d67c85ec2d69" default)))
+ '(horizontal-scroll-bar-mode nil)
  '(inhibit-startup-echo-area-message (user-login-name))
  '(inhibit-startup-screen t)
  '(initial-scratch-message nil)
  '(menu-bar-mode nil)
+ '(package-selected-packages
+   (quote
+    (zenburn-theme undo-tree swiper rainbow-mode rainbow-delimiters pdf-tools paredit-everywhere matlab-mode material-theme magit julia-mode highlight-indentation highlight-indent-guides cython-mode better-defaults autopair auctex)))
  '(scroll-bar-mode nil)
  '(tool-bar-mode nil))
 ;; (setq custom-file "~/.emacs.d/custom.el")
@@ -45,7 +46,8 @@
         cython-mode
         undo-tree
         highlight-indent-guides
-        magit))
+        magit
+        magic-latex-buffer))
 (mapc #'(lambda (package)
           (unless (package-installed-p package)
             (package-install package)))
@@ -82,7 +84,7 @@
 (setq emacs-is-master nil)
 (when (string= "1\n"
 	       (shell-command-to-string
-		"ps x | grep emacs | grep -v grep | grep -v emacs-bin | grep -v emacsclient | wc -l"))
+		"ps x | grep emacs | grep -v grep | grep -v emacs-bin | grep -v emacsclient | grep -v gpg-agent | wc -l"))
   (setq emacs-is-master t)
   (server-start)
 
@@ -506,6 +508,7 @@ some other pops up with display-buffer), go back to only one window open"
 (require 'magic-latex-buffer)
 (add-hook 'LaTeX-mode-hook 'magic-latex-buffer)
 (setq magic-latex-enable-suscript nil)
+(setq magic-latex-enable-block-align nil)
 
 ;;indent when pressing RET
 (setq TeX-newline-function 'newline-and-indent
