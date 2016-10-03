@@ -16,7 +16,7 @@
  '(menu-bar-mode nil)
  '(package-selected-packages
    (quote
-    (zenburn-theme undo-tree swiper rainbow-mode rainbow-delimiters pdf-tools paredit-everywhere matlab-mode material-theme magit julia-mode highlight-indentation highlight-indent-guides cython-mode better-defaults autopair auctex)))
+    (jabber flx counsel zenburn-theme undo-tree swiper rainbow-mode rainbow-delimiters pdf-tools paredit-everywhere matlab-mode material-theme magit julia-mode highlight-indentation highlight-indent-guides cython-mode better-defaults autopair auctex)))
  '(scroll-bar-mode nil)
  '(tool-bar-mode nil))
 ;; (setq custom-file "~/.emacs.d/custom.el")
@@ -47,13 +47,20 @@
         undo-tree
         highlight-indent-guides
         magit
-        magic-latex-buffer))
+        magic-latex-buffer
+        ivy
+        counsel
+        swiper
+        flx))
 (mapc #'(lambda (package)
           (unless (package-installed-p package)
             (package-install package)))
       myPackages)
 
 (defun dummy-function (&rest args)nil)
+(defun remove-mm-lighter (mm)
+  "Remove minor lighter from the mode line."
+  (setcar (cdr (assq mm minor-mode-alist)) nil))
 
 ;; Better better defaults
 (global-set-key (kbd "C-s") 'isearch-forward)
@@ -101,6 +108,7 @@
   )
 ;; greeting message
 (add-hook 'after-init-hook (lambda () (message "Welcome back.")) t)
+(add-hook 'after-init-hook (lambda () (set-frame-parameter nil 'fullscreen 'fullboth)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Graphical display
@@ -324,14 +332,14 @@ some other pops up with display-buffer), go back to only one window open"
       ido-max-prospects 20
       ido-max-window-height 1
       ido-read-file-name-non-ido '(gnus-mime-save-part))
-(ido-mode 1)
-(ido-everywhere 1)
+;; (ido-mode 1)
+;; (ido-everywhere 1)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Icomplete
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;icomplete : completion for commands that don't use ido (like help)
-(icomplete-mode 1)
+;(icomplete-mode 1)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -389,7 +397,9 @@ some other pops up with display-buffer), go back to only one window open"
 ;; pair $ correctly
 (add-hook 'LaTeX-mode-hook
           #'(lambda ()
-              (modify-syntax-entry ?$ "\"")))
+              (define-key LaTeX-mode-map (kbd "$") 'self-insert-command)
+              ;(modify-syntax-entry ?$ "\"")
+              ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Dired
@@ -1142,14 +1152,6 @@ Additional support for inhibiting one activation (quick hack)"
 
 (setenv "LD_LIBRARY_PATH" ".")
 
-(defun remove-mm-lighter (mm)
-  "Remove minor lighter from the mode line."
-  (setcar (cdr (assq mm minor-mode-alist)) nil))
-(remove-mm-lighter 'visual-line-mode)
-(remove-mm-lighter 'autopair-mode)
-(require 'paredit-everywhere)
-(remove-mm-lighter 'paredit-everywhere-mode)
-
 (add-hook 'prog-mode-hook #'rainbow-delimiters-mode)
 (add-hook 'LaTeX-mode-hook #'rainbow-delimiters-mode)
 
@@ -1362,3 +1364,41 @@ Additional support for inhibiting one activation (quick hack)"
 
 (when (get-buffer "*scratch*") (kill-buffer "*scratch*"))
 (setq initial-buffer-choice "~/") 
+
+(ivy-mode 1)
+(setq magit-completing-read-function 'ivy-completing-read)
+(setq ivy-use-virtual-buffers t)
+(setq ivy-count-format "")
+(setq ivy-initial-inputs-alist nil)
+
+(global-set-key (kbd "M-x") 'counsel-M-x)
+(global-set-key (kbd "C-x C-f") 'counsel-find-file)
+(global-set-key (kbd "s-f") 'counsel-find-file)
+(global-set-key (kbd "C-c C-r") 'ivy-resume)
+(global-set-key (kbd "C-M-s") 'swiper)
+(global-set-key (kbd "C-x C-r") 'counsel-recentf)
+
+
+(remove-mm-lighter 'ivy-mode)
+(remove-mm-lighter 'magic-latex-buffer)
+(remove-mm-lighter 'iimage-mode)
+(require 'reftex)
+(remove-mm-lighter 'reftex-mode)
+(remove-mm-lighter 'visual-line-mode)
+(remove-mm-lighter 'autopair-mode)
+(require 'paredit-everywhere)
+(remove-mm-lighter 'paredit-everywhere-mode)
+(require 'flx)
+(setq ivy-re-builders-alist
+      '((t . ivy--regex-plus)))
+
+(define-key isearch-mode-map (kbd "M-s") 'swiper-from-isearch)
+
+(define-key
+  ivy-switch-buffer-map
+  (kbd "C-k")
+  (lambda ()
+    (interactive)
+    (kill-buffer ivy--current)
+    ;(ivy--reset-state ivy-last)
+    ))
