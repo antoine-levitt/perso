@@ -519,6 +519,7 @@ some other pops up with display-buffer), go back to only one window open"
 (add-hook 'LaTeX-mode-hook 'magic-latex-buffer)
 (setq magic-latex-enable-suscript nil)
 (setq magic-latex-enable-block-align nil)
+(setq magic-latex-enable-block-highlight nil)
 
 ;;indent when pressing RET
 (setq TeX-newline-function 'newline-and-indent
