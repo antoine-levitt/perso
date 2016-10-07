@@ -852,8 +852,13 @@ Ignores CHAR at point."
 (defun open-shell-here ()
   (interactive)
   (launch-command "mate-terminal" ""))
-
 (global-set-key (kbd "s-h") 'open-shell-here)
+
+(defun open-file-explorer-here ()
+  (interactive)
+  (launch-command "caja" ""))
+(global-set-key (kbd "s-j") 'open-file-explorer-here)
+
 (defun note ()
   (interactive)
   (find-file "~/.emacs.d/org/notes.org"))
