@@ -562,7 +562,11 @@ some other pops up with display-buffer), go back to only one window open"
   (unless (stringp TeX-master)
     (dolist (name list-of-master-files)
       (when (file-exists-p (concat name ".tex"))
-  	(setq TeX-master name)))))
+  	(setq TeX-master name))))
+  (setq LaTeX-math-list '((?/ "frac" nil nil)
+                          (?S "sum" nil nil)))
+  (require 'latex)
+  (LaTeX-math-initialize))
 (add-hook 'LaTeX-mode-hook 'my-tex-config)
 
 (defun my-latex-compile ()
@@ -1139,7 +1143,7 @@ Additional support for inhibiting one activation (quick hack)"
   (if (get-buffer "*Group*")
       (progn
 	(switch-to-buffer "*Group*")
-	(gnus-group-get-new-news 1))
+	(gnus-group-get-new-news))
     (gnus)))
 (global-set-key (kbd "s-g") 'run-gnus)
 
@@ -1376,6 +1380,11 @@ Additional support for inhibiting one activation (quick hack)"
 (setq ivy-use-virtual-buffers t)
 (setq ivy-count-format "")
 (setq ivy-initial-inputs-alist nil)
+(setq uniquify-strip-common-suffix nil)
+(setq ivy-re-builders-alist
+      '((t . ivy--regex-plus)))
+(setq ivy-sort-matches-functions-alist '(t))
+(setq ivy-virtual-abbreviate 'full)
 
 (global-set-key (kbd "M-x") 'counsel-M-x)
 (global-set-key (kbd "C-x C-f") 'counsel-find-file)
@@ -1395,8 +1404,6 @@ Additional support for inhibiting one activation (quick hack)"
 (require 'paredit-everywhere)
 (remove-mm-lighter 'paredit-everywhere-mode)
 (require 'flx)
-(setq ivy-re-builders-alist
-      '((t . ivy--regex-plus)))
 
 (define-key isearch-mode-map (kbd "M-s") 'swiper-from-isearch)
 
