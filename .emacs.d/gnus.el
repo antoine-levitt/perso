@@ -30,9 +30,9 @@
       gnus-group-sort-function '(gnus-group-sort-by-alphabet gnus-group-sort-by-level)
       ;; Don't display groups without unread messages
       gnus-list-groups-with-ticked-articles nil
-      ;; Try to fill gaps in threads
-      gnus-build-sparse-threads 'some
-      gnus-summary-thread-gathering-function 'gnus-gather-threads-by-references
+      ;; ;; Try to fill gaps in threads
+      ;; gnus-build-sparse-threads 'some
+      ;; gnus-summary-thread-gathering-function 'gnus-gather-threads-by-references
       ;; Threads display
       gnus-sum-thread-tree-root ""
       gnus-sum-thread-tree-single-indent ""
@@ -73,7 +73,7 @@
       ;; don't silently hide messages
       gnus-newsgroup-maximum-articles nil
       ;; Never use agent, since all my groups are local
-      gnus-agent nil
+      gnus-agent t
 
       ;; Message
       ;; Complete using dabbrev
@@ -101,42 +101,42 @@
 	     (summary 0.35 point)
 	     (article 1.0))))
 
-;; toggle between read, unread and subscribed articles. this is a bit of a hack, and should be better integrated.
-;; oh well.
-(defvar gnus-group-display-state 'unsubscribed
-  "What to display in the group buffer.")
-(setq gnus-group-display-state 'unread)
-(require 'cl)
-(defun gnus-group-redisplay ()
-  "Redisplay group according to gnus-group-display-unread"
-  (interactive)
-  ; override mode line to put indicators
-  (setq gnus-group-mode-line-format (concat "Gnus"
-					    (case gnus-group-display-state
-					      ('unread "  ")
-					      ('read " R")
-					      ('unsubscribed " U"))))
-  (case gnus-group-display-state
-    ('unread (gnus-group-list-groups gnus-level-subscribed nil))
-    ('read (gnus-group-list-groups gnus-level-unsubscribed t))
-    ('unsubscribed (gnus-group-list-groups gnus-level-unsubscribed nil))))
-(gnus-group-redisplay) ;; force one redisplay
-(defun gnus-group-toggle-read ()
-  (interactive)
-  (setq gnus-group-display-state
-	(if (equal gnus-group-display-state 'read)
-	    'unread
-	  'read))
-  (gnus-group-redisplay))
-(defun gnus-group-toggle-unsubscribed ()
-  (interactive)
-  (setq gnus-group-display-state
-	(if (equal gnus-group-display-state 'unsubscribed)
-	    'unread
-	  'unsubscribed))
-  (gnus-group-redisplay))
-(define-key gnus-group-mode-map (kbd "h") 'gnus-group-toggle-read)
-(define-key gnus-group-mode-map (kbd "j") 'gnus-group-toggle-unsubscribed)
+;; ;; toggle between read, unread and subscribed articles. this is a bit of a hack, and should be better integrated.
+;; ;; oh well.
+;; (defvar gnus-group-display-state 'unsubscribed
+;;   "What to display in the group buffer.")
+;; (setq gnus-group-display-state 'unread)
+;; (require 'cl)
+;; (defun gnus-group-redisplay ()
+;;   "Redisplay group according to gnus-group-display-unread"
+;;   (interactive)
+;;   ; override mode line to put indicators
+;;   (setq gnus-group-mode-line-format (concat "Gnus"
+;; 					    (case gnus-group-display-state
+;; 					      ('unread "  ")
+;; 					      ('read " R")
+;; 					      ('unsubscribed " U"))))
+;;   (case gnus-group-display-state
+;;     ('unread (gnus-group-list-groups gnus-level-subscribed nil))
+;;     ('read (gnus-group-list-groups gnus-level-unsubscribed t))
+;;     ('unsubscribed (gnus-group-list-groups gnus-level-unsubscribed nil))))
+;; (gnus-group-redisplay) ;; force one redisplay
+;; (defun gnus-group-toggle-read ()
+;;   (interactive)
+;;   (setq gnus-group-display-state
+;; 	(if (equal gnus-group-display-state 'read)
+;; 	    'unread
+;; 	  'read))
+;;   (gnus-group-redisplay))
+;; (defun gnus-group-toggle-unsubscribed ()
+;;   (interactive)
+;;   (setq gnus-group-display-state
+;; 	(if (equal gnus-group-display-state 'unsubscribed)
+;; 	    'unread
+;; 	  'unsubscribed))
+;;   (gnus-group-redisplay))
+;; (define-key gnus-group-mode-map (kbd "h") 'gnus-group-toggle-read)
+;; (define-key gnus-group-mode-map (kbd "j") 'gnus-group-toggle-unsubscribed)
 
 (define-key gnus-group-mode-map (kbd "A !") (lambda () (interactive) (gnus-group-list-ticked 10)))
 
@@ -190,27 +190,27 @@
 (gnus-add-exit-summary-to-function 'gnus-summary-followup)
 (gnus-add-exit-summary-to-function 'gnus-summary-mail-forward)
 
-(defun gnus-summary-toggle-thread-hiding ()
-  (interactive)
-  (make-local-variable 'are-threads-hidden)
-  (if (and (boundp 'are-threads-hidden) are-threads-hidden)
-      (progn
-	(gnus-summary-show-all-threads)
-	(setq are-threads-hidden nil))
-    (gnus-summary-hide-all-threads)
-    (setq are-threads-hidden t)))
-(define-key gnus-summary-mode-map (kbd "H") 'gnus-summary-toggle-thread-hiding)
+;; (defun gnus-summary-toggle-thread-hiding ()
+;;   (interactive)
+;;   (make-local-variable 'are-threads-hidden)
+;;   (if (and (boundp 'are-threads-hidden) are-threads-hidden)
+;;       (progn
+;; 	(gnus-summary-show-all-threads)
+;; 	(setq are-threads-hidden nil))
+;;     (gnus-summary-hide-all-threads)
+;;     (setq are-threads-hidden t)))
+;; (define-key gnus-summary-mode-map (kbd "H") 'gnus-summary-toggle-thread-hiding)
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; Mairix
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(require 'nnmairix)
-(define-key gnus-group-mode-map (kbd "s")
-  'nnmairix-search)
-(defadvice nnmairix-request-group (around nnmairix-be-quiet activate)
-  "Be quiet. (avoids 'Matched n messages' when updating list)"
-  (flet ((message (&rest args) ))
-    ad-do-it))
+;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; ;;; Mairix
+;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; (require 'nnmairix)
+;; (define-key gnus-group-mode-map (kbd "s")
+;;   'nnmairix-search)
+;; (defadvice nnmairix-request-group (around nnmairix-be-quiet activate)
+;;   "Be quiet. (avoids 'Matched n messages' when updating list)"
+;;   (flet ((message (&rest args) ))
+;;     ad-do-it))
 
 ;; setup with http://www.randomsample.de/nnmairix-doc/nnmairix.html. My .mairixrc is
 ;; base=~/.Maildovecot
@@ -313,9 +313,9 @@ external if displayed external."
 (define-key gnus-summary-mode-map (kbd "h")
   'gnus-article-browse-html-article)
 (setq gnus-article-browse-delete-temp t)
-;; In summary buffer, press m to go to the article in gwene
-(define-key gnus-summary-mode-map (kbd "m")
-  "\C-xo\276\C-rlink\C-m\C-m\274\C-xo")
+;; ;; In summary buffer, press m to go to the article in gwene
+;; (define-key gnus-summary-mode-map (kbd "m")
+;;   "\C-xo\276\C-rlink\C-m\C-m\274\C-xo")
 (define-key gnus-summary-mode-map (kbd "o") 'gnus-summary-save-parts)
 ;; Attach files in dired
 (require 'gnus-dired)
@@ -442,55 +442,55 @@ external if displayed external."
 
 (add-to-list 'gnus-posting-styles '("gmane" (Mail-Copies-To "never")))
 
-(setq gnus-article-update-date-headers 60) ; update date every minute
+;; (setq gnus-article-update-date-headers 60) ; update date every minute
 
-(defun article-lapsed-string (time &optional max-segments)
-  ;; If the date is seriously mangled, the timezone functions are
-  ;; liable to bug out, so we ignore all errors.
-  (let* ((now (current-time))
-	 (real-time (subtract-time now time))
-	 (real-sec (and real-time
-			(+ (* (float (car real-time)) 65536)
-			   (cadr real-time))))
-	 (sec (and real-time (abs real-sec)))
-	 (segments 0)
-	 num prev)
-    (unless max-segments
-      (setq max-segments (length article-time-units)))
-    (setq max-segments 1)
-    (cond
-     ((null real-time)
-      "Unknown")
-     ((zerop sec)
-      "Now")
-     (t
-      (concat
-       ;; This is a bit convoluted, but basically we go
-       ;; through the time units for years, weeks, etc,
-       ;; and divide things to see whether that results
-       ;; in positive answers.
-       (mapconcat
-	(lambda (unit)
-	  (if (or (zerop (setq num (ffloor (/ sec (cdr unit)))))
-		  (>= segments max-segments))
-	      ;; The (remaining) seconds are too few to
-	      ;; be divided into this time unit.
-	      ""
-	    ;; It's big enough, so we output it.
-	    (setq sec (- sec (* num (cdr unit))))
-	    (prog1
-		(concat (if prev ", " "") (int-to-string
-					   (floor num))
-			" " (symbol-name (car unit))
-			(if (> num 1) "s" ""))
-	      (setq prev t
-		    segments (1+ segments)))))
-	article-time-units "")
-       ;; If dates are odd, then it might appear like the
-       ;; article was sent in the future.
-       (if (> real-sec 0)
-	   " ago"
-	 " in the future"))))))
+;; (defun article-lapsed-string (time &optional max-segments)
+;;   ;; If the date is seriously mangled, the timezone functions are
+;;   ;; liable to bug out, so we ignore all errors.
+;;   (let* ((now (current-time))
+;; 	 (real-time (subtract-time now time))
+;; 	 (real-sec (and real-time
+;; 			(+ (* (float (car real-time)) 65536)
+;; 			   (cadr real-time))))
+;; 	 (sec (and real-time (abs real-sec)))
+;; 	 (segments 0)
+;; 	 num prev)
+;;     (unless max-segments
+;;       (setq max-segments (length article-time-units)))
+;;     (setq max-segments 1)
+;;     (cond
+;;      ((null real-time)
+;;       "Unknown")
+;;      ((zerop sec)
+;;       "Now")
+;;      (t
+;;       (concat
+;;        ;; This is a bit convoluted, but basically we go
+;;        ;; through the time units for years, weeks, etc,
+;;        ;; and divide things to see whether that results
+;;        ;; in positive answers.
+;;        (mapconcat
+;; 	(lambda (unit)
+;; 	  (if (or (zerop (setq num (ffloor (/ sec (cdr unit)))))
+;; 		  (>= segments max-segments))
+;; 	      ;; The (remaining) seconds are too few to
+;; 	      ;; be divided into this time unit.
+;; 	      ""
+;; 	    ;; It's big enough, so we output it.
+;; 	    (setq sec (- sec (* num (cdr unit))))
+;; 	    (prog1
+;; 		(concat (if prev ", " "") (int-to-string
+;; 					   (floor num))
+;; 			" " (symbol-name (car unit))
+;; 			(if (> num 1) "s" ""))
+;; 	      (setq prev t
+;; 		    segments (1+ segments)))))
+;; 	article-time-units "")
+;;        ;; If dates are odd, then it might appear like the
+;;        ;; article was sent in the future.
+;;        (if (> real-sec 0)
+;; 	   " ago"
+;; 	 " in the future"))))))
 
 ;; (add-hook 'bbdb-after-change-hook (lambda (arg)
 ;; 				    (flet ((message (&rest args) nil))
@@ -504,7 +504,7 @@ external if displayed external."
 
 (setq       gnus-verbose 4
 	    gnus-verbose-backends 4
-	    gnus-asynchronous nil)
+	    gnus-asynchronous t)
 
 
 ;; (defun my-check-mail ()
@@ -522,7 +522,7 @@ external if displayed external."
 ;; (define-key gnus-group-mode-map (kbd "d") 'my-check-mail)
 (define-key gnus-group-mode-map (kbd "g") (lambda ()
 					    (interactive)
-					    (gnus-group-get-new-news 1)))
+					    (gnus-group-get-new-news)))
 (define-key gnus-group-mode-map (kbd "d") 'gnus-group-get-new-news)
 
 
