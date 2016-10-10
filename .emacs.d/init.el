@@ -14,9 +14,6 @@
  '(inhibit-startup-screen t)
  '(initial-scratch-message nil)
  '(menu-bar-mode nil)
- '(package-selected-packages
-   (quote
-    (jabber flx counsel zenburn-theme undo-tree swiper rainbow-mode rainbow-delimiters pdf-tools paredit-everywhere matlab-mode material-theme magit julia-mode highlight-indentation highlight-indent-guides cython-mode better-defaults autopair auctex)))
  '(scroll-bar-mode nil)
  '(tool-bar-mode nil))
 ;; (setq custom-file "~/.emacs.d/custom.el")
@@ -51,7 +48,8 @@
         ivy
         counsel
         swiper
-        flx))
+        flx
+        move-text))
 (mapc #'(lambda (package)
           (unless (package-installed-p package)
             (package-install package)))
@@ -1403,3 +1401,10 @@ Additional support for inhibiting one activation (quick hack)"
     (kill-buffer ivy--current)
     ;(ivy--reset-state ivy-last)
     ))
+
+(define-key paredit-mode-map (kbd "C-M-n") nil)
+(define-key paredit-mode-map (kbd "C-M-p") nil)
+(define-key paredit-everywhere-mode-map (kbd "C-M-p") nil)
+(define-key paredit-everywhere-mode-map (kbd "C-M-p") nil)
+(global-set-key (kbd "C-M-p") 'move-text-up)
+(global-set-key (kbd "C-M-n") 'move-text-down)
