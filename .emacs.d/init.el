@@ -49,7 +49,7 @@
         counsel
         swiper
         flx
-        move-text))
+        mu4e-alert))
 (mapc #'(lambda (package)
           (unless (package-installed-p package)
             (package-install package)))
@@ -829,6 +829,7 @@ Ignores CHAR at point."
 (global-set-key (kbd "s-c") 'compile)
 (global-set-key (kbd "s-f") 'find-file)
 (global-set-key (kbd "s-u") 'undo)
+(global-set-key (kbd "s-q") 'comment-line)
 (defun iwb ()
   "indent whole buffer"
   (interactive)
@@ -1414,9 +1415,117 @@ Additional support for inhibiting one activation (quick hack)"
     ;(ivy--reset-state ivy-last)
     ))
 
-(define-key paredit-mode-map (kbd "C-M-n") nil)
-(define-key paredit-mode-map (kbd "C-M-p") nil)
-(define-key paredit-everywhere-mode-map (kbd "C-M-p") nil)
-(define-key paredit-everywhere-mode-map (kbd "C-M-p") nil)
-(global-set-key (kbd "C-M-p") 'move-text-up)
-(global-set-key (kbd "C-M-n") 'move-text-down)
+
+;; mu4e
+(setq
+  mu4e-maildir       "~/.emacs.d/mbsync"   ;; top-level Maildir
+  mu4e-sent-folder   "/[Google Mail]/.Sent Mail"       ;; folder for sent messages
+  mu4e-drafts-folder "/[Google Mail]/.Drafts"     ;; unfinished messages
+  mu4e-get-mail-command "mbsync all")   ;; saved messages
+(setq mu4e-user-mail-address-list '("antoine.levitt@gmail.com"
+                                    "antoine.levitt@inria.fr"
+                                    "antoine.levitt@enpc.fr"))
+(setq user-mail-address "antoine.levitt@gmail.com")
+(setq user-full-name "Antoine Levitt")
+
+(setq mu4e-use-fancy-chars nil
+      mu4e-update-interval 10
+      mu4e-view-show-images t
+      mu4e-view-image-max-width 800
+      mu4e-sent-messages-behavior 'delete
+      mu4e-hide-index-messages t
+      mu4e-completing-read-function 'ivy-completing-read
+      mu4e-compose-complete-only-personal t
+      
+      message-kill-buffer-on-exit t
+      message-send-mail-function 'message-smtpmail-send-it
+      smtpmail-smtp-server "smtp.gmail.com"
+      smtpmail-smtp-service 587)
+
+(require 'mu4e)
+(require 'mu4e-alert)
+(add-hook 'after-init-hook #'mu4e-alert-enable-mode-line-display)
+(setq mu4e-alert-interesting-mail-query "flag:unread AND maildir:/INBOX")
+(setq AL-mail-count 0)
+(defun mu4e-alert-default-mode-line-formatter (mail-count)
+  "AL: My version, don't display the count but save it"
+  (setq AL-mail-count mail-count)
+  (when (not (zerop mail-count))
+    (concat " "
+            (propertize
+             "Mail"
+             'display (when (display-graphic-p)
+                        display-time-mail-icon)
+             'face display-time-mail-face
+             'help-echo (concat (if (= mail-count 1)
+                                    "You have an unread email"
+                                  (format "You have %s unread emails" mail-count))
+                                "\nClick here to view "
+                                (if (= mail-count 1) "it" "them"))
+             'mouse-face 'mode-line-highlight
+             'keymap '(mode-line keymap
+                                 (mouse-1 . mu4e-alert-view-unread-mails)
+                                 (mouse-2 . mu4e-alert-view-unread-mails)
+                                 (mouse-3 . mu4e-alert-view-unread-mails)))
+            " "
+            )))
+
+
+(define-key mu4e-main-mode-map (kbd "q") 'bury-buffer) ;never quit
+(define-key mu4e-headers-mode-map (kbd "SPC") 'mu4e-headers-view-message)
+
+(define-key mu4e-main-mode-map (kbd "c") 'mu4e-compose-new)
+(define-key mu4e-main-mode-map (kbd "u") (lambda () (interactive) (mu4e-headers-search "flag:unread AND m:/INBOX" nil nil t nil t))) ; last t: open first message
+(define-key mu4e-main-mode-map (kbd "i") (lambda () (interactive) (mu4e-headers-search "m:/INBOX" nil nil t)))
+(define-key mu4e-main-mode-map (kbd "m") (lambda () (interactive) (mu4e-headers-search "flag:unread" nil nil t nil t)))
+(define-key mu4e-main-mode-map (kbd "d") (lambda () (interactive) (mu4e-headers-search "m:/\"[Google Mail]/.Drafts\"" nil nil t nil t)))
+(define-key mu4e-main-mode-map (kbd "s") (lambda () (interactive) (mu4e-headers-search "m:/\"[Google Mail]/.Sent Mail\"" nil nil t)))
+(global-set-key (kbd "s-e") mu4e-main-mode-map)
+
+(global-set-key (kbd "s-g") (lambda () (interactive) (mu4e-headers-search "flag:unread AND m:/INBOX" nil nil t nil t))) ; last t: open first message
+;; (defun mu4e~main-view () nil) ;; too extreme?
+
+;; TODO integrate this
+;; (add-hook 'mu4e-compose-pre-hook
+;;           (lambda ()
+;;             "Set the From address based on the To address of the original."
+;;             (let ((msg mu4e-compose-parent-message)) ;; msg is shorter...
+;;               (when msg
+;;                 (setq user-mail-address
+;;                       (cond
+;;                        ((mu4e-message-contact-field-matches msg '(:to :cc :bcc) "@gitorious")
+;;                         "marius@gitorious.com")
+;;                        ((mu4e-message-contact-field-matches msg :to "marius@shortcut.no")
+;;                         "marius@shortcut.no")
+;;                        ((mu4e-message-contact-field-matches msg :to "marius.mathiesen@gmail.com")
+;;                         "zmalltalker@zmalltalker.com")
+;;                        ((mu4e-message-contact-field-matches msg :to "zmalltalker@zmalltalker.com")
+;;                         "zmalltalker@zmalltalker.com")
+;;                        (t "marius.mathiesen@gmail.com")))))))
+
+
+;; temporary until it's merged: don't (message nil)
+(defun mu4e~update-sentinel-func (proc msg)
+  "Sentinel function for the update process."
+  (when mu4e~progress-reporter
+    (progress-reporter-done mu4e~progress-reporter)
+    (setq mu4e~progress-reporter nil))
+  (let* ((status (process-status proc))
+         (code (process-exit-status proc))
+         (maybe-error (or (not (eq status 'exit)) (/= code 0)))
+         (buf (and (buffer-live-p mu4e~update-buffer) mu4e~update-buffer))
+         (win (and buf (get-buffer-window buf))))
+    nil
+    (if maybe-error
+        (progn
+          (when mu4e-index-update-error-warning
+            (mu4e-message "Update process returned with non-zero exit code")
+            (sit-for 5))
+          (when mu4e-index-update-error-continue
+            (mu4e-update-index)))
+      (mu4e-update-index))
+    (if (window-live-p win)
+        (with-selected-window win (kill-buffer-and-window))
+      (when (buffer-live-p buf) (kill-buffer buf)))))
+
+(mu4e~start)
