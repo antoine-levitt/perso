@@ -1421,7 +1421,7 @@ Additional support for inhibiting one activation (quick hack)"
   mu4e-maildir       "~/.emacs.d/mbsync"   ;; top-level Maildir
   mu4e-sent-folder   "/[Google Mail]/.Sent Mail"       ;; folder for sent messages
   mu4e-drafts-folder "/[Google Mail]/.Drafts"     ;; unfinished messages
-  mu4e-get-mail-command "mbsync all")   ;; saved messages
+  mu4e-get-mail-command "timeout 20 mbsync all")
 (setq mu4e-user-mail-address-list '("antoine.levitt@gmail.com"
                                     "antoine.levitt@inria.fr"
                                     "antoine.levitt@enpc.fr"))
