@@ -1429,13 +1429,19 @@ Additional support for inhibiting one activation (quick hack)"
 (setq user-full-name "Antoine Levitt")
 
 (setq mu4e-use-fancy-chars nil
-      mu4e-update-interval 10
+      mu4e-update-interval 15
       mu4e-view-show-images t
       mu4e-view-image-max-width 800
       mu4e-sent-messages-behavior 'delete
       mu4e-hide-index-messages t
       mu4e-completing-read-function 'ivy-completing-read
       mu4e-compose-complete-only-personal t
+      mu4e-headers-fields '((:human-date . 6)
+                            (:flags . 3)
+                            (:from . 22)
+                            (:subject . 80))
+      mu4e-headers-time-format "%R"
+      mu4e-headers-date-format "%d/%m"
       
       message-kill-buffer-on-exit t
       message-send-mail-function 'message-smtpmail-send-it
@@ -1480,10 +1486,15 @@ Additional support for inhibiting one activation (quick hack)"
 (define-key mu4e-main-mode-map (kbd "m") (lambda () (interactive) (mu4e-headers-search "flag:unread" nil nil t nil t)))
 (define-key mu4e-main-mode-map (kbd "d") (lambda () (interactive) (mu4e-headers-search "m:/\"[Google Mail]/.Drafts\"" nil nil t nil t)))
 (define-key mu4e-main-mode-map (kbd "s") (lambda () (interactive) (mu4e-headers-search "m:/\"[Google Mail]/.Sent Mail\"" nil nil t)))
+(define-key mu4e-main-mode-map (kbd "a") (lambda () (interactive) (mu4e-headers-search "" nil nil t)))
 (global-set-key (kbd "s-e") mu4e-main-mode-map)
 
 (global-set-key (kbd "s-g") (lambda () (interactive) (mu4e-headers-search "flag:unread AND m:/INBOX" nil nil t nil t))) ; last t: open first message
-;; (defun mu4e~main-view () nil) ;; too extreme?
+(global-set-key (kbd "s-m") (lambda () (interactive) (mu4e-headers-search "flag:unread" nil nil t nil t))) ; last t: open first message
+(global-set-key (kbd "s-r") (lambda () (interactive) (mu4e-headers-search "flag:unread" nil nil t nil t))) ; last t: open first message
+(defun mu4e~main-view () nil) ;; too extreme?
+(global-set-key (kbd "C-x m") 'mu4e-compose-new)
+(define-key mu4e-compose-mode-map (kbd "M-q") nil)
 
 ;; TODO integrate this
 ;; (add-hook 'mu4e-compose-pre-hook
