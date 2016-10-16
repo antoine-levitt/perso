@@ -1421,15 +1421,16 @@ Additional support for inhibiting one activation (quick hack)"
   mu4e-maildir       "~/.emacs.d/mbsync"   ;; top-level Maildir
   mu4e-sent-folder   "/[Google Mail]/.Sent Mail"       ;; folder for sent messages
   mu4e-drafts-folder "/[Google Mail]/.Drafts"     ;; unfinished messages
-  mu4e-get-mail-command "timeout 20 mbsync all")
+  mu4e-get-mail-command "timeout 30 mbsync all")
 (setq mu4e-user-mail-address-list '("antoine.levitt@gmail.com"
                                     "antoine.levitt@inria.fr"
                                     "antoine.levitt@enpc.fr"))
-(setq user-mail-address "antoine.levitt@gmail.com")
+(setq user-true-mail-address "antoine.levitt@gmail.com") ; in case it gets overwritten
+(setq user-mail-address user-true-mail-address)
 (setq user-full-name "Antoine Levitt")
 
 (setq mu4e-use-fancy-chars nil
-      mu4e-update-interval 15
+      mu4e-update-interval 40
       mu4e-view-show-images t
       mu4e-view-image-max-width 800
       mu4e-sent-messages-behavior 'delete
@@ -1443,14 +1444,17 @@ Additional support for inhibiting one activation (quick hack)"
       mu4e-headers-time-format "%R"
       mu4e-headers-date-format "%d/%m"
       mu4e-view-show-addresses t
+      mu4e-compose-dont-reply-to-self t
+      mu4e-headers-include-related t
 
       
       message-kill-buffer-on-exit t
-      message-send-mail-function 'message-smtpmail-send-it
+      message-send-mail-function 'message-smtpmail-send-it ; can also do it async if needed, with smtpmail-async
       smtpmail-smtp-server "smtp.gmail.com"
       smtpmail-smtp-service 587)
 
 (require 'mu4e)
+
 (require 'mu4e-alert)
 (add-hook 'after-init-hook #'mu4e-alert-enable-mode-line-display)
 (setq mu4e-alert-interesting-mail-query "flag:unread AND maildir:/INBOX")
@@ -1482,6 +1486,9 @@ Additional support for inhibiting one activation (quick hack)"
 (define-key mu4e-main-mode-map (kbd "q") 'bury-buffer) ;never quit
 (define-key mu4e-headers-mode-map (kbd "SPC") 'mu4e-headers-view-message)
 
+(define-key mu4e-view-mode-map (kbd "r") 'mu4e-compose-reply)
+(define-key mu4e-view-mode-map (kbd "f") 'mu4e-compose-forward)
+
 (define-key mu4e-main-mode-map (kbd "c") 'mu4e-compose-new)
 (define-key mu4e-main-mode-map (kbd "u") (lambda () (interactive) (mu4e-headers-search "flag:unread AND m:/INBOX" nil nil t nil t))) ; last t: open first message
 (define-key mu4e-main-mode-map (kbd "i") (lambda () (interactive) (mu4e-headers-search "m:/INBOX" nil nil t)))
@@ -1499,25 +1506,6 @@ Additional support for inhibiting one activation (quick hack)"
 (global-set-key (kbd "C-x m") 'mu4e-compose-new)
 (define-key mu4e-compose-mode-map (kbd "M-q") nil)
 (define-key mu4e-compose-mode-map (kbd "M-n") nil)
-
-;; TODO integrate this
-;; (add-hook 'mu4e-compose-pre-hook
-;;           (lambda ()
-;;             "Set the From address based on the To address of the original."
-;;             (let ((msg mu4e-compose-parent-message)) ;; msg is shorter...
-;;               (when msg
-;;                 (setq user-mail-address
-;;                       (cond
-;;                        ((mu4e-message-contact-field-matches msg '(:to :cc :bcc) "@gitorious")
-;;                         "marius@gitorious.com")
-;;                        ((mu4e-message-contact-field-matches msg :to "marius@shortcut.no")
-;;                         "marius@shortcut.no")
-;;                        ((mu4e-message-contact-field-matches msg :to "marius.mathiesen@gmail.com")
-;;                         "zmalltalker@zmalltalker.com")
-;;                        ((mu4e-message-contact-field-matches msg :to "zmalltalker@zmalltalker.com")
-;;                         "zmalltalker@zmalltalker.com")
-;;                        (t "marius.mathiesen@gmail.com")))))))
-
 
 ;; temporary until it's merged: don't (message nil)
 (defun mu4e~update-sentinel-func (proc msg)
@@ -1542,5 +1530,28 @@ Additional support for inhibiting one activation (quick hack)"
     (if (window-live-p win)
         (with-selected-window win (kill-buffer-and-window))
       (when (buffer-live-p buf) (kill-buffer buf)))))
+
+;; 1) messages to me@foo.example.com should be replied with From:me@foo.example.com
+;; 2) messages to me@bar.example.com should be replied with From:me@bar.example.com
+;; 3) all other mail should use From:me@cuux.example.com
+(add-hook 'mu4e-compose-pre-hook
+          (defun my-set-from-address ()
+            "Set the From address based on the To address of the original."
+            (let ((msg mu4e-compose-parent-message) ;; msg is shorter...
+                  (case-fold-search t))
+              (when msg
+                (setq user-mail-address
+                      (cond
+                       ((mu4e-message-contact-field-matches msg '(:to :cc :bcc) ".*levitt@enpc.fr")
+                        "antoine.levitt@enpc.fr")
+                       ((mu4e-message-contact-field-matches msg '(:to :cc :bcc) "antoine.levitt@inria.fr")
+                        "antoine.levitt@inria.fr")
+                       ((mu4e-message-contact-field-matches msg '(:from) "@enpc.fr")
+                        "antoine.levitt@enpc.fr")
+                       ((mu4e-message-contact-field-matches msg '(:from) "@inria.fr")
+                        "antoine.levitt@inria.fr")
+                       (t "antoine.levitt@gmail.com")))))))
+
+(add-hook 'mu4e-compose-hook (lambda (interactive) (setq user-mail-address user-true-mail-address)))
 
 (mu4e~start)
