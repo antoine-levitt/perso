@@ -811,6 +811,13 @@ Ignores CHAR at point."
 (global-set-key (kbd "M-z") 'zap-up-to-char)
 (global-set-key (kbd "C-M-z") 'zap-up-to-char-back)
 
+(defun kill-current-file ()
+  (interactive)
+  (when (y-or-n-p "Really delete file?")
+    (delete-file (buffer-file-name))
+    (kill-buffer)))
+(global-set-key (kbd "C-c D") 'kill-current-file)
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Super keybindings
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1166,6 +1173,15 @@ Additional support for inhibiting one activation (quick hack)"
 
 
 (load-theme 'material t) ;; load material theme
+(require 'outline)
+(set-face-attribute 'outline-1 nil :foreground "SkyBlue1")
+(set-face-attribute 'outline-2 nil :foreground "CadetBlue1")
+(set-face-attribute 'outline-3 nil :foreground "LightSteelBlue1")
+(set-face-attribute 'outline-4 nil :foreground "turquoise2")
+(set-face-attribute 'outline-5 nil :foreground "aquamarine1")
+(set-face-attribute 'outline-6 nil :foreground "aquamarine1")
+(set-face-attribute 'outline-7 nil :foreground "aquamarine1")
+(set-face-attribute 'outline-8 nil :foreground "aquamarine1")
 
 (setq visible-bell nil)
 
