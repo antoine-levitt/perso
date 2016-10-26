@@ -1501,6 +1501,8 @@ Additional support for inhibiting one activation (quick hack)"
 
 (define-key mu4e-main-mode-map (kbd "q") 'bury-buffer) ;never quit
 (define-key mu4e-headers-mode-map (kbd "SPC") 'mu4e-headers-view-message)
+(define-key mu4e-headers-mode-map (kbd "d") 'mu4e-headers-mark-for-delete)
+(define-key mu4e-view-mode-map (kbd "d") 'mu4e-view-mark-for-delete)
 
 (define-key mu4e-view-mode-map (kbd "r") 'mu4e-compose-reply)
 (define-key mu4e-view-mode-map (kbd "f") 'mu4e-compose-forward)
