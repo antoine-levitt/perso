@@ -1462,6 +1462,7 @@ Additional support for inhibiting one activation (quick hack)"
       mu4e-view-show-addresses t
       mu4e-compose-dont-reply-to-self t
       mu4e-headers-include-related nil
+      mu4e-view-fill-headers nil
 
       
       message-kill-buffer-on-exit t
@@ -1469,7 +1470,10 @@ Additional support for inhibiting one activation (quick hack)"
       smtpmail-smtp-server "smtp.gmail.com"
       smtpmail-smtp-service 587)
 
+
 (require 'mu4e)
+(add-to-list 'mu4e-compose-hidden-headers "^In-Reply-To:")
+(setq mu4e-view-fields '(:from :to :cc :subject :date :mailing-list :user-agent :attachments))
 
 (require 'mu4e-alert)
 (add-hook 'after-init-hook #'mu4e-alert-enable-mode-line-display)
@@ -1572,3 +1576,6 @@ Additional support for inhibiting one activation (quick hack)"
 (add-hook 'mu4e-compose-hook (lambda (interactive) (setq user-mail-address user-true-mail-address)))
 
 (mu4e~start)
+
+(require 'gnus-dired)
+(define-key dired-mode-map (kbd "a") 'gnus-dired-attach)
