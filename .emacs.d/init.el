@@ -1463,8 +1463,10 @@ Additional support for inhibiting one activation (quick hack)"
       mu4e-compose-dont-reply-to-self t
       mu4e-headers-include-related nil
       mu4e-view-fill-headers nil
-
+      mu4e-compose-auto-include-date t
       
+      message-citation-line-format "%e %B %Y %R %Z, %f:\n" 
+      message-citation-line-function (lambda () (message-insert-formatted-citation-line nil nil (* 60 (timezone-zone-to-minute (current-time-zone))))) ; don't use the sender's timezone
       message-kill-buffer-on-exit t
       message-send-mail-function 'message-smtpmail-send-it ; can also do it async if needed, with smtpmail-async
       smtpmail-smtp-server "smtp.gmail.com"
@@ -1473,6 +1475,8 @@ Additional support for inhibiting one activation (quick hack)"
 
 (require 'mu4e)
 (add-to-list 'mu4e-compose-hidden-headers "^In-Reply-To:")
+(add-to-list 'mu4e-compose-hidden-headers "^MIME-Version:")
+(add-to-list 'mu4e-compose-hidden-headers "^Received:")
 (setq mu4e-view-fields '(:from :to :cc :subject :date :mailing-list :user-agent :attachments))
 
 (require 'mu4e-alert)
@@ -1578,4 +1582,19 @@ Additional support for inhibiting one activation (quick hack)"
 (mu4e~start)
 
 (require 'gnus-dired)
+;; make the `gnus-dired-mail-buffers' function also work on
+;; message-mode derived modes, such as mu4e-compose-mode
+(defun gnus-dired-mail-buffers ()
+  "Return a list of active message buffers."
+  (let (buffers)
+    (save-current-buffer
+      (dolist (buffer (buffer-list t))
+        (set-buffer buffer)
+        (when (and (derived-mode-p 'message-mode)
+                   (null message-sent-message-via))
+          (push (buffer-name buffer) buffers))))
+    (nreverse buffers)))
+
+(setq gnus-dired-mail-mode 'mu4e-user-agent)
+(add-hook 'dired-mode-hook 'turn-on-gnus-dired-mode)
 (define-key dired-mode-map (kbd "a") 'gnus-dired-attach)
