@@ -1445,6 +1445,7 @@ Additional support for inhibiting one activation (quick hack)"
 (setq user-mail-address user-true-mail-address)
 (setq user-full-name "Antoine Levitt")
 
+(require 'timezone)
 (setq mu4e-use-fancy-chars nil
       mu4e-update-interval 40
       mu4e-view-show-images t
