@@ -1461,7 +1461,7 @@ Additional support for inhibiting one activation (quick hack)"
       mu4e-headers-date-format "%d/%m"
       mu4e-view-show-addresses t
       mu4e-compose-dont-reply-to-self t
-      mu4e-headers-include-related t
+      mu4e-headers-include-related nil
 
       
       message-kill-buffer-on-exit t
@@ -1510,7 +1510,7 @@ Additional support for inhibiting one activation (quick hack)"
 (define-key mu4e-main-mode-map (kbd "c") 'mu4e-compose-new)
 (define-key mu4e-main-mode-map (kbd "u") (lambda () (interactive) (mu4e-headers-search "flag:unread AND m:/INBOX" nil nil t nil t))) ; last t: open first message
 (define-key mu4e-main-mode-map (kbd "i") (lambda () (interactive) (mu4e-headers-search "m:/INBOX" nil nil t)))
-(define-key mu4e-main-mode-map (kbd "m") (lambda () (interactive) (mu4e-headers-search "flag:unread" nil nil t nil t)))
+(define-key mu4e-main-mode-map (kbd "r") (lambda () (interactive) (mu4e-headers-search "flag:unread" nil nil t nil t)))
 (define-key mu4e-main-mode-map (kbd "d") (lambda () (interactive) (mu4e-headers-search "m:/\"[Google Mail]/.Drafts\"" nil nil t nil t)))
 (define-key mu4e-main-mode-map (kbd "s") (lambda () (interactive) (mu4e-headers-search "m:/\"[Google Mail]/.Sent Mail\"" nil nil t)))
 (define-key mu4e-main-mode-map (kbd "q") (lambda () (interactive) (mu4e-headers-search)))
@@ -1518,9 +1518,8 @@ Additional support for inhibiting one activation (quick hack)"
 (global-set-key (kbd "s-e") mu4e-main-mode-map)
 
 (global-set-key (kbd "s-g") (lambda () (interactive) (mu4e-headers-search "flag:unread AND m:/INBOX" nil nil t nil t))) ; last t: open first message
-(global-set-key (kbd "s-m") (lambda () (interactive) (mu4e-headers-search "flag:unread" nil nil t nil t))) ; last t: open first message
 (global-set-key (kbd "s-r") (lambda () (interactive) (mu4e-headers-search "flag:unread" nil nil t nil t))) ; last t: open first message
-(defun mu4e~main-view () nil) ;; too extreme?
+(defun mu4e~main-view () nil) ;; too extreme? Bof.
 (global-set-key (kbd "C-x m") 'mu4e-compose-new)
 (define-key mu4e-compose-mode-map (kbd "M-q") nil)
 (define-key mu4e-compose-mode-map (kbd "M-n") nil)
