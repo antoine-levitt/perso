@@ -1455,9 +1455,8 @@ Additional support for inhibiting one activation (quick hack)"
       mu4e-completing-read-function 'ivy-completing-read
       mu4e-compose-complete-only-personal t
       mu4e-headers-fields '((:human-date . 6)
-                            (:flags . 3)
-                            (:from . 22)
-                            (:subject . 80))
+                            (:from-or-to . 22)
+                            (:thread-subject . 110))
       mu4e-headers-time-format "%R"
       mu4e-headers-date-format "%d/%m"
       mu4e-view-show-addresses t
