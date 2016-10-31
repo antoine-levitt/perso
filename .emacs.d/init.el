@@ -49,7 +49,8 @@
         counsel
         swiper
         flx
-        mu4e-alert))
+        mu4e-alert
+        pdf-tools))
 (mapc #'(lambda (package)
           (unless (package-installed-p package)
             (package-install package)))
@@ -1465,6 +1466,9 @@ Additional support for inhibiting one activation (quick hack)"
       mu4e-headers-include-related nil
       mu4e-view-fill-headers nil
       mu4e-compose-auto-include-date t
+      mu4e-msg2pdf "/usr/bin/msg2pdf"
+      mu4e-headers-auto-update nil
+      mu4e-change-filenames-when-moving t
       
       message-citation-line-format "%e %B %Y %R %Z, %f:\n" 
       message-citation-line-function (lambda () (message-insert-formatted-citation-line nil nil (* 60 (timezone-zone-to-minute (current-time-zone))))) ; don't use the sender's timezone
@@ -1479,6 +1483,7 @@ Additional support for inhibiting one activation (quick hack)"
 (add-to-list 'mu4e-compose-hidden-headers "^MIME-Version:")
 (add-to-list 'mu4e-compose-hidden-headers "^Received:")
 (setq mu4e-view-fields '(:from :to :cc :subject :date :mailing-list :user-agent :attachments))
+(add-to-list 'mu4e-view-actions '("View in browser" . mu4e-action-view-in-browser) t)
 
 (require 'mu4e-alert)
 (add-hook 'after-init-hook #'mu4e-alert-enable-mode-line-display)
@@ -1599,3 +1604,4 @@ Additional support for inhibiting one activation (quick hack)"
 (setq gnus-dired-mail-mode 'mu4e-user-agent)
 (add-hook 'dired-mode-hook 'turn-on-gnus-dired-mode)
 (define-key dired-mode-map (kbd "a") 'gnus-dired-attach)
+(pdf-tools-install)
