@@ -1577,7 +1577,7 @@ Additional support for inhibiting one activation (quick hack)"
                         "antoine.levitt@inria.fr")
                        (t "antoine.levitt@gmail.com")))))))
 
-(add-hook 'mu4e-compose-hook (lambda (interactive) (setq user-mail-address user-true-mail-address)))
+(add-hook 'mu4e-compose-mode-hook (lambda (interactive) (setq user-mail-address user-true-mail-address)))
 
 (mu4e~start)
 
@@ -1598,3 +1598,15 @@ Additional support for inhibiting one activation (quick hack)"
 (setq gnus-dired-mail-mode 'mu4e-user-agent)
 (add-hook 'dired-mode-hook 'turn-on-gnus-dired-mode)
 (define-key dired-mode-map (kbd "a") 'gnus-dired-attach)
+
+
+;; Update date when saving a draft
+(add-hook 'mu4e-compose-mode-hook
+          (lambda ()
+            (add-hook 'before-save-hook 'mu4e~draft-update-date nil t)))
+(defun mu4e~draft-update-date ()
+  (save-excursion
+    (message-position-on-field "Date")
+    (message-beginning-of-line)
+    (kill-line)
+    (insert (message-make-date))))
