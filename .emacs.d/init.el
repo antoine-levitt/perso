@@ -1471,7 +1471,7 @@ Additional support for inhibiting one activation (quick hack)"
       mu4e-headers-auto-update nil
       mu4e-change-filenames-when-moving t
       
-      message-citation-line-format "\n%d %B %Y %R %Z, %f:\n" 
+      message-citation-line-format "\n%d %B %Y %R %Z, %f:" 
       message-citation-line-function (lambda () (message-insert-formatted-citation-line nil nil (* 60 (timezone-zone-to-minute (current-time-zone))))) ; don't use the sender's timezone
       message-kill-buffer-on-exit t
       message-send-mail-function 'message-smtpmail-send-it ; can also do it async if needed, with smtpmail-async
@@ -1483,6 +1483,7 @@ Additional support for inhibiting one activation (quick hack)"
 (add-to-list 'mu4e-compose-hidden-headers "^In-Reply-To:")
 (add-to-list 'mu4e-compose-hidden-headers "^MIME-Version:")
 (add-to-list 'mu4e-compose-hidden-headers "^Received:")
+(add-to-list 'mu4e-compose-hidden-headers "^X-TUID:")
 (setq mu4e-view-fields '(:from :to :cc :subject :date :mailing-list :user-agent :attachments))
 (add-to-list 'mu4e-view-actions '("View in browser" . mu4e-action-view-in-browser) t)
 
