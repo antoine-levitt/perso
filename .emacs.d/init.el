@@ -1471,7 +1471,7 @@ Additional support for inhibiting one activation (quick hack)"
       mu4e-headers-auto-update nil
       mu4e-change-filenames-when-moving t
       
-      message-citation-line-format "%e %B %Y %R %Z, %f:\n" 
+      message-citation-line-format "\n%d %B %Y %R %Z, %f:\n" 
       message-citation-line-function (lambda () (message-insert-formatted-citation-line nil nil (* 60 (timezone-zone-to-minute (current-time-zone))))) ; don't use the sender's timezone
       message-kill-buffer-on-exit t
       message-send-mail-function 'message-smtpmail-send-it ; can also do it async if needed, with smtpmail-async
