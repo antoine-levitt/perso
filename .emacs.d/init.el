@@ -1584,7 +1584,7 @@ Additional support for inhibiting one activation (quick hack)"
                         "antoine.levitt@inria.fr")
                        (t "antoine.levitt@gmail.com")))))))
 
-(add-hook 'mu4e-compose-mode-hook (lambda (interactive) (setq user-mail-address user-true-mail-address)))
+(add-hook 'mu4e-compose-mode-hook (lambda () (interactive) (setq user-mail-address user-true-mail-address)))
 
 (mu4e~start)
 
