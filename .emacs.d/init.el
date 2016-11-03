@@ -730,6 +730,7 @@ brake whatever split of windows we might have in the frame."
     (kill-whole-line 1)
     (move-to-column col)))
 (global-set-key (kbd "C-S-k") 'my-kill-whole-line)
+(setq kill-do-not-save-duplicates t)
 ;;sometimes useful (for query-replace and such)
 (global-set-key (kbd "C-c C-SPC") 'transient-mark-mode)
 ;;easy window management for azerty keyboards. This can fail
