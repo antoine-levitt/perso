@@ -50,7 +50,8 @@
         swiper
         flx
         mu4e-alert
-        pdf-tools))
+        pdf-tools
+        iedit))
 (mapc #'(lambda (package)
           (unless (package-installed-p package)
             (package-install package)))
@@ -1619,3 +1620,5 @@ Additional support for inhibiting one activation (quick hack)"
     (message-beginning-of-line)
     (kill-line)
     (insert (message-make-date))))
+
+(require 'iedit)
