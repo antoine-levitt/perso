@@ -1466,6 +1466,7 @@ Additional support for inhibiting one activation (quick hack)"
       mu4e-view-show-addresses t
       mu4e-compose-dont-reply-to-self t
       mu4e-headers-include-related nil
+      mu4e-headers-results-limit 200
       mu4e-view-fill-headers nil
       mu4e-compose-auto-include-date t
       mu4e-msg2pdf "/usr/bin/msg2pdf"
