@@ -51,7 +51,8 @@
         flx
         mu4e-alert
         pdf-tools
-        iedit))
+        iedit
+        smart-mode-line))
 (mapc #'(lambda (package)
           (unless (package-installed-p package)
             (package-install package)))
@@ -1622,3 +1623,8 @@ Additional support for inhibiting one activation (quick hack)"
     (insert (message-make-date))))
 
 (require 'iedit)
+
+(setq sml/theme 'respectful)
+(setq sml/name-width 80)
+(setq sml/line-number-format "%4l")
+(sml/setup)
