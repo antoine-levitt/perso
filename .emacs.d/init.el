@@ -539,6 +539,7 @@ some other pops up with display-buffer), go back to only one window open"
   (local-set-key (kbd "C-c s") (lambda () (interactive) (reftex-reference "s")))
   (local-set-key (kbd "C-c e") (lambda () (interactive) (reftex-reference "e")))
   (local-set-key (kbd "C-c f") (lambda () (interactive) (reftex-reference "f")))
+  (setq LaTeX-beamer-item-overlay-flag nil)
   (setq reftex-plug-into-AUCTeX t)
   (setq reftex-label-alist '(AMSTeX)) ;; eqref
   (setq reftex-ref-macro-prompt nil)
@@ -1075,6 +1076,7 @@ Ignores CHAR at point."
   (lambda ()
     (interactive)
     (let ((case-fold-search isearch-case-fold-search))
+      (isearch-exit)
       (occur (if isearch-regexp isearch-string
 	       (regexp-quote isearch-string))))))
 
@@ -1474,6 +1476,7 @@ Additional support for inhibiting one activation (quick hack)"
       mu4e-msg2pdf "/usr/bin/msg2pdf"
       mu4e-headers-auto-update nil
       mu4e-change-filenames-when-moving t
+      mu4e-headers-leave-behavior 'apply
       
       message-citation-line-format "\n%d %B %Y %R %Z, %f:" 
       message-citation-line-function (lambda () (message-insert-formatted-citation-line nil nil (* 60 (timezone-zone-to-minute (current-time-zone))))) ; don't use the sender's timezone
