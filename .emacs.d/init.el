@@ -1496,7 +1496,30 @@ Additional support for inhibiting one activation (quick hack)"
 
 (require 'mu4e-alert)
 (add-hook 'after-init-hook #'mu4e-alert-enable-mode-line-display)
+(setq alert-default-style 'libnotify)
+(mu4e-alert-set-default-style 'libnotify)
+(add-hook 'after-init-hook #'mu4e-alert-enable-notifications)
+(setq mu4e-alert-email-notification-types '(subjects))
 (setq mu4e-alert-interesting-mail-query "flag:unread AND maildir:/INBOX")
+(setq mu4e-alert-set-window-urgency nil)
+(defun mu4e-alert-default-grouped-mail-notification-formatter (mail-group all-mails)
+  "Default function to format MAIL-GROUP for notification.
+
+ALL-MAILS are the all the unread emails"
+  (let* ((mail-count (length mail-group))
+         (total-mails (length all-mails))
+         (first-mail (car mail-group))
+         (title-prefix "")
+         (field-value (mu4e-alert--get-group first-mail))
+         (title-suffix (format "%s"
+                               field-value))
+         (title (format "%s %s\n" title-prefix title-suffix)))
+    (list :title title
+          :body (concat " "
+                        (s-join "\n"
+                                (mapcar (lambda (mail)
+                                          (plist-get mail :subject))
+                                        mail-group))))))
 (setq AL-mail-count 0)
 (defun mu4e-alert-default-mode-line-formatter (mail-count)
   "AL: My version, don't display the count but save it"
@@ -1628,6 +1651,9 @@ Additional support for inhibiting one activation (quick hack)"
 (require 'iedit)
 
 (setq sml/theme 'respectful)
-(setq sml/name-width 80)
+(setq sml/name-width 100)
 (setq sml/line-number-format "%4l")
 (sml/setup)
+
+
+(global-set-key (kbd "M-y") 'counsel-yank-pop)
