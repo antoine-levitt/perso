@@ -511,6 +511,15 @@ some other pops up with display-buffer), go back to only one window open"
 ;;    (message "Failed to load auctex")))
 
 (pdf-tools-install)
+(define-key pdf-view-mode-map (kbd "n") 'pdf-view-scroll-up-or-next-page)
+(define-key pdf-view-mode-map (kbd "C-v") 'pdf-view-scroll-up-or-next-page)
+(define-key pdf-view-mode-map (kbd "p") 'pdf-view-scroll-down-or-previous-page)
+(define-key pdf-view-mode-map (kbd "M-v") 'pdf-view-scroll-down-or-previous-page)
+(define-key pdf-view-mode-map (kbd "j") 'pdf-view-next-line-or-next-page)
+(define-key pdf-view-mode-map (kbd "k") 'pdf-view-previous-line-or-previous-page)
+(define-key pdf-view-mode-map (kbd "q") 'kill-current-buffer)
+(setq TeX-view-program-selection '((output-pdf "pdf-tools")))
+(setq TeX-view-program-list '(("pdf-tools" "TeX-pdf-tools-sync-view")))
 
 ;;don't ask to cache preamble
 (setq preview-auto-cache-preamble t)
@@ -1477,6 +1486,9 @@ Additional support for inhibiting one activation (quick hack)"
       mu4e-headers-auto-update nil
       mu4e-change-filenames-when-moving t
       mu4e-headers-leave-behavior 'apply
+
+      shr-color-visible-luminance-min 80
+
       
       message-citation-line-format "\n%d %B %Y %R %Z, %f:" 
       message-citation-line-function (lambda () (message-insert-formatted-citation-line nil nil (* 60 (timezone-zone-to-minute (current-time-zone))))) ; don't use the sender's timezone
