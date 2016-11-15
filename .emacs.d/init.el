@@ -1196,9 +1196,9 @@ Additional support for inhibiting one activation (quick hack)"
 (set-face-attribute 'outline-3 nil :foreground "LightSteelBlue1")
 (set-face-attribute 'outline-4 nil :foreground "turquoise2")
 (set-face-attribute 'outline-5 nil :foreground "aquamarine1")
-(set-face-attribute 'outline-6 nil :foreground "aquamarine1")
-(set-face-attribute 'outline-7 nil :foreground "aquamarine1")
-(set-face-attribute 'outline-8 nil :foreground "aquamarine1")
+(set-face-attribute 'outline-6 nil :foreground "aquamarine2")
+(set-face-attribute 'outline-7 nil :foreground "aquamarine3")
+(set-face-attribute 'outline-8 nil :foreground "aquamarine4")
 
 (setq visible-bell nil)
 
