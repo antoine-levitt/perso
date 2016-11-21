@@ -413,7 +413,8 @@ some other pops up with display-buffer), go back to only one window open"
 ;;clean dired default view : omit hidden files, don't display groups, use human-readable sizes
 (setq dired-listing-switches "-alhGv"
       dired-free-space-args "-Pkm"
-      dired-auto-revert-buffer t)
+      dired-auto-revert-buffer t
+      dired-recursive-copies 'always)
 ;; Omit, be quiet
 (defadvice dired-omit-expunge (around dired-omit-be-quiet activate)
   "Be quiet."
@@ -511,6 +512,15 @@ some other pops up with display-buffer), go back to only one window open"
 ;;    (message "Failed to load auctex")))
 
 (pdf-tools-install)
+(define-key pdf-view-mode-map (kbd "n") 'pdf-view-scroll-up-or-next-page)
+(define-key pdf-view-mode-map (kbd "C-v") 'pdf-view-scroll-up-or-next-page)
+(define-key pdf-view-mode-map (kbd "p") 'pdf-view-scroll-down-or-previous-page)
+(define-key pdf-view-mode-map (kbd "M-v") 'pdf-view-scroll-down-or-previous-page)
+(define-key pdf-view-mode-map (kbd "j") 'pdf-view-next-line-or-next-page)
+(define-key pdf-view-mode-map (kbd "k") 'pdf-view-previous-line-or-previous-page)
+(define-key pdf-view-mode-map (kbd "q") 'kill-current-buffer)
+(setq TeX-view-program-selection '((output-pdf "pdf-tools")))
+(setq TeX-view-program-list '(("pdf-tools" "TeX-pdf-tools-sync-view")))
 
 ;;don't ask to cache preamble
 (setq preview-auto-cache-preamble t)
@@ -539,6 +549,7 @@ some other pops up with display-buffer), go back to only one window open"
   (local-set-key (kbd "C-c s") (lambda () (interactive) (reftex-reference "s")))
   (local-set-key (kbd "C-c e") (lambda () (interactive) (reftex-reference "e")))
   (local-set-key (kbd "C-c f") (lambda () (interactive) (reftex-reference "f")))
+  (setq LaTeX-beamer-item-overlay-flag nil)
   (setq reftex-plug-into-AUCTeX t)
   (setq reftex-label-alist '(AMSTeX)) ;; eqref
   (setq reftex-ref-macro-prompt nil)
@@ -1075,6 +1086,7 @@ Ignores CHAR at point."
   (lambda ()
     (interactive)
     (let ((case-fold-search isearch-case-fold-search))
+      (isearch-exit)
       (occur (if isearch-regexp isearch-string
 	       (regexp-quote isearch-string))))))
 
@@ -1185,9 +1197,9 @@ Additional support for inhibiting one activation (quick hack)"
 (set-face-attribute 'outline-3 nil :foreground "LightSteelBlue1")
 (set-face-attribute 'outline-4 nil :foreground "turquoise2")
 (set-face-attribute 'outline-5 nil :foreground "aquamarine1")
-(set-face-attribute 'outline-6 nil :foreground "aquamarine1")
-(set-face-attribute 'outline-7 nil :foreground "aquamarine1")
-(set-face-attribute 'outline-8 nil :foreground "aquamarine1")
+(set-face-attribute 'outline-6 nil :foreground "aquamarine2")
+(set-face-attribute 'outline-7 nil :foreground "aquamarine3")
+(set-face-attribute 'outline-8 nil :foreground "aquamarine4")
 
 (setq visible-bell nil)
 
@@ -1474,6 +1486,10 @@ Additional support for inhibiting one activation (quick hack)"
       mu4e-msg2pdf "/usr/bin/msg2pdf"
       mu4e-headers-auto-update nil
       mu4e-change-filenames-when-moving t
+      mu4e-headers-leave-behavior 'apply
+
+      shr-color-visible-luminance-min 80
+
       
       message-citation-line-format "\n%d %B %Y %R %Z, %f:" 
       message-citation-line-function (lambda () (message-insert-formatted-citation-line nil nil (* 60 (timezone-zone-to-minute (current-time-zone))))) ; don't use the sender's timezone
@@ -1493,7 +1509,30 @@ Additional support for inhibiting one activation (quick hack)"
 
 (require 'mu4e-alert)
 (add-hook 'after-init-hook #'mu4e-alert-enable-mode-line-display)
+(setq alert-default-style 'libnotify)
+(mu4e-alert-set-default-style 'libnotify)
+(add-hook 'after-init-hook #'mu4e-alert-enable-notifications)
+(setq mu4e-alert-email-notification-types '(subjects))
 (setq mu4e-alert-interesting-mail-query "flag:unread AND maildir:/INBOX")
+(setq mu4e-alert-set-window-urgency nil)
+(defun mu4e-alert-default-grouped-mail-notification-formatter (mail-group all-mails)
+  "Default function to format MAIL-GROUP for notification.
+
+ALL-MAILS are the all the unread emails"
+  (let* ((mail-count (length mail-group))
+         (total-mails (length all-mails))
+         (first-mail (car mail-group))
+         (title-prefix "")
+         (field-value (mu4e-alert--get-group first-mail))
+         (title-suffix (format "%s"
+                               field-value))
+         (title (format "%s %s\n" title-prefix title-suffix)))
+    (list :title title
+          :body (concat " "
+                        (s-join "\n"
+                                (mapcar (lambda (mail)
+                                          (plist-get mail :subject))
+                                        mail-group))))))
 (setq AL-mail-count 0)
 (defun mu4e-alert-default-mode-line-formatter (mail-count)
   "AL: My version, don't display the count but save it"
@@ -1625,6 +1664,9 @@ Additional support for inhibiting one activation (quick hack)"
 (require 'iedit)
 
 (setq sml/theme 'respectful)
-(setq sml/name-width 80)
+(setq sml/name-width 100)
 (setq sml/line-number-format "%4l")
 (sml/setup)
+
+
+(global-set-key (kbd "M-y") 'counsel-yank-pop)
