@@ -413,7 +413,8 @@ some other pops up with display-buffer), go back to only one window open"
 ;;clean dired default view : omit hidden files, don't display groups, use human-readable sizes
 (setq dired-listing-switches "-alhGv"
       dired-free-space-args "-Pkm"
-      dired-auto-revert-buffer t)
+      dired-auto-revert-buffer t
+      dired-recursive-copies 'always)
 ;; Omit, be quiet
 (defadvice dired-omit-expunge (around dired-omit-be-quiet activate)
   "Be quiet."

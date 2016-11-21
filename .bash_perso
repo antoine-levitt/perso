@@ -117,3 +117,5 @@ export GFORTRAN_UNBUFFERED_PRECONNECTED='Y'
 
 alias pprof="python -m cProfile -s cumulative" # pprof -o out.profile script.py
 alias pprofview="pyprof2calltree -k -i" #pprofview out.profile
+
+alias julia=~/julia/bin/julia
