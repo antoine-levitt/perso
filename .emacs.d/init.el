@@ -1490,7 +1490,7 @@ Additional support for inhibiting one activation (quick hack)"
       mu4e-headers-auto-update nil
       mu4e-change-filenames-when-moving t
       mu4e-headers-leave-behavior 'apply
-
+      mu4e-headers-show-threads nil
       shr-color-visible-luminance-min 80
 
       
