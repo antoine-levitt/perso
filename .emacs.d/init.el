@@ -528,6 +528,7 @@ some other pops up with display-buffer), go back to only one window open"
 (define-key pdf-view-mode-map (kbd "j") (lambda () (interactive) (pdf-view-scroll-up-or-next-page 5)))
 (define-key pdf-view-mode-map (kbd "k") (lambda () (interactive) (pdf-view-scroll-down-or-previous-page 5)))
 (define-key pdf-view-mode-map (kbd "q") 'bury-buffer)
+(define-key pdf-view-mode-map (kbd "a") 'pdf-annot-add-text-annotation)
 (setq-default pdf-view-display-size 2.0)
 (setq TeX-view-program-selection '((output-pdf "pdf-tools")))
 (setq TeX-view-program-list '(("pdf-tools" "TeX-pdf-tools-sync-view")))
@@ -1456,7 +1457,7 @@ Additional support for inhibiting one activation (quick hack)"
 (remove-mm-lighter 'paredit-everywhere-mode)
 (require 'flx)
 
-(define-key isearch-mode-map (kbd "M-s") 'swiper-from-isearch)
+(define-key isearch-mode-map (kbd "C-M-s") 'swiper-from-isearch)
 
 (define-key
   ivy-switch-buffer-map
