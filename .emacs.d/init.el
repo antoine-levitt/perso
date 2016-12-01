@@ -564,6 +564,9 @@ some other pops up with display-buffer), go back to only one window open"
   (local-set-key (kbd "C-c e") (lambda () (interactive) (reftex-reference "e")))
   (local-set-key (kbd "C-c f") (lambda () (interactive) (reftex-reference "f")))
   (local-set-key (kbd "C-c C-g") nil)
+  (local-set-key (kbd "s-a") 'TeX-command-run-all)
+  (add-hook 'TeX-after-compilation-finished-functions #'TeX-revert-document-buffer)
+
   (setq LaTeX-beamer-item-overlay-flag nil)
   (setq reftex-plug-into-AUCTeX t)
   (setq reftex-label-alist '(AMSTeX)) ;; eqref
@@ -1687,13 +1690,8 @@ ALL-MAILS are the all the unread emails"
 (global-set-key (kbd "M-y") 'counsel-yank-pop)
 
 
-(define-key TeX-mode-map (kbd "s-a") 'TeX-command-run-all)
 (define-key pdf-view-mode-map (kbd "m") 'pdf-view-midnight-minor-mode)
 (define-key pdf-view-mode-map (kbd "s-a") 'bury-buffer)
-
-(add-hook 'TeX-after-compilation-finished-functions #'TeX-revert-document-buffer)
-
-
 
 
 
