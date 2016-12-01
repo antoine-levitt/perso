@@ -515,15 +515,26 @@ some other pops up with display-buffer), go back to only one window open"
 ;;    (message "Failed to load auctex")))
 
 (pdf-tools-install)
+
 (define-key pdf-view-mode-map (kbd "n") 'pdf-view-scroll-up-or-next-page)
 (define-key pdf-view-mode-map (kbd "C-v") 'pdf-view-scroll-up-or-next-page)
+(define-key pdf-view-mode-map (kbd "v") 'pdf-view-scroll-up-or-next-page)
 (define-key pdf-view-mode-map (kbd "p") 'pdf-view-scroll-down-or-previous-page)
 (define-key pdf-view-mode-map (kbd "M-v") 'pdf-view-scroll-down-or-previous-page)
+(define-key pdf-view-mode-map (kbd "V") 'pdf-view-scroll-down-or-previous-page)
 (define-key pdf-view-mode-map (kbd "j") 'pdf-view-next-line-or-next-page)
 (define-key pdf-view-mode-map (kbd "k") 'pdf-view-previous-line-or-previous-page)
-(define-key pdf-view-mode-map (kbd "q") 'kill-current-buffer)
+
+(define-key pdf-view-mode-map (kbd "j") (lambda () (interactive) (pdf-view-scroll-up-or-next-page 5)))
+(define-key pdf-view-mode-map (kbd "k") (lambda () (interactive) (pdf-view-scroll-down-or-previous-page 5)))
+(define-key pdf-view-mode-map (kbd "q") 'bury-buffer)
+(setq-default pdf-view-display-size 2.0)
 (setq TeX-view-program-selection '((output-pdf "pdf-tools")))
 (setq TeX-view-program-list '(("pdf-tools" "TeX-pdf-tools-sync-view")))
+
+(setq pdf-view-midnight-colors (cons (frame-parameter nil 'foreground-color) (frame-parameter nil 'background-color)))
+(add-hook 'after-init-hook (lambda () (setq pdf-view-midnight-colors (cons (frame-parameter nil 'foreground-color) (frame-parameter nil 'background-color)))))
+
 
 ;;don't ask to cache preamble
 (setq preview-auto-cache-preamble t)
@@ -552,6 +563,7 @@ some other pops up with display-buffer), go back to only one window open"
   (local-set-key (kbd "C-c s") (lambda () (interactive) (reftex-reference "s")))
   (local-set-key (kbd "C-c e") (lambda () (interactive) (reftex-reference "e")))
   (local-set-key (kbd "C-c f") (lambda () (interactive) (reftex-reference "f")))
+  (local-set-key (kbd "C-c C-g") nil)
   (setq LaTeX-beamer-item-overlay-flag nil)
   (setq reftex-plug-into-AUCTeX t)
   (setq reftex-label-alist '(AMSTeX)) ;; eqref
@@ -1462,7 +1474,7 @@ Additional support for inhibiting one activation (quick hack)"
 (setq mu4e-user-mail-address-list '("antoine.levitt@gmail.com"
                                     "antoine.levitt@inria.fr"
                                     "antoine.levitt@enpc.fr"))
-(setq user-true-mail-address "antoine.levitt@gmail.com") ; in case it gets overwritten
+(setq user-true-mail-address "antoine.levitt@inria.fr") ; in case it gets overwritten
 (setq user-mail-address user-true-mail-address)
 (setq user-full-name "Antoine Levitt")
 
@@ -1673,3 +1685,65 @@ ALL-MAILS are the all the unread emails"
 
 
 (global-set-key (kbd "M-y") 'counsel-yank-pop)
+
+
+(define-key TeX-mode-map (kbd "s-a") 'TeX-command-run-all)
+(define-key pdf-view-mode-map (kbd "m") 'pdf-view-midnight-minor-mode)
+(define-key pdf-view-mode-map (kbd "s-a") 'bury-buffer)
+
+(add-hook 'TeX-after-compilation-finished-functions #'TeX-revert-document-buffer)
+
+
+
+
+
+
+
+
+;; No timeout for tooltip
+(defun pdf-util-tooltip-arrow (image-top &optional timeout)
+  (pdf-util-assert-pdf-window)
+  (when (floatp image-top)
+    (setq image-top
+          (round (* image-top (cdr (pdf-view-image-size))))))
+  (let* (x-gtk-use-system-tooltips ;allow for display property in tooltip
+         (dx (+ (or (car (window-margins)) 0)
+                (car (window-fringes))))
+         (dy image-top)
+         (pos (list dx dy dx (+ dy (* 2 (frame-char-height)))))
+         (vscroll
+          (pdf-util-required-vscroll pos))
+         (tooltip-frame-parameters
+          `((border-width . 0)
+            (internal-border-width . 0)
+            ,@tooltip-frame-parameters))
+         ;; (tooltip-hide-delay (or timeout 6))
+         )
+    (when vscroll
+      (image-set-window-vscroll vscroll))
+    (setq dy (max 0 (- dy
+                       (cdr (pdf-view-image-offset))
+                       (window-vscroll nil t)
+                       (frame-char-height))))
+    (when (overlay-get (pdf-view-current-overlay) 'before-string)
+      (let* ((e (window-inside-pixel-edges))
+             (xw (pdf-util-with-edges (e) e-width)))
+        (cl-incf dx (/ (- xw (car (pdf-view-image-size t))) 2))))
+    (pdf-util-tooltip-in-window
+     (propertize
+      " " 'display (propertize
+		    "\u2192" ;;right arrow
+		    'display '(height 2)
+		    'face `(:foreground
+                            "orange red"
+                            :background
+                            ,(if (bound-and-true-p pdf-view-midnight-minor-mode)
+                                 (cdr pdf-view-midnight-colors)
+                               "white"))))
+     dx dy)))
+
+(add-hook 'pdf-view-mode-hook 'pdf-view-midnight-minor-mode)
+(setq TeX-save-query nil)
+
+
+(add-hook 'reftex-select-label-mode-hook 'reftex-reparse-document)
