@@ -1457,6 +1457,7 @@ Additional support for inhibiting one activation (quick hack)"
 (remove-mm-lighter 'paredit-everywhere-mode)
 (require 'flx)
 
+(require 'swiper)
 (define-key isearch-mode-map (kbd "C-M-s") 'swiper-from-isearch)
 
 (define-key
