@@ -1747,3 +1747,6 @@ ALL-MAILS are the all the unread emails"
 
 
 (add-hook 'reftex-select-label-mode-hook 'reftex-reparse-document)
+
+
+(define-key pdf-view-mode-map (kbd "c") (lambda () (interactive) (launch-command "xdg-open" (buffer-file-name))))
