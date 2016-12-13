@@ -1511,7 +1511,10 @@ Additional support for inhibiting one activation (quick hack)"
       shr-color-visible-luminance-min 80
 
       
+      message-tab-body-function nil
       message-citation-line-format "\n%d %B %Y %R %Z, %f:" 
+      message-generate-new-buffers 'unique
+      message-wash-forwarded-subjects t
       message-citation-line-function (lambda () (message-insert-formatted-citation-line nil nil (* 60 (timezone-zone-to-minute (current-time-zone))))) ; don't use the sender's timezone
       message-kill-buffer-on-exit t
       message-send-mail-function 'message-smtpmail-send-it ; can also do it async if needed, with smtpmail-async
@@ -1649,6 +1652,30 @@ ALL-MAILS are the all the unread emails"
                        (t "antoine.levitt@gmail.com")))))))
 
 (add-hook 'mu4e-compose-mode-hook (lambda () (interactive) (setq user-mail-address user-true-mail-address)))
+
+;; redefine Subject header face
+(defun mu4e~compose-remap-faces ()
+  "Our parent `message-mode' uses font-locking for the compose
+buffers; lets remap its faces so it uses the ones for mu4e."
+  ;; normal headers
+  (face-remap-add-relative 'message-header-name
+                           '((:inherit mu4e-header-key-face)))
+  (face-remap-add-relative 'message-header-other
+                           '((:inherit mu4e-header-value-face)))
+  ;; special headers
+  (face-remap-add-relative 'message-header-from
+                           '((:inherit mu4e-contact-face)))
+  (face-remap-add-relative 'message-header-to
+                           '((:inherit mu4e-contact-face)))
+  (face-remap-add-relative 'message-header-cc
+                           '((:inherit mu4e-contact-face)))
+  (face-remap-add-relative 'message-header-bcc
+                           '((:inherit mu4e-contact-face)))
+  (face-remap-add-relative 'message-header-subject
+                           '((:inherit mu4e-contact-face)))
+  ;; citation
+  (face-remap-add-relative 'message-cited-text
+                           '((:inherit mu4e-cited-1-face))))
 
 (mu4e~start)
 
