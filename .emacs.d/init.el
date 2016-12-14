@@ -55,7 +55,8 @@
         mu4e-alert
         pdf-tools
         iedit
-        smart-mode-line))
+        smart-mode-line
+        avy))
 (mapc #'(lambda (package)
           (unless (package-installed-p package)
             (package-install package)))
@@ -1445,6 +1446,12 @@ Additional support for inhibiting one activation (quick hack)"
 (global-set-key (kbd "C-M-s") 'swiper)
 (global-set-key (kbd "C-x C-r") 'counsel-recentf)
 
+(global-set-key (kbd "M-g M-g") 'avy-goto-line)
+(global-set-key (kbd "M-g g") 'avy-goto-line)
+(require 'avy)
+(define-key isearch-mode-map (kbd "M-g") 'avy-isearch)
+(setq avy-keys '(?q 115 100 102 103 104 106 107 108)) ;azerty keyboard
+
 
 (remove-mm-lighter 'ivy-mode)
 (remove-mm-lighter 'magic-latex-buffer)
@@ -1672,7 +1679,7 @@ buffers; lets remap its faces so it uses the ones for mu4e."
   (face-remap-add-relative 'message-header-bcc
                            '((:inherit mu4e-contact-face)))
   (face-remap-add-relative 'message-header-subject
-                           '((:inherit mu4e-contact-face)))
+                           '((:inherit font-lock-string-face)))
   ;; citation
   (face-remap-add-relative 'message-cited-text
                            '((:inherit mu4e-cited-1-face))))
