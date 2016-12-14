@@ -45,7 +45,7 @@
         paredit-everywhere
         cython-mode
         undo-tree
-        highlight-indent-guides
+        highlight-indentation
         magit
         magic-latex-buffer
         ivy
@@ -1407,10 +1407,6 @@ Additional support for inhibiting one activation (quick hack)"
 (define-key dired-mode-map (kbd "C-w") 'wuxch-dired-cut)
 (define-key dired-mode-map (kbd "C-y") 'wuxch-dired-paste)
 
-(require 'highlight-indent-guides)
-(add-hook 'prog-mode-hook 'highlight-indent-guides-mode)
-
-
 (require 'magit)
 (global-set-key (kbd "C-x v s") 'magit-status)
 (global-set-key (kbd "C-x v p") 'magit-push-implicitly)
@@ -1452,6 +1448,8 @@ Additional support for inhibiting one activation (quick hack)"
 (define-key isearch-mode-map (kbd "M-g") 'avy-isearch)
 (setq avy-keys '(?q 115 100 102 103 104 106 107 108)) ;azerty keyboard
 
+(require 'highlight-indentation)
+(add-hook 'python-mode-hook 'highlight-indentation-mode)
 
 (remove-mm-lighter 'ivy-mode)
 (remove-mm-lighter 'magic-latex-buffer)
@@ -1462,6 +1460,7 @@ Additional support for inhibiting one activation (quick hack)"
 (remove-mm-lighter 'autopair-mode)
 (require 'paredit-everywhere)
 (remove-mm-lighter 'paredit-everywhere-mode)
+(remove-mm-lighter 'highlight-indentation-mode)
 (require 'flx)
 
 (require 'swiper)
