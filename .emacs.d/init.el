@@ -530,6 +530,8 @@ some other pops up with display-buffer), go back to only one window open"
 (define-key pdf-view-mode-map (kbd "k") (lambda () (interactive) (pdf-view-scroll-down-or-previous-page 5)))
 (define-key pdf-view-mode-map (kbd "q") 'bury-buffer)
 (define-key pdf-view-mode-map (kbd "a") 'pdf-annot-add-text-annotation)
+(define-key pdf-view-mode-map (kbd "c") (lambda () (interactive) (launch-command "xdg-open" (buffer-file-name))))
+
 (setq-default pdf-view-display-size 2.0)
 (setq TeX-view-program-selection '((output-pdf "pdf-tools")))
 (setq TeX-view-program-list '(("pdf-tools" "TeX-pdf-tools-sync-view")))
@@ -1782,4 +1784,38 @@ buffers; lets remap its faces so it uses the ones for mu4e."
 (add-hook 'reftex-select-label-mode-hook 'reftex-reparse-document)
 
 
-(define-key pdf-view-mode-map (kbd "c") (lambda () (interactive) (launch-command "xdg-open" (buffer-file-name))))
+;; Temp until https://github.com/djcb/mu/pull/833 is merged
+(defun mu4e~view-construct-header (field val &optional dont-propertize-val)
+  "Return header field FIELD (as in `mu4e-header-info') with value
+VAL if VAL is non-nil. If DONT-PROPERTIZE-VAL is non-nil, do not
+add text-properties to VAL."
+  (let* ((info (cdr (assoc field
+		      (append mu4e-header-info mu4e-header-info-custom))))
+	  (key (plist-get info :name))
+	  (val (if val (propertize val 'field 'mu4e-header-field-value
+	                               'front-sticky '(field))))
+	  (help (plist-get info :help)))
+    (if (and val (> (length val) 0))
+    (with-temp-buffer
+      (insert (propertize (concat key ":")
+		'field 'mu4e-header-field-key
+		'front-sticky '(field)
+		'keymap mu4e-view-header-field-keymap
+		'face 'mu4e-header-key-face
+		'help-echo help) " "
+	(if dont-propertize-val
+	  val
+	  (if (string= "Subject" key)
+	      (propertize val 'face 'font-lock-string-face)
+	    (propertize val 'face 'mu4e-header-value-face))) "\n")
+      (when mu4e-view-fill-headers
+	;; temporarily set the fill column <margin> positions to the right, so
+	;; we can indent the following lines correctly
+	(let* ((margin 1)
+		(fill-column (max (- fill-column margin) 0)))
+	  (fill-region (point-min) (point-max))
+	  (goto-char (point-min))
+	  (while (and (zerop (forward-line 1)) (not (looking-at "^$")))
+	    (indent-to-column margin))))
+      (buffer-string))
+    "")))
