@@ -636,6 +636,17 @@ some other pops up with display-buffer), go back to only one window open"
 ;; add ~/.tex to the inputs; also in bashrc
 (setenv "TEXINPUTS" ":~/.tex")
 
+;; recenter and show after a sync
+(defadvice TeX-source-correlate-sync-source (after AL/recenter-after-correlate activate)
+  (shell-command-to-string
+   (format "wmctrl -a %s"
+           (shell-quote-argument (frame-parameter nil 'name))))
+  (recenter))
+
+(add-hook 'pdf-sync-backward-hook (lambda ()
+                                    (interactive)
+                                    (recenter)))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Shell
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
