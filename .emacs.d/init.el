@@ -1495,12 +1495,7 @@ Additional support for inhibiting one activation (quick hack)"
   mu4e-sent-folder   "/[Google Mail]/.Sent Mail"       ;; folder for sent messages
   mu4e-drafts-folder "/[Google Mail]/.Drafts"     ;; unfinished messages
   mu4e-get-mail-command "timeout 30 mbsync all")
-(setq mu4e-user-mail-address-list '("antoine.levitt@gmail.com"
-                                    "antoine.levitt@inria.fr"
-                                    "antoine.levitt@enpc.fr"))
-(setq user-true-mail-address "antoine.levitt@inria.fr") ; in case it gets overwritten
-(setq user-mail-address user-true-mail-address)
-(setq user-full-name "Antoine Levitt")
+(load "~/.emacs.d/priv_mu4e.el") ;; set private variables
 
 (require 'timezone)
 (setq mu4e-use-fancy-chars nil
@@ -1648,29 +1643,6 @@ ALL-MAILS are the all the unread emails"
     (if (window-live-p win)
         (with-selected-window win (kill-buffer-and-window))
       (when (buffer-live-p buf) (kill-buffer buf)))))
-
-;; 1) messages to me@foo.example.com should be replied with From:me@foo.example.com
-;; 2) messages to me@bar.example.com should be replied with From:me@bar.example.com
-;; 3) all other mail should use From:me@cuux.example.com
-(add-hook 'mu4e-compose-pre-hook
-          (defun my-set-from-address ()
-            "Set the From address based on the To address of the original."
-            (let ((msg mu4e-compose-parent-message) ;; msg is shorter...
-                  (case-fold-search t))
-              (when msg
-                (setq user-mail-address
-                      (cond
-                       ((mu4e-message-contact-field-matches msg '(:to :cc :bcc) ".*levitt@enpc.fr")
-                        "antoine.levitt@enpc.fr")
-                       ((mu4e-message-contact-field-matches msg '(:to :cc :bcc) "antoine.levitt@inria.fr")
-                        "antoine.levitt@inria.fr")
-                       ((mu4e-message-contact-field-matches msg '(:from) "@enpc.fr")
-                        "antoine.levitt@enpc.fr")
-                       ((mu4e-message-contact-field-matches msg '(:from) "@inria.fr")
-                        "antoine.levitt@inria.fr")
-                       (t "antoine.levitt@gmail.com")))))))
-
-(add-hook 'mu4e-compose-mode-hook (lambda () (interactive) (setq user-mail-address user-true-mail-address)))
 
 ;; redefine Subject header face
 (defun mu4e~compose-remap-faces ()
