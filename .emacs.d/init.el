@@ -1525,7 +1525,7 @@ Additional support for inhibiting one activation (quick hack)"
       shr-color-visible-luminance-min 80
 
       
-      message-tab-body-function nil
+      message-tab-body-function (lambda () nil)
       message-citation-line-format "\n%d %B %Y %R %Z, %f:" 
       message-generate-new-buffers 'unique
       message-wash-forwarded-subjects t
