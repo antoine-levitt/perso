@@ -921,13 +921,8 @@ Ignores CHAR at point."
 
 (defun note ()
   (interactive)
-  (find-file "~/.emacs.d/org/notes.org"))
-(defun todos ()
-  (interactive)
-  (find-file "~/.emacs.d/org/todo.org"))
+  (find-file "~/Dropbox/notes.org"))
 (global-set-key (kbd "s-n") 'note)
-(global-set-key (kbd "s-t") 'todos)
-(global-set-key (kbd "s-j") 'journal)
 (global-set-key (kbd "s-l") 'bury-buffer)
 ;; ghosts of past yanks
 (global-set-key (kbd "s-y") (lambda ()
