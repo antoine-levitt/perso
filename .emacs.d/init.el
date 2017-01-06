@@ -1426,6 +1426,10 @@ Additional support for inhibiting one activation (quick hack)"
 
 (magit-auto-revert-mode -1)
 
+(define-key magit-status-mode-map (kbd "<s-tab>") nil)
+(define-key magit-status-mode-map (kbd "<C-tab>") nil)
+(define-key magit-status-mode-map (kbd "<C-s-tab>") nil)
+
 (add-hook 'python-mode-hook
           (lambda () (setq forward-sexp-function nil)))
 
