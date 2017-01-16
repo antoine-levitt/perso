@@ -1099,6 +1099,7 @@ Ignores CHAR at point."
 ;; match \n when searching spaces
 (setq search-whitespace-regexp "[[:space:]\n]+")
 (setq lazy-highlight-initial-delay 0) ; highlight matches without delay
+(setq isearch-allow-scroll t)
 
 ;;zap to isearch
 (defun zap-to-isearch ()
