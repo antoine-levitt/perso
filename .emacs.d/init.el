@@ -601,8 +601,14 @@ some other pops up with display-buffer), go back to only one window open"
       (when (file-exists-p (concat name ".tex"))
   	(setq TeX-master name))))
   (setq LaTeX-math-list '((?/ "frac" nil nil)
-                          (?S "sum" nil nil)))
+                          (?S "sum" nil nil)
+                          (?e "varepsilon" nil nil)
+                          (?L "left" nil nil)
+                          (?R "right" nil nil)))
+  
   (require 'latex)
+  (TeX-add-symbols '("left" nothing1)) ; bit of a hack, to avoid the left prompting from braces
+  (defun nothing1 (a))
   (LaTeX-math-initialize))
 (add-hook 'LaTeX-mode-hook 'my-tex-config)
 
