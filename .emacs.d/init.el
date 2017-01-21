@@ -607,6 +607,28 @@ some other pops up with display-buffer), go back to only one window open"
                           (?R "right" nil nil)))
   
   (require 'latex)
+
+  ;; indent align like equations
+  (setq LaTeX-indent-environment-list
+        '(("verbatim" current-indentation)
+          ("verbatim*" current-indentation)
+          ("tabular" LaTeX-indent-tabular)
+          ("tabular*" LaTeX-indent-tabular)
+          ("align")
+          ("align*")
+          ("array" LaTeX-indent-tabular)
+          ("eqnarray" LaTeX-indent-tabular)
+          ("eqnarray*" LaTeX-indent-tabular)
+          ("displaymath")
+          ("equation")
+          ("equation*")
+          ("picture")
+          ("tabbing")))
+  (LaTeX-add-environments "align")
+  (LaTeX-add-environments "align*")
+
+  (setq LaTeX-float "h!")
+
   (TeX-add-symbols '("left" nothing1)) ; bit of a hack, to avoid the left prompting from braces
   (defun nothing1 (a))
   (LaTeX-math-initialize))
