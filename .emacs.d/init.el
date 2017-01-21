@@ -557,9 +557,30 @@ some other pops up with display-buffer), go back to only one window open"
 (setq TeX-newline-function 'newline-and-indent
       LaTeX-math-abbrev-prefix (kbd "ù")
       TeX-electric-sub-and-superscript t)
+
+;; found on http://tex.stackexchange.com/questions/69555/i-want-to-disable-auto-fill-mode-when-editing-equations
+(defvar my-LaTeX-no-autofill-environments
+  '("equation" "equation*" "align" "align*")
+  "A list of LaTeX environment names in which `auto-fill-mode' should be inhibited.")
+(defun my-LaTeX-auto-fill-function ()
+  "This function checks whether point is currently inside one of
+the LaTeX environments listed in
+`my-LaTeX-no-autofill-environments'. If so, it inhibits automatic
+filling of the current paragraph."
+  (let ((do-auto-fill t)
+        (current-environment "")
+        (level 0))
+    (while (and do-auto-fill (not (string= current-environment "document")))
+      (setq level (1+ level)
+            current-environment (LaTeX-current-environment level)
+            do-auto-fill (not (member current-environment my-LaTeX-no-autofill-environments))))
+    (when do-auto-fill
+      (do-auto-fill))))
+
 (defun my-tex-config ()
   (turn-on-reftex)
   (auto-fill-mode 1)
+  (setq auto-fill-function 'my-LaTeX-auto-fill-function)
   (TeX-PDF-mode 1)
   (TeX-source-correlate-mode)
   (LaTeX-math-mode 1)
