@@ -50,7 +50,6 @@
         magic-latex-buffer
         ivy
         counsel
-        swiper
         flx
         mu4e-alert
         pdf-tools
@@ -70,8 +69,7 @@
 ;; Better better defaults
 (global-set-key (kbd "C-s") 'isearch-forward)
 (global-set-key (kbd "C-r") 'isearch-backward)
-(global-set-key (kbd "C-M-s") 'isearch-forward-regexp)
-(global-set-key (kbd "C-M-r") 'isearch-backward-regexp)
+(global-set-key (kbd "C-M-s") 'isearch-forward-word)
 (setq sentence-end-double-space nil)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1503,7 +1501,6 @@ Additional support for inhibiting one activation (quick hack)"
 (global-set-key (kbd "C-x C-f") 'counsel-find-file)
 (global-set-key (kbd "s-f") 'counsel-find-file)
 (global-set-key (kbd "C-c C-r") 'ivy-resume)
-(global-set-key (kbd "C-M-s") 'swiper)
 (global-set-key (kbd "C-x C-r") 'counsel-recentf)
 
 (global-set-key (kbd "M-g M-g") 'avy-goto-line)
@@ -1526,9 +1523,6 @@ Additional support for inhibiting one activation (quick hack)"
 (remove-mm-lighter 'paredit-everywhere-mode)
 (remove-mm-lighter 'highlight-indentation-mode)
 (require 'flx)
-
-(require 'swiper)
-(define-key isearch-mode-map (kbd "C-M-s") 'swiper-from-isearch)
 
 (define-key
   ivy-switch-buffer-map
