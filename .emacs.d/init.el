@@ -513,6 +513,7 @@ some other pops up with display-buffer), go back to only one window open"
 ;; 	   (load "preview-latex.el" nil t t))
 ;;   (error
 ;;    (message "Failed to load auctex")))
+(require 'latex)
 
 (pdf-tools-install)
 
@@ -625,8 +626,6 @@ filling of the current paragraph."
                           (?L "left" nil nil)
                           (?R "right" nil nil)))
   
-  (require 'latex)
-
   ;; indent align like equations
   (setq LaTeX-indent-environment-list
         '(("verbatim" current-indentation)
@@ -651,7 +650,7 @@ filling of the current paragraph."
   (TeX-add-symbols '("left" nothing1)) ; bit of a hack, to avoid the left prompting from braces
   (defun nothing1 (a))
   (LaTeX-math-initialize))
-(add-hook 'LaTeX-mode-hook 'my-tex-config)
+(add-hook 'LaTeX-mode-hook 'my-tex-config 'attheend)
 
 (defun my-latex-compile ()
   "Run a special compile for latex files"
