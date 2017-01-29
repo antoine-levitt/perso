@@ -17,8 +17,6 @@
  '(menu-bar-mode nil)
  '(scroll-bar-mode nil)
  '(tool-bar-mode nil))
-;; (setq custom-file "~/.emacs.d/custom.el")
-;; (load custom-file)
 
 ;; Packages
 (require 'package)
@@ -73,10 +71,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Unclutter home directory
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; lisp files
-                                        ;(add-to-list 'load-path (expand-file-name "~/.emacs.d/lisp"))
-;;byte-recompile elisp files if they need to be
-                                        ;(byte-recompile-directory "~/.emacs.d/lisp" 0)
 
 ;; put everything in ~/.emacs.d
 (setq gnus-init-file "~/.emacs.d/gnus.el"
@@ -561,7 +555,8 @@ some other pops up with display-buffer), go back to only one window open"
 ;;indent when pressing RET
 (setq TeX-newline-function 'newline-and-indent
       LaTeX-math-abbrev-prefix (kbd "ù")
-      TeX-electric-sub-and-superscript t)
+      TeX-electric-sub-and-superscript t
+      TeX-save-query nil)
 
 ;; found on http://tex.stackexchange.com/questions/69555/i-want-to-disable-auto-fill-mode-when-editing-equations
 (defvar my-LaTeX-no-autofill-environments
@@ -1319,16 +1314,6 @@ Additional support for inhibiting one activation (quick hack)"
 (require 'dired)
 (require 'dired-aux)
 
-(define-key dired-mode-map [(control c)(control c)] 'ignore)
-(define-key dired-mode-map [(control c)(control c)] 'wuxch-dired-copy)
-
-(define-key dired-mode-map [(control c)(control x)] 'ignore)
-(define-key dired-mode-map [(control c)(control x)] 'wuxch-dired-cut)
-
-(define-key dired-mode-map [(control c)(control v)] 'ignore)
-(define-key dired-mode-map [(control c)(control v)] 'wuxch-dired-paste)
-
-
 (defvar dired-copied-cutted-files-pool nil "global variable to store copied or cutted files")
 (defvar dired-is-copied nil "t:copy  nil:cut")
 
@@ -1417,6 +1402,10 @@ Additional support for inhibiting one activation (quick hack)"
     )
   )
 
+(define-key dired-mode-map (kbd "M-w") 'wuxch-dired-copy)
+(define-key dired-mode-map (kbd "C-w") 'wuxch-dired-cut)
+(define-key dired-mode-map (kbd "C-y") 'wuxch-dired-paste)
+
 
 
 
@@ -1464,11 +1453,6 @@ Additional support for inhibiting one activation (quick hack)"
            (member major-mode yank-indent-modes))
       (let ((transient-mark-mode nil))
         (yank-advised-indent-function (region-beginning) (region-end)))))
-
-
-(define-key dired-mode-map (kbd "M-w") 'wuxch-dired-copy)
-(define-key dired-mode-map (kbd "C-w") 'wuxch-dired-cut)
-(define-key dired-mode-map (kbd "C-y") 'wuxch-dired-paste)
 
 (require 'magit)
 (global-set-key (kbd "C-x v s") 'magit-status)
@@ -1811,8 +1795,6 @@ buffers; lets remap its faces so it uses the ones for mu4e."
      dx dy)))
 
 (add-hook 'pdf-view-mode-hook 'pdf-view-midnight-minor-mode)
-(setq TeX-save-query nil)
-
 
 (add-hook 'reftex-select-label-mode-hook 'reftex-reparse-document)
 
