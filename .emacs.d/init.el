@@ -253,9 +253,9 @@ some other pops up with display-buffer), go back to only one window open"
 (savehist-mode 1)
 
 ;;save last edit place in files
-(setq-default save-place t)
-(setq save-place-file "~/.emacs.d/places")
 (require 'saveplace)
+(save-place-mode 1)
+(setq save-place-file "~/.emacs.d/places")
 
 ;;blinking cursor is distracting and useless
 (blink-cursor-mode -1)
