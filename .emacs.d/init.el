@@ -1,8 +1,6 @@
 ;;; Emacs of Antoine Levitt. Homepage : http://github.com/antoine-levitt/perso
 ;; Mainly a mix of many things I found on the net, plus some stuff of mine
 
-;; Can be viewed in outline mode
-
 ;; customize
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
@@ -104,6 +102,14 @@
 	desktop-path '("~/.emacs.d/")
 	desktop-dirname "~/.emacs.d/"
 	desktop-base-file-name "emacs.desktop")
+  ;; remove auto-fill
+  (setq desktop-minor-mode-table '((auto-fill-function nil)
+                                   (defining-kbd-macro nil)
+                                   (isearch-mode nil)
+                                   (vc-mode nil)
+                                   (vc-dired-mode nil)
+                                   (erc-track-minor-mode nil)
+                                   (savehist-mode nil)))
   (desktop-save-mode 1)
   ;; save every 10mins
   (run-with-timer (* 10 60) (* 10 60) (lambda ()
