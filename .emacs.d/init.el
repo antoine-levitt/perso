@@ -675,8 +675,8 @@ filling of the current paragraph."
       (let ((file (if (stringp TeX-master)
 		      TeX-master
 		    (file-name-sans-extension (file-name-nondirectory (buffer-file-name))))))
-	(TeX-atril-sync-view)
-      ;; put atril to front
+	(TeX-evince-sync-view)
+      ;; put evince to front
         (shell-command-to-string
 	 (format "wmctrl -r %s.pdf -t 3 && wmctrl -a %s.pdf"
 		 file file)))
