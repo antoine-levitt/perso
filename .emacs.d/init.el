@@ -1,7 +1,7 @@
 ;;; Emacs of Antoine Levitt. Homepage : http://github.com/antoine-levitt/perso
 ;; Mainly a mix of many things I found on the net, plus some stuff of mine
 
-;; Can be viewed in outline mode
+(set-default-font "Droid Sans Mono 12")
 
 ;; customize
 (custom-set-variables
