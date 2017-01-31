@@ -1839,6 +1839,7 @@ add text-properties to VAL."
     "")))
 (global-set-key (kbd "s-h") (lambda () (interactive) (ansi-term "/bin/bash")))
 (setq inferior-julia-program-name "~/julia/bin/julia")
+(require 'ess-site)
 (global-set-key (kbd "s-j") 'julia)
 (setq ess-ask-for-ess-directory nil)
 
