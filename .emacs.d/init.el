@@ -1842,6 +1842,7 @@ add text-properties to VAL."
 (require 'ess-site)
 (global-set-key (kbd "s-j") 'julia)
 (setq ess-ask-for-ess-directory nil)
+(setq ess-show-buffer-action nil)
+(global-set-key (kbd "s-z") (kbd "C-c C-z"))
 
 (setq kill-buffer-query-functions nil)
-
