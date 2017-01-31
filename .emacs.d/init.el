@@ -53,7 +53,8 @@
         pdf-tools
         iedit
         smart-mode-line
-        avy))
+        avy
+        ess))
 (mapc #'(lambda (package)
           (unless (package-installed-p package)
             (package-install package)))
