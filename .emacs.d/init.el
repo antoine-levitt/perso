@@ -1206,10 +1206,12 @@ Ignores CHAR at point."
 
 (setq-default completion-at-point-functions '(completion-at-point-using-dabbrev))
 
-(defadvice completion-at-point (after completion-at-point-complete-if-failed activate)
-  "Fallback on dabbrev if completion didn't do anything useful."
-  (unless ad-return-value
-    (setq ad-return-value (my-dabbrev-expand))))
+;; ;; Obsolete
+;; (defadvice completion-at-point (after completion-at-point-complete-if-failed activate)
+;;   "Fallback on dabbrev if completion didn't do anything useful."
+;;   (unless ad-return-value
+;;     (message "dabbrev")
+;;     (setq ad-return-value (my-dabbrev-expand))))
 
 (setq completion-show-inline-help nil)
 (setq completion-ignore-case t)
@@ -1845,5 +1847,6 @@ add text-properties to VAL."
 (setq ess-ask-for-ess-directory nil)
 (setq ess-show-buffer-action nil)
 (global-set-key (kbd "s-z") (kbd "C-c C-z"))
+(define-key ess-mode-map (kbd "s-c") 'ess-load-file )
 
 (setq kill-buffer-query-functions nil)
