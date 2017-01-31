@@ -444,6 +444,7 @@ some other pops up with display-buffer), go back to only one window open"
 (define-key dired-mode-map (kbd "²") 'smplayer-open-file)
 (define-key dired-mode-map (kbd "œ") 'smplayer-open-file)
 (define-key dired-mode-map (kbd "M-o") 'dired-omit-mode)
+(define-key dired-mode-map (kbd "l") 'dired-up-directory)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Winner
@@ -516,7 +517,6 @@ some other pops up with display-buffer), go back to only one window open"
 ;; 	   (load "preview-latex.el" nil t t))
 ;;   (error
 ;;    (message "Failed to load auctex")))
-(require 'latex)
 
 (pdf-tools-install)
 
@@ -1837,3 +1837,10 @@ add text-properties to VAL."
 	    (indent-to-column margin))))
       (buffer-string))
     "")))
+(global-set-key (kbd "s-h") (lambda () (interactive) (ansi-term "/bin/bash")))
+(setq inferior-julia-program-name "~/julia/bin/julia")
+(global-set-key (kbd "s-j") 'julia)
+(setq ess-ask-for-ess-directory nil)
+
+(setq kill-buffer-query-functions nil)
+
