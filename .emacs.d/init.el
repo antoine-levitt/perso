@@ -660,12 +660,13 @@ filling of the current paragraph."
   "Run a special compile for latex files"
   (interactive)
   (setq my-latex-compiling-buffer (current-buffer))
-  (compile
-   (format
-    "rubber -df %s"
-    (if (stringp TeX-master)
-        TeX-master
-      (file-name-sans-extension (file-name-nondirectory (buffer-file-name)))))))
+  (let ((display-buffer-base-action nil))
+    (compile
+     (format
+      "rubber -df %s"
+      (if (stringp TeX-master)
+          TeX-master
+        (file-name-sans-extension (file-name-nondirectory (buffer-file-name))))))))
 
 (defun my-after-latex-compile (buf stat)
   "Display viewer after compilation"
