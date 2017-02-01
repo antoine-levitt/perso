@@ -68,7 +68,19 @@
 ;; Better better defaults
 (global-set-key (kbd "C-s") 'isearch-forward)
 (global-set-key (kbd "C-r") 'isearch-backward)
+(defun isearch-backward-word (&optional not-word no-recursive-edit)
+  "Do incremental search backward for a sequence of words.
+With a prefix argument, do a regular string search instead.
+Like ordinary incremental search except that your input is treated
+as a sequence of words without regard to how the words are separated.
+See the command `isearch-backward' for more information.
+This command does not support character folding, and lax space matching
+has no effect on it."
+  (interactive "P\np")
+  (isearch-mode nil nil nil (not no-recursive-edit) (null not-word)))
+
 (global-set-key (kbd "C-M-s") 'isearch-forward-word)
+(global-set-key (kbd "C-M-r") 'isearch-backward-word)
 (setq sentence-end-double-space nil)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -445,6 +457,7 @@ some other pops up with display-buffer), go back to only one window open"
 (define-key dired-mode-map (kbd "œ") 'smplayer-open-file)
 (define-key dired-mode-map (kbd "M-o") 'dired-omit-mode)
 (define-key dired-mode-map (kbd "l") 'dired-up-directory)
+(define-key dired-mode-map (kbd "C-j") 'dired-find-file)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Winner
@@ -969,7 +982,7 @@ Ignores CHAR at point."
 (defun open-file-explorer-here ()
   (interactive)
   (launch-command "caja" ""))
-(global-set-key (kbd "s-j") 'open-file-explorer-here)
+(global-set-key (kbd "s-o") 'open-file-explorer-here)
 
 (defun note ()
   (interactive)
@@ -990,10 +1003,6 @@ Ignores CHAR at point."
       (newline)
       (insert text))))
 (global-set-key (kbd "s-d") 'duplicate-current-line)
-;; pretty smileys
-(global-set-key (kbd "s-o") (lambda () (interactive) (insert "\\o/")))
-(global-set-key (kbd "s-²") (lambda () (interactive) (insert ":-|")))
-(global-set-key (kbd "s-œ") (lambda () (interactive) (insert ":-|")))
 
 ;; increment/decrement
 (defun add-digit-at-point (quantity)
