@@ -1809,7 +1809,7 @@ buffers; lets remap its faces so it uses the ones for mu4e."
                                "white"))))
      dx dy)))
 
-(add-hook 'pdf-view-mode-hook 'pdf-view-midnight-minor-mode)
+;; (add-hook 'pdf-view-mode-hook 'pdf-view-midnight-minor-mode)
 
 (add-hook 'reftex-select-label-mode-hook 'reftex-reparse-document)
 
