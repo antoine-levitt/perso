@@ -1849,7 +1849,6 @@ add text-properties to VAL."
 	    (indent-to-column margin))))
       (buffer-string))
     "")))
-(global-set-key (kbd "s-h") (lambda () (interactive) (ansi-term "/bin/bash")))
 (setq inferior-julia-program-name "~/julia/bin/julia")
 (require 'ess-site)
 (global-set-key (kbd "s-j") 'julia)
@@ -1858,4 +1857,17 @@ add text-properties to VAL."
 (global-set-key (kbd "s-z") (kbd "C-c C-z"))
 (define-key ess-mode-map (kbd "s-c") 'ess-load-file )
 
-(setq kill-buffer-query-functions nil)
+;; (setq kill-buffer-query-functions nil)
+;; get dead buffers out of the way, but keep them around in case I need them
+(defadvice term-handle-exit
+    (after term-kill-buffer-on-exit activate)
+  (rename-buffer "*ansi-term* (dead)" t)
+  (bury-buffer))
+
+(defun visit-term-buffer ()
+  "Create or visit a terminal buffer."
+  (interactive)
+  (if (not (get-buffer "*ansi-term*"))
+      (progn(ansi-term (getenv "SHELL")))
+    (switch-to-buffer "*ansi-term*")))
+(global-set-key (kbd "s-h") 'visit-term-buffer)
