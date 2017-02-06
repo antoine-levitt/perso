@@ -1856,6 +1856,7 @@ add text-properties to VAL."
 (setq ess-show-buffer-action nil)
 (global-set-key (kbd "s-z") (kbd "C-c C-z"))
 (define-key ess-mode-map (kbd "s-c") 'ess-load-file )
+(define-key ess-mode-map (kbd "c-c c-c") 'ess-load-file)
 
 ;; (setq kill-buffer-query-functions nil)
 ;; get dead buffers out of the way, but keep them around in case I need them
@@ -1864,10 +1865,12 @@ add text-properties to VAL."
   (rename-buffer "*ansi-term* (dead)" t)
   (bury-buffer))
 
-(defun visit-term-buffer ()
+(defun visit-term-buffer (arg)
   "Create or visit a terminal buffer."
-  (interactive)
-  (if (not (get-buffer "*ansi-term*"))
-      (progn(ansi-term (getenv "SHELL")))
+  (interactive "P")
+  (if (or arg
+          (not (get-buffer "*ansi-term*")))
+      (ansi-term (getenv "SHELL"))
     (switch-to-buffer "*ansi-term*")))
+
 (global-set-key (kbd "s-h") 'visit-term-buffer)
