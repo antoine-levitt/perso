@@ -993,7 +993,7 @@ Ignores CHAR at point."
 (global-set-key (kbd "s-y") (lambda ()
 			      (interactive)
 			      (popup-menu 'yank-menu)))
-(global-set-key (kbd "s-m") 'compose-mail)
+(global-set-key (kbd "s-m") 'mu4e-compose-new)
 (defun duplicate-current-line ()
   (interactive)
   "Duplicate current line"
@@ -1856,7 +1856,7 @@ add text-properties to VAL."
 (setq ess-show-buffer-action nil)
 (global-set-key (kbd "s-z") (kbd "C-c C-z"))
 (define-key ess-mode-map (kbd "s-c") 'ess-load-file )
-(define-key ess-mode-map (kbd "c-c c-c") 'ess-load-file)
+(define-key ess-mode-map (kbd "C-c C-c") 'ess-load-file)
 
 ;; (setq kill-buffer-query-functions nil)
 ;; get dead buffers out of the way, but keep them around in case I need them
