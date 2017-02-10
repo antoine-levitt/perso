@@ -78,8 +78,6 @@ alias w='w | sort | uniq -w 4 | grep -v USER | grep -v "load average"'
 #pour pouvoir débugger un programme juste en ajoutant gdb devant.
 #désactiver si besoin de passer des options à gdb lui-même
 alias gdb='gdb --args'
-#attacher gdb quand valgrind détecte une erreur
-alias valgrind='valgrind --db-attach=yes'
 #make multithread par défaut
 alias make='make -j3'
 #installer plus vite
