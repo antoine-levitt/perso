@@ -1874,3 +1874,5 @@ add text-properties to VAL."
     (switch-to-buffer "*ansi-term*")))
 
 (global-set-key (kbd "s-h") 'visit-term-buffer)
+
+(setq term-scroll-to-bottom-on-output t)
