@@ -1754,6 +1754,9 @@ buffers; lets remap its faces so it uses the ones for mu4e."
 (setq sml/name-width 100)
 (setq sml/line-number-format "%4l")
 (sml/setup)
+;; Temp until https://github.com/Malabarba/smart-mode-line/issues/198 is fixed
+(ad-deactivate 'term-command-hook)
+(ad-deactivate 'term-handle-ansi-terminal-messages)
 
 
 (global-set-key (kbd "M-y") 'counsel-yank-pop)
