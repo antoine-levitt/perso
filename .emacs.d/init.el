@@ -1880,3 +1880,14 @@ add text-properties to VAL."
 (global-set-key (kbd "s-h") 'visit-term-buffer)
 
 (setq term-scroll-to-bottom-on-output t)
+
+;; quit mu4e when composing a reply
+(add-hook 'mu4e-compose-mode-hook
+          (defun AL/full-window () (interactive)
+                 (delete-other-windows)
+                 (when (get-buffer "*mu4e-view*")
+                   (with-current-buffer "*mu4e-view*"
+                     (mu4e~view-quit-buffer)))
+                 (when (get-buffer "*mu4e-headers*")
+                   (with-current-buffer "*mu4e-headers*"
+                       (mu4e~headers-quit-buffer)))))
