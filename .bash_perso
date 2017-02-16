@@ -21,6 +21,9 @@ export PS1='\u@\h:\w\$ '
 
 #enlever le binding C-w de bash, il sera défini dans readline
 stty werase undef
+# Nobody uses flow control anymore
+stty stop undef
+stty start undef
 
 #à décommenter pour activer les core dump
 # ulimit -c unlimited >/dev/null 2>&1

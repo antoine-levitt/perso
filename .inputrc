@@ -1,6 +1,8 @@
 set show-all-if-ambiguous on
 set completion-ignore-case on
 set skip-completed-text on #make completion in the middle of a word work properly
+set colored-stats on # color completions
+set completion-map-case on # complete _ and - equivalently
 
 #C-w kill-region
 "\C-w":kill-region
@@ -10,3 +12,4 @@ set skip-completed-text on #make completion in the middle of a word work properl
 "\C-Space":set-mark
 #M-q = delete backward
 "\eq": backward-kill-word
+"\C-q":backward-delete-char
