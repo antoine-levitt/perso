@@ -1927,6 +1927,7 @@ add text-properties to VAL."
 (global-set-key (kbd "s-z") (kbd "C-c C-z"))
 (define-key ess-mode-map (kbd "s-c") 'ess-load-file )
 (define-key ess-mode-map (kbd "C-c C-c") 'ess-load-file)
+(define-key ess-mode-map (kbd "TAB") 'julia-latexsub-or-indent)
 
 ;; (setq kill-buffer-query-functions nil)
 ;; get dead buffers out of the way, but keep them around in case I need them
