@@ -1556,8 +1556,9 @@ Additional support for inhibiting one activation (quick hack)"
       mu4e-completing-read-function 'ivy-completing-read
       mu4e-compose-complete-only-personal t
       mu4e-headers-fields '((:human-date . 6)
+                            (:maildir . 10)
                             (:from-or-to . 22)
-                            (:thread-subject . 110))
+                            (:thread-subject . 105))
       mu4e-headers-time-format "%R"
       mu4e-headers-date-format "%d/%m"
       mu4e-view-show-addresses t
@@ -1584,8 +1585,28 @@ Additional support for inhibiting one activation (quick hack)"
       smtpmail-smtp-server "smtp.gmail.com"
       smtpmail-smtp-service 587)
 
-
 (require 'mu4e)
+
+;; I don't like ellipsis in headers
+(defun mu4e~headers-field-truncate-to-width (_msg _field val width)
+  "Truncate VAL to WIDTH."
+  (if width
+      (truncate-string-to-width val width 0 ?\s " ")
+    val))
+
+; filter headers to remove the [Google Mail]
+(setq mu4e~headers-field-handler-functions
+      '(AL-filter-headers
+        mu4e~headers-field-apply-basic-properties
+        mu4e~headers-field-truncate-to-width))
+(defun AL-filter-headers (_msg _field val width)
+  (if (eq :maildir _field)
+      (progn
+        (cond ((string-match "Drafts" val) ".Drafts")
+              ((string-match "Sent" val) ".Sent")
+              (t (substring val 1 nil))))
+    val))
+
 (add-to-list 'mu4e-compose-hidden-headers "^In-Reply-To:")
 (add-to-list 'mu4e-compose-hidden-headers "^MIME-Version:")
 (add-to-list 'mu4e-compose-hidden-headers "^Received:")
@@ -1653,9 +1674,9 @@ ALL-MAILS are the all the unread emails"
 (define-key mu4e-view-mode-map (kbd "f") 'mu4e-compose-forward)
 
 (define-key mu4e-main-mode-map (kbd "c") 'mu4e-compose-new)
-(define-key mu4e-main-mode-map (kbd "u") (lambda () (interactive) (mu4e-headers-search "flag:unread AND m:/INBOX" nil nil t nil t))) ; last t: open first message
+(define-key mu4e-main-mode-map (kbd "u") (lambda () (interactive) (mu4e-headers-search "flag:unread AND m:/INBOX" nil nil t nil nil))) ; last t: open first message
 (define-key mu4e-main-mode-map (kbd "i") (lambda () (interactive) (mu4e-headers-search "m:/INBOX" nil nil t)))
-(define-key mu4e-main-mode-map (kbd "r") (lambda () (interactive) (mu4e-headers-search "flag:unread" nil nil t nil t)))
+(define-key mu4e-main-mode-map (kbd "r") (lambda () (interactive) (mu4e-headers-search "flag:unread" nil nil t nil nil)))
 (define-key mu4e-main-mode-map (kbd "d") (lambda () (interactive) (mu4e-headers-search "m:/\"[Google Mail]/.Drafts\"" nil nil t nil t)))
 (define-key mu4e-main-mode-map (kbd "s") (lambda () (interactive) (mu4e-headers-search "m:/\"[Google Mail]/.Sent Mail\"" nil nil t)))
 (define-key mu4e-main-mode-map (kbd "q") (lambda () (interactive) (mu4e-headers-search)))
