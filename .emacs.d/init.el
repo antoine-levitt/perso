@@ -339,6 +339,7 @@ some other pops up with display-buffer), go back to only one window open"
 (setq global-auto-revert-non-file-buffers nil)
 (setq auto-revert-interval 30) ;30s is enough
 (setq auto-revert-verbose nil)
+(add-hook 'dired-mode-hook 'auto-revert-mode)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Ido
