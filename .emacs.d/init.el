@@ -1960,3 +1960,13 @@ add text-properties to VAL."
                    (with-current-buffer "*mu4e-headers*"
                        (mu4e~headers-quit-buffer)))))
 
+
+(define-key key-translation-map (kbd "C-z") (kbd "C-a"))
+(setq AL/algr-keys "âå€çþýûîô¶ÂøÊ±æðÛÎÔ¹«»©®ß¬")
+(setq AL/normal-keys "azertyuiopqsdfghjklmwxcvbn")
+(defun AL/map-keys (src dest)
+  (when src
+    (define-key key-translation-map (char-to-string (car src)) (kbd (concat "C-" (char-to-string (car dest)))))
+    (AL/map-keys (cdr src) (cdr dest))))
+(AL/map-keys (string-to-list AL/algr-keys)(string-to-list AL/normal-keys))
+(define-key key-translation-map (kbd " ") (kbd "C-SPC"))
