@@ -1962,8 +1962,8 @@ add text-properties to VAL."
 
 
 (define-key key-translation-map (kbd "C-z") (kbd "C-a"))
-(setq AL/algr-keys "âå€þýîô¶ÂøÊ±æðÛÎÔ¹«»©®ß¬")
-(setq AL/normal-keys "azetyiopqsdfghjklmwxcvbn")
+(setq AL/algr-keys   "å€þýô¶ÂøÊ±æðÛÎÔ¹«»©®ß¬")
+(setq AL/normal-keys "aetyopqsdfghjklmwxcvbn")
 (defun AL/map-keys (src dest)
   (when src
     (define-key key-translation-map (char-to-string (car src)) (kbd (concat "C-" (char-to-string (car dest)))))
