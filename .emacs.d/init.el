@@ -1961,7 +1961,6 @@ add text-properties to VAL."
                        (mu4e~headers-quit-buffer)))))
 
 
-(define-key key-translation-map (kbd "C-z") (kbd "C-a"))
 (setq AL/algr-keys   "å€þýô¶ÂøÊ±æðÛÎÔ¹«»©®ß¬")
 (setq AL/normal-keys "aetyopqsdfghjklmwxcvbn")
 (defun AL/map-keys (src dest)
