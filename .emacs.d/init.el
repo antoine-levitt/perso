@@ -105,6 +105,7 @@ has no effect on it."
 		"ps x | grep emacs | grep -v grep | grep -v emacs-bin | grep -v emacsclient | grep -v gpg-agent | wc -l"))
   (setq emacs-is-master t)
   (server-start)
+  (setenv "EDITOR" "emacsclient")
 
   ;; desktop
   (setq desktop-load-locked-desktop t
@@ -718,7 +719,8 @@ filling of the current paragraph."
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (setq-default comint-scroll-to-bottom-on-input 'all
 	      comint-move-point-for-output t
-	      comint-input-ring-file-name "~/.emacs.d/comint_history")
+	      comint-input-ring-file-name "~/.emacs.d/comint_history"
+              comint-history-isearch 'dwim)
 (ansi-color-for-comint-mode-on)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1818,7 +1820,7 @@ buffers; lets remap its faces so it uses the ones for mu4e."
 (require 'iedit)
 
 (setq sml/theme 'respectful)
-(setq sml/name-width 100)
+(setq sml/name-width 90)
 (setq sml/line-number-format "%4l")
 (sml/setup)
 ;; Temp until https://github.com/Malabarba/smart-mode-line/issues/198 is fixed
@@ -1920,8 +1922,10 @@ add text-properties to VAL."
 	    (indent-to-column margin))))
       (buffer-string))
     "")))
+
 (setq inferior-julia-program-name "~/julia/bin/julia")
 (require 'ess-site)
+(setq ess-history-directory "~/")
 (global-set-key (kbd "s-j") 'julia)
 (setq ess-ask-for-ess-directory nil)
 (setq ess-show-buffer-action nil)
