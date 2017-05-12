@@ -565,6 +565,23 @@ some other pops up with display-buffer), go back to only one window open"
 (setq TeX-source-correlate-method 'synctex)
 
 (require 'magic-latex-buffer)
+
+;; add my own symbols
+(defconst ml/symbols
+  (append (mapcar (lambda (pattern)
+                    (cons (concat "\\\\not[ \t\n]*" (car pattern))
+                          (compose-string (concat "／" (cdr pattern)))))
+                  (append ml/relation-symbols ml/arrow-symbols))
+          ml/decoration-commands
+          ml/relation-symbols
+          ml/negrel-symbols
+          ml/operator-symbols
+          ml/arrow-symbols
+          ml/letter-symbols
+          ml/other-symbols
+          ml/accents
+          '(("\\\\eps\\>" . "ε"))))
+
 (add-hook 'LaTeX-mode-hook 'magic-latex-buffer)
 (setq magic-latex-enable-suscript nil)
 (setq magic-latex-enable-block-align nil)
@@ -1965,8 +1982,8 @@ add text-properties to VAL."
                        (mu4e~headers-quit-buffer)))))
 
 
-(setq AL/algr-keys   "å€þýô¶ÂøÊ±æðÛÎÔ¹«»©®ß¬")
-(setq AL/normal-keys "aetyopqsdfghjklmwxcvbn")
+(setq AL/algr-keys   "å€þý¶ÂøÊ±æðÛÎÔ¹«»©®ß¬")
+(setq AL/normal-keys "aetypqsdfghjklmwxcvbn")
 (defun AL/map-keys (src dest)
   (when src
     (define-key key-translation-map (char-to-string (car src)) (kbd (concat "C-" (char-to-string (car dest)))))
