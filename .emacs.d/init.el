@@ -526,13 +526,6 @@ some other pops up with display-buffer), go back to only one window open"
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Latex
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; load auctex
-;; (condition-case err
-;;     (progn (load "auctex.el" nil t t)
-;; 	   (load "preview-latex.el" nil t t))
-;;   (error
-;;    (message "Failed to load auctex")))
-
 (pdf-tools-install)
 
 (define-key pdf-view-mode-map (kbd "n") 'pdf-view-scroll-up-or-next-page)
@@ -1234,13 +1227,6 @@ Ignores CHAR at point."
   'my-dabbrev-expand)
 
 (setq-default completion-at-point-functions '(completion-at-point-using-dabbrev))
-
-;; ;; Obsolete
-;; (defadvice completion-at-point (after completion-at-point-complete-if-failed activate)
-;;   "Fallback on dabbrev if completion didn't do anything useful."
-;;   (unless ad-return-value
-;;     (message "dabbrev")
-;;     (setq ad-return-value (my-dabbrev-expand))))
 
 (setq completion-show-inline-help nil)
 (setq completion-ignore-case t)
