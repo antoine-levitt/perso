@@ -1942,6 +1942,8 @@ add text-properties to VAL."
 
 (setq inferior-julia-program-name "~/julia/bin/julia")
 (require 'ess-site)
+(require 'ess)
+(defun ess-write-to-dribble-buffer (text) nil)
 (setq ess-history-directory "~/")
 (global-set-key (kbd "s-j") 'julia)
 (setq ess-ask-for-ess-directory nil)
