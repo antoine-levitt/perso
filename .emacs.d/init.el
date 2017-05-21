@@ -24,7 +24,6 @@
 (require 'package)
 (add-to-list 'package-archives
 	     '("melpa" . "http://melpa.org/packages/") t)
-(add-to-list 'load-path (expand-file-name "~/.emacs.d/lisp"))
 
 (package-initialize)
 (when (not package-archive-contents)
@@ -36,11 +35,9 @@
         material-theme
         auctex
         rainbow-delimiters
-        autopair
         julia-mode
         matlab-mode
-        paredit
-        paredit-everywhere
+        smartparens
         cython-mode
         undo-tree
         highlight-indentation
@@ -378,49 +375,52 @@ some other pops up with display-buffer), go back to only one window open"
 ;;visual paren matching
 (show-paren-mode 1)
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; Paredit
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(require 'paredit)
-;;undefine some keys I use for other things
-(define-key paredit-mode-map (kbd "M-<down>") nil)
-(define-key paredit-mode-map (kbd "M-<up>") nil)
-(define-key paredit-mode-map (kbd "M-\"") nil)
-(define-key paredit-mode-map (kbd "M-q") 'paredit-backward-kill-word)
-;;automatically run paredit in specific modes
-(mapc (lambda (mode)
-	(let ((hook (intern (concat (symbol-name mode)
-				    "-mode-hook"))))
-	  (add-hook hook (lambda () (paredit-mode 1)))))
-      '(emacs-lisp lisp inferior-lisp scheme))
+;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; ;;; Paredit
+;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; (require 'paredit)
+;; ;;undefine some keys I use for other things
+;; (define-key paredit-mode-map (kbd "M-<down>") nil)
+;; (define-key paredit-mode-map (kbd "M-<up>") nil)
+;; (define-key paredit-mode-map (kbd "M-\"") nil)
+;; (define-key paredit-mode-map (kbd "M-q") 'paredit-backward-kill-word)
+;; ;;automatically run paredit in specific modes
+;; (mapc (lambda (mode)
+;; 	(let ((hook (intern (concat (symbol-name mode)
+;; 				    "-mode-hook"))))
+;; 	  (add-hook hook (lambda () (paredit-mode 1)))))
+;;       '(emacs-lisp lisp inferior-lisp scheme))
 
-;; globally define cool things
-(require 'paredit-everywhere)
-(add-hook 'prog-mode-hook 'paredit-everywhere-mode)
-(add-hook 'LaTeX-mode-hook 'paredit-everywhere-mode)
-(define-key paredit-everywhere-mode-map (kbd "M-S") 'paredit-splice-sexp)
-(define-key paredit-everywhere-mode-map (kbd "C-(") 'paredit-backward-slurp-sexp)
-(define-key paredit-everywhere-mode-map (kbd "M-s") nil)
+;; ;; globally define cool things
+;; (require 'paredit-everywhere)
+;; (add-hook 'prog-mode-hook 'paredit-everywhere-mode)
+;; (add-hook 'LaTeX-mode-hook 'paredit-everywhere-mode)
+;; (define-key paredit-everywhere-mode-map (kbd "M-S") 'paredit-splice-sexp)
+;; (define-key paredit-everywhere-mode-map (kbd "C-(") 'paredit-backward-slurp-sexp)
+;; (define-key paredit-everywhere-mode-map (kbd "M-s") nil)
 
 (setq paredit-lighter "")
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; Autopair
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(require 'autopair)
-(autopair-global-mode) ;; enable autopair in all buffers
-(setq autopair-blink nil)
-;; not in ERC
-(add-hook 'erc-mode-hook
-	  #'(lambda () (setq autopair-dont-activate t) (autopair-mode -1)))
-(add-hook 'term-mode-hook
-	  #'(lambda () (setq autopair-dont-activate t) (autopair-mode -1)))
-;; pair $ correctly
-(add-hook 'LaTeX-mode-hook
-          #'(lambda ()
-              (define-key LaTeX-mode-map (kbd "$") 'self-insert-command)
-              ;(modify-syntax-entry ?$ "\"")
-              ))
+;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; ;;; Autopair
+;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; (require 'autopair)
+;; (autopair-global-mode) ;; enable autopair in all buffers
+;; (setq autopair-blink nil)
+;; ;; not in ERC
+;; (add-hook 'erc-mode-hook
+;; 	  #'(lambda () (setq autopair-dont-activate t) (autopair-mode -1)))
+;; (add-hook 'term-mode-hook
+;; 	  #'(lambda () (setq autopair-dont-activate t) (autopair-mode -1)))
+;; ;; (add-hook 'prog-mode-hook
+;; ;; 	  #'(lambda () (setq autopair-dont-activate t) (autopair-mode -1)))
+;; ;; (add-hook 'LaTeX-mode-hook
+;; ;; 	  #'(lambda () (setq autopair-dont-activate t) (autopair-mode -1)))
+;; (add-hook 'LaTeX-mode-hook
+;;           #'(lambda ()
+;;               (define-key LaTeX-mode-map (kbd "$") 'self-insert-command)
+;;               ;(modify-syntax-entry ?$ "\"")
+;;               ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Dired
@@ -1528,9 +1528,9 @@ Additional support for inhibiting one activation (quick hack)"
 (require 'reftex)
 (remove-mm-lighter 'reftex-mode)
 (remove-mm-lighter 'visual-line-mode)
-(remove-mm-lighter 'autopair-mode)
-(require 'paredit-everywhere)
-(remove-mm-lighter 'paredit-everywhere-mode)
+;; (remove-mm-lighter 'autopair-mode)
+;; (require 'paredit-everywhere)
+;; (remove-mm-lighter 'paredit-everywhere-mode)
 (remove-mm-lighter 'highlight-indentation-mode)
 (require 'flx)
 
@@ -1978,3 +1978,23 @@ add text-properties to VAL."
     (AL/map-keys (cdr src) (cdr dest))))
 (AL/map-keys (string-to-list AL/algr-keys)(string-to-list AL/normal-keys))
 (define-key key-translation-map (kbd " ") (kbd "C-SPC"))
+
+(require 'smartparens-config)
+(smartparens-global-mode 1)
+(remove-mm-lighter 'smartparens-mode)
+
+
+(define-key smartparens-mode-map (kbd "C-M-f") 'sp-forward-sexp)
+(define-key smartparens-mode-map (kbd "C-M-b") 'sp-backward-sexp)
+(define-key smartparens-mode-map (kbd "C-M-k") 'sp-kill-sexp)
+(define-key smartparens-mode-map (kbd "C-M-w") 'sp-copy-sexp)
+(define-key smartparens-mode-map (kbd "M-)")    'sp-forward-barf-sexp)
+(define-key smartparens-mode-map (kbd "M-(")    'sp-backward-barf-sexp)
+(define-key smartparens-mode-map (kbd "C-)")    'sp-forward-slurp-sexp)
+(define-key smartparens-mode-map (kbd "C-(")    'sp-backward-slurp-sexp)
+(define-key smartparens-mode-map (kbd "C-M-s")    'sp-splice-sexp)
+(define-key smartparens-mode-map (kbd "M-S")    'sp-splice-sexp)
+(setq sp-highlight-pair-overlay nil)
+;; (define-key smartparens-mode-map (kbd "M-q")    'sp-backward-kill-word)
+;; (define-key smartparens-mode-map (kbd "M-d")    'sp-forward-kill-word)
+;; (add-to-list 'sp-no-reindent-after-kill-modes 'latex-mode)
