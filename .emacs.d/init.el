@@ -1,7 +1,7 @@
 ;;; Emacs of Antoine Levitt. Homepage : http://github.com/antoine-levitt/perso
 ;; Mainly a mix of many things I found on the net, plus some stuff of mine
 
-(set-default-font "Droid Sans Mono 12")
+;; (set-default-font "Droid Sans Mono 12")
 
 ;; customize
 (custom-set-variables
@@ -1564,7 +1564,7 @@ Additional support for inhibiting one activation (quick hack)"
       mu4e-headers-fields '((:human-date . 6)
                             (:maildir . 10)
                             (:from-or-to . 22)
-                            (:thread-subject . 105))
+                            (:thread-subject . 90))
       mu4e-headers-time-format "%R"
       mu4e-headers-date-format "%d/%m"
       mu4e-view-show-addresses t
@@ -1823,7 +1823,7 @@ buffers; lets remap its faces so it uses the ones for mu4e."
 (require 'iedit)
 
 (setq sml/theme 'respectful)
-(setq sml/name-width 90)
+(setq sml/name-width 80)
 (setq sml/line-number-format "%4l")
 (sml/setup)
 ;; Temp until https://github.com/Malabarba/smart-mode-line/issues/198 is fixed
@@ -1938,6 +1938,24 @@ add text-properties to VAL."
 (define-key ess-mode-map (kbd "s-c") 'ess-load-file )
 (define-key ess-mode-map (kbd "C-c C-c") 'ess-load-file)
 (define-key ess-mode-map (kbd "TAB") 'julia-latexsub-or-indent)
+(defun julia-prev-block-beg ()
+  (interactive)
+  (backward-char)
+  (while (and (not (bobp)) (not (and (julia-at-keyword julia-block-start-keywords) (not (julia-in-comment)))))
+    (backward-sexp)))
+(define-key ess-mode-map (kbd "C-M-p")'julia-prev-block-beg)
+(defun julia-next-block-end ()
+  (interactive)
+  (forward-char)
+  (while (and (not (eobp)) (not (and (julia-at-keyword julia-block-end-keywords) (not (julia-in-comment)))))
+    (forward-sexp)))
+(define-key ess-mode-map (kbd "C-M-n")'julia-next-block-end)
+
+(define-key ess-mode-map (kbd "C-M-p") (lambda () (interactive)
+                                         (goto-char (julia-last-open-block-pos (point-min)))))
+;; (add-hook 'julia-mode-hook 'julia-math-mode)
+;; (add-hook 'inferior-julia-mode-hook 'julia-math-mode)
+;; (add-hook 'inferior-ess-mode-hook 'julia-math-mode)
 
 ;; (setq kill-buffer-query-functions nil)
 ;; get dead buffers out of the way, but keep them around in case I need them
@@ -1994,7 +2012,37 @@ add text-properties to VAL."
 (define-key smartparens-mode-map (kbd "C-(")    'sp-backward-slurp-sexp)
 (define-key smartparens-mode-map (kbd "C-M-s")    'sp-splice-sexp)
 (define-key smartparens-mode-map (kbd "M-S")    'sp-splice-sexp)
+;; (define-key smartparens-mode-map (kbd "C-M-a")    'sp-backward-up-sexp)
+;; (define-key smartparens-mode-map (kbd "C-M-e")    'sp-up-sexp)
+
+;; (define-key smartparens-mode-map (kbd "C-M-t")    'sp-transpose-sexp)
+;; (define-key smartparens-mode-map (kbd "C-M-t")    'transpose-sexps)
 (setq sp-highlight-pair-overlay nil)
 ;; (define-key smartparens-mode-map (kbd "M-q")    'sp-backward-kill-word)
 ;; (define-key smartparens-mode-map (kbd "M-d")    'sp-forward-kill-word)
 ;; (add-to-list 'sp-no-reindent-after-kill-modes 'latex-mode)
+(defmacro def-pairs (pairs)
+  `(progn
+     ,@(loop for (key . val) in pairs
+          collect
+            `(defun ,(read (concat
+                            "wrap-with-"
+                            (prin1-to-string key)
+                            "s"))
+                 (&optional arg)
+               (interactive "p")
+               (sp-wrap-with-pair ,val)))))
+
+(def-pairs ((paren . "(")
+            (bracket . "[")
+            (brace . "{")
+            (single-quote . "'")
+            (double-quote . "\"")
+            (back-quote . "`")))
+
+(define-key smartparens-mode-map (kbd "C-c (")    'wrap-with-parens)
+(define-key smartparens-mode-map (kbd "C-c [")    'wrap-with-brackets)
+(define-key smartparens-mode-map (kbd "C-c {")    'wrap-with-braces)
+
+
+;; TODO C-M-p/n find begin/end LaTeX-find-matching-begin
