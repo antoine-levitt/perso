@@ -182,7 +182,7 @@ has no effect on it."
 (defun gnome-open-file (filename)
   "gnome-opens the specified file."
   (interactive "fFile to open: ")
-  (launch-command  "/usr/bin/gnome-open" filename))
+  (launch-command  "/usr/bin/xdg-open" filename))
 
 (defun basename-cons(f)
   (cons (file-name-nondirectory f) f))
@@ -448,7 +448,7 @@ some other pops up with display-buffer), go back to only one window open"
 (defun dired-gnome-open-file ()
   "Opens the current file in a Dired buffer."
   (interactive)
-  (launch-command "gnome-open" (dired-get-file-for-visit)))
+  (launch-command "xdg-open" (dired-get-file-for-visit)))
 (define-key dired-mode-map (kbd "<C-return>") 'dired-gnome-open-file)
 ;;add smplayer as M-ret in dired
 (defun smplayer-open-file ()
