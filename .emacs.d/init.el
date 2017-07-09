@@ -2046,3 +2046,31 @@ add text-properties to VAL."
 
 
 ;; TODO C-M-p/n find begin/end LaTeX-find-matching-begin
+
+; remove this when merged
+(defun TeX-xreader-sync-view ()
+  "Run `TeX-evince-sync-view-1', which see, set up for Evince."
+  (TeX-evince-sync-view-1 "x" "reader"))
+
+(require 'latex nil t)
+;; Math insertion in julia. Use it with
+(defun julia-math-insert (s)
+  "Inserts math symbol given by `s'"
+  (when s
+    (let ((sym (gethash (concat "\\" s) julia-latexsubs)))
+      (when sym
+        (insert sym)))))
+
+(define-minor-mode julia-math-mode
+  "A minor mode with easy access to TeX math commands. The
+command is only entered if it is supported in Julia. The
+following commands are defined:
+
+\\{LaTeX-math-mode-map}"
+  nil nil (list (cons (LaTeX-math-abbrev-prefix) LaTeX-math-keymap))
+  (if julia-math-mode
+      (set (make-local-variable 'LaTeX-math-insert-function) 'julia-math-insert)))
+
+(add-hook 'julia-mode-hook 'julia-math-mode)
+(add-hook 'inferior-julia-mode-hook 'julia-math-mode)
+(add-hook 'message-mode-hook 'julia-math-mode)
