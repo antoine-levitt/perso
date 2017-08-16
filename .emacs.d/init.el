@@ -156,6 +156,8 @@ has no effect on it."
 (setq mouse-highlight 1)
 ;; control mouse clipboard. In particular, select-active-regions, activated in 23.2, sucks.
 (setq select-active-regions nil)
+;; yank at point instead of at click
+(setq mouse-yank-at-point t)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
