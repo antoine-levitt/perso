@@ -745,18 +745,14 @@ filling of the current paragraph."
 (global-set-key "\C-cl" 'org-store-link)
 
 ;;bindings
-(add-hook 'org-load-hook
-	  (lambda ()
-	    (define-key org-mode-map (kbd "C-c C-r") 'org-refile)
-	    (define-key org-mode-map (kbd "<C-tab>") nil)
-	    (define-key org-mode-map (kbd "<S-up>") nil)
-	    (define-key org-mode-map (kbd "<S-down>") nil)
-	    (define-key org-mode-map (kbd "<S-right>") nil)
-	    (define-key org-mode-map (kbd "<S-left>") nil)))
+(require 'org)
+(define-key org-mode-map (kbd "C-c C-r") 'org-refile)
+(define-key org-mode-map (kbd "<C-tab>") nil)
+(define-key org-mode-map (kbd "M-j") 'org-meta-return)
 
 ;;settings
 (setq
- org-agenda-files (list "~/.emacs.d/org/todo.org")
+ org-agenda-files (list "~/Dropbox/todo.org")
  org-default-notes-file "~/.emacs.d/org/notes.org"
  org-completion-use-ido t
  org-agenda-span 'week
@@ -777,7 +773,11 @@ filling of the current paragraph."
  org-capture-templates '(("t" "Scheduled task" entry
 			  (file+headline "~/.emacs.d/org/todo.org" "Tasks")
 			  "* TODO %?\nSCHEDULED: %t\n%a\n%i"))
- org-irc-link-to-logs t)
+ org-irc-link-to-logs t
+ org-todo-keywords '((sequence "TODO" "WAITING" "DONE")))
+(setq org-todo-keyword-faces
+      '(("TODO" . font-lock-function-name-face) ("WAITING" . font-lock-keyword-face)
+        ("DONE" . font-lock-string-face)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Compilation
@@ -1002,7 +1002,11 @@ Ignores CHAR at point."
 (defun note ()
   (interactive)
   (find-file "~/Dropbox/notes.org"))
+(defun todo ()
+  (interactive)
+  (find-file "~/Dropbox/todo.org"))
 (global-set-key (kbd "s-n") 'note)
+(global-set-key (kbd "s-t") 'todo)
 (global-set-key (kbd "s-l") 'bury-buffer)
 ;; ghosts of past yanks
 (global-set-key (kbd "s-y") (lambda ()
