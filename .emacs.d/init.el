@@ -2079,4 +2079,5 @@ following commands are defined:
 
 (add-hook 'julia-mode-hook 'julia-math-mode)
 (add-hook 'inferior-julia-mode-hook 'julia-math-mode)
+(add-hook 'inferior-ess-mode-hook 'julia-math-mode)
 (add-hook 'message-mode-hook 'julia-math-mode)
