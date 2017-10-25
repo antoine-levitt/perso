@@ -1,7 +1,9 @@
 ;;; Emacs of Antoine Levitt. Homepage : http://github.com/antoine-levitt/perso
 ;; Mainly a mix of many things I found on the net, plus some stuff of mine
 
-;; (set-default-font "Droid Sans Mono 12")
+(if (string-match "beta" (shell-command-to-string
+			  "hostname"))
+    (set-default-font "Noto Mono 16"))
 
 ;; customize
 (custom-set-variables
@@ -51,7 +53,8 @@
         iedit
         smart-mode-line
         avy
-        ess))
+        ess
+        markdown-mode))
 (mapc #'(lambda (package)
           (unless (package-installed-p package)
             (package-install package)))
@@ -291,7 +294,7 @@ some other pops up with display-buffer), go back to only one window open"
 (windmove-default-keybindings 'shift)
 
 ;;please add a final newline each time I save a buffer
-(setq require-final-newline 't)
+(setq require-final-newline t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Scrolling
@@ -704,7 +707,7 @@ filling of the current paragraph."
       (let ((file (if (stringp TeX-master)
 		      TeX-master
 		    (file-name-sans-extension (file-name-nondirectory (buffer-file-name))))))
-	(TeX-evince-sync-view)
+	(TeX-xreader-sync-view)
       ;; put evince to front
         (shell-command-to-string
 	 (format "wmctrl -r %s.pdf -t 3 && wmctrl -a %s.pdf"
@@ -1933,6 +1936,7 @@ add text-properties to VAL."
     "")))
 
 (setq inferior-julia-program-name "~/julia/bin/julia")
+(setq inferior-julia-args "-q")
 (require 'ess-site)
 (require 'ess)
 (defun ess-write-to-dribble-buffer (text) nil)
