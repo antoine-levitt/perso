@@ -1,7 +1,9 @@
 ;;; Emacs of Antoine Levitt. Homepage : http://github.com/antoine-levitt/perso
 ;; Mainly a mix of many things I found on the net, plus some stuff of mine
 
-;; (set-default-font "Droid Sans Mono 12")
+(if (string-match "beta" (shell-command-to-string
+			  "hostname"))
+    (set-default-font "Noto Mono 16"))
 
 ;; customize
 (custom-set-variables
@@ -157,6 +159,8 @@ has no effect on it."
 (setq mouse-highlight 1)
 ;; control mouse clipboard. In particular, select-active-regions, activated in 23.2, sucks.
 (setq select-active-regions nil)
+;; yank at point instead of at click
+(setq mouse-yank-at-point t)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -183,7 +187,7 @@ has no effect on it."
 (defun gnome-open-file (filename)
   "gnome-opens the specified file."
   (interactive "fFile to open: ")
-  (launch-command  "/usr/bin/gnome-open" filename))
+  (launch-command  "/usr/bin/xdg-open" filename))
 
 (defun basename-cons(f)
   (cons (file-name-nondirectory f) f))
@@ -290,7 +294,7 @@ some other pops up with display-buffer), go back to only one window open"
 (windmove-default-keybindings 'shift)
 
 ;;please add a final newline each time I save a buffer
-(setq require-final-newline 't)
+(setq require-final-newline t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Scrolling
@@ -449,7 +453,7 @@ some other pops up with display-buffer), go back to only one window open"
 (defun dired-gnome-open-file ()
   "Opens the current file in a Dired buffer."
   (interactive)
-  (launch-command "gnome-open" (dired-get-file-for-visit)))
+  (launch-command "xdg-open" (dired-get-file-for-visit)))
 (define-key dired-mode-map (kbd "<C-return>") 'dired-gnome-open-file)
 ;;add smplayer as M-ret in dired
 (defun smplayer-open-file ()
@@ -703,7 +707,7 @@ filling of the current paragraph."
       (let ((file (if (stringp TeX-master)
 		      TeX-master
 		    (file-name-sans-extension (file-name-nondirectory (buffer-file-name))))))
-	(TeX-evince-sync-view)
+	(TeX-xreader-sync-view)
       ;; put evince to front
         (shell-command-to-string
 	 (format "wmctrl -r %s.pdf -t 3 && wmctrl -a %s.pdf"
@@ -744,18 +748,14 @@ filling of the current paragraph."
 (global-set-key "\C-cl" 'org-store-link)
 
 ;;bindings
-(add-hook 'org-load-hook
-	  (lambda ()
-	    (define-key org-mode-map (kbd "C-c C-r") 'org-refile)
-	    (define-key org-mode-map (kbd "<C-tab>") nil)
-	    (define-key org-mode-map (kbd "<S-up>") nil)
-	    (define-key org-mode-map (kbd "<S-down>") nil)
-	    (define-key org-mode-map (kbd "<S-right>") nil)
-	    (define-key org-mode-map (kbd "<S-left>") nil)))
+(require 'org)
+(define-key org-mode-map (kbd "C-c C-r") 'org-refile)
+(define-key org-mode-map (kbd "<C-tab>") nil)
+(define-key org-mode-map (kbd "M-j") 'org-meta-return)
 
 ;;settings
 (setq
- org-agenda-files (list "~/.emacs.d/org/todo.org")
+ org-agenda-files (list "~/Dropbox/todo.org")
  org-default-notes-file "~/.emacs.d/org/notes.org"
  org-completion-use-ido t
  org-agenda-span 'week
@@ -776,7 +776,11 @@ filling of the current paragraph."
  org-capture-templates '(("t" "Scheduled task" entry
 			  (file+headline "~/.emacs.d/org/todo.org" "Tasks")
 			  "* TODO %?\nSCHEDULED: %t\n%a\n%i"))
- org-irc-link-to-logs t)
+ org-irc-link-to-logs t
+ org-todo-keywords '((sequence "TODO" "WAITING" "DONE")))
+(setq org-todo-keyword-faces
+      '(("TODO" . font-lock-function-name-face) ("WAITING" . font-lock-keyword-face)
+        ("DONE" . font-lock-string-face)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Compilation
@@ -1001,7 +1005,11 @@ Ignores CHAR at point."
 (defun note ()
   (interactive)
   (find-file "~/Dropbox/notes.org"))
+(defun todo ()
+  (interactive)
+  (find-file "~/Dropbox/todo.org"))
 (global-set-key (kbd "s-n") 'note)
+(global-set-key (kbd "s-t") 'todo)
 (global-set-key (kbd "s-l") 'bury-buffer)
 ;; ghosts of past yanks
 (global-set-key (kbd "s-y") (lambda ()
@@ -1492,6 +1500,7 @@ Additional support for inhibiting one activation (quick hack)"
 
 (add-hook 'python-mode-hook
           (lambda () (setq forward-sexp-function nil)))
+(setq magit-diff-refine-hunk 'all)
 
 
 (when (get-buffer "*scratch*") (kill-buffer "*scratch*"))
@@ -1928,6 +1937,7 @@ add text-properties to VAL."
     "")))
 
 (setq inferior-julia-program-name "~/julia/bin/julia")
+(setq inferior-julia-args "-q")
 (require 'ess-site)
 (require 'ess)
 (defun ess-write-to-dribble-buffer (text) nil)
@@ -2047,3 +2057,32 @@ add text-properties to VAL."
 
 
 ;; TODO C-M-p/n find begin/end LaTeX-find-matching-begin
+
+; remove this when merged
+(defun TeX-xreader-sync-view ()
+  "Run `TeX-evince-sync-view-1', which see, set up for Evince."
+  (TeX-evince-sync-view-1 "x" "reader"))
+
+(require 'latex nil t)
+;; Math insertion in julia. Use it with
+(defun julia-math-insert (s)
+  "Inserts math symbol given by `s'"
+  (when s
+    (let ((sym (gethash (concat "\\" s) julia-latexsubs)))
+      (when sym
+        (insert sym)))))
+
+(define-minor-mode julia-math-mode
+  "A minor mode with easy access to TeX math commands. The
+command is only entered if it is supported in Julia. The
+following commands are defined:
+
+\\{LaTeX-math-mode-map}"
+  nil nil (list (cons (LaTeX-math-abbrev-prefix) LaTeX-math-keymap))
+  (if julia-math-mode
+      (set (make-local-variable 'LaTeX-math-insert-function) 'julia-math-insert)))
+
+(add-hook 'julia-mode-hook 'julia-math-mode)
+(add-hook 'inferior-julia-mode-hook 'julia-math-mode)
+(add-hook 'inferior-ess-mode-hook 'julia-math-mode)
+(add-hook 'message-mode-hook 'julia-math-mode)

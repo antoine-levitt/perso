@@ -17,7 +17,7 @@ export PATH=~/bin:$PATH
 #~/.tex pour les fichiers tex
 export TEXINPUTS=:~/.tex
 #prompt user@host:~$
-export PS1='\u@\h:\w\$ '
+#export PS1='\u@\h:\w\$ '
 
 #enlever le binding C-w de bash, il sera défini dans readline
 stty werase undef
@@ -75,7 +75,7 @@ alias wget='wget --no-check-certificate'
 # utile pour faire p.ex. make && coin
 alias coin='play /usr/share/gnubiff/coin.wav'
 #laisser gnome choisir le programme à utiliser
-alias o='gnome-open'
+alias o='xdg-open'
 #w, sans duplicata et trié
 alias w='w | sort | uniq -w 4 | grep -v USER | grep -v "load average"'
 #pour pouvoir débugger un programme juste en ajoutant gdb devant.
