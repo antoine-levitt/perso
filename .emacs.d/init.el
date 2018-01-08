@@ -1500,6 +1500,7 @@ Additional support for inhibiting one activation (quick hack)"
 
 (add-hook 'python-mode-hook
           (lambda () (setq forward-sexp-function nil)))
+(setq magit-diff-refine-hunk 'all)
 
 
 (when (get-buffer "*scratch*") (kill-buffer "*scratch*"))
