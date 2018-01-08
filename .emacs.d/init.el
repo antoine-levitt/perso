@@ -51,7 +51,8 @@
         iedit
         smart-mode-line
         avy
-        ess))
+        ess
+        markdown-mode))
 (mapc #'(lambda (package)
           (unless (package-installed-p package)
             (package-install package)))
