@@ -4,6 +4,9 @@
 (if (string-match "beta" (shell-command-to-string
 			  "hostname"))
     (set-default-font "Noto Mono 16"))
+(if (string-match "lambda" (shell-command-to-string
+			  "hostname"))
+    (set-default-font "Noto Mono 13"))
 
 ;; customize
 (custom-set-variables
