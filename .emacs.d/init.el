@@ -439,7 +439,9 @@ some other pops up with display-buffer), go back to only one window open"
 (setq dired-listing-switches "-alhGv"
       dired-free-space-args "-Pkm"
       dired-auto-revert-buffer t
-      dired-recursive-copies 'always)
+      dired-recursive-copies 'always
+      ;; dired-recursive-deletes 'always
+      dired-clean-confirm-killing-deleted-buffers nil)
 ;; Omit, be quiet
 (defadvice dired-omit-expunge (around dired-omit-be-quiet activate)
   "Be quiet."
