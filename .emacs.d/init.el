@@ -442,7 +442,9 @@ some other pops up with display-buffer), go back to only one window open"
 (setq dired-listing-switches "-alhGv"
       dired-free-space-args "-Pkm"
       dired-auto-revert-buffer t
-      dired-recursive-copies 'always)
+      dired-recursive-copies 'always
+      ;; dired-recursive-deletes 'always
+      dired-clean-confirm-killing-deleted-buffers nil)
 ;; Omit, be quiet
 (defadvice dired-omit-expunge (around dired-omit-be-quiet activate)
   "Be quiet."
@@ -661,7 +663,9 @@ filling of the current paragraph."
                           (?S "sum" nil nil)
                           (?e "varepsilon" nil nil)
                           (?L "left" nil nil)
-                          (?R "right" nil nil)))
+                          (?R "right" nil nil)
+                          (?: "partial" nil nil)
+			  ))
   
   ;; indent align like equations
   (setq LaTeX-indent-environment-list
@@ -1941,6 +1945,7 @@ add text-properties to VAL."
 
 (setq inferior-julia-program-name "~/julia/bin/julia")
 (setq inferior-julia-args "-q")
+(setq julia-max-block-lookback 20000)
 (require 'ess-site)
 (require 'ess)
 (defun ess-write-to-dribble-buffer (text) nil)
@@ -2085,7 +2090,12 @@ following commands are defined:
   (if julia-math-mode
       (set (make-local-variable 'LaTeX-math-insert-function) 'julia-math-insert)))
 
-(add-hook 'julia-mode-hook 'julia-math-mode)
-(add-hook 'inferior-julia-mode-hook 'julia-math-mode)
-(add-hook 'inferior-ess-mode-hook 'julia-math-mode)
-(add-hook 'message-mode-hook 'julia-math-mode)
+(define-globalized-minor-mode global-math-mode julia-math-mode
+  (lambda ()
+    (unless (eq major-mode 'latex-mode)
+      (julia-math-mode))))
+(global-math-mode 1)
+;; (add-hook 'julia-mode-hook 'julia-math-mode)
+;; (add-hook 'inferior-julia-mode-hook 'julia-math-mode)
+;; (add-hook 'inferior-ess-mode-hook 'julia-math-mode)
+;; (add-hook 'message-mode-hook 'julia-math-mode)
