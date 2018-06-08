@@ -57,7 +57,8 @@
         smart-mode-line
         avy
         ess
-        markdown-mode))
+        markdown-mode
+	guess-language))
 (mapc #'(lambda (package)
           (unless (package-installed-p package)
             (package-install package)))
@@ -2080,6 +2081,7 @@ add text-properties to VAL."
       (when sym
         (insert sym)))))
 
+;; unicode insertion of math symbols
 (define-minor-mode julia-math-mode
   "A minor mode with easy access to TeX math commands. The
 command is only entered if it is supported in Julia. The
@@ -2099,3 +2101,16 @@ following commands are defined:
 ;; (add-hook 'inferior-julia-mode-hook 'julia-math-mode)
 ;; (add-hook 'inferior-ess-mode-hook 'julia-math-mode)
 ;; (add-hook 'message-mode-hook 'julia-math-mode)
+
+
+(require 'guess-language)
+(setq guess-language-languages '(en fr))
+(setq guess-language-min-paragraph-length 0)
+
+(add-hook 'message-mode-hook (lambda () (setq message-signature 'my-signature)))
+
+(defun my-signature ()
+  (let ((lang (guess-language)))
+    (cond ((eq lang "en") "Best,\nAntoine")
+          (t "Amitiés,\nAntoine")
+	  )))
