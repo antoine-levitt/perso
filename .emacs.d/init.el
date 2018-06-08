@@ -2102,7 +2102,6 @@ following commands are defined:
 ;; (add-hook 'inferior-ess-mode-hook 'julia-math-mode)
 ;; (add-hook 'message-mode-hook 'julia-math-mode)
 
-
 (setq blink-matching-delay 0.2)
 (require 'guess-language)
 (setq guess-language-languages '(en fr))
