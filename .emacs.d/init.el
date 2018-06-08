@@ -2114,8 +2114,7 @@ following commands are defined:
   (insert "\n--\n")
   (insert (my-signature))
   (insert "\n")
-  (insert "\n")
-  (forward-line -3))
+  (forward-line -2))
 
 (defun my-signature ()
   (save-excursion
