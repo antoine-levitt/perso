@@ -2103,6 +2103,7 @@ following commands are defined:
 ;; (add-hook 'message-mode-hook 'julia-math-mode)
 
 
+(setq blink-matching-delay 0.2)
 (require 'guess-language)
 (setq guess-language-languages '(en fr))
 (setq guess-language-min-paragraph-length 0)
