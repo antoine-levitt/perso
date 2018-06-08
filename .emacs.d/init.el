@@ -2108,9 +2108,20 @@ following commands are defined:
 (setq guess-language-min-paragraph-length 0)
 
 (add-hook 'message-mode-hook (lambda () (setq message-signature 'my-signature)))
+(define-key message-mode-map (kbd "C-c C-w")  'my-insert-signature)
+(defun my-insert-signature ()
+  (interactive)
+  (insert "\n--\n")
+  (insert (my-signature))
+  (insert "\n")
+  (insert "\n")
+  (forward-line -3))
 
 (defun my-signature ()
-  (let ((lang (guess-language)))
-    (cond ((eq lang "en") "Best,\nAntoine")
-          (t "Amitiés,\nAntoine")
-	  )))
+  (save-excursion
+    (let* ((body-point (message-goto-body))
+	   (lang (guess-language-region body-point (point-max))))
+      (cond ((eq lang 'en) "Best,\nAntoine")
+            (t "Amitiés,\nAntoine")))))
+
+(setq guess-language-after-detection-functions nil)
