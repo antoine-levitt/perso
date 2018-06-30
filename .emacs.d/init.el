@@ -1945,8 +1945,10 @@ add text-properties to VAL."
     "")))
 
 (setq inferior-julia-program-name "~/julia/bin/julia")
+(setq inferior-julia-program "~/julia/bin/julia")
 (setq inferior-julia-args "-q")
 (setq julia-max-block-lookback 20000)
+(setq inferior-ess-r-program "")
 (require 'ess-site)
 (require 'ess)
 (defun ess-write-to-dribble-buffer (text) nil)
@@ -2108,6 +2110,7 @@ following commands are defined:
 (setq guess-language-min-paragraph-length 0)
 
 (add-hook 'message-mode-hook (lambda () (setq message-signature 'my-signature)))
+(define-key message-mode-map (kbd "C-c C-z")  'my-insert-signature)
 (define-key message-mode-map (kbd "C-c C-w")  'my-insert-signature)
 (defun my-insert-signature ()
   (interactive)
