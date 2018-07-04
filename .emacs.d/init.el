@@ -631,6 +631,14 @@ filling of the current paragraph."
   (local-set-key (kbd "C-c f") (lambda () (interactive) (reftex-reference "f")))
   (local-set-key (kbd "C-c C-g") nil)
   (local-set-key (kbd "s-a") 'TeX-command-run-all)
+  (local-set-key (kbd "C-c C-a") (lambda ()(interactive) (let ((LaTeX-default-environment "align*")) (LaTeX-environment nil))))
+  (local-set-key (kbd "s-p") (lambda ()(interactive) 
+			       (save-excursion
+				 (search-backward "(")
+				 (insert "\\left")
+				 (search-forward ")")
+				 (backward-char)
+				 (insert "\\right"))))
   (add-hook 'TeX-after-compilation-finished-functions #'TeX-revert-document-buffer)
 
   (setq LaTeX-beamer-item-overlay-flag nil)
@@ -664,8 +672,6 @@ filling of the current paragraph."
   (setq LaTeX-math-list '((?/ "frac" nil nil)
                           (?S "sum" nil nil)
                           (?e "varepsilon" nil nil)
-                          (?L "left" nil nil)
-                          (?R "right" nil nil)
                           (?: "partial" nil nil)
 			  ))
   
