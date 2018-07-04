@@ -86,6 +86,7 @@ has no effect on it."
 (global-set-key (kbd "C-M-s") 'isearch-forward-word)
 (global-set-key (kbd "C-M-r") 'isearch-backward-word)
 (setq sentence-end-double-space nil)
+(setq confirm-kill-processes nil)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Unclutter home directory
