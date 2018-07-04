@@ -452,6 +452,7 @@ some other pops up with display-buffer), go back to only one window open"
   (cl-letf (((symbol-function 'message) 'dummy-function))
     ad-do-it))
 (add-hook 'dired-mode-hook 'dired-omit-mode)
+(add-hook 'dired-mode-hook 'dired-hide-details-mode)
 
 (define-key dired-mode-map (kbd "o") 'dired-find-alternate-file)
 (put 'dired-find-alternate-file 'disabled nil)
@@ -1007,7 +1008,7 @@ Ignores CHAR at point."
 
 (defun open-file-explorer-here ()
   (interactive)
-  (launch-command "caja" ""))
+  (launch-command "xdg-open" "."))
 (global-set-key (kbd "s-o") 'open-file-explorer-here)
 
 (defun note ()
