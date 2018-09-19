@@ -1617,6 +1617,26 @@ Additional support for inhibiting one activation (quick hack)"
       smtpmail-smtp-server "smtp.gmail.com"
       smtpmail-smtp-service 587)
 
+;; Special dance to make it use different SMTP servers according to sender
+(require 'cl)
+(require 'smtpmail)
+(setq smtp-accounts
+      '(("antoine.levitt@gmail.com" "smtp.gmail.com" "antoine.levitt@gmail.com")
+        ("antoine.levitt@inria.fr" "smtp.inria.fr" "alevitt")))
+(defun my-change-smtp ()
+  (save-excursion
+    (loop with from = (save-restriction
+                        (message-narrow-to-headers)
+                        (message-fetch-field "from"))
+          for (addr server user) in smtp-accounts
+          when (string-match addr from)
+          do (setq smtpmail-smtp-user user
+		   smtpmail-smtp-server server))))
+(defadvice smtpmail-via-smtp
+    (before change-smtp-by-message-from-field (recipient buffer &optional ask) activate)
+  (with-current-buffer buffer (my-change-smtp)))
+
+
 (require 'mu4e)
 
 ;; I don't like ellipsis in headers
