@@ -586,7 +586,11 @@ some other pops up with display-buffer), go back to only one window open"
           ml/letter-symbols
           ml/other-symbols
           ml/accents
-          '(("\\\\eps\\>" . "ε"))))
+          '(("\\\\eps\\>" . "ε"))
+          '(("\\\\R\\>" . "ℝ"))
+          '(("\\\\Z\\>" . "ℤ"))
+          '(("\\\\N\\>" . "ℕ"))
+	  ))
 
 (add-hook 'LaTeX-mode-hook 'magic-latex-buffer)
 (setq magic-latex-enable-suscript nil)
