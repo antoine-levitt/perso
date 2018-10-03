@@ -541,6 +541,8 @@ some other pops up with display-buffer), go back to only one window open"
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (pdf-tools-install)
 
+(setq jka-compr-verbose nil)
+
 (define-key pdf-view-mode-map (kbd "n") 'pdf-view-scroll-up-or-next-page)
 (define-key pdf-view-mode-map (kbd "C-v") 'pdf-view-scroll-up-or-next-page)
 (define-key pdf-view-mode-map (kbd "v") 'pdf-view-scroll-up-or-next-page)
