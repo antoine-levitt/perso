@@ -1524,6 +1524,8 @@ Additional support for inhibiting one activation (quick hack)"
           (lambda () (setq forward-sexp-function nil)))
 (setq magit-diff-refine-hunk 'all)
 
+(add-hook 'diff-mode 'diff-auto-refine-mode)
+
 
 (when (get-buffer "*scratch*") (kill-buffer "*scratch*"))
 (setq initial-buffer-choice "~/") 
@@ -1602,7 +1604,7 @@ Additional support for inhibiting one activation (quick hack)"
       mu4e-view-show-addresses t
       mu4e-compose-dont-reply-to-self t
       mu4e-headers-include-related nil
-      mu4e-headers-results-limit 200
+      mu4e-headers-results-limit 100
       mu4e-view-fill-headers nil
       mu4e-compose-auto-include-date t
       mu4e-msg2pdf "/usr/bin/msg2pdf"
@@ -1878,10 +1880,10 @@ buffers; lets remap its faces so it uses the ones for mu4e."
 (setq sml/name-width 80)
 (setq sml/line-number-format "%4l")
 (sml/setup)
-;; Temp until https://github.com/Malabarba/smart-mode-line/issues/198 is fixed
-(require 'term)
-(ad-deactivate 'term-command-hook)
-(ad-deactivate 'term-handle-ansi-terminal-messages)
+;; ;; Temp until https://github.com/Malabarba/smart-mode-line/issues/198 is fixed
+;; (require 'term)
+;; (ad-deactivate 'term-command-hook)
+;; (ad-deactivate 'term-handle-ansi-terminal-messages)
 
 
 (global-set-key (kbd "M-y") 'counsel-yank-pop)
@@ -2148,7 +2150,8 @@ following commands are defined:
 (define-key message-mode-map (kbd "C-c C-w")  'my-insert-signature)
 (defun my-insert-signature ()
   (interactive)
-  (insert "\n--\n")
+  ;; (insert "\n--\n")
+  (insert "\n")
   (insert (my-signature))
   (insert "\n")
   (forward-line -2))
