@@ -1988,7 +1988,7 @@ add text-properties to VAL."
 (setq inferior-ess-r-program "")
 (require 'ess-site)
 (require 'ess)
-(defun ess-write-to-dribble-buffer (text) nil)
+(setq ess-write-to-dribble nil)
 (setq ess-history-directory "~/")
 (global-set-key (kbd "s-j") 'julia)
 (setq ess-ask-for-ess-directory nil)
