@@ -116,7 +116,8 @@ has no effect on it."
   (setq desktop-load-locked-desktop t
 	desktop-path '("~/.emacs.d/")
 	desktop-dirname "~/.emacs.d/"
-	desktop-base-file-name "emacs.desktop")
+	desktop-base-file-name "emacs.desktop"
+	desktop-files-not-to-save "\\(^/[^/:]*:\\|(ftp)$\\|synctex.gz\\)")
   ;; remove auto-fill
   (setq desktop-minor-mode-table '((auto-fill-function nil)
                                    (defining-kbd-macro nil)
@@ -668,7 +669,7 @@ filling of the current paragraph."
   ;; %%% TeX-master: "something"
   ;; %%% End:
   ;; list of master files to look for, increasing order of priority
-  (setq list-of-master-files '("poly" "report" "master" "main"))
+  (setq list-of-master-files '("poly" "report" "master"))
   ;; OK, this is a hack, but we force parsing of the file local variables here
   (hack-local-variables)
   ;; if a master file exists in the current directory, set it
