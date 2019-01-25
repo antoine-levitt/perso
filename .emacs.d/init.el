@@ -2141,6 +2141,16 @@ following commands are defined:
 ;; (add-hook 'inferior-ess-mode-hook 'julia-math-mode)
 ;; (add-hook 'message-mode-hook 'julia-math-mode)
 
+;; Make math insertion work in isearch
+(add-hook 'isearch-mode-hook 'isearch-setup-latex-math)
+(define-key isearch-mode-map (LaTeX-math-abbrev-prefix) LaTeX-math-keymap)
+
+(defun isearch-setup-latex-math ()
+  (when (eq (current-mm) 'latex-mode)
+    (set (make-local-variable 'LaTeX-math-insert-function) (lambda (s) (isearch-process-search-string (concat "\\" s) (concat "\\" s)))))
+  (when (eq (current-mm) 'ess-julia-mode)
+    (set (make-local-variable 'LaTeX-math-insert-function) (lambda (s) (isearch-process-search-string (gethash (concat "\\" s) julia-latexsubs) (gethash (concat "\\" s) julia-latexsubs))))))
+
 (setq blink-matching-delay 0.2)
 (require 'guess-language)
 (setq guess-language-languages '(en fr))
