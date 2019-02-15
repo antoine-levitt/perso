@@ -2143,6 +2143,7 @@ following commands are defined:
 
 ;; Make math insertion work in isearch
 (add-hook 'isearch-mode-hook 'isearch-setup-latex-math)
+(add-hook 'isearch-mode-end-hook 'isearch-unsetup-latex-math)
 (define-key isearch-mode-map (LaTeX-math-abbrev-prefix) LaTeX-math-keymap)
 
 (defun isearch-setup-latex-math ()
@@ -2150,6 +2151,12 @@ following commands are defined:
     (set (make-local-variable 'LaTeX-math-insert-function) (lambda (s) (isearch-process-search-string (concat "\\" s) (concat "\\" s)))))
   (when (eq (current-mm) 'ess-julia-mode)
     (set (make-local-variable 'LaTeX-math-insert-function) (lambda (s) (isearch-process-search-string (gethash (concat "\\" s) julia-latexsubs) (gethash (concat "\\" s) julia-latexsubs))))))
+
+(defun isearch-unsetup-latex-math ()
+  (when (eq (current-mm) 'latex-mode)
+    (set (make-local-variable 'LaTeX-math-insert-function) 'TeX-insert-macro))
+  (when (eq (current-mm) 'ess-julia-mode)
+    (set (make-local-variable 'LaTeX-math-insert-function) 'julia-math-insert)))
 
 (setq blink-matching-delay 0.2)
 (require 'guess-language)
