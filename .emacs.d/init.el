@@ -2012,6 +2012,10 @@ add text-properties to VAL."
 
 (define-key ess-mode-map (kbd "C-M-p") (lambda () (interactive)
                                          (goto-char (julia-last-open-block-pos (point-min)))))
+;; Force one-window setup
+(setq display-buffer-alist
+      '(("*julia" . ((display-buffer-same-window) (inhibit-same-window . nil)))
+        ("\\.jl$" . ((display-buffer-same-window) (inhibit-same-window . nil)))))
 ;; (add-hook 'julia-mode-hook 'julia-math-mode)
 ;; (add-hook 'inferior-julia-mode-hook 'julia-math-mode)
 ;; (add-hook 'inferior-ess-mode-hook 'julia-math-mode)
