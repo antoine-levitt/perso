@@ -669,7 +669,7 @@ filling of the current paragraph."
   ;; %%% TeX-master: "something"
   ;; %%% End:
   ;; list of master files to look for, increasing order of priority
-  (setq list-of-master-files '("poly" "report" "master"))
+  (setq list-of-master-files '("poly" "report" "master" "main"))
   ;; OK, this is a hack, but we force parsing of the file local variables here
   (hack-local-variables)
   ;; if a master file exists in the current directory, set it
@@ -681,6 +681,8 @@ filling of the current paragraph."
                           (?S "sum" nil nil)
                           (?e "varepsilon" nil nil)
                           (?: "partial" nil nil)
+			  (?< "le" nil nil)
+			  (?> "ge" nil nil)
 			  ))
   
   ;; indent align like equations
