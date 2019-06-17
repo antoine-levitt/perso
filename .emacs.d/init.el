@@ -1792,7 +1792,7 @@ ALL-MAILS are the all the unread emails"
 (define-key mu4e-main-mode-map (kbd "a") (lambda () (interactive) (mu4e-headers-search "" nil nil t)))
 (global-set-key (kbd "s-e") mu4e-main-mode-map)
 
-(global-set-key (kbd "s-r") (lambda () (interactive) (mu4e-headers-search "flag:unread AND (maildir:/INBOX OR maildir:/InriaBox/)" nil nil t nil t))) ; last t: open first message
+(global-set-key (kbd "s-r") (lambda () (interactive) (when (> AL-mail-count 0) (mu4e-headers-search "flag:unread AND (maildir:/INBOX OR maildir:/InriaBox/)" nil nil t nil t)))) ; last t: open first message
 (global-set-key (kbd "s-g") (lambda () (interactive) (mu4e-headers-search "flag:unread" nil nil t nil t))) ; last t: open first message
 (defun mu4e~main-view () nil) ;; too extreme? Bof.
 (global-set-key (kbd "C-x m") 'mu4e-compose-new)
@@ -2053,6 +2053,12 @@ add text-properties to VAL."
                    (with-current-buffer "*mu4e-headers*"
                        (mu4e~headers-quit-buffer)))))
 
+
+;; immediately quit empty header buffers
+(add-hook 'mu4e-headers-found-hook (lambda () (interactive)
+				     (end-of-visual-line)
+				     (when (eobp)
+				       (mu4e~headers-quit-buffer))))
 
 (setq AL/algr-keys   "å€þý¶ÂøÊ±æðÛÎÔ¹«»©®ß¬")
 (setq AL/normal-keys "aetypqsdfghjklmwxcvbn")
