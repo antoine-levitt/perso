@@ -1685,6 +1685,7 @@ Additional support for inhibiting one activation (quick hack)"
 (setq mu4e-alert-email-notification-types '(subjects))
 (setq mu4e-alert-interesting-mail-query "flag:unread AND (maildir:/INBOX OR maildir:/InriaBox/)")
 (setq mu4e-alert-set-window-urgency nil)
+(setq mu4e-alert-max-messages-to-process 50)
 (defun mu4e-alert-default-grouped-mail-notification-formatter (mail-group all-mails)
   "Default function to format MAIL-GROUP for notification.
 
