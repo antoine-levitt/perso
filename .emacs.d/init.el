@@ -1683,7 +1683,7 @@ Additional support for inhibiting one activation (quick hack)"
 (mu4e-alert-set-default-style 'libnotify)
 (add-hook 'after-init-hook #'mu4e-alert-enable-notifications)
 (setq mu4e-alert-email-notification-types '(subjects))
-(setq mu4e-alert-interesting-mail-query "flag:unread AND maildir:/INBOX")
+(setq mu4e-alert-interesting-mail-query "flag:unread AND (maildir:/INBOX OR maildir:/InriaBox/)")
 (setq mu4e-alert-set-window-urgency nil)
 (defun mu4e-alert-default-grouped-mail-notification-formatter (mail-group all-mails)
   "Default function to format MAIL-GROUP for notification.
@@ -1782,17 +1782,17 @@ ALL-MAILS are the all the unread emails"
 (define-key mu4e-view-mode-map (kbd "f") 'mu4e-compose-forward)
 
 (define-key mu4e-main-mode-map (kbd "c") 'mu4e-compose-new)
-(define-key mu4e-main-mode-map (kbd "u") (lambda () (interactive) (mu4e-headers-search "flag:unread AND m:/INBOX" nil nil t nil nil))) ; last t: open first message
-(define-key mu4e-main-mode-map (kbd "i") (lambda () (interactive) (mu4e-headers-search "m:/INBOX" nil nil t)))
-(define-key mu4e-main-mode-map (kbd "r") (lambda () (interactive) (mu4e-headers-search "flag:unread" nil nil t nil nil)))
+(define-key mu4e-main-mode-map (kbd "r") (lambda () (interactive) (mu4e-headers-search "flag:unread AND (maildir:/INBOX OR maildir:/InriaBox/)" nil nil t nil nil)))
+(define-key mu4e-main-mode-map (kbd "i") (lambda () (interactive) (mu4e-headers-search "(maildir:/INBOX OR maildir:/InriaBox/)" nil nil t)))
+(define-key mu4e-main-mode-map (kbd "g") (lambda () (interactive) (mu4e-headers-search "flag:unread" nil nil t nil nil)))
 (define-key mu4e-main-mode-map (kbd "d") (lambda () (interactive) (mu4e-headers-search "m:/\"[Google Mail]/.Drafts\"" nil nil t nil t)))
 (define-key mu4e-main-mode-map (kbd "s") (lambda () (interactive) (mu4e-headers-search "m:/\"[Google Mail]/.Sent Mail\"" nil nil t)))
 (define-key mu4e-main-mode-map (kbd "q") (lambda () (interactive) (mu4e-headers-search)))
 (define-key mu4e-main-mode-map (kbd "a") (lambda () (interactive) (mu4e-headers-search "" nil nil t)))
 (global-set-key (kbd "s-e") mu4e-main-mode-map)
 
-(global-set-key (kbd "s-g") (lambda () (interactive) (mu4e-headers-search "flag:unread AND m:/INBOX" nil nil t nil t))) ; last t: open first message
-(global-set-key (kbd "s-r") (lambda () (interactive) (mu4e-headers-search "flag:unread" nil nil t nil t))) ; last t: open first message
+(global-set-key (kbd "s-r") (lambda () (interactive) (mu4e-headers-search "flag:unread AND (maildir:/INBOX OR maildir:/InriaBox/)" nil nil t nil t))) ; last t: open first message
+(global-set-key (kbd "s-g") (lambda () (interactive) (mu4e-headers-search "flag:unread" nil nil t nil t))) ; last t: open first message
 (defun mu4e~main-view () nil) ;; too extreme? Bof.
 (global-set-key (kbd "C-x m") 'mu4e-compose-new)
 (define-key mu4e-compose-mode-map (kbd "M-q") nil)
