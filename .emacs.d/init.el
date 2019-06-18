@@ -2056,9 +2056,11 @@ add text-properties to VAL."
 
 ;; immediately quit empty header buffers
 (add-hook 'mu4e-headers-found-hook (lambda () (interactive)
-				     (end-of-visual-line)
-				     (when (eobp)
-				       (mu4e~headers-quit-buffer))))
+				     (save-excursion
+				       (goto-char (point-min))
+				       (end-of-visual-line)
+				       (when (eobp)
+					 (mu4e~headers-quit-buffer)))))
 
 (setq AL/algr-keys   "å€þý¶ÂøÊ±æðÛÎÔ¹«»©®ß¬")
 (setq AL/normal-keys "aetypqsdfghjklmwxcvbn")
