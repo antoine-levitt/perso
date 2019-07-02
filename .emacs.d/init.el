@@ -1986,7 +1986,7 @@ add text-properties to VAL."
 
 (setq inferior-julia-program-name "~/julia/bin/julia")
 (setq inferior-julia-program "~/julia/bin/julia")
-(setq inferior-julia-args "-q")
+(setq inferior-julia-args "-q --color=yes")
 (setq julia-max-block-lookback 20000)
 (setq inferior-ess-r-program "")
 (require 'ess-site)
