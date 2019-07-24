@@ -2197,3 +2197,12 @@ following commands are defined:
             (t "Amitiés,\nAntoine")))))
 
 (setq guess-language-after-detection-functions nil)
+
+
+(if (string-match "lambda" (shell-command-to-string
+			    "hostname"))
+    (setq mu4e-headers-fields '((:human-date . 6)
+				(:maildir . 10)
+				(:from-or-to . 22)
+				(:thread-subject . 63)))
+  (setq sml/name-width 60))
