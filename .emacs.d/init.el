@@ -2201,8 +2201,9 @@ following commands are defined:
 
 (if (string-match "lambda" (shell-command-to-string
 			    "hostname"))
-    (setq mu4e-headers-fields '((:human-date . 6)
-				(:maildir . 10)
-				(:from-or-to . 22)
-				(:thread-subject . 63)))
-  (setq sml/name-width 60))
+    (progn
+      (setq mu4e-headers-fields '((:human-date . 6)
+				  (:maildir . 10)
+				  (:from-or-to . 22)
+				  (:thread-subject . 63)))
+      (setq sml/name-width 60)))
