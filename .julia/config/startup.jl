@@ -8,8 +8,17 @@ let
     end
 end
 
-using Revise
+# using Revise
 using BenchmarkTools
 using Statistics
-# using Profile
+using Profile
+Profile.init(n=10000000, delay=0.001) # profile for 10x longer than default
 using LinearAlgebra
+
+atreplinit() do repl
+    try
+        @eval using Revise
+        @async Revise.wait_steal_repl_backend()
+    catch
+    end
+end
