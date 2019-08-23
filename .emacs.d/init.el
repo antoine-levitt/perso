@@ -626,6 +626,7 @@ filling of the current paragraph."
       (do-auto-fill))))
 
 (defun my-tex-config ()
+  (iimage-mode 0)
   (turn-on-reftex)
   (auto-fill-mode 1)
   (setq auto-fill-function 'my-LaTeX-auto-fill-function)
