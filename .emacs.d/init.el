@@ -2234,3 +2234,9 @@ following commands are defined:
 				  (:from-or-to . 22)
 				  (:thread-subject . 63)))
       (setq sml/name-width 60)))
+
+(require 'electric-operator)
+(add-hook 'julia-mode-hook #'electric-operator-mode)
+(electric-operator-add-rules-for-mode 'julia-mode
+				      (cons "^" nil)
+				      (cons ":" nil))
