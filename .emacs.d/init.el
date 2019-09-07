@@ -59,7 +59,8 @@
         markdown-mode
 	guess-language
 	julia-repl
-	eterm-256color))
+	eterm-256color
+	electric-operator))
 (mapc #'(lambda (package)
           (unless (package-installed-p package)
             (package-install package)))
