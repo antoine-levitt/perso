@@ -58,7 +58,8 @@
         avy
         markdown-mode
 	guess-language
-	julia-repl))
+	julia-repl
+	eterm-256color))
 (mapc #'(lambda (package)
           (unless (package-installed-p package)
             (package-install package)))
@@ -2060,6 +2061,7 @@ add text-properties to VAL."
 (define-key term-raw-map (kbd "M-v") nil)
 (define-key term-raw-map (kbd "M-<") nil)
 (define-key term-raw-map (kbd "M->") nil)
+(add-hook 'term-mode-hook #'eterm-256color-mode)
 
 ;; quit mu4e when composing a reply
 (add-hook 'mu4e-compose-mode-hook
