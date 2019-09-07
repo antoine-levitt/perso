@@ -56,9 +56,9 @@
         iedit
         smart-mode-line
         avy
-        ess
         markdown-mode
-	guess-language))
+	guess-language
+	julia-repl))
 (mapc #'(lambda (package)
           (unless (package-installed-p package)
             (package-install package)))
@@ -474,12 +474,6 @@ some other pops up with display-buffer), go back to only one window open"
 (define-key dired-mode-map (kbd "M-o") 'dired-omit-mode)
 (define-key dired-mode-map (kbd "l") 'dired-up-directory)
 (define-key dired-mode-map (kbd "C-j") 'dired-find-file)
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; Winner
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;C-c left/right to undo/redo changes in window configuration
-(winner-mode 1)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Recent files
@@ -1016,8 +1010,6 @@ Ignores CHAR at point."
 	  (re-search-forward "[ \t\r\n]+" nil t)
 	  (replace-match "" nil nil))))))
 (global-set-key (kbd "s-k") 'kill-whitespace)
-(global-set-key (kbd "<s-left>") 'winner-undo)
-(global-set-key (kbd "<s-right>") 'winner-redo)
 (defun open-shell-here ()
   (interactive)
   (launch-command "mate-terminal" ""))
@@ -1985,37 +1977,50 @@ add text-properties to VAL."
       (buffer-string))
     "")))
 
-(setq inferior-julia-program-name "~/julia/bin/julia")
-(setq inferior-julia-program "~/julia/bin/julia")
-(setq inferior-julia-args "-q --color=yes")
-(setq julia-max-block-lookback 20000)
-(setq inferior-ess-r-program "")
-(require 'ess-site)
-(require 'ess)
-(setq ess-write-to-dribble nil)
-(setq ess-history-directory "~/")
-(global-set-key (kbd "s-j") 'julia)
-(setq ess-ask-for-ess-directory nil)
-(setq ess-show-buffer-action nil)
-(global-set-key (kbd "s-z") (kbd "C-c C-z"))
-(define-key ess-mode-map (kbd "C-c C-c") (lambda () (interactive) (ess-load-file (buffer-file-name)) (ess-switch-to-inferior-or-script-buffer nil)))
-(global-set-key (kbd "s-c") (kbd "C-c C-c"))
-(define-key ess-mode-map (kbd "TAB") 'julia-latexsub-or-indent)
-(defun julia-prev-block-beg ()
-  (interactive)
-  (backward-char)
-  (while (and (not (bobp)) (not (and (julia-at-keyword julia-block-start-keywords) (not (julia-in-comment)))))
-    (backward-sexp)))
-(define-key ess-mode-map (kbd "C-M-p")'julia-prev-block-beg)
-(defun julia-next-block-end ()
-  (interactive)
-  (forward-char)
-  (while (and (not (eobp)) (not (and (julia-at-keyword julia-block-end-keywords) (not (julia-in-comment)))))
-    (forward-sexp)))
-(define-key ess-mode-map (kbd "C-M-n")'julia-next-block-end)
+(require 'julia-repl)
+(setq julia-repl-executable-records
+      '((default "/home/antoine/julia/bin/julia")))
+(define-key julia-repl-mode-map (kbd "C-c C-c") 'julia-repl-send-buffer)
+(define-key julia-repl-mode-map (kbd "C-c C-l") 'julia-repl-send-region-or-line)
+(add-hook 'julia-mode-hook 'julia-repl-mode)
 
-(define-key ess-mode-map (kbd "C-M-p") (lambda () (interactive)
-                                         (goto-char (julia-last-open-block-pos (point-min)))))
+(global-set-key (kbd "s-j") 'julia-repl)
+(global-set-key (kbd "s-z") (kbd "C-c C-z"))
+(global-set-key (kbd "s-c") (kbd "C-c C-c"))
+
+;; (define-key ess-mode-map (kbd "C-c C-c") (lambda () (interactive) (ess-load-file (buffer-file-name)) (ess-switch-to-inferior-or-script-buffer nil)))
+;; (setq inferior-julia-program-name "~/julia/bin/julia")
+;; (setq inferior-julia-program "~/julia/bin/julia")
+;; (setq inferior-julia-args "-q --color=yes")
+;; (setq julia-max-block-lookback 20000)
+;; (setq inferior-ess-r-program "")
+;; (require 'ess-site)
+;; (require 'ess)
+;; (setq ess-write-to-dribble nil)
+;; (setq ess-history-directory "~/")
+;; (setq ess-ask-for-ess-directory nil)
+;; (setq ess-show-buffer-action nil)
+
+;; (define-key ess-mode-map (kbd "TAB") 'julia-latexsub-or-indent)
+;; (defun julia-prev-block-beg ()
+;;   (interactive)
+;;   (backward-char)
+;;   (while (and (not (bobp)) (not (and (julia-at-keyword julia-block-start-keywords) (not (julia-in-comment)))))
+;;     (backward-sexp)))
+;; (define-key ess-mode-map (kbd "C-M-p")'julia-prev-block-beg)
+;; (defun julia-next-block-end ()
+;;   (interactive)
+;;   (forward-char)
+;;   (while (and (not (eobp)) (not (and (julia-at-keyword julia-block-end-keywords) (not (julia-in-comment)))))
+;;     (forward-sexp)))
+;; (define-key ess-mode-map (kbd "C-M-n")'julia-next-block-end)
+
+;; (define-key ess-mode-map (kbd "C-M-p") (lambda () (interactive)
+;;                                          (goto-char (julia-last-open-block-pos (point-min)))))
+
+
+
+
 ;; Force one-window setup
 (setq display-buffer-alist
       '(("*julia" . ((display-buffer-same-window) (inhibit-same-window . nil)))
@@ -2042,6 +2047,19 @@ add text-properties to VAL."
 (global-set-key (kbd "s-h") 'visit-term-buffer)
 
 (setq term-scroll-to-bottom-on-output t)
+(define-key term-mode-map (kbd "s-c")
+  (lambda () (interactive) (if (term-in-char-mode)
+			       (term-line-mode)
+			     (term-char-mode))))
+(define-key term-raw-map (kbd "s-c")
+  (lambda () (interactive) (if (term-in-char-mode)
+			       (term-line-mode)
+			     (term-char-mode))))
+(define-key term-mode-map (kbd "C-c C-c") (lambda () (interactive) (term-char-mode)))
+(define-key term-raw-map (kbd "C-v") nil)
+(define-key term-raw-map (kbd "M-v") nil)
+(define-key term-raw-map (kbd "M-<") nil)
+(define-key term-raw-map (kbd "M->") nil)
 
 ;; quit mu4e when composing a reply
 (add-hook 'mu4e-compose-mode-hook
@@ -2096,6 +2114,7 @@ add text-properties to VAL."
 ;; (define-key smartparens-mode-map (kbd "M-q")    'sp-backward-kill-word)
 ;; (define-key smartparens-mode-map (kbd "M-d")    'sp-forward-kill-word)
 ;; (add-to-list 'sp-no-reindent-after-kill-modes 'latex-mode)
+(require 'cl)
 (defmacro def-pairs (pairs)
   `(progn
      ,@(loop for (key . val) in pairs
@@ -2166,12 +2185,17 @@ following commands are defined:
   (when (eq (current-mm) 'latex-mode)
     (set (make-local-variable 'LaTeX-math-insert-function) (lambda (s) (isearch-process-search-string (concat "\\" s) (concat "\\" s)))))
   (when (eq (current-mm) 'ess-julia-mode)
-    (set (make-local-variable 'LaTeX-math-insert-function) (lambda (s) (isearch-process-search-string (gethash (concat "\\" s) julia-latexsubs) (gethash (concat "\\" s) julia-latexsubs))))))
+    (set (make-local-variable 'LaTeX-math-insert-function) (lambda (s) (isearch-process-search-string (gethash (concat "\\" s) julia-latexsubs) (gethash (concat "\\" s) julia-latexsubs)))))
+  (when (eq (current-mm) 'julia-mode)
+    (set (make-local-variable 'LaTeX-math-insert-function) (lambda (s) (isearch-process-search-string (gethash (concat "\\" s) julia-latexsubs) (gethash (concat "\\" s) julia-latexsubs)))))
+)
 
 (defun isearch-unsetup-latex-math ()
   (when (eq (current-mm) 'latex-mode)
     (set (make-local-variable 'LaTeX-math-insert-function) 'TeX-insert-macro))
   (when (eq (current-mm) 'ess-julia-mode)
+    (set (make-local-variable 'LaTeX-math-insert-function) 'julia-math-insert))
+  (when (eq (current-mm) 'julia-mode)
     (set (make-local-variable 'LaTeX-math-insert-function) 'julia-math-insert)))
 
 (setq blink-matching-delay 0.2)
