@@ -827,6 +827,9 @@ filling of the current paragraph."
  compilation-auto-jump-to-first-error t
  compilation-disable-input t)
 
+(setq compilation-message-face nil
+      compilation-error-face compilation-line-face) ; tailored for julia-repl
+
 ;;compilation by C-c C-c in modes that don't shadow it
 (global-set-key (kbd "C-c C-c") 'compile)
 
