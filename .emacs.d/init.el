@@ -1985,6 +1985,7 @@ add text-properties to VAL."
 (require 'julia-repl)
 (setq julia-repl-executable-records
       '((default "/home/antoine/julia/bin/julia")))
+(setq julia-repl-save-buffer-on-send t)
 (define-key julia-repl-mode-map (kbd "C-c C-c") 'julia-repl-send-buffer)
 (define-key julia-repl-mode-map (kbd "C-c C-l") 'julia-repl-send-region-or-line)
 (add-hook 'julia-mode-hook 'julia-repl-mode)
