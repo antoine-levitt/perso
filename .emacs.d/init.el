@@ -36,8 +36,7 @@
 
 
 (setq myPackages
-      '(better-defaults
-        material-theme
+      '(material-theme
         auctex
         rainbow-delimiters
         julia-mode
@@ -241,6 +240,8 @@ From http://atomized.org/2011/01/toggle-between-root-non-root-in-emacs-with-tram
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Misc. settings
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Better list of buffers
+(global-set-key (kbd "C-x C-b") 'ibuffer)
 ;; I don't use bidi stuff
 (setq-default bidi-display-reordering nil)
 ;; No fancy new messages that stay for a while
