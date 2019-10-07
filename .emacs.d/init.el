@@ -2245,4 +2245,9 @@ following commands are defined:
 (add-hook 'julia-mode-hook #'electric-operator-mode)
 (electric-operator-add-rules-for-mode 'julia-mode
 				      (cons "^" nil)
-				      (cons ":" nil))
+				      (cons ":" nil)
+				      (cons "*" nil)
+				      (cons "/" nil)
+				      (cons "+" nil)
+				      (cons "-" nil)
+				      )
