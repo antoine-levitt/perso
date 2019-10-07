@@ -2232,14 +2232,14 @@ following commands are defined:
 (setq guess-language-after-detection-functions nil)
 
 
-(if (string-match "lambda" (shell-command-to-string
-			    "hostname"))
-    (progn
-      (setq mu4e-headers-fields '((:human-date . 6)
-				  (:maildir . 10)
-				  (:from-or-to . 22)
-				  (:thread-subject . 63)))
-      (setq sml/name-width 60)))
+;; (if (string-match "lambda" (shell-command-to-string
+;; 			    "hostname"))
+;;     (progn
+;;       (setq mu4e-headers-fields '((:human-date . 6)
+;; 				  (:maildir . 10)
+;; 				  (:from-or-to . 22)
+;; 				  (:thread-subject . 63)))
+;;       (setq sml/name-width 60)))
 
 (require 'electric-operator)
 (add-hook 'julia-mode-hook #'electric-operator-mode)
@@ -2250,4 +2250,4 @@ following commands are defined:
 				      (cons "/" nil)
 				      (cons "+" nil)
 				      (cons "-" nil)
-				      )
+				      (cons "." nil))
