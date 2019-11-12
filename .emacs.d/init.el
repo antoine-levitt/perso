@@ -2067,6 +2067,7 @@ add text-properties to VAL."
 (define-key term-raw-map (kbd "M-v") nil)
 (define-key term-raw-map (kbd "M-<") nil)
 (define-key term-raw-map (kbd "M->") nil)
+(define-key term-raw-map (kbd "C-y") nil)
 (add-hook 'term-mode-hook #'eterm-256color-mode)
 
 ;; quit mu4e when composing a reply
