@@ -2251,3 +2251,5 @@ following commands are defined:
 				      (cons "+" nil)
 				      (cons "-" nil)
 				      (cons "." nil))
+(define-key pdf-view-mode-map (kbd "p") 'pdf-view-previous-page-command)
+(define-key pdf-view-mode-map (kbd "n") 'pdf-view-next-page-command)

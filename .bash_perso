@@ -122,3 +122,4 @@ alias pprof="python -m cProfile -s cumulative" # pprof -o out.profile script.py
 alias pprofview="pyprof2calltree -k -i" #pprofview out.profile
 alias ip="ipython --pylab=wx --gui=wx"
 alias julia=~/julia/bin/julia
+alias DFTKtest="julia -e 'Pkg.test(\"DFTK\")'; notify-send \"done\""

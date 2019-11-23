@@ -15,6 +15,7 @@ using Profile
 Profile.init(n=10000000, delay=0.001) # profile for 10x longer than default
 using LinearAlgebra
 using Infiltrator
+using Test
 
 atreplinit() do repl
     try
