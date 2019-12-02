@@ -59,7 +59,8 @@
 	guess-language
 	julia-repl
 	eterm-256color
-	electric-operator))
+	electric-operator
+	forge))
 (mapc #'(lambda (package)
           (unless (package-installed-p package)
             (package-install package)))
@@ -1509,6 +1510,7 @@ Additional support for inhibiting one activation (quick hack)"
         (yank-advised-indent-function (region-beginning) (region-end)))))
 
 (require 'magit)
+(require 'forge)
 (global-set-key (kbd "C-x v s") 'magit-status)
 (global-set-key (kbd "C-x v p") 'magit-push-implicitly)
 (global-set-key (kbd "C-x v f") 'magit-pull-from-upstream)
@@ -1987,8 +1989,28 @@ add text-properties to VAL."
 (setq julia-repl-executable-records
       '((default "/home/antoine/julia/bin/julia")))
 (setq julia-repl-save-buffer-on-send t)
-(define-key julia-repl-mode-map (kbd "C-c C-c") 'julia-repl-send-buffer)
+
+(setq AL/last-sent-julia-buffer nil)
+(defun AL/julia-repl-send-buffer (arg)
+  (interactive "P")
+  (setq AL/last-sent-julia-buffer buffer-file-name)
+  (julia-repl-send-buffer arg))
+(defun AL/julia-repl-send-last-command (arg)
+  (interactive "P")
+  (if AL/last-sent-julia-buffer
+      (progn
+	(save-buffer)
+	(julia-repl--send-string
+             (concat "include(\""
+                     (julia-repl--path-rewrite AL/last-sent-julia-buffer julia-repl-path-rewrite-rules)
+                     "\");")))
+    (AL/julia-repl-send-buffer)))
+
+(define-key julia-repl-mode-map (kbd "s-a") 'AL/julia-repl-send-last-command)
+(define-key julia-repl-mode-map (kbd "C-c C-c") 'AL/julia-repl-send-buffer)
 (define-key julia-repl-mode-map (kbd "C-c C-l") 'julia-repl-send-region-or-line)
+(define-key julia-repl-mode-map (kbd "<C-return>") nil)
+(defun julia-repl-repeat-last-input (kbd))
 (add-hook 'julia-mode-hook 'julia-repl-mode)
 
 (global-set-key (kbd "s-j") 'julia-repl)
