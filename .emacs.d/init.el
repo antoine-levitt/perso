@@ -1546,6 +1546,9 @@ Additional support for inhibiting one activation (quick hack)"
 (setq ivy-virtual-abbreviate 'full)
 
 (global-set-key (kbd "M-x") 'counsel-M-x)
+(ivy-configure 'counsel-M-x
+  :initial-input "^"
+  :display-transformer-fn #'counsel-M-x-transformer)
 (global-set-key (kbd "C-x C-f") 'counsel-find-file)
 (global-set-key (kbd "s-f") 'counsel-find-file)
 (global-set-key (kbd "C-c C-r") 'ivy-resume)
