@@ -2013,7 +2013,6 @@ add text-properties to VAL."
 (define-key julia-repl-mode-map (kbd "C-c C-c") 'AL/julia-repl-send-buffer)
 (define-key julia-repl-mode-map (kbd "C-c C-l") 'julia-repl-send-region-or-line)
 (define-key julia-repl-mode-map (kbd "<C-return>") nil)
-(defun julia-repl-repeat-last-input (kbd))
 (add-hook 'julia-mode-hook 'julia-repl-mode)
 
 (global-set-key (kbd "s-j") 'julia-repl)
