@@ -682,6 +682,7 @@ filling of the current paragraph."
                           (?: "partial" nil nil)
 			  (?< "le" nil nil)
 			  (?> "ge" nil nil)
+			  (?, "int" nil nil)
 			  ))
   
   ;; indent align like equations
@@ -2184,7 +2185,7 @@ add text-properties to VAL."
 (defun julia-math-insert (s)
   "Inserts math symbol given by `s'"
   (when s
-    (let ((sym (gethash (concat "\\" s) julia-latexsubs)))
+    (let ((sym (gethash (concat "\\" s) julia-mode-latexsubs)))
       (when sym
         (insert sym)))))
 
