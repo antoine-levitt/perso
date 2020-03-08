@@ -2181,13 +2181,82 @@ add text-properties to VAL."
   (TeX-evince-sync-view-1 "x" "reader"))
 
 (require 'latex nil t)
-;; Math insertion in julia. Use it with
+
+;; OK, now we overwrite this function to get rid of the "*" in the
+;; interactive definition of the function that calls LaTeX-math-insert
+;; and forbids us to use it in term-char-mode
+(defun LaTeX-math-initialize ()
+  (let ((math (reverse (append LaTeX-math-list LaTeX-math-default)))
+	(map LaTeX-math-keymap)
+	(unicode (and LaTeX-math-menu-unicode (fboundp 'decode-char))))
+    (while math
+      (let* ((entry (car math))
+	     (key (nth 0 entry))
+	     (prefix
+	      (and unicode
+		   (nth 3 entry)))
+	     value menu name)
+	(setq math (cdr math))
+	(if (and prefix
+		 (setq prefix (decode-char 'ucs (nth 3 entry))))
+	    (setq prefix (concat (string prefix) " \\"))
+	  (setq prefix "\\"))
+	(if (listp (cdr entry))
+	    (setq value (nth 1 entry)
+		  menu (nth 2 entry))
+	  (setq value (cdr entry)
+		menu nil))
+	(if (stringp value)
+	    (progn
+	      (setq name (intern (concat "LaTeX-math-" value)))
+	      (fset name (list 'lambda (list 'arg) (list 'interactive "P")
+			       (list 'LaTeX-math-insert value 'arg))))
+	  (setq name value))
+	(if key
+	    (progn
+	      (setq key (cond ((numberp key) (char-to-string key))
+			      ((stringp key) (read-kbd-macro key))
+			      (t (vector key))))
+	      (define-key map key name)))
+	(if menu
+	    (let ((parent LaTeX-math-menu))
+	      (if (listp menu)
+		  (progn
+		    (while (cdr menu)
+		      (let ((sub (assoc (car menu) LaTeX-math-menu)))
+			(if sub
+			    (setq parent sub)
+			  (setcdr parent (cons (list (car menu)) (cdr parent))))
+			(setq menu (cdr menu))))
+		    (setq menu (car menu))))
+	      (let ((sub (assoc menu parent)))
+		(if sub
+		    (if (stringp value)
+			(setcdr sub (cons (vector (concat prefix value)
+						  name t)
+					  (cdr sub)))
+		      (error "Cannot have multiple special math menu items"))
+		  (setcdr parent
+			  (cons (if (stringp value)
+				    (list menu (vector (concat prefix value)
+						       name t))
+				  (vector menu name t))
+				(cdr parent)))))))))
+    ;; Make the math prefix char available if it has not been used as a prefix.
+    (unless (lookup-key map (LaTeX-math-abbrev-prefix))
+      (define-key map (LaTeX-math-abbrev-prefix) 'self-insert-command))))
+(LaTeX-math-initialize)
+
+;; Math insertion
 (defun julia-math-insert (s)
   "Inserts math symbol given by `s'"
   (when s
     (let ((sym (gethash (concat "\\" s) julia-mode-latexsubs)))
       (when sym
-        (insert sym)))))
+	(if (and (eq major-mode 'term-mode) (term-in-char-mode))
+	    (progn
+	      (term-send-raw-string sym))
+          (insert sym))))))
 
 ;; unicode insertion of math symbols
 (define-minor-mode julia-math-mode
@@ -2272,3 +2341,4 @@ following commands are defined:
 				      (cons "." nil))
 (define-key pdf-view-mode-map (kbd "p") 'pdf-view-previous-page-command)
 (define-key pdf-view-mode-map (kbd "n") 'pdf-view-next-page-command)
+
