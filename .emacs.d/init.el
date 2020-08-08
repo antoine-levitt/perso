@@ -60,7 +60,9 @@
 	julia-repl
 	eterm-256color
 	electric-operator
-	forge))
+	forge
+	vterm
+	))
 (mapc #'(lambda (package)
           (unless (package-installed-p package)
             (package-install package)))
@@ -413,29 +415,7 @@ some other pops up with display-buffer), go back to only one window open"
 ;; (define-key paredit-everywhere-mode-map (kbd "M-S") 'paredit-splice-sexp)
 ;; (define-key paredit-everywhere-mode-map (kbd "C-(") 'paredit-backward-slurp-sexp)
 ;; (define-key paredit-everywhere-mode-map (kbd "M-s") nil)
-
-(setq paredit-lighter "")
-
-;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; ;;; Autopair
-;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; (require 'autopair)
-;; (autopair-global-mode) ;; enable autopair in all buffers
-;; (setq autopair-blink nil)
-;; ;; not in ERC
-;; (add-hook 'erc-mode-hook
-;; 	  #'(lambda () (setq autopair-dont-activate t) (autopair-mode -1)))
-;; (add-hook 'term-mode-hook
-;; 	  #'(lambda () (setq autopair-dont-activate t) (autopair-mode -1)))
-;; ;; (add-hook 'prog-mode-hook
-;; ;; 	  #'(lambda () (setq autopair-dont-activate t) (autopair-mode -1)))
-;; ;; (add-hook 'LaTeX-mode-hook
-;; ;; 	  #'(lambda () (setq autopair-dont-activate t) (autopair-mode -1)))
-;; (add-hook 'LaTeX-mode-hook
-;;           #'(lambda ()
-;;               (define-key LaTeX-mode-map (kbd "$") 'self-insert-command)
-;;               ;(modify-syntax-entry ?$ "\"")
-;;               ))
+;; (setq paredit-lighter "")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Dired
@@ -593,7 +573,7 @@ some other pops up with display-buffer), go back to only one window open"
           '(("\\\\N\\>" . "ℕ"))
 	  ))
 
-(add-hook 'LaTeX-mode-hook 'magic-latex-buffer)
+(add-hook 'TeX-update-style-hook 'magic-latex-buffer)
 (setq magic-latex-enable-suscript nil)
 (setq magic-latex-enable-block-align nil)
 (setq magic-latex-enable-block-highlight nil)
@@ -2062,38 +2042,53 @@ add text-properties to VAL."
 ;; (add-hook 'inferior-ess-mode-hook 'julia-math-mode)
 
 ;; (setq kill-buffer-query-functions nil)
-;; get dead buffers out of the way, but keep them around in case I need them
-(defadvice term-handle-exit
-    (after term-kill-buffer-on-exit activate)
-  (rename-buffer "*ansi-term* (dead)" t)
-  (bury-buffer))
+
+;; ;; get dead buffers out of the way, but keep them around in case I need them
+;; (defadvice term-handle-exit
+;;     (after term-kill-buffer-on-exit activate)
+;;   (rename-buffer "*ansi-term* (dead)" t)
+;;   (bury-buffer))
+
+;; (defun visit-term-buffer (arg)
+;;   "Create or visit a terminal buffer."
+;;   (interactive "P")
+;;   (if (or arg
+;;           (not (get-buffer "*ansi-term*")))
+;;       (ansi-term (getenv "SHELL"))
+;;     (switch-to-buffer "*ansi-term*")))
+
+;; (global-set-key (kbd "s-h") 'visit-term-buffer)
+
+;; (setq term-scroll-to-bottom-on-output t)
+;; (define-key term-mode-map (kbd "s-c")
+;;   (lambda () (interactive) (if (term-in-char-mode)
+;; 			       (term-line-mode)
+;; 			     (term-char-mode))))
+;; (define-key term-raw-map (kbd "s-c")
+;;   (lambda () (interactive) (if (term-in-char-mode)
+;; 			       (term-line-mode)
+;; 			     (term-char-mode))))
+;; (define-key term-mode-map (kbd "C-c C-c") (lambda () (interactive) (term-char-mode)))
+;; (define-key term-raw-map (kbd "C-v") nil)
+;; (define-key term-raw-map (kbd "M-v") nil)
+;; (define-key term-raw-map (kbd "M-<") nil)
+;; (define-key term-raw-map (kbd "M->") nil)
+;; (define-key term-raw-map (kbd "C-y") nil)
+;; (add-hook 'term-mode-hook #'eterm-256color-mode)
+
+
 
 (defun visit-term-buffer (arg)
   "Create or visit a terminal buffer."
   (interactive "P")
   (if (or arg
-          (not (get-buffer "*ansi-term*")))
-      (ansi-term (getenv "SHELL"))
-    (switch-to-buffer "*ansi-term*")))
-
+          (not (get-buffer "vterm")))
+      (vterm)
+    (switch-to-buffer "vterm")))
 (global-set-key (kbd "s-h") 'visit-term-buffer)
 
-(setq term-scroll-to-bottom-on-output t)
-(define-key term-mode-map (kbd "s-c")
-  (lambda () (interactive) (if (term-in-char-mode)
-			       (term-line-mode)
-			     (term-char-mode))))
-(define-key term-raw-map (kbd "s-c")
-  (lambda () (interactive) (if (term-in-char-mode)
-			       (term-line-mode)
-			     (term-char-mode))))
-(define-key term-mode-map (kbd "C-c C-c") (lambda () (interactive) (term-char-mode)))
-(define-key term-raw-map (kbd "C-v") nil)
-(define-key term-raw-map (kbd "M-v") nil)
-(define-key term-raw-map (kbd "M-<") nil)
-(define-key term-raw-map (kbd "M->") nil)
-(define-key term-raw-map (kbd "C-y") nil)
-(add-hook 'term-mode-hook #'eterm-256color-mode)
+(require 'eterm-256color)
+
 
 ;; quit mu4e when composing a reply
 (add-hook 'mu4e-compose-mode-hook
@@ -2342,3 +2337,5 @@ following commands are defined:
 (define-key pdf-view-mode-map (kbd "p") 'pdf-view-previous-page-command)
 (define-key pdf-view-mode-map (kbd "n") 'pdf-view-next-page-command)
 
+(setq preview-pdf-color-adjust-method nil) ;; temp, until my linux upgrades ghostscript
+(setq markdown-enable-math t)
