@@ -1779,6 +1779,7 @@ ALL-MAILS are the all the unread emails"
 
 (global-set-key (kbd "s-r") (lambda () (interactive) (when (> AL-mail-count 0) (mu4e-headers-search "flag:unread AND (maildir:/INBOX OR maildir:/InriaBox/INBOX)" nil nil t nil t)))) ; last t: open first message
 (global-set-key (kbd "s-g") (lambda () (interactive) (mu4e-headers-search "flag:unread" nil nil t nil t))) ; last t: open first message
+(global-set-key (kbd "s-g") (lambda () (interactive) (mu4e-headers-search "flag:unread" nil nil t nil nil))) ; last t: open first message
 (defun mu4e~main-view () nil) ;; too extreme? Bof.
 (global-set-key (kbd "C-x m") 'mu4e-compose-new)
 (define-key mu4e-compose-mode-map (kbd "M-q") nil)
@@ -2043,38 +2044,38 @@ add text-properties to VAL."
 
 ;; (setq kill-buffer-query-functions nil)
 
-;; ;; get dead buffers out of the way, but keep them around in case I need them
-;; (defadvice term-handle-exit
-;;     (after term-kill-buffer-on-exit activate)
-;;   (rename-buffer "*ansi-term* (dead)" t)
-;;   (bury-buffer))
+;; get dead buffers out of the way, but keep them around in case I need them
+(defadvice term-handle-exit
+    (after term-kill-buffer-on-exit activate)
+  (rename-buffer "*ansi-term* (dead)" t)
+  (bury-buffer))
 
-;; (defun visit-term-buffer (arg)
-;;   "Create or visit a terminal buffer."
-;;   (interactive "P")
-;;   (if (or arg
-;;           (not (get-buffer "*ansi-term*")))
-;;       (ansi-term (getenv "SHELL"))
-;;     (switch-to-buffer "*ansi-term*")))
+(defun visit-term-buffer (arg)
+  "Create or visit a terminal buffer."
+  (interactive "P")
+  (if (or arg
+          (not (get-buffer "*ansi-term*")))
+      (ansi-term (getenv "SHELL"))
+    (switch-to-buffer "*ansi-term*")))
 
 ;; (global-set-key (kbd "s-h") 'visit-term-buffer)
 
-;; (setq term-scroll-to-bottom-on-output t)
-;; (define-key term-mode-map (kbd "s-c")
-;;   (lambda () (interactive) (if (term-in-char-mode)
-;; 			       (term-line-mode)
-;; 			     (term-char-mode))))
-;; (define-key term-raw-map (kbd "s-c")
-;;   (lambda () (interactive) (if (term-in-char-mode)
-;; 			       (term-line-mode)
-;; 			     (term-char-mode))))
-;; (define-key term-mode-map (kbd "C-c C-c") (lambda () (interactive) (term-char-mode)))
-;; (define-key term-raw-map (kbd "C-v") nil)
-;; (define-key term-raw-map (kbd "M-v") nil)
-;; (define-key term-raw-map (kbd "M-<") nil)
-;; (define-key term-raw-map (kbd "M->") nil)
-;; (define-key term-raw-map (kbd "C-y") nil)
-;; (add-hook 'term-mode-hook #'eterm-256color-mode)
+(setq term-scroll-to-bottom-on-output t)
+(define-key term-mode-map (kbd "s-c")
+  (lambda () (interactive) (if (term-in-char-mode)
+			       (term-line-mode)
+			     (term-char-mode))))
+(define-key term-raw-map (kbd "s-c")
+  (lambda () (interactive) (if (term-in-char-mode)
+			       (term-line-mode)
+			     (term-char-mode))))
+(define-key term-mode-map (kbd "C-c C-c") (lambda () (interactive) (term-char-mode)))
+(define-key term-raw-map (kbd "C-v") nil)
+(define-key term-raw-map (kbd "M-v") nil)
+(define-key term-raw-map (kbd "M-<") nil)
+(define-key term-raw-map (kbd "M->") nil)
+(define-key term-raw-map (kbd "C-y") nil)
+(add-hook 'term-mode-hook #'eterm-256color-mode)
 
 
 
