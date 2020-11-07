@@ -68,14 +68,12 @@
             (package-install package)))
       myPackages)
 
-(defun dummy-function (&rest args)nil)
+(defun dummy-function (&rest args) nil)
 (defun remove-mm-lighter (mm)
   "Remove minor lighter from the mode line."
   (setcar (cdr (assq mm minor-mode-alist)) nil))
 
 ;; Better better defaults
-(global-set-key (kbd "C-s") 'isearch-forward)
-(global-set-key (kbd "C-r") 'isearch-backward)
 (defun isearch-backward-word (&optional not-word no-recursive-edit)
   "Do incremental search backward for a sequence of words.
 With a prefix argument, do a regular string search instead.
@@ -165,10 +163,9 @@ has no effect on it."
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Mouse
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;mouse use : do not highlight
-(setq mouse-highlight 1)
 ;; control mouse clipboard. In particular, select-active-regions, activated in 23.2, sucks.
 (setq select-active-regions nil)
+(setq mouse-highlight 1)
 ;; yank at point instead of at click
 (setq mouse-yank-at-point t)
 
@@ -176,9 +173,6 @@ has no effect on it."
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; General-purpose functions
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(defun toggle-variable (symb)
-  (set symb (not (eval symb))))
-
 (defun current-mm ()
   (buffer-local-value 'major-mode (current-buffer)))
 
@@ -302,7 +296,7 @@ some other pops up with display-buffer), go back to only one window open"
 (defvar backup-dir "~/.emacs.d/backups/")
 (setq backup-directory-alist (list (cons "." backup-dir)))
 
-;;move between windows with meta-arrows
+;;move between windows with shift-arrows
 (windmove-default-keybindings 'shift)
 
 ;;please add a final newline each time I save a buffer
@@ -326,12 +320,11 @@ some other pops up with display-buffer), go back to only one window open"
   (cl-letf (((symbol-function 'message) 'dummy-function))
     ad-do-it))
 
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Word wrapping
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; amazing new variable in e23. No need to worry about longlines any more
-(setq-default word-wrap t)
+;; (setq-default word-wrap t)
 (global-visual-line-mode 1)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -345,37 +338,15 @@ some other pops up with display-buffer), go back to only one window open"
   (interactive)
   (insert (format-time-string "%Y-%m-%d %R")))
 
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Auto revert
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;automatically update buffers when changed
 (global-auto-revert-mode t)
 (setq global-auto-revert-non-file-buffers nil)
-(setq auto-revert-interval 30) ;30s is enough
+(setq auto-revert-interval 5)
 (setq auto-revert-verbose nil)
 (add-hook 'dired-mode-hook 'auto-revert-mode)
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; Ido
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(setq ido-save-directory-list-file "~/.emacs.d/ido.last")
-;;makes C-x C-f and C-x b a lot easier
-(require 'ido)
-(setq ido-create-new-buffer 'always
-      ido-enable-flex-matching t
-      ido-max-prospects 20
-      ido-max-window-height 1
-      ido-read-file-name-non-ido '(gnus-mime-save-part))
-;; (ido-mode 1)
-;; (ido-everywhere 1)
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; Icomplete
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;icomplete : completion for commands that don't use ido (like help)
-;(icomplete-mode 1)
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Undo-tree
@@ -385,37 +356,12 @@ some other pops up with display-buffer), go back to only one window open"
 (global-undo-tree-mode)
 (add-hook 'fundamental-mode-hook 'turn-on-undo-tree-mode)
 
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Parenthesis editing
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;visual paren matching
+(setq show-paren-delay 0)
 (show-paren-mode 1)
-
-;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; ;;; Paredit
-;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; (require 'paredit)
-;; ;;undefine some keys I use for other things
-;; (define-key paredit-mode-map (kbd "M-<down>") nil)
-;; (define-key paredit-mode-map (kbd "M-<up>") nil)
-;; (define-key paredit-mode-map (kbd "M-\"") nil)
-;; (define-key paredit-mode-map (kbd "M-q") 'paredit-backward-kill-word)
-;; ;;automatically run paredit in specific modes
-;; (mapc (lambda (mode)
-;; 	(let ((hook (intern (concat (symbol-name mode)
-;; 				    "-mode-hook"))))
-;; 	  (add-hook hook (lambda () (paredit-mode 1)))))
-;;       '(emacs-lisp lisp inferior-lisp scheme))
-
-;; ;; globally define cool things
-;; (require 'paredit-everywhere)
-;; (add-hook 'prog-mode-hook 'paredit-everywhere-mode)
-;; (add-hook 'LaTeX-mode-hook 'paredit-everywhere-mode)
-;; (define-key paredit-everywhere-mode-map (kbd "M-S") 'paredit-splice-sexp)
-;; (define-key paredit-everywhere-mode-map (kbd "C-(") 'paredit-backward-slurp-sexp)
-;; (define-key paredit-everywhere-mode-map (kbd "M-s") nil)
-;; (setq paredit-lighter "")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Dired
@@ -442,47 +388,20 @@ some other pops up with display-buffer), go back to only one window open"
 
 (define-key dired-mode-map (kbd "o") 'dired-find-alternate-file)
 (put 'dired-find-alternate-file 'disabled nil)
-;;add gnome-open as C-ret
-(defun dired-gnome-open-file ()
+;;add xdg-open as C-ret
+(defun dired-xdg-open-file ()
   "Opens the current file in a Dired buffer."
   (interactive)
   (launch-command "xdg-open" (dired-get-file-for-visit)))
-(define-key dired-mode-map (kbd "<C-return>") 'dired-gnome-open-file)
-;;add smplayer as M-ret in dired
+(define-key dired-mode-map (kbd "<C-return>") 'dired-xdg-open-file)
 (defun smplayer-open-file ()
   (interactive)
   (launch-command "smplayer" (dired-get-file-for-visit)))
-(define-key dired-mode-map (kbd "M-RET") 'smplayer-open-file)
 (define-key dired-mode-map (kbd "²") 'smplayer-open-file)
 (define-key dired-mode-map (kbd "œ") 'smplayer-open-file)
 (define-key dired-mode-map (kbd "M-o") 'dired-omit-mode)
 (define-key dired-mode-map (kbd "l") 'dired-up-directory)
 (define-key dired-mode-map (kbd "C-j") 'dired-find-file)
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; Recent files
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;recent files, interaction with ido
-(defun recentf-ido-find-file-or-maybe-list (&optional arg)
-  "Find a recent file using Ido, or list all recent files if prefixed"
-  (interactive "P")
-  (if arg
-      (recentf-open-files)
-    ;;build alist basename->name, offer user a choice of basenames,
-    ;;then get matching file and find it
-    (let ((file-alist (mapcar 'basename-cons recentf-list))
-	  (basename-list (mapcar 'file-name-nondirectory recentf-list)))
-      (let ((file (ido-completing-read
-		   "Choose recent file: "
-		   (mapcar 'file-name-nondirectory
-			   recentf-list)
-		   nil t)))
-	(when file
-	  (find-file (cdr (assoc file file-alist))))))))
-(setq recentf-save-file "~/.emacs.d/recentf")
-(setq recentf-max-saved-items nil)
-(recentf-mode 1)
-(global-set-key (kbd "C-x C-r") 'recentf-ido-find-file-or-maybe-list)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Programming modes
@@ -516,12 +435,13 @@ some other pops up with display-buffer), go back to only one window open"
 (define-key c-mode-base-map (kbd "M-q") nil)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; Latex
+;;; pdf-tools
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (pdf-tools-install)
-
 (setq jka-compr-verbose nil)
 
+(define-key pdf-view-mode-map (kbd "m") 'pdf-view-midnight-minor-mode)
+(define-key pdf-view-mode-map (kbd "s-a") 'bury-buffer)
 (define-key pdf-view-mode-map (kbd "n") 'pdf-view-scroll-up-or-next-page)
 (define-key pdf-view-mode-map (kbd "C-v") 'pdf-view-scroll-up-or-next-page)
 (define-key pdf-view-mode-map (kbd "v") 'pdf-view-scroll-up-or-next-page)
@@ -530,6 +450,8 @@ some other pops up with display-buffer), go back to only one window open"
 (define-key pdf-view-mode-map (kbd "V") 'pdf-view-scroll-down-or-previous-page)
 (define-key pdf-view-mode-map (kbd "j") 'pdf-view-next-line-or-next-page)
 (define-key pdf-view-mode-map (kbd "k") 'pdf-view-previous-line-or-previous-page)
+(define-key pdf-view-mode-map (kbd "p") 'pdf-view-previous-page-command)
+(define-key pdf-view-mode-map (kbd "n") 'pdf-view-next-page-command)
 
 (define-key pdf-view-mode-map (kbd "j") (lambda () (interactive) (pdf-view-scroll-up-or-next-page 5)))
 (define-key pdf-view-mode-map (kbd "k") (lambda () (interactive) (pdf-view-scroll-down-or-previous-page 5)))
@@ -537,17 +459,20 @@ some other pops up with display-buffer), go back to only one window open"
 (define-key pdf-view-mode-map (kbd "a") 'pdf-annot-add-text-annotation)
 (define-key pdf-view-mode-map (kbd "c") (lambda () (interactive) (launch-command "xdg-open" (buffer-file-name))))
 
-(setq-default pdf-view-display-size 2.0)
+(setq-default pdf-view-display-size 'fit-height)
 (setq TeX-view-program-selection '((output-pdf "pdf-tools")))
 (setq TeX-view-program-list '(("pdf-tools" "TeX-pdf-tools-sync-view")))
 
 (setq pdf-view-midnight-colors (cons (frame-parameter nil 'foreground-color) (frame-parameter nil 'background-color)))
 (add-hook 'after-init-hook (lambda () (setq pdf-view-midnight-colors (cons (frame-parameter nil 'foreground-color) (frame-parameter nil 'background-color)))))
 
-
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Latex
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;don't ask to cache preamble
 (setq preview-auto-cache-preamble t)
 (setq preview-preserve-counters t)
+(setq preview-scale-function 1.6)
 ;;use synctex for synchronisation with viewer
 (setq TeX-source-correlate-method 'synctex)
 
@@ -574,11 +499,9 @@ some other pops up with display-buffer), go back to only one window open"
 	  ))
 
 (add-hook 'TeX-update-style-hook 'magic-latex-buffer)
-(setq magic-latex-enable-suscript nil)
 (setq magic-latex-enable-block-align nil)
 (setq magic-latex-enable-block-highlight nil)
 
-;;indent when pressing RET
 (setq TeX-newline-function 'newline-and-indent
       LaTeX-math-abbrev-prefix (kbd "ù")
       TeX-electric-sub-and-superscript t
@@ -605,11 +528,10 @@ filling of the current paragraph."
 
 (defun my-tex-config ()
   (iimage-mode 0)
-  (turn-on-reftex)
   (auto-fill-mode 1)
   (setq auto-fill-function 'my-LaTeX-auto-fill-function)
   (TeX-PDF-mode 1)
-  (TeX-source-correlate-mode)
+  (TeX-source-correlate-mode 1)
   (LaTeX-math-mode 1)
   (local-set-key (kbd "C-c C-d") 'TeX-insert-braces)
   (local-set-key (kbd "s-c") 'my-latex-compile)
@@ -619,7 +541,7 @@ filling of the current paragraph."
   (local-set-key (kbd "C-c C-g") nil)
   (local-set-key (kbd "s-a") 'TeX-command-run-all)
   (local-set-key (kbd "C-c C-a") (lambda ()(interactive) (let ((LaTeX-default-environment "align*")) (LaTeX-environment nil))))
-  (local-set-key (kbd "s-p") (lambda ()(interactive) 
+  (local-set-key (kbd "s-p") (lambda ()(interactive)
 			       (save-excursion
 				 (search-backward "(")
 				 (insert "\\left")
@@ -633,12 +555,12 @@ filling of the current paragraph."
   (setq reftex-label-alist '(AMSTeX)) ;; eqref
   (setq reftex-ref-macro-prompt nil)
   (fset 'reftex-toc-quit 'reftex-toc-quit-and-kill)
-  (set-default 'preview-scale-function 1.6)
+  (turn-on-reftex)
   ;; (setq reftex-label-alist nil)
 
-  ;; undo TeX remaps, otherwise it interferes with compilation
-  (define-key TeX-mode-map [remap next-error] nil)
-  (define-key TeX-mode-map [remap previous-error] nil)
+  ;; ;; undo TeX remaps, otherwise it interferes with compilation
+  ;; (define-key TeX-mode-map [remap next-error] nil)
+  ;; (define-key TeX-mode-map [remap previous-error] nil)
 
   ;; Try to guess a smart value for TeX-master
   ;; If the file contains local variables defining TeX-master, respect that.
@@ -689,7 +611,7 @@ filling of the current paragraph."
   (TeX-add-symbols '("left" nothing1)) ; bit of a hack, to avoid the left prompting from braces
   (defun nothing1 (a))
   (LaTeX-math-initialize))
-(add-hook 'LaTeX-mode-hook 'my-tex-config 'attheend)
+(add-hook 'TeX-update-style-hook 'my-tex-config 'attheend)
 
 (defun my-latex-compile ()
   "Run a special compile for latex files"
@@ -720,8 +642,6 @@ filling of the current paragraph."
 
       (setq my-latex-compiling-buffer nil))))
 (add-hook 'compilation-finish-functions 'my-after-latex-compile)
-;; add ~/.tex to the inputs; also in bashrc
-(setenv "TEXINPUTS" ":~/.tex")
 
 ;; recenter and show after a sync
 (defadvice TeX-source-correlate-sync-source (after AL/recenter-after-correlate activate)
@@ -909,7 +829,7 @@ brake whatever split of windows we might have in the frame."
 	      (isearch-process-search-multibyte-characters ?\\)
 	    (isearch-process-search-char ?\\)))))
   (error
-   (message "Failed to bind key to \\. Live with it.")))
+   (message "Failed to bind key to \\.")))
 
 ;; replace $$ in M-! by the name of the associated buffer
 (defun shell-command-replace (command &optional output-buffer error-buffer)
@@ -951,13 +871,6 @@ Ignores CHAR at point."
   (zap-up-to-char -1 char))
 (global-set-key (kbd "M-z") 'zap-up-to-char)
 (global-set-key (kbd "C-M-z") 'zap-up-to-char-back)
-
-(defun kill-current-file ()
-  (interactive)
-  (when (y-or-n-p "Really delete file?")
-    (delete-file (buffer-file-name))
-    (kill-buffer)))
-(global-set-key (kbd "C-c D") 'kill-current-file)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Super keybindings
@@ -1066,16 +979,9 @@ Ignores CHAR at point."
 (global-set-key (kbd "<s-left>") 'halve-at-point)
 (global-set-key (kbd "<s-right>") 'double-at-point)
 
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Easy buffer switching
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(setq switch-include-erc t)
-(defun toggle-switch-to-erc ()
-  (interactive)
-  (toggle-variable 'switch-include-erc)
-  (message "Now %s"
-	   (if switch-include-erc "including erc" "excluding erc")))
 ;;quickly switch buffers
 (defun switch-to-nth-buffer (n)
   "Switches to nth most recent buffer. Ignores a bunch of stuff."
@@ -1083,7 +989,6 @@ Ignores CHAR at point."
     (mapcar (lambda (b)
 	      (unless
 		  (or
-		   (and (not switch-include-erc) (eq (buffer-local-value 'major-mode b) 'erc-mode))
 		   (minibufferp b)
 		   (string-match "^ " (buffer-name b))
 		   (equal b (current-buffer)))
@@ -1183,7 +1088,6 @@ Ignores CHAR at point."
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Isearch
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;; match \n when searching spaces
 (setq search-whitespace-regexp "[[:space:]\n]+")
 (setq lazy-highlight-initial-delay 0) ; highlight matches without delay
@@ -1228,7 +1132,6 @@ Ignores CHAR at point."
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Tab completion
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; needs 23.2
 (setq tab-always-indent 'complete)
 
 (defun my-dabbrev-expand ()
@@ -1246,65 +1149,16 @@ Ignores CHAR at point."
 (setq completion-show-inline-help nil)
 (setq completion-ignore-case t)
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; System tray
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;ERC tray. Needs tray_daemon, http://smeuuh.free.fr/tray_daemon/
-;;defined in emacs_perso : list of regexps for which we don't blink
-;;the tray icon
-(setq erc-tray-inhibit-one-activation nil)
-(setq erc-tray-ignored-channels nil)
-(setq erc-tray-state nil)
-(setq erc-tray-enable t)
-(defun erc-tray-change-state-aux (arg)
-  "Enables or disable blinking, depending on arg (non-nil or nil)"
-  (unless (eq erc-tray-state arg)
-    (shell-command-to-string
-     (concat "echo " (if arg "B" "b") " > /tmp/tray_daemon_control"))
-    (setq erc-tray-state arg)))
-(defun erc-tray-change-state (arg)
-  "Enables or disable blinking, depending on arg (t or nil).
-Additional support for inhibiting one activation (quick hack)"
-  (when erc-tray-enable
-    (if erc-tray-inhibit-one-activation
-	(setq erc-tray-inhibit-one-activation nil)
-      (erc-tray-change-state-aux arg))))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; Gnus
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; compose mails with message-mode (C-x m)
-(setq mail-user-agent 'gnus-user-agent)
-;; Run gnus or switch to an existing instance
-(defun run-gnus ()
-  (interactive)
-  (if (get-buffer "*Group*")
-      (progn
-	(switch-to-buffer "*Group*")
-	(gnus-group-get-new-news))
-    (gnus)))
-(global-set-key (kbd "s-g") 'run-gnus)
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; ERC
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;(load "~/.emacs.d/erc.el")
-;;read personal info (ERC stuff)
-;;(load "~/.emacs.d/priv_emacs.el" t)
-
+; prefer not forking out windows
 (setq display-buffer-base-action '(display-buffer-same-window . nil))
-;; (setq display-buffer-base-action nil)
 
 (when emacs-is-master
   (set-frame-parameter nil 'fullscreen 'fullboth))
 
-(setenv "LD_LIBRARY_PATH" ".")
-
 (add-hook 'prog-mode-hook #'rainbow-delimiters-mode)
-(add-hook 'LaTeX-mode-hook #'rainbow-delimiters-mode)
+(remove-hook 'LaTeX-mode-hook #'rainbow-delimiters-mode)
 
-
-(load-theme 'material t) ;; load material theme
+(load-theme 'material t)
 (require 'outline)
 (set-face-attribute 'outline-1 nil :foreground "SkyBlue1")
 (set-face-attribute 'outline-2 nil :foreground "CadetBlue1")
@@ -1316,35 +1170,6 @@ Additional support for inhibiting one activation (quick hack)"
 (set-face-attribute 'outline-8 nil :foreground "aquamarine4")
 
 (setq visible-bell nil)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 ;;; wuxch-dired-copy-paste.el
 (require 'dired)
@@ -1443,18 +1268,6 @@ Additional support for inhibiting one activation (quick hack)"
 (define-key dired-mode-map (kbd "C-y") 'wuxch-dired-paste)
 
 
-
-
-
-
-
-
-
-
-
-
-
-
 ;; automatically indent yanked text if in programming-modes : found somewhere on the net
 (defvar yank-indent-modes '(emacs-lisp-mode python-mode
                             c-mode c++-mode
@@ -1499,30 +1312,24 @@ Additional support for inhibiting one activation (quick hack)"
 (setq magit-status-sections-hook
       '(magit-insert-status-headers magit-insert-merge-log magit-insert-rebase-sequence magit-insert-am-sequence magit-insert-sequencer-sequence magit-insert-bisect-output magit-insert-bisect-rest magit-insert-bisect-log magit-insert-unstaged-changes magit-insert-staged-changes magit-insert-stashes magit-insert-unpulled-from-upstream magit-insert-unpulled-from-pushremote magit-insert-unpushed-to-upstream magit-insert-unpushed-to-pushremote))
 
-(magit-auto-revert-mode -1)
-
 (define-key magit-status-mode-map (kbd "<s-tab>") nil)
 (define-key magit-status-mode-map (kbd "<C-tab>") nil)
 (define-key magit-status-mode-map (kbd "<C-s-tab>") nil)
 
-(add-hook 'python-mode-hook
-          (lambda () (setq forward-sexp-function nil)))
 (setq magit-diff-refine-hunk 'all)
 
-(add-hook 'diff-mode 'diff-auto-refine-mode)
-
+(setq diff-refine 'font-lock)
 
 (when (get-buffer "*scratch*") (kill-buffer "*scratch*"))
 (setq initial-buffer-choice "~/") 
+
+(setq uniquify-strip-common-suffix nil)
 
 (ivy-mode 1)
 (setq magit-completing-read-function 'ivy-completing-read)
 (setq ivy-use-virtual-buffers t)
 (setq ivy-count-format "")
 (setq ivy-initial-inputs-alist nil)
-(setq uniquify-strip-common-suffix nil)
-(setq ivy-re-builders-alist
-      '((t . ivy--regex-plus)))
 (setq ivy-sort-matches-functions-alist '(t))
 (setq ivy-virtual-abbreviate 'full)
 
@@ -1533,7 +1340,10 @@ Additional support for inhibiting one activation (quick hack)"
 (global-set-key (kbd "C-x C-f") 'counsel-find-file)
 (global-set-key (kbd "s-f") 'counsel-find-file)
 (global-set-key (kbd "C-c C-r") 'ivy-resume)
+(global-set-key (kbd "M-g g") 'counsel-ag)
+(setq ivy-more-chars-alist (list (cons t 2)))
 (global-set-key (kbd "C-x C-r") 'counsel-recentf)
+(global-set-key (kbd "M-y") 'counsel-yank-pop)
 
 (global-set-key (kbd "M-g M-g") 'avy-goto-line)
 (global-set-key (kbd "M-g g") 'avy-goto-line)
@@ -1547,12 +1357,10 @@ Additional support for inhibiting one activation (quick hack)"
 (remove-mm-lighter 'ivy-mode)
 (remove-mm-lighter 'magic-latex-buffer)
 (remove-mm-lighter 'iimage-mode)
+(remove-mm-lighter 'eldoc-mode)
 (require 'reftex)
 (remove-mm-lighter 'reftex-mode)
 (remove-mm-lighter 'visual-line-mode)
-;; (remove-mm-lighter 'autopair-mode)
-;; (require 'paredit-everywhere)
-;; (remove-mm-lighter 'paredit-everywhere-mode)
 (remove-mm-lighter 'highlight-indentation-mode)
 (require 'flx)
 
@@ -1575,7 +1383,7 @@ Additional support for inhibiting one activation (quick hack)"
 (load "~/.emacs.d/priv_mu4e.el") ;; set private variables
 
 (require 'timezone)
-(setq mu4e-use-fancy-chars nil
+(setq mu4e-use-fancy-chars t
       mu4e-update-interval 40
       mu4e-view-show-images t
       mu4e-view-image-max-width 800
@@ -1589,21 +1397,18 @@ Additional support for inhibiting one activation (quick hack)"
                             (:thread-subject . 90))
       mu4e-headers-time-format "%R"
       mu4e-headers-date-format "%d/%m"
-      mu4e-view-show-addresses t
+      mu4e-view-show-addresses nil
       mu4e-compose-dont-reply-to-self t
       mu4e-headers-include-related nil
       mu4e-headers-results-limit 100
       mu4e-view-fill-headers nil
       mu4e-compose-auto-include-date t
-      mu4e-msg2pdf "/usr/bin/msg2pdf"
-      mu4e-headers-auto-update nil
       mu4e-change-filenames-when-moving t
       mu4e-headers-leave-behavior 'apply
-      mu4e-headers-show-threads nil
+      mu4e-headers-show-threads t
       mu4e-save-multiple-attachments-without-asking t
-      shr-color-visible-luminance-min 80
+      shr-color-visible-luminance-min 40
       
-      message-tab-body-function (lambda () nil)
       message-citation-line-format "\n%d %B %Y %R %Z, %f:" 
       message-generate-new-buffers 'unique
       message-wash-forwarded-subjects t
@@ -1631,7 +1436,6 @@ Additional support for inhibiting one activation (quick hack)"
 ;; (defadvice smtpmail-via-smtp
 ;;     (before change-smtp-by-message-from-field (recipient buffer &optional ask) activate)
 ;;   (with-current-buffer buffer (my-change-smtp)))
-
 
 (require 'mu4e)
 
@@ -1785,30 +1589,6 @@ ALL-MAILS are the all the unread emails"
 (define-key mu4e-compose-mode-map (kbd "M-q") nil)
 (define-key mu4e-compose-mode-map (kbd "M-n") nil)
 
-;; temporary until it's merged: don't (message nil)
-(defun mu4e~update-sentinel-func (proc msg)
-  "Sentinel function for the update process."
-  (when mu4e~progress-reporter
-    (progress-reporter-done mu4e~progress-reporter)
-    (setq mu4e~progress-reporter nil))
-  (let* ((status (process-status proc))
-         (code (process-exit-status proc))
-         (maybe-error (or (not (eq status 'exit)) (/= code 0)))
-         (buf (and (buffer-live-p mu4e~update-buffer) mu4e~update-buffer))
-         (win (and buf (get-buffer-window buf))))
-    nil
-    (if maybe-error
-        (progn
-          (when mu4e-index-update-error-warning
-            (mu4e-message "Update process returned with non-zero exit code")
-            (sit-for 5))
-          (when mu4e-index-update-error-continue
-            (mu4e-update-index)))
-      (mu4e-update-index))
-    (if (window-live-p win)
-        (with-selected-window win (kill-buffer-and-window))
-      (when (buffer-live-p buf) (kill-buffer buf)))))
-
 ;; redefine Subject header face
 (defun mu4e~compose-remap-faces ()
   "Our parent `message-mode' uses font-locking for the compose
@@ -1870,17 +1650,7 @@ buffers; lets remap its faces so it uses the ones for mu4e."
 (setq sml/name-width 80)
 (setq sml/line-number-format "%4l")
 (sml/setup)
-;; ;; Temp until https://github.com/Malabarba/smart-mode-line/issues/198 is fixed
-;; (require 'term)
-;; (ad-deactivate 'term-command-hook)
-;; (ad-deactivate 'term-handle-ansi-terminal-messages)
 
-
-(global-set-key (kbd "M-y") 'counsel-yank-pop)
-
-
-(define-key pdf-view-mode-map (kbd "m") 'pdf-view-midnight-minor-mode)
-(define-key pdf-view-mode-map (kbd "s-a") 'bury-buffer)
 
 
 
@@ -1929,8 +1699,6 @@ buffers; lets remap its faces so it uses the ones for mu4e."
                                "white"))))
      dx dy)))
 
-;; (add-hook 'pdf-view-mode-hook 'pdf-view-midnight-minor-mode)
-
 (add-hook 'reftex-select-label-mode-hook 'reftex-reparse-document)
 
 
@@ -1972,7 +1740,7 @@ add text-properties to VAL."
 
 (require 'julia-repl)
 (setq julia-repl-executable-records
-      '((default "/home/antoine/julia/bin/julia")))
+      '((default "/home/antoine/bin/julia")))
 (setq julia-repl-save-buffer-on-send t)
 
 (setq AL/last-sent-julia-buffer nil)
@@ -2001,46 +1769,10 @@ add text-properties to VAL."
 (global-set-key (kbd "s-z") (kbd "C-c C-z"))
 (global-set-key (kbd "s-c") (kbd "C-c C-c"))
 
-;; (define-key ess-mode-map (kbd "C-c C-c") (lambda () (interactive) (ess-load-file (buffer-file-name)) (ess-switch-to-inferior-or-script-buffer nil)))
-;; (setq inferior-julia-program-name "~/julia/bin/julia")
-;; (setq inferior-julia-program "~/julia/bin/julia")
-;; (setq inferior-julia-args "-q --color=yes")
-;; (setq julia-max-block-lookback 20000)
-;; (setq inferior-ess-r-program "")
-;; (require 'ess-site)
-;; (require 'ess)
-;; (setq ess-write-to-dribble nil)
-;; (setq ess-history-directory "~/")
-;; (setq ess-ask-for-ess-directory nil)
-;; (setq ess-show-buffer-action nil)
-
-;; (define-key ess-mode-map (kbd "TAB") 'julia-latexsub-or-indent)
-;; (defun julia-prev-block-beg ()
-;;   (interactive)
-;;   (backward-char)
-;;   (while (and (not (bobp)) (not (and (julia-at-keyword julia-block-start-keywords) (not (julia-in-comment)))))
-;;     (backward-sexp)))
-;; (define-key ess-mode-map (kbd "C-M-p")'julia-prev-block-beg)
-;; (defun julia-next-block-end ()
-;;   (interactive)
-;;   (forward-char)
-;;   (while (and (not (eobp)) (not (and (julia-at-keyword julia-block-end-keywords) (not (julia-in-comment)))))
-;;     (forward-sexp)))
-;; (define-key ess-mode-map (kbd "C-M-n")'julia-next-block-end)
-
-;; (define-key ess-mode-map (kbd "C-M-p") (lambda () (interactive)
-;;                                          (goto-char (julia-last-open-block-pos (point-min)))))
-
-
-
-
 ;; Force one-window setup
 (setq display-buffer-alist
       '(("*julia" . ((display-buffer-same-window) (inhibit-same-window . nil)))
         ("\\.jl$" . ((display-buffer-same-window) (inhibit-same-window . nil)))))
-;; (add-hook 'julia-mode-hook 'julia-math-mode)
-;; (add-hook 'inferior-julia-mode-hook 'julia-math-mode)
-;; (add-hook 'inferior-ess-mode-hook 'julia-math-mode)
 
 ;; (setq kill-buffer-query-functions nil)
 
@@ -2090,7 +1822,6 @@ add text-properties to VAL."
 
 (require 'eterm-256color)
 
-
 ;; quit mu4e when composing a reply
 (add-hook 'mu4e-compose-mode-hook
           (defun AL/full-window () (interactive)
@@ -2133,7 +1864,6 @@ add text-properties to VAL."
 (define-key smartparens-mode-map (kbd "M-(")    'sp-backward-barf-sexp)
 (define-key smartparens-mode-map (kbd "C-)")    'sp-forward-slurp-sexp)
 (define-key smartparens-mode-map (kbd "C-(")    'sp-backward-slurp-sexp)
-(define-key smartparens-mode-map (kbd "C-M-s")    'sp-splice-sexp)
 (define-key smartparens-mode-map (kbd "M-S")    'sp-splice-sexp)
 ;; (define-key smartparens-mode-map (kbd "C-M-a")    'sp-backward-up-sexp)
 ;; (define-key smartparens-mode-map (kbd "C-M-e")    'sp-up-sexp)
@@ -2141,9 +1871,10 @@ add text-properties to VAL."
 ;; (define-key smartparens-mode-map (kbd "C-M-t")    'sp-transpose-sexp)
 ;; (define-key smartparens-mode-map (kbd "C-M-t")    'transpose-sexps)
 (setq sp-highlight-pair-overlay nil)
-;; (define-key smartparens-mode-map (kbd "M-q")    'sp-backward-kill-word)
-;; (define-key smartparens-mode-map (kbd "M-d")    'sp-forward-kill-word)
+(define-key smartparens-mode-map (kbd "M-q")    'sp-backward-kill-word)
+(define-key smartparens-mode-map (kbd "M-d")    'sp-kill-word)
 ;; (add-to-list 'sp-no-reindent-after-kill-modes 'latex-mode)
+
 (require 'cl)
 (defmacro def-pairs (pairs)
   `(progn
@@ -2170,11 +1901,6 @@ add text-properties to VAL."
 
 
 ;; TODO C-M-p/n find begin/end LaTeX-find-matching-begin
-
-; remove this when merged
-(defun TeX-xreader-sync-view ()
-  "Run `TeX-evince-sync-view-1', which see, set up for Evince."
-  (TeX-evince-sync-view-1 "x" "reader"))
 
 (require 'latex nil t)
 
@@ -2270,10 +1996,6 @@ following commands are defined:
     (unless (eq major-mode 'latex-mode)
       (julia-math-mode))))
 (global-math-mode 1)
-;; (add-hook 'julia-mode-hook 'julia-math-mode)
-;; (add-hook 'inferior-julia-mode-hook 'julia-math-mode)
-;; (add-hook 'inferior-ess-mode-hook 'julia-math-mode)
-;; (add-hook 'message-mode-hook 'julia-math-mode)
 
 ;; Make math insertion work in isearch
 (add-hook 'isearch-mode-hook 'isearch-setup-latex-math)
@@ -2294,6 +2016,10 @@ following commands are defined:
 (require 'guess-language)
 (setq guess-language-languages '(en fr))
 (setq guess-language-min-paragraph-length 0)
+(defun ispell-guess-language ()
+  (interactive ())
+  (setq ispell-dictionary (cadr (assq (guess-language-buffer) guess-language-langcodes)))
+  (message ispell-dictionary))
 
 (add-hook 'message-mode-hook (lambda () (setq message-signature 'my-signature)))
 (define-key message-mode-map (kbd "C-c C-z")  'my-insert-signature)
@@ -2315,7 +2041,6 @@ following commands are defined:
 
 (setq guess-language-after-detection-functions nil)
 
-
 ;; (if (string-match "lambda" (shell-command-to-string
 ;; 			    "hostname"))
 ;;     (progn
@@ -2330,13 +2055,14 @@ following commands are defined:
 (electric-operator-add-rules-for-mode 'julia-mode
 				      (cons "^" nil)
 				      (cons ":" nil)
+				      (cons "?" nil)
 				      (cons "*" nil)
 				      (cons "/" nil)
 				      (cons "+" nil)
 				      (cons "-" nil)
-				      (cons "." nil))
-(define-key pdf-view-mode-map (kbd "p") 'pdf-view-previous-page-command)
-(define-key pdf-view-mode-map (kbd "n") 'pdf-view-next-page-command)
+				      (cons "." nil)
+				      (cons "->" " -> ")
+				      )
 
 (setq preview-pdf-color-adjust-method nil) ;; temp, until my linux upgrades ghostscript
 (setq markdown-enable-math t)
