@@ -1346,7 +1346,6 @@ Ignores CHAR at point."
 (global-set-key (kbd "M-y") 'counsel-yank-pop)
 
 (global-set-key (kbd "M-g M-g") 'avy-goto-line)
-(global-set-key (kbd "M-g g") 'avy-goto-line)
 (require 'avy)
 (define-key isearch-mode-map (kbd "M-g") 'avy-isearch)
 (setq avy-keys '(?q 115 100 102 103 104 106 107 108)) ;azerty keyboard
