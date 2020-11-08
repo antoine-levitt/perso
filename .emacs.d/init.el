@@ -1396,6 +1396,7 @@ Ignores CHAR at point."
                             (:thread-subject . 90))
       mu4e-headers-time-format "%R"
       mu4e-headers-date-format "%d/%m"
+      mu4e-headers-auto-update nil
       mu4e-view-show-addresses nil
       mu4e-compose-dont-reply-to-self t
       mu4e-headers-include-related nil
