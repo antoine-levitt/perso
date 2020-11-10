@@ -62,6 +62,9 @@
 	electric-operator
 	forge
 	vterm
+	fix-word
+	ivy-prescient
+	expand-region
 	))
 (mapc #'(lambda (package)
           (unless (package-installed-p package)
@@ -2066,3 +2069,15 @@ following commands are defined:
 
 (setq preview-pdf-color-adjust-method nil) ;; temp, until my linux upgrades ghostscript
 (setq markdown-enable-math t)
+
+
+(require 'fix-word)
+(global-set-key (kbd "M-u") #'fix-word-upcase)
+(global-set-key (kbd "M-l") #'fix-word-downcase)
+(global-set-key (kbd "M-c") #'fix-word-capitalize)
+
+(require 'ivy-prescient)
+(ivy-prescient-mode 1)
+
+(require 'expand-region)
+(global-set-key (kbd "M-h") 'er/expand-region)
