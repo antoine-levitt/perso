@@ -1874,8 +1874,8 @@ add text-properties to VAL."
 ;; (define-key smartparens-mode-map (kbd "C-M-t")    'sp-transpose-sexp)
 ;; (define-key smartparens-mode-map (kbd "C-M-t")    'transpose-sexps)
 (setq sp-highlight-pair-overlay nil)
-(define-key smartparens-mode-map (kbd "M-q")    'sp-backward-kill-word)
-(define-key smartparens-mode-map (kbd "M-d")    'sp-kill-word)
+;; (define-key smartparens-mode-map (kbd "M-q")    'sp-backward-kill-word)
+;; (define-key smartparens-mode-map (kbd "M-d")    'sp-kill-word)
 ;; (add-to-list 'sp-no-reindent-after-kill-modes 'latex-mode)
 
 (require 'cl)
