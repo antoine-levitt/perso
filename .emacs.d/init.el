@@ -1408,7 +1408,7 @@ Ignores CHAR at point."
       mu4e-compose-auto-include-date t
       mu4e-change-filenames-when-moving t
       mu4e-headers-leave-behavior 'apply
-      mu4e-headers-show-threads t
+      mu4e-headers-show-threads nil
       mu4e-save-multiple-attachments-without-asking t
       shr-color-visible-luminance-min 40
       
