@@ -529,6 +529,15 @@ filling of the current paragraph."
     (when do-auto-fill
       (do-auto-fill))))
 
+(setq LaTeX-math-list '((?/ "frac" nil nil)
+                        (?S "sum" nil nil)
+                        (?e "varepsilon" nil nil)
+                        (?: "partial" nil nil)
+			(?< "le" nil nil)
+			(?> "ge" nil nil)
+			(?, "int" nil nil)
+			))
+
 (defun my-tex-config ()
   (iimage-mode 0)
   (auto-fill-mode 1)
@@ -581,14 +590,6 @@ filling of the current paragraph."
     (dolist (name list-of-master-files)
       (when (file-exists-p (concat name ".tex"))
   	(setq TeX-master name))))
-  (setq LaTeX-math-list '((?/ "frac" nil nil)
-                          (?S "sum" nil nil)
-                          (?e "varepsilon" nil nil)
-                          (?: "partial" nil nil)
-			  (?< "le" nil nil)
-			  (?> "ge" nil nil)
-			  (?, "int" nil nil)
-			  ))
   
   ;; indent align like equations
   (setq LaTeX-indent-environment-list
@@ -1845,6 +1846,7 @@ add text-properties to VAL."
 				       (when (eobp)
 					 (mu4e~headers-quit-buffer)))))
 
+;; For the layout now called (apparently) "French French (legacy, alt.)"
 (setq AL/algr-keys   "å€þý¶ÂøÊ±æðÛÎÔ¹«»©®ß¬")
 (setq AL/normal-keys "aetypqsdfghjklmwxcvbn")
 (defun AL/map-keys (src dest)
@@ -1972,6 +1974,7 @@ add text-properties to VAL."
       (define-key map (LaTeX-math-abbrev-prefix) 'self-insert-command))))
 (LaTeX-math-initialize)
 
+(require 'julia-mode)
 ;; Math insertion
 (defun julia-math-insert (s)
   "Inserts math symbol given by `s'"
