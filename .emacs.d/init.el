@@ -1846,7 +1846,7 @@ add text-properties to VAL."
 				       (when (eobp)
 					 (mu4e~headers-quit-buffer)))))
 
-;; For the layout now called (apparently) "French French (legacy, alt.)"
+;; For the layout now called (apparently) "French French (legacy, alt.)", aka latin9 for setxkbmap
 (setq AL/algr-keys   "å€þý¶ÂøÊ±æðÛÎÔ¹«»©®ß¬")
 (setq AL/normal-keys "aetypqsdfghjklmwxcvbn")
 (defun AL/map-keys (src dest)
