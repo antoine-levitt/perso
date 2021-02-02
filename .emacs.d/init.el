@@ -469,6 +469,53 @@ some other pops up with display-buffer), go back to only one window open"
 (setq pdf-view-midnight-colors (cons (frame-parameter nil 'foreground-color) (frame-parameter nil 'background-color)))
 (add-hook 'after-init-hook (lambda () (setq pdf-view-midnight-colors (cons (frame-parameter nil 'foreground-color) (frame-parameter nil 'background-color)))))
 
+
+;; No timeout for tooltip
+;; Temp fix until https://github.com/politza/pdf-tools/pull/650
+(defun pdf-util-tooltip-arrow (image-top &optional timeout)
+  (pdf-util-assert-pdf-window)
+  (when (floatp image-top)
+    (setq image-top
+          (round (* image-top (cdr (pdf-view-image-size))))))
+  (let* (x-gtk-use-system-tooltips ;allow for display property in tooltip
+         (dx (+ (or (car (window-margins)) 0)
+                (car (window-fringes))))
+         (dy image-top)
+         (pos (list dx dy dx (+ dy (* 2 (frame-char-height)))))
+         (vscroll
+          (pdf-util-required-vscroll pos))
+         (tooltip-frame-parameters
+          `((border-width . 0)
+            (internal-border-width . 0)
+            ,@tooltip-frame-parameters))
+         ;(tooltip-hide-delay (or timeout 6))
+         )
+    (when vscroll
+      (image-set-window-vscroll (* vscroll
+				   (if pdf-view-have-image-mode-pixel-vscroll
+				       (frame-char-height) 1))))
+    (setq dy (max 0 (- dy
+                       (cdr (pdf-view-image-offset))
+                       (window-vscroll nil t)
+                       (frame-char-height))))
+    (when (overlay-get (pdf-view-current-overlay) 'before-string)
+      (let* ((e (window-inside-pixel-edges))
+             (xw (pdf-util-with-edges (e) e-width)))
+        (cl-incf dx (/ (- xw (car (pdf-view-image-size t))) 2))))
+    (pdf-util-tooltip-in-window
+     (propertize
+      " " 'display (propertize
+		    "\u2192" ;;right arrow
+		    'display '(height 2)
+		    'face `(:foreground
+                            "orange red"
+                            :background
+                            ,(if (bound-and-true-p pdf-view-midnight-minor-mode)
+                                 (cdr pdf-view-midnight-colors)
+                               "white"))))
+     dx dy)))
+
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Latex
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1659,50 +1706,6 @@ buffers; lets remap its faces so it uses the ones for mu4e."
 
 
 
-
-
-;; No timeout for tooltip
-(defun pdf-util-tooltip-arrow (image-top &optional timeout)
-  (pdf-util-assert-pdf-window)
-  (when (floatp image-top)
-    (setq image-top
-          (round (* image-top (cdr (pdf-view-image-size))))))
-  (let* (x-gtk-use-system-tooltips ;allow for display property in tooltip
-         (dx (+ (or (car (window-margins)) 0)
-                (car (window-fringes))))
-         (dy image-top)
-         (pos (list dx dy dx (+ dy (* 2 (frame-char-height)))))
-         (vscroll
-          (pdf-util-required-vscroll pos))
-         (tooltip-frame-parameters
-          `((border-width . 0)
-            (internal-border-width . 0)
-            ,@tooltip-frame-parameters))
-         ;; (tooltip-hide-delay (or timeout 6))
-         )
-    (when vscroll
-      (image-set-window-vscroll vscroll))
-    (setq dy (max 0 (- dy
-                       (cdr (pdf-view-image-offset))
-                       (window-vscroll nil t)
-                       (frame-char-height))))
-    (when (overlay-get (pdf-view-current-overlay) 'before-string)
-      (let* ((e (window-inside-pixel-edges))
-             (xw (pdf-util-with-edges (e) e-width)))
-        (cl-incf dx (/ (- xw (car (pdf-view-image-size t))) 2))))
-    (pdf-util-tooltip-in-window
-     (propertize
-      " " 'display (propertize
-		    "\u2192" ;;right arrow
-		    'display '(height 2)
-		    'face `(:foreground
-                            "orange red"
-                            :background
-                            ,(if (bound-and-true-p pdf-view-midnight-minor-mode)
-                                 (cdr pdf-view-midnight-colors)
-                               "white"))))
-     dx dy)))
-
 (add-hook 'reftex-select-label-mode-hook 'reftex-reparse-document)
 
 
@@ -1768,6 +1771,10 @@ add text-properties to VAL."
 (define-key julia-repl-mode-map (kbd "C-c C-l") 'julia-repl-send-region-or-line)
 (define-key julia-repl-mode-map (kbd "<C-return>") nil)
 (add-hook 'julia-mode-hook 'julia-repl-mode)
+(require 'julia-repl)
+(require 'vterm)
+(julia-repl-set-terminal-backend 'vterm)
+(setq vterm-max-scrollback 10000)
 
 (global-set-key (kbd "s-j") 'julia-repl)
 (global-set-key (kbd "s-z") (kbd "C-c C-z"))
