@@ -2091,3 +2091,18 @@ following commands are defined:
 
 (require 'expand-region)
 (global-set-key (kbd "M-h") 'er/expand-region)
+
+(add-hook 'server-visit-hook (lambda ()
+			       (local-set-key (kbd "C-c C-c")
+					      (lambda ()
+						(interactive)
+						(save-buffer)
+						(server-edit) ; C-x #
+						(kill-buffer)))
+			       (when (string-match "tmp_emacs_everywhere" (buffer-name))
+				 (condition-case err
+				     (progn
+				       (goto-char (point-min))
+				       (search-forward "POINT_HERE")
+				       (backward-kill-sexp))
+				   (error nil)))))
