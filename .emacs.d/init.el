@@ -1635,7 +1635,7 @@ ALL-MAILS are the all the unread emails"
 (global-set-key (kbd "s-r") (lambda () (interactive) (when (> AL-mail-count 0) (mu4e-headers-search "flag:unread AND (maildir:/INBOX OR maildir:/InriaBox/INBOX)" nil nil t nil t)))) ; last t: open first message
 (global-set-key (kbd "s-g") (lambda () (interactive) (mu4e-headers-search "flag:unread" nil nil t nil t))) ; last t: open first message
 (global-set-key (kbd "s-g") (lambda () (interactive) (mu4e-headers-search "flag:unread" nil nil t nil nil))) ; last t: open first message
-(defun mu4e~main-view () nil) ;; too extreme? Bof.
+(defun mu4e~main-view (&optional refresh) nil) ;; too extreme? Bof.
 (global-set-key (kbd "C-x m") 'mu4e-compose-new)
 (define-key mu4e-compose-mode-map (kbd "M-q") nil)
 (define-key mu4e-compose-mode-map (kbd "M-n") nil)
@@ -2104,5 +2104,5 @@ following commands are defined:
 				     (progn
 				       (goto-char (point-min))
 				       (search-forward "POINT_HERE")
-				       (backward-kill-sexp))
+				       (delete-char -10))
 				   (error nil)))))

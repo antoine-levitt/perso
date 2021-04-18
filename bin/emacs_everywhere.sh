@@ -16,7 +16,7 @@
 # 				     (progn
 # 				       (goto-char (point-min))
 # 				       (search-forward "POINT_HERE")
-# 				       (backward-kill-sexp))
+# 				       (delete-char -10))
 # 				   (error nil)))))
 
 # Then bind this script to a keyboard shortcut.
