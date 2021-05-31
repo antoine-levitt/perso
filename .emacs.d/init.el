@@ -470,50 +470,50 @@ some other pops up with display-buffer), go back to only one window open"
 (add-hook 'after-init-hook (lambda () (setq pdf-view-midnight-colors (cons (frame-parameter nil 'foreground-color) (frame-parameter nil 'background-color)))))
 
 
-;; No timeout for tooltip
-;; Temp fix until https://github.com/politza/pdf-tools/pull/650
-(defun pdf-util-tooltip-arrow (image-top &optional timeout)
-  (pdf-util-assert-pdf-window)
-  (when (floatp image-top)
-    (setq image-top
-          (round (* image-top (cdr (pdf-view-image-size))))))
-  (let* (x-gtk-use-system-tooltips ;allow for display property in tooltip
-         (dx (+ (or (car (window-margins)) 0)
-                (car (window-fringes))))
-         (dy image-top)
-         (pos (list dx dy dx (+ dy (* 2 (frame-char-height)))))
-         (vscroll
-          (pdf-util-required-vscroll pos))
-         (tooltip-frame-parameters
-          `((border-width . 0)
-            (internal-border-width . 0)
-            ,@tooltip-frame-parameters))
-         ;(tooltip-hide-delay (or timeout 6))
-         )
-    (when vscroll
-      (image-set-window-vscroll (* vscroll
-				   (if pdf-view-have-image-mode-pixel-vscroll
-				       (frame-char-height) 1))))
-    (setq dy (max 0 (- dy
-                       (cdr (pdf-view-image-offset))
-                       (window-vscroll nil t)
-                       (frame-char-height))))
-    (when (overlay-get (pdf-view-current-overlay) 'before-string)
-      (let* ((e (window-inside-pixel-edges))
-             (xw (pdf-util-with-edges (e) e-width)))
-        (cl-incf dx (/ (- xw (car (pdf-view-image-size t))) 2))))
-    (pdf-util-tooltip-in-window
-     (propertize
-      " " 'display (propertize
-		    "\u2192" ;;right arrow
-		    'display '(height 2)
-		    'face `(:foreground
-                            "orange red"
-                            :background
-                            ,(if (bound-and-true-p pdf-view-midnight-minor-mode)
-                                 (cdr pdf-view-midnight-colors)
-                               "white"))))
-     dx dy)))
+;; ;; No timeout for tooltip
+;; ;; Temp fix until https://github.com/politza/pdf-tools/pull/650
+;; (defun pdf-util-tooltip-arrow (image-top &optional timeout)
+;;   (pdf-util-assert-pdf-window)
+;;   (when (floatp image-top)
+;;     (setq image-top
+;;           (round (* image-top (cdr (pdf-view-image-size))))))
+;;   (let* (x-gtk-use-system-tooltips ;allow for display property in tooltip
+;;          (dx (+ (or (car (window-margins)) 0)
+;;                 (car (window-fringes))))
+;;          (dy image-top)
+;;          (pos (list dx dy dx (+ dy (* 2 (frame-char-height)))))
+;;          (vscroll
+;;           (pdf-util-required-vscroll pos))
+;;          (tooltip-frame-parameters
+;;           `((border-width . 0)
+;;             (internal-border-width . 0)
+;;             ,@tooltip-frame-parameters))
+;;          ;(tooltip-hide-delay (or timeout 6))
+;;          )
+;;     (when vscroll
+;;       (image-set-window-vscroll (* vscroll
+;; 				   (if pdf-view-have-image-mode-pixel-vscroll
+;; 				       (frame-char-height) 1))))
+;;     (setq dy (max 0 (- dy
+;;                        (cdr (pdf-view-image-offset))
+;;                        (window-vscroll nil t)
+;;                        (frame-char-height))))
+;;     (when (overlay-get (pdf-view-current-overlay) 'before-string)
+;;       (let* ((e (window-inside-pixel-edges))
+;;              (xw (pdf-util-with-edges (e) e-width)))
+;;         (cl-incf dx (/ (- xw (car (pdf-view-image-size t))) 2))))
+;;     (pdf-util-tooltip-in-window
+;;      (propertize
+;;       " " 'display (propertize
+;; 		    "\u2192" ;;right arrow
+;; 		    'display '(height 2)
+;; 		    'face `(:foreground
+;;                             "orange red"
+;;                             :background
+;;                             ,(if (bound-and-true-p pdf-view-midnight-minor-mode)
+;;                                  (cdr pdf-view-midnight-colors)
+;;                                "white"))))
+;;      dx dy)))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -685,7 +685,7 @@ filling of the current paragraph."
       (let ((file (if (stringp TeX-master)
 		      TeX-master
 		    (file-name-sans-extension (file-name-nondirectory (buffer-file-name))))))
-	(TeX-xreader-sync-view)
+	(TeX-reader-sync-view) ; new in emacs 28
       ;; put evince to front
         (shell-command-to-string
 	 (format "wmctrl -r %s.pdf -t 3 && wmctrl -a %s.pdf"
@@ -1424,6 +1424,8 @@ Ignores CHAR at point."
     ))
 
 
+;; Until I can be bothered to use the new gnus viewer
+(setq mu4e-view-use-old t)
 ;; mu4e
 (setq
   mu4e-maildir       "~/.emacs.d/mbsync"   ;; top-level Maildir
@@ -1440,11 +1442,11 @@ Ignores CHAR at point."
       mu4e-sent-messages-behavior 'delete
       mu4e-hide-index-messages t
       mu4e-completing-read-function 'ivy-completing-read
-      mu4e-compose-complete-only-personal t
+      mu4e-compose-complete-only-personal nil
       mu4e-headers-fields '((:human-date . 6)
-                            (:maildir . 10)
+                            ;; (:maildir . 10)
                             (:from-or-to . 22)
-                            (:thread-subject . 90))
+                            (:subject . 100))
       mu4e-headers-time-format "%R"
       mu4e-headers-date-format "%d/%m"
       mu4e-headers-auto-update nil
@@ -1847,11 +1849,12 @@ add text-properties to VAL."
 
 ;; immediately quit empty header buffers
 (add-hook 'mu4e-headers-found-hook (lambda () (interactive)
-				     (save-excursion
-				       (goto-char (point-min))
-				       (end-of-visual-line)
-				       (when (eobp)
-					 (mu4e~headers-quit-buffer)))))
+				     (when (eq major-mode 'mu4e-headers-mode)
+				       (save-excursion
+					 (goto-char (point-min))
+					 (end-of-visual-line)
+					 (when (eobp)
+					   (mu4e~headers-quit-buffer))))))
 
 ;; For the layout now called (apparently) "French French (legacy, alt.)", aka latin9 for setxkbmap
 (setq AL/algr-keys   "å€þý¶ÂøÊ±æðÛÎÔ¹«»©®ß¬")
