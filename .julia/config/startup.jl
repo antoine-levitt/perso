@@ -1,6 +1,6 @@
 import Pkg
 let
-    pkgs = ["Revise","BenchmarkTools", "Infiltrator"]
+    pkgs = ["Revise","BenchmarkTools", "Infiltrator", "AbbreviatedStackTraces"]
     for pkg in pkgs
     if Base.find_package(pkg) === nothing
         Pkg.add(pkg)
@@ -24,3 +24,6 @@ atreplinit() do repl
     catch
     end
 end
+
+ENV["JULIA_STACKTRACE_MINIMAL"] = true
+using AbbreviatedStackTraces
