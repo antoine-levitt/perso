@@ -65,6 +65,7 @@
 	fix-word
 	ivy-prescient
 	expand-region
+	quelpa
 	))
 (mapc #'(lambda (package)
           (unless (package-installed-p package)
@@ -791,18 +792,16 @@ filling of the current paragraph."
 ;;; Keybindings
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;see http://www.emacswiki.org/emacs/IgnacioKeyboardQuit , with a little bit of modifications
-(defun my-keyboard-quit()
+(defadvice keyboard-quit (around escape-from-minibuffer activate)
   "Escape the minibuffer or cancel region consistently using 'Control-g'.
 Normally if the minibuffer is active but we lost focus (say, we clicked away or set the cursor into another buffer)
 we can quit by pressing 'ESC' three times. This function handles it more conveniently, as it checks for the condition
 of not being in the minibuffer but having it active. Otherwise simply doing the ESC or (keyboard-escape-quit) would
 brake whatever split of windows we might have in the frame."
-  (interactive)
-  (if (not(window-minibuffer-p (selected-window)))
-      (if (active-minibuffer-window)
-          (keyboard-escape-quit))
-    (keyboard-quit)))
-(define-key global-map (kbd "C-g") 'my-keyboard-quit)
+  (when (not(window-minibuffer-p (selected-window)))
+    (when (active-minibuffer-window)
+      (keyboard-escape-quit)))
+    ad-do-it)
 
 ;;find file at point
 (global-set-key (kbd "<C-return>") 'ffap)
@@ -1516,7 +1515,9 @@ Ignores CHAR at point."
 (add-to-list 'mu4e-compose-hidden-headers "^MIME-Version:")
 (add-to-list 'mu4e-compose-hidden-headers "^Received:")
 (add-to-list 'mu4e-compose-hidden-headers "^X-TUID:")
+(setq mu4e-view-fields '(:subject :from :to :cc  :date :attachments))
 (setq mu4e-view-fields '(:from :to :cc :subject :date :mailing-list :user-agent :attachments))
+(setq gnus-visible-headers "^Newsgroups:\\|^Subject:\\|^From:\\|^Date:\\|^Followup-To:\\|^Organization:\\|^Summary:\\|^Keywords:\\|^To:\\|^[BGF]?Cc:\\|^Posted-To:\\|^Mail-Copies-To:\\|^Mail-Followup-To:\\|^Apparently-To:\\|^Gnus-Warning:\\|^Resent-From:")
 (add-to-list 'mu4e-view-actions '("View in browser" . mu4e-action-view-in-browser) t)
 
 (require 'mu4e-alert)
@@ -2102,10 +2103,75 @@ following commands are defined:
 						(save-buffer)
 						(server-edit) ; C-x #
 						(kill-buffer)))
-			       (when (string-match "tmp_emacs_everywhere" (buffer-name))
-				 (condition-case err
-				     (progn
-				       (goto-char (point-min))
-				       (search-forward "POINT_HERE")
-				       (delete-char -10))
-				   (error nil)))))
+			       ;; (when (string-match "tmp_emacs_everywhere" (buffer-name))
+			       ;; 	 (condition-case err
+			       ;; 	     (progn
+			       ;; 	       (goto-char (point-min))
+			       ;; 	       (search-forward "POINT_HERE")
+			       ;; 	       (delete-char -10))
+			       ;; 	   (error nil)))
+))
+;; Work around for mu4e-alert bugs
+(defvar mu4e-alert--header-func-save)
+(defvar mu4e-alert--found-func-save)
+(defvar mu4e-alert--erase-func-save)
+
+(defvar mu4e-alert--messages)
+
+(defun mu4e-alert--erase-func ()
+  "Erase handler for mu process.")
+
+(defun mu4e-alert--get-found-func (callback)
+  "Create found handler for mu process.
+CALLBACK will be invoked by retturned lambda"
+  (lexical-let ((cb callback))
+    (lambda (found)
+      (funcall cb mu4e-alert--messages)
+      (setq mu4e-header-func mu4e-alert--header-func-save
+            mu4e-found-func mu4e-alert--found-func-save
+            mu4e-erase-func mu4e-alert--erase-func-save))))
+
+(defun mu4e-alert--header-func (msg)
+  "Message header handler for mu process.
+MSG argument is message plist."
+  (push msg mu4e-alert--messages))
+
+(defun mu4e-alert--get-mu-unread-emails-1 (callback)
+  "Get messages from mu and invoke CALLBACK."
+  (when (mu4e~proc-running-p)
+    (setq mu4e-alert--header-func-save mu4e-header-func
+          mu4e-alert--found-func-save mu4e-found-func
+          mu4e-alert--erase-func-save mu4e-erase-func)
+    (setq mu4e-header-func 'mu4e-alert--header-func
+          mu4e-found-func (mu4e-alert--get-found-func callback)
+          mu4e-erase-func 'mu4e-alert--erase-func)
+    (setq mu4e-alert--messages nil)
+    (mu4e~proc-find mu4e-alert-interesting-mail-query
+                    nil
+                    :date
+                    nil
+                    mu4e-alert-max-messages-to-process
+                    nil
+                    nil)))
+(defun mu4e-alert-enable-mode-line-display ()
+  "Enable display of unread emails in mode-line."
+  (interactive)
+  (add-to-list 'global-mode-string '(:eval mu4e-alert-mode-line) t)
+  (add-hook 'mu4e-view-mode-hook #'mu4e-alert-update-mail-count-modeline)
+  (add-hook 'mu4e-index-updated-hook #'mu4e-alert-update-mail-count-modeline)
+  (advice-add #'mu4e~headers-update-handler
+              :after (lambda (&rest _) (mu4e-alert-update-mail-count-modeline))
+              '((name . "mu4e-alert")))
+  (ad-enable-advice #'mu4e-context-switch 'around 'mu4e-alert-update-mail-count-modeline)
+  (ad-activate #'mu4e-context-switch)
+  (mu4e-alert-update-mail-count-modeline))
+
+(defun mu4e-alert-disable-mode-line-display ()
+  "Disable display of unread emails in mode-line."
+  (interactive)
+  (setq global-mode-string (delete '(:eval mu4e-alert-mode-line) global-mode-string))
+  (remove-hook 'mu4e-view-mode-hook #'mu4e-alert-update-mail-count-modeline)
+  (remove-hook 'mu4e-index-updated-hook #'mu4e-alert-update-mail-count-modeline)
+  (advice-remove #'mu4e~headers-update-handler "mu4e-alert")
+  (ad-disable-advice #'mu4e-context-switch 'around 'mu4e-alert-update-mail-count-modeline)
+  (ad-deactivate #'mu4e-context-switch))
