@@ -17,13 +17,7 @@ using LinearAlgebra
 using Infiltrator
 using Test
 
-atreplinit() do repl
-    try
-        @eval using Revise
-        @async Revise.wait_steal_repl_backend()
-    catch
-    end
-end
+using Revise
 
 ENV["JULIA_STACKTRACE_MINIMAL"] = true
 using AbbreviatedStackTraces
