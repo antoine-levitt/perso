@@ -2199,3 +2199,8 @@ MSG argument is message plist."
       (call-interactively 'delete-region)
     (call-interactively 'kill-region)))
 (global-set-key (kbd "C-w") 'my-kill-region)
+
+(add-to-list 'vterm-keymap-exceptions "C-v")
+(add-to-list 'vterm-keymap-exceptions "M-v")
+(define-key vterm-mode-map (kbd "s-t") 'vterm-copy-mode)
+(define-key vterm-copy-mode-map (kbd "s-t") 'vterm-copy-mode)
