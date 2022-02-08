@@ -2182,3 +2182,21 @@ MSG argument is message plist."
   (advice-remove #'mu4e~headers-update-handler "mu4e-alert")
   (ad-disable-advice #'mu4e-context-switch 'around 'mu4e-alert-update-mail-count-modeline)
   (ad-deactivate #'mu4e-context-switch))
+(setq package-native-compile t)
+
+(defun my-kill-visual-line (&optional arg)
+  (interactive "P")
+  (if arg
+      (cl-letf (((symbol-function 'kill-region)
+		 (lambda (beg end &optional yank-handler)
+                   (delete-region beg end))))
+	(kill-visual-line))
+    (kill-visual-line)))
+(global-set-key (kbd "C-k") 'my-kill-visual-line)
+
+(defun my-kill-region (&optional arg)
+  (interactive "P")
+  (if arg
+      (call-interactively 'delete-region)
+    (call-interactively 'kill-region)))
+(global-set-key (kbd "C-w") 'my-kill-region)
