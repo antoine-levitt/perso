@@ -1999,10 +1999,9 @@ add text-properties to VAL."
   (when s
     (let ((sym (gethash (concat "\\" s) julia-mode-latexsubs)))
       (when sym
-	(if (and (eq major-mode 'term-mode) (term-in-char-mode))
-	    (progn
-	      (term-send-raw-string sym))
-          (insert sym))))))
+	(cond ((and (eq major-mode 'term-mode) (term-in-char-mode)) (term-send-raw-string sym))
+	      ((and (eq major-mode 'vterm-mode)) (vterm-insert sym))
+	      (t (insert sym)))))))
 
 ;; unicode insertion of math symbols
 (define-minor-mode julia-math-mode
