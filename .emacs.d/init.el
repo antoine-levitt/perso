@@ -1783,6 +1783,8 @@ add text-properties to VAL."
 (add-hook 'julia-mode-hook 'julia-repl-mode)
 (require 'julia-repl)
 (require 'vterm)
+(define-key vterm-mode-map (kbd "C-v") nil)
+(define-key vterm-mode-map (kbd "M-v") nil)
 (julia-repl-set-terminal-backend 'vterm)
 (setq vterm-max-scrollback 10000)
 
@@ -2200,8 +2202,5 @@ MSG argument is message plist."
     (call-interactively 'kill-region)))
 (global-set-key (kbd "C-w") 'my-kill-region)
 
-(add-to-list 'vterm-keymap-exceptions "C-v")
-(add-to-list 'vterm-keymap-exceptions "M-v")
-(vterm--exclude-keys vterm-mode-map vterm-keymap-exceptions)
 (define-key vterm-mode-map (kbd "s-t") 'vterm-copy-mode)
 (define-key vterm-copy-mode-map (kbd "s-t") 'vterm-copy-mode)
