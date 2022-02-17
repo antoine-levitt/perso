@@ -2202,5 +2202,6 @@ MSG argument is message plist."
 
 (add-to-list 'vterm-keymap-exceptions "C-v")
 (add-to-list 'vterm-keymap-exceptions "M-v")
+(vterm--exclude-keys vterm-mode-map vterm-keymap-exceptions)
 (define-key vterm-mode-map (kbd "s-t") 'vterm-copy-mode)
 (define-key vterm-copy-mode-map (kbd "s-t") 'vterm-copy-mode)
