@@ -6,7 +6,8 @@
     (set-frame-font "Noto Mono 16"))
 (if (string-match "lambda" (shell-command-to-string
 			  "hostname"))
-    (set-frame-font "Noto Mono 13"))
+    (set-frame-font "Noto Mono 16"))
+;; (set-frame-font "Noto Mono 22") ; good for projectors
 
 ;; customize
 (custom-set-variables
@@ -101,6 +102,10 @@ has no effect on it."
 (setq sentence-end-double-space nil)
 (setq confirm-kill-processes nil)
 
+;; suggested by lsp
+(setq gc-cons-threshold 100000000)
+(setq read-process-output-max (* 1024 1024)) ;; 1mb
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Unclutter home directory
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -127,8 +132,8 @@ has no effect on it."
 
   ;; desktop
   (setq desktop-load-locked-desktop t
-	desktop-path '("~/.emacs.d/")
-	desktop-dirname "~/.emacs.d/"
+	desktop-path (list (expand-file-name "~/.emacs.d/"))
+	desktop-dirname (expand-file-name "~/.emacs.d/")
 	desktop-base-file-name "emacs.desktop"
 	desktop-files-not-to-save "\\(^/[^/:]*:\\|(ftp)$\\|synctex.gz\\)")
   ;; remove auto-fill
@@ -146,8 +151,8 @@ has no effect on it."
                                           (desktop-save-in-desktop-dir))))
   )
 ;; greeting message
-(add-hook 'after-init-hook (lambda () (message "Welcome back.")) t)
 (add-hook 'after-init-hook (lambda () (set-frame-parameter nil 'fullscreen 'fullboth)))
+(add-hook 'after-init-hook (lambda () (message "Welcome back.")) t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Graphical display
@@ -364,6 +369,7 @@ some other pops up with display-buffer), go back to only one window open"
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (require 'undo-tree)
 (setq undo-tree-mode-lighter "")
+(setq undo-tree-auto-save-history nil)
 (global-undo-tree-mode)
 (add-hook 'fundamental-mode-hook 'turn-on-undo-tree-mode)
 
@@ -2119,70 +2125,23 @@ following commands are defined:
 			       ;; 	       (delete-char -10))
 			       ;; 	   (error nil)))
 ))
-;; Work around for mu4e-alert bugs
-(defvar mu4e-alert--header-func-save)
-(defvar mu4e-alert--found-func-save)
-(defvar mu4e-alert--erase-func-save)
 
-(defvar mu4e-alert--messages)
 
-(defun mu4e-alert--erase-func ()
-  "Erase handler for mu process.")
+;; (quelpa '(eaf :fetcher github
+;;               :repo  "manateelazycat/emacs-application-framework"
+;;               :files ("*")))
 
-(defun mu4e-alert--get-found-func (callback)
-  "Create found handler for mu process.
-CALLBACK will be invoked by retturned lambda"
-  (lexical-let ((cb callback))
-    (lambda (found)
-      (funcall cb mu4e-alert--messages)
-      (setq mu4e-header-func mu4e-alert--header-func-save
-            mu4e-found-func mu4e-alert--found-func-save
-            mu4e-erase-func mu4e-alert--erase-func-save))))
+;; (add-to-list 'load-path "~/.emacs.d/site-lisp/emacs-application-framework/")
+;; (require 'eaf)
+;; (require 'eaf-pdf-viewer)
 
-(defun mu4e-alert--header-func (msg)
-  "Message header handler for mu process.
-MSG argument is message plist."
-  (push msg mu4e-alert--messages))
+;; (eaf-setq eaf-browser-dark-mode nil)
+;; (eaf-setq eaf-pdf-dark-mode "false")
+;; (setq eaf-pdf-store-history nil)
+;; (eaf-bind-key scroll_up "C-n" eaf-pdf-viewer-keybinding)
+;; (eaf-bind-key scroll_down "C-p" eaf-pdf-viewer-keybinding)
+;; (eaf-setq eaf-buffer-background-color (face-background 'default nil))
 
-(defun mu4e-alert--get-mu-unread-emails-1 (callback)
-  "Get messages from mu and invoke CALLBACK."
-  (when (mu4e~proc-running-p)
-    (setq mu4e-alert--header-func-save mu4e-header-func
-          mu4e-alert--found-func-save mu4e-found-func
-          mu4e-alert--erase-func-save mu4e-erase-func)
-    (setq mu4e-header-func 'mu4e-alert--header-func
-          mu4e-found-func (mu4e-alert--get-found-func callback)
-          mu4e-erase-func 'mu4e-alert--erase-func)
-    (setq mu4e-alert--messages nil)
-    (mu4e~proc-find mu4e-alert-interesting-mail-query
-                    nil
-                    :date
-                    nil
-                    mu4e-alert-max-messages-to-process
-                    nil
-                    nil)))
-(defun mu4e-alert-enable-mode-line-display ()
-  "Enable display of unread emails in mode-line."
-  (interactive)
-  (add-to-list 'global-mode-string '(:eval mu4e-alert-mode-line) t)
-  (add-hook 'mu4e-view-mode-hook #'mu4e-alert-update-mail-count-modeline)
-  (add-hook 'mu4e-index-updated-hook #'mu4e-alert-update-mail-count-modeline)
-  (advice-add #'mu4e~headers-update-handler
-              :after (lambda (&rest _) (mu4e-alert-update-mail-count-modeline))
-              '((name . "mu4e-alert")))
-  (ad-enable-advice #'mu4e-context-switch 'around 'mu4e-alert-update-mail-count-modeline)
-  (ad-activate #'mu4e-context-switch)
-  (mu4e-alert-update-mail-count-modeline))
-
-(defun mu4e-alert-disable-mode-line-display ()
-  "Disable display of unread emails in mode-line."
-  (interactive)
-  (setq global-mode-string (delete '(:eval mu4e-alert-mode-line) global-mode-string))
-  (remove-hook 'mu4e-view-mode-hook #'mu4e-alert-update-mail-count-modeline)
-  (remove-hook 'mu4e-index-updated-hook #'mu4e-alert-update-mail-count-modeline)
-  (advice-remove #'mu4e~headers-update-handler "mu4e-alert")
-  (ad-disable-advice #'mu4e-context-switch 'around 'mu4e-alert-update-mail-count-modeline)
-  (ad-deactivate #'mu4e-context-switch))
 (setq package-native-compile t)
 
 (defun my-kill-visual-line (&optional arg)
@@ -2204,3 +2163,4 @@ MSG argument is message plist."
 
 (define-key vterm-mode-map (kbd "s-t") 'vterm-copy-mode)
 (define-key vterm-copy-mode-map (kbd "s-t") 'vterm-copy-mode)
+(desktop-read)
