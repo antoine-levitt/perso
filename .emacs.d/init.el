@@ -1651,7 +1651,7 @@ ALL-MAILS are the all the unread emails"
 (global-set-key (kbd "s-r") (lambda () (interactive) (when (> AL-mail-count 0) (mu4e-headers-search "flag:unread AND (maildir:/INBOX OR maildir:/InriaBox/INBOX)" nil nil t nil t)))) ; last t: open first message
 (global-set-key (kbd "s-g") (lambda () (interactive) (mu4e-headers-search "flag:unread" nil nil t nil t))) ; last t: open first message
 (global-set-key (kbd "s-g") (lambda () (interactive) (mu4e-headers-search "flag:unread" nil nil t nil nil))) ; last t: open first message
-(defun mu4e~main-view (&optional refresh) nil) ;; too extreme? Bof.
+(defun mu4e--main-view (&optional refresh) nil) ;; too extreme? Bof.
 (global-set-key (kbd "C-x m") 'mu4e-compose-new)
 (define-key mu4e-compose-mode-map (kbd "M-q") nil)
 (define-key mu4e-compose-mode-map (kbd "M-n") nil)
@@ -1680,7 +1680,7 @@ buffers; lets remap its faces so it uses the ones for mu4e."
   (face-remap-add-relative 'message-cited-text
                            '((:inherit mu4e-cited-1-face))))
 
-(mu4e~start)
+(mu4e)
 
 (require 'gnus-dired)
 ;; make the `gnus-dired-mail-buffers' function also work on
@@ -1723,43 +1723,6 @@ buffers; lets remap its faces so it uses the ones for mu4e."
 
 
 (add-hook 'reftex-select-label-mode-hook 'reftex-reparse-document)
-
-
-;; Temp until https://github.com/djcb/mu/pull/833 is merged
-(defun mu4e~view-construct-header (field val &optional dont-propertize-val)
-  "Return header field FIELD (as in `mu4e-header-info') with value
-VAL if VAL is non-nil. If DONT-PROPERTIZE-VAL is non-nil, do not
-add text-properties to VAL."
-  (let* ((info (cdr (assoc field
-		      (append mu4e-header-info mu4e-header-info-custom))))
-	  (key (plist-get info :name))
-	  (val (if val (propertize val 'field 'mu4e-header-field-value
-	                               'front-sticky '(field))))
-	  (help (plist-get info :help)))
-    (if (and val (> (length val) 0))
-    (with-temp-buffer
-      (insert (propertize (concat key ":")
-		'field 'mu4e-header-field-key
-		'front-sticky '(field)
-		'keymap mu4e-view-header-field-keymap
-		'face 'mu4e-header-key-face
-		'help-echo help) " "
-	(if dont-propertize-val
-	  val
-	  (if (string= "Subject" key)
-	      (propertize val 'face 'font-lock-string-face)
-	    (propertize val 'face 'mu4e-header-value-face))) "\n")
-      (when mu4e-view-fill-headers
-	;; temporarily set the fill column <margin> positions to the right, so
-	;; we can indent the following lines correctly
-	(let* ((margin 1)
-		(fill-column (max (- fill-column margin) 0)))
-	  (fill-region (point-min) (point-max))
-	  (goto-char (point-min))
-	  (while (and (zerop (forward-line 1)) (not (looking-at "^$")))
-	    (indent-to-column margin))))
-      (buffer-string))
-    "")))
 
 (require 'julia-repl)
 (setq julia-repl-executable-records
@@ -2162,5 +2125,7 @@ following commands are defined:
 (global-set-key (kbd "C-w") 'my-kill-region)
 
 (define-key vterm-mode-map (kbd "s-t") 'vterm-copy-mode)
+(define-key vterm-mode-map (kbd "C-c C-t") 'vterm-copy-mode)
 (define-key vterm-copy-mode-map (kbd "s-t") 'vterm-copy-mode)
 (desktop-read)
+(define-key vterm-copy-mode-map (kbd "C-c C-t") 'vterm-copy-mode)
