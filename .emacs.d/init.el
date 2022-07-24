@@ -250,6 +250,19 @@ From http://atomized.org/2011/01/toggle-between-root-non-root-in-emacs-with-tram
       (goto-char old-pnt))))
 (global-set-key (kbd "C-c C-r") 'toggle-alternate-file-as-root)
 
+;; https://www.gnu.org/software/emacs/manual/html_node/eintr/the_002dthe.html
+(defun the-the ()
+  "Search forward for for a duplicated word."
+  (interactive)
+  (message "Searching for for duplicated words ...")
+  (push-mark)
+  ;; This regexp is not perfect
+  ;; but is fairly good over all:
+  (if (re-search-forward
+       "\\b\\([^@ \n\t]+\\)[ \n\t]+\\1\\b" nil 'move)
+      (message "Found duplicated word.")
+    (message "End of buffer")))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Misc. settings
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1711,6 +1724,86 @@ buffers; lets remap its faces so it uses the ones for mu4e."
     (kill-line)
     (insert (message-make-date))))
 
+(setq gnus-article-date-headers '(local))
+
+;; https://github.com/sje30/emacs/blob/master/mu4e-view-save-all-attachments.el
+;; modified to also open dired
+(defvar bulk-saved-attachments-dir "/tmp/mu4e")
+
+(define-key mu4e-view-mode-map ">" 'mu4e-view-save-all-attachments)
+(defun cleanse-subject (sub)
+  (replace-regexp-in-string
+   "[^A-Z0-9]+"
+   "-"
+   (downcase sub)))
+
+(defun mu4e-view-save-all-attachments (&optional arg)
+  "Save all MIME parts from current mu4e gnus view buffer."
+  ;; Copied from mu4e-view-save-attachments
+  (interactive "P")
+  (cl-assert (and (eq major-mode 'mu4e-view-mode)
+                  (derived-mode-p 'gnus-article-mode)))
+  (let* ((msg (mu4e-message-at-point))
+         (id (cleanse-subject (mu4e-message-field msg :subject)))
+         (attachdir (concat bulk-saved-attachments-dir "/" id))
+	 (parts (mu4e~view-gather-mime-parts))
+         (handles '())
+         (files '())
+         dir)
+    (mkdir attachdir t)
+    (dolist (part parts)
+      (let ((fname (or 
+		    (cdr (assoc 'filename (assoc "attachment" (cdr part))))
+                    (seq-find #'stringp
+                              (mapcar (lambda (item) (cdr (assoc 'name item)))
+                                      (seq-filter 'listp (cdr part)))))))
+        (when fname
+          (push `(,fname . ,(cdr part)) handles)
+          (push fname files))))
+    (if files
+        (progn
+          (setq dir
+		(if arg (read-directory-name "Save to directory: ")
+		  attachdir))
+          (cl-loop for (f . h) in handles
+                   when (member f files)
+                   do (mm-save-part-to-file h
+					    (sje-next-free
+					     (expand-file-name f dir))))
+	  (dired dir))
+      (mu4e-message "No attached files found"))))
+
+
+
+(defun sje-next-free (file)
+  "Return name of next unique 'free' FILE.
+If /tmp/foo.txt and /tmp/foo-1.txt exist, when this is called
+with /tmp/foo.txt, return /tmp/foo-2.txt.  See
+`sje-test-next-free' for a test case.  This is not very efficient
+if there are a large number of files already in the directory
+with the same base name, as it simply starts searching from 1
+each time until it finds a gap.  An alternative might be to do a
+wildcard search for all the filenames, extract the highest number
+and then increment it."
+  ;; base case is easy; does file exist already?
+  (if (not  (file-exists-p file))
+      file
+    ;; othwerwise need to iterate through f-1.pdf
+    ;; f-2.pdf, f-3.pdf ... until we no longer find a file.
+    (let ((prefix (file-name-sans-extension file))
+	  (suffix (file-name-extension file))
+	  (looking t)
+	  (n 0)
+	  (f)
+	  )
+      (while looking
+	(setq n (1+ n))
+	(setq f (concat prefix "-" (number-to-string n) "." suffix))
+	(setq looking (file-exists-p f)))
+      f
+      )))
+
+
 (require 'iedit)
 
 (setq sml/theme 'respectful)
@@ -2127,5 +2220,5 @@ following commands are defined:
 (define-key vterm-mode-map (kbd "s-t") 'vterm-copy-mode)
 (define-key vterm-mode-map (kbd "C-c C-t") 'vterm-copy-mode)
 (define-key vterm-copy-mode-map (kbd "s-t") 'vterm-copy-mode)
-(desktop-read)
 (define-key vterm-copy-mode-map (kbd "C-c C-t") 'vterm-copy-mode)
+;; (desktop-read)
