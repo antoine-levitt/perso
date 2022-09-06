@@ -162,6 +162,7 @@ has no effect on it."
 
 ;; no right fringe
 (fringe-mode '(nil . 0))
+(setq ring-bell-function (lambda () nil)) ; I don't like bells
 
 ;; fullscreen
 (defun toggle-fullscreen (&optional f)
@@ -829,6 +830,8 @@ brake whatever split of windows we might have in the frame."
       (keyboard-escape-quit)))
     ad-do-it)
 
+;; fix circumflex key on some french layouts
+(global-set-key (kbd "<dead-circumflex> <dead-circumflex>") (kbd "^"))
 ;;find file at point
 (global-set-key (kbd "<C-return>") 'ffap)
 ;;I just want C-x k to kill the buffer instead of just prompting me
