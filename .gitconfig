@@ -1,0 +1,11 @@
+[user]
+	email = antoine.levitt@gmail.com
+	name = Antoine Levitt
+[push]
+	default = simple
+[url "https://github.com/"]
+	insteadOf = git://github.com/
+[url "https://gitlab.com/"]
+	insteadOf = git://gitlab.com/
+[github]
+	user = antoine-levitt
