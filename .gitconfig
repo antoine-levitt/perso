@@ -9,3 +9,5 @@
 	insteadOf = git://gitlab.com/
 [github]
 	user = antoine-levitt
+[credential "https://git.overleaf.com"]
+    username = antoine.levitt@inria.fr
