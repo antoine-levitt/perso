@@ -11,3 +11,6 @@
 	user = antoine-levitt
 [credential "https://git.overleaf.com"]
     username = antoine.levitt@inria.fr
+[credential "https://github.com"]
+	helper = 
+	helper = !/usr/bin/gh auth git-credential
