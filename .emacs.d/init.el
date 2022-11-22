@@ -1459,7 +1459,7 @@ Ignores CHAR at point."
   mu4e-maildir       "~/.emacs.d/mbsync"   ;; top-level Maildir
   mu4e-sent-folder   "/[Google Mail]/.Sent Mail"       ;; folder for sent messages
   mu4e-drafts-folder "/[Google Mail]/.Drafts"     ;; unfinished messages
-  mu4e-get-mail-command "timeout 30 mbsync all")
+  mu4e-get-mail-command "timeout 30 mbsync all; true")
 (load "~/.emacs.d/priv_mu4e.el") ;; set private variables
 
 (require 'timezone)
@@ -1664,7 +1664,7 @@ ALL-MAILS are the all the unread emails"
 (define-key mu4e-main-mode-map (kbd "a") (lambda () (interactive) (mu4e-headers-search "" nil nil t)))
 (global-set-key (kbd "s-e") mu4e-main-mode-map)
 
-(global-set-key (kbd "s-r") (lambda () (interactive) (when (> AL-mail-count 0) (mu4e-headers-search "flag:unread AND (maildir:/INBOX OR maildir:/InriaBox/INBOX OR maildir:/OrsayBox/INBOX)" nil nil t nil t)))) ; last t: open first message
+(global-set-key (kbd "s-r") (lambda () (interactive) (when (> AL-mail-count 0) (mu4e-headers-search "flag:unread AND (maildir:/INBOX OR maildir:/InriaBox/INBOX OR maildir:/OrsayBox/INBOX)" nil nil t nil nil)))) ; last t: open first message
 (global-set-key (kbd "s-g") (lambda () (interactive) (mu4e-headers-search "flag:unread" nil nil t nil t))) ; last t: open first message
 (global-set-key (kbd "s-g") (lambda () (interactive) (mu4e-headers-search "flag:unread" nil nil t nil nil))) ; last t: open first message
 (defun mu4e--main-view (&optional refresh) nil) ;; too extreme? Bof.
@@ -1822,7 +1822,8 @@ and then increment it."
 
 (require 'julia-repl)
 (setq julia-repl-executable-records
-      '((default "/home/antoine/bin/julia")))
+      '((default "/home/antoine/julia/bin/julia")))
+(setq julia-repl-switches "-t 6")
 (setq julia-repl-save-buffer-on-send t)
 
 (setq AL/last-sent-julia-buffer nil)
