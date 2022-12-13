@@ -1496,27 +1496,39 @@ Ignores CHAR at point."
       message-citation-line-function (lambda () (message-insert-formatted-citation-line nil nil (* 60 (timezone-zone-to-minute (current-time-zone))))) ; don't use the sender's timezone
       message-kill-buffer-on-exit t
       message-send-mail-function 'message-smtpmail-send-it ; can also do it async if needed, with smtpmail-async
-      smtpmail-smtp-server "smtp.gmail.com"
-      smtpmail-smtp-service 587)
+      starttls-use-gnutls t
+      starttls-gnutls-program "gnutls-cli"
+      )
 
-;; ;; Special dance to make it use different SMTP servers according to sender
-;; (require 'cl)
-;; (require 'smtpmail)
-;; (setq smtp-accounts
-;;       '(("antoine.levitt@gmail.com" "smtp.gmail.com" "antoine.levitt@gmail.com")
-;;         ("antoine.levitt@inria.fr" "smtp.inria.fr" "alevitt")))
-;; (defun my-change-smtp ()
-;;   (save-excursion
-;;     (loop with from = (save-restriction
-;;                         (message-narrow-to-headers)
-;;                         (message-fetch-field "from"))
-;;           for (addr server user) in smtp-accounts
-;;           when (string-match addr from)
-;;           do (setq smtpmail-smtp-user user
-;; 		   smtpmail-smtp-server server))))
-;; (defadvice smtpmail-via-smtp
-;;     (before change-smtp-by-message-from-field (recipient buffer &optional ask) activate)
-;;   (with-current-buffer buffer (my-change-smtp)))
+;; Special dance to make it use different SMTP servers according to sender
+(require 'cl)
+(require 'smtpmail)
+(setq smtp-accounts
+      '(
+	("." "smtp.gmail.com" "antoine.levitt@gmail.com" 587 nil)
+	("antoine.levitt@universite-paris-saclay.fr" "smtps.universite-paris-saclay.fr" "antoine.levitt" 465 ssl)
+))
+(defun my-change-smtp ()
+  (save-excursion
+    (loop with from = (save-restriction
+                        (message-narrow-to-headers)
+                        (message-fetch-field "from"))
+          for (addr server user port stream) in smtp-accounts
+          when (string-match addr from)
+          do (progn (setq smtpmail-smtp-user user
+			 smtpmail-smtp-server server
+			 smtpmail-smtp-service port
+			 smtpmail-stream-type stream
+			 )))))
+(defadvice smtpmail-via-smtp
+    (before change-smtp-by-message-from-field (recipient buffer &optional ask) activate)
+  (with-current-buffer buffer (my-change-smtp)))
+
+; gmail saves copies automatically, but not the others
+(setq mu4e-sent-messages-behavior
+      (lambda ()
+	(if (string= (message-sendmail-envelope-from) "antoine.levitt@universite-paris-saclay.fr")
+	    'sent 'delete)))
 
 (require 'mu4e)
 
