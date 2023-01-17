@@ -1742,7 +1742,8 @@ buffers; lets remap its faces so it uses the ones for mu4e."
 (setq gnus-article-date-headers '(local))
 
 ;; https://github.com/sje30/emacs/blob/master/mu4e-view-save-all-attachments.el
-;; modified to also open dired
+;; modified to also open dired and overwrite the files instead of renaming them
+;; when called multiple times
 (defvar bulk-saved-attachments-dir "/tmp/mu4e")
 
 (define-key mu4e-view-mode-map ">" 'mu4e-view-save-all-attachments)
@@ -1783,40 +1784,9 @@ buffers; lets remap its faces so it uses the ones for mu4e."
           (cl-loop for (f . h) in handles
                    when (member f files)
                    do (mm-save-part-to-file h
-					    (sje-next-free
-					     (expand-file-name f dir))))
+					    (expand-file-name f dir)))
 	  (dired dir))
       (mu4e-message "No attached files found"))))
-
-
-
-(defun sje-next-free (file)
-  "Return name of next unique 'free' FILE.
-If /tmp/foo.txt and /tmp/foo-1.txt exist, when this is called
-with /tmp/foo.txt, return /tmp/foo-2.txt.  See
-`sje-test-next-free' for a test case.  This is not very efficient
-if there are a large number of files already in the directory
-with the same base name, as it simply starts searching from 1
-each time until it finds a gap.  An alternative might be to do a
-wildcard search for all the filenames, extract the highest number
-and then increment it."
-  ;; base case is easy; does file exist already?
-  (if (not  (file-exists-p file))
-      file
-    ;; othwerwise need to iterate through f-1.pdf
-    ;; f-2.pdf, f-3.pdf ... until we no longer find a file.
-    (let ((prefix (file-name-sans-extension file))
-	  (suffix (file-name-extension file))
-	  (looking t)
-	  (n 0)
-	  (f)
-	  )
-      (while looking
-	(setq n (1+ n))
-	(setq f (concat prefix "-" (number-to-string n) "." suffix))
-	(setq looking (file-exists-p f)))
-      f
-      )))
 
 
 (require 'iedit)
