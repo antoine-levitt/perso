@@ -665,7 +665,7 @@ filling of the current paragraph."
     (dolist (name list-of-master-files)
       (when (file-exists-p (concat name ".tex"))
   	(setq TeX-master name))))
-  
+
   ;; indent align like equations
   (setq LaTeX-indent-environment-list
         '(("verbatim" current-indentation)
@@ -714,7 +714,7 @@ filling of the current paragraph."
 		      TeX-master
 		    (file-name-sans-extension (file-name-nondirectory (buffer-file-name))))))
 	(TeX-reader-sync-view) ; new in emacs 28
-      ;; put evince to front
+	;; put evince to front
         (shell-command-to-string
 	 (format "wmctrl -r %s.pdf -t 3 && wmctrl -a %s.pdf"
 		 file file)))
@@ -828,7 +828,7 @@ brake whatever split of windows we might have in the frame."
   (when (not(window-minibuffer-p (selected-window)))
     (when (active-minibuffer-window)
       (keyboard-escape-quit)))
-    ad-do-it)
+  ad-do-it)
 
 ;; fix circumflex key on some french layouts
 (global-set-key (kbd "<dead-circumflex> <dead-circumflex>") (kbd "^"))
@@ -1228,7 +1228,7 @@ Ignores CHAR at point."
 (setq completion-show-inline-help nil)
 (setq completion-ignore-case t)
 
-; prefer not forking out windows
+					; prefer not forking out windows
 (setq display-buffer-base-action '(display-buffer-same-window . nil))
 
 (when emacs-is-master
@@ -1349,15 +1349,15 @@ Ignores CHAR at point."
 
 ;; automatically indent yanked text if in programming-modes : found somewhere on the net
 (defvar yank-indent-modes '(emacs-lisp-mode python-mode
-                            c-mode c++-mode
-                            tcl-mode sql-mode
-                            perl-mode cperl-mode
-                            java-mode jde-mode
-                            lisp-interaction-mode
-			    scheme-mode
-                            LaTeX-mode TeX-mode
-			    matlab-mode ada-mode
-			    fortran-mode f90-mode)
+					    c-mode c++-mode
+					    tcl-mode sql-mode
+					    perl-mode cperl-mode
+					    java-mode jde-mode
+					    lisp-interaction-mode
+					    scheme-mode
+					    LaTeX-mode TeX-mode
+					    matlab-mode ada-mode
+					    fortran-mode f90-mode)
   "Modes in which to indent regions that are yanked (or yank-popped)")
 
 (defvar yank-advised-indent-threshold 1000
@@ -1400,7 +1400,7 @@ Ignores CHAR at point."
 (setq diff-refine 'font-lock)
 
 (when (get-buffer "*scratch*") (kill-buffer "*scratch*"))
-(setq initial-buffer-choice "~/") 
+(setq initial-buffer-choice "~/")
 
 (setq uniquify-strip-common-suffix nil)
 
@@ -1448,7 +1448,7 @@ Ignores CHAR at point."
   (lambda ()
     (interactive)
     (kill-buffer ivy--current)
-    ;(ivy--reset-state ivy-last)
+    ;;(ivy--reset-state ivy-last)
     ))
 
 
@@ -1456,10 +1456,10 @@ Ignores CHAR at point."
 (setq mu4e-view-use-old t)
 ;; mu4e
 (setq
-  mu4e-maildir       "~/.emacs.d/mbsync"   ;; top-level Maildir
-  mu4e-sent-folder   "/[Google Mail]/.Sent Mail"       ;; folder for sent messages
-  mu4e-drafts-folder "/[Google Mail]/.Drafts"     ;; unfinished messages
-  mu4e-get-mail-command "timeout 30 mbsync all; true")
+ mu4e-maildir       "~/.emacs.d/mbsync"   ;; top-level Maildir
+ mu4e-sent-folder   "/[Google Mail]/.Sent Mail"       ;; folder for sent messages
+ mu4e-drafts-folder "/[Google Mail]/.Drafts"     ;; unfinished messages
+ mu4e-get-mail-command "timeout 30 mbsync all; true")
 (load "~/.emacs.d/priv_mu4e.el") ;; set private variables
 
 (require 'timezone)
@@ -1489,8 +1489,8 @@ Ignores CHAR at point."
       mu4e-headers-show-threads nil
       mu4e-save-multiple-attachments-without-asking t
       shr-color-visible-luminance-min 40
-      
-      message-citation-line-format "\n%d %B %Y %R %Z, %f:" 
+
+      message-citation-line-format "\n%d %B %Y %R %Z, %f:"
       message-generate-new-buffers 'unique
       message-wash-forwarded-subjects t
       message-citation-line-function (lambda () (message-insert-formatted-citation-line nil nil (* 60 (timezone-zone-to-minute (current-time-zone))))) ; don't use the sender's timezone
@@ -1507,7 +1507,7 @@ Ignores CHAR at point."
       '(
 	("." "smtp.gmail.com" "antoine.levitt@gmail.com" 587 nil)
 	("antoine.levitt@universite-paris-saclay.fr" "smtps.universite-paris-saclay.fr" "antoine.levitt" 465 ssl)
-))
+	))
 (defun my-change-smtp ()
   (save-excursion
     (loop with from = (save-restriction
@@ -1516,15 +1516,15 @@ Ignores CHAR at point."
           for (addr server user port stream) in smtp-accounts
           when (string-match addr from)
           do (progn (setq smtpmail-smtp-user user
-			 smtpmail-smtp-server server
-			 smtpmail-smtp-service port
-			 smtpmail-stream-type stream
-			 )))))
+			  smtpmail-smtp-server server
+			  smtpmail-smtp-service port
+			  smtpmail-stream-type stream
+			  )))))
 (defadvice smtpmail-via-smtp
     (before change-smtp-by-message-from-field (recipient buffer &optional ask) activate)
   (with-current-buffer buffer (my-change-smtp)))
 
-; gmail saves copies automatically, but not the others
+;; gmail saves copies automatically, but not the others
 (setq mu4e-sent-messages-behavior
       (lambda ()
 	(if (string= (message-sendmail-envelope-from) "antoine.levitt@universite-paris-saclay.fr")
@@ -1539,7 +1539,7 @@ Ignores CHAR at point."
       (truncate-string-to-width val width 0 ?\s " ")
     val))
 
-; filter headers to remove the [Google Mail]
+;; filter headers to remove the [Google Mail]
 (setq mu4e~headers-field-handler-functions
       '(AL-filter-headers
         mu4e~headers-field-apply-basic-properties
@@ -1768,7 +1768,7 @@ buffers; lets remap its faces so it uses the ones for mu4e."
          dir)
     (mkdir attachdir t)
     (dolist (part parts)
-      (let ((fname (or 
+      (let ((fname (or
 		    (cdr (assoc 'filename (assoc "attachment" (cdr part))))
                     (seq-find #'stringp
                               (mapcar (lambda (item) (cdr (assoc 'name item)))
@@ -1819,9 +1819,9 @@ buffers; lets remap its faces so it uses the ones for mu4e."
       (progn
 	(save-buffer)
 	(julia-repl--send-string
-             (concat "include(\""
-                     (julia-repl--path-rewrite AL/last-sent-julia-buffer julia-repl-path-rewrite-rules)
-                     "\");")))
+         (concat "include(\""
+                 (julia-repl--path-rewrite AL/last-sent-julia-buffer julia-repl-path-rewrite-rules)
+                 "\");")))
     (AL/julia-repl-send-buffer)))
 
 (define-key julia-repl-mode-map (kbd "s-a") 'AL/julia-repl-send-last-command)
@@ -1902,7 +1902,7 @@ buffers; lets remap its faces so it uses the ones for mu4e."
                      (mu4e~view-quit-buffer)))
                  (when (get-buffer "*mu4e-headers*")
                    (with-current-buffer "*mu4e-headers*"
-                       (mu4e~headers-quit-buffer)))))
+                     (mu4e~headers-quit-buffer)))))
 
 
 ;; immediately quit empty header buffers
@@ -1952,14 +1952,14 @@ buffers; lets remap its faces so it uses the ones for mu4e."
 (defmacro def-pairs (pairs)
   `(progn
      ,@(loop for (key . val) in pairs
-          collect
-            `(defun ,(read (concat
-                            "wrap-with-"
-                            (prin1-to-string key)
-                            "s"))
-                 (&optional arg)
-               (interactive "p")
-               (sp-wrap-with-pair ,val)))))
+             collect
+             `(defun ,(read (concat
+                             "wrap-with-"
+                             (prin1-to-string key)
+                             "s"))
+                  (&optional arg)
+		(interactive "p")
+		(sp-wrap-with-pair ,val)))))
 
 (def-pairs ((paren . "(")
             (bracket . "[")
@@ -2166,7 +2166,7 @@ following commands are defined:
 			       ;; 	       (search-forward "POINT_HERE")
 			       ;; 	       (delete-char -10))
 			       ;; 	   (error nil)))
-))
+			       ))
 
 
 ;; (quelpa '(eaf :fetcher github
@@ -2208,3 +2208,10 @@ following commands are defined:
 (define-key vterm-copy-mode-map (kbd "s-t") 'vterm-copy-mode)
 (define-key vterm-copy-mode-map (kbd "C-c C-t") 'vterm-copy-mode)
 ;; (desktop-read)
+
+(define-key mu4e-compose-mode-map (kbd "s-e >")
+  (lambda ()
+    (interactive)
+    (mkdir "/tmp/mu4e/reply/")
+    (shell-command-to-string (concat "mu extract --overwrite --target-dir=/tmp/mu4e/reply/ -a \"" (cadr mu4e-compose-parent-message) "\""))
+    (dired "/tmp/mu4e/reply/")))
