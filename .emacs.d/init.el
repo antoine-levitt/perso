@@ -2212,6 +2212,9 @@ following commands are defined:
 (define-key mu4e-compose-mode-map (kbd "s-e >")
   (lambda ()
     (interactive)
-    (mkdir "/tmp/mu4e/reply/")
-    (shell-command-to-string (concat "mu extract --overwrite --target-dir=/tmp/mu4e/reply/ -a \"" (cadr mu4e-compose-parent-message) "\""))
-    (dired "/tmp/mu4e/reply/")))
+    (let ((path (concat "/tmp/mu4e/" (cleanse-subject (plist-get mu4e-compose-parent-message ':subject)))))
+      (mkdir path t)
+      (shell-command-to-string (concat "mu extract --overwrite --target-dir="
+				       path
+				       " -a \"" (plist-get mu4e-compose-parent-message ':path) "\""))
+      (dired path))))
