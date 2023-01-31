@@ -806,7 +806,7 @@ filling of the current paragraph."
  compilation-scroll-output 'first-error
  compilation-ask-about-save nil
  compilation-window-height 10
- compilation-auto-jump-to-first-error t
+ compilation-auto-jump-to-first-error nil
  compilation-disable-input t)
 
 (setq compilation-message-face nil
