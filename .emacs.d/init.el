@@ -24,7 +24,8 @@
  '(initial-scratch-message nil)
  '(menu-bar-mode nil)
  '(scroll-bar-mode nil)
- '(tool-bar-mode nil))
+ '(tool-bar-mode nil)
+ '(warning-suppress-log-types '((comp))))
 
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
