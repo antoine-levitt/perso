@@ -1805,7 +1805,7 @@ buffers; lets remap its faces so it uses the ones for mu4e."
 
 (require 'julia-repl)
 (setq julia-repl-executable-records
-      '((default "/home/antoine/julia/bin/julia")))
+      '((default "/home/antoine/.juliaup/bin/julia")))
 (setq julia-repl-switches "-t 6")
 (setq julia-repl-save-buffer-on-send t)
 
