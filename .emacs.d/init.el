@@ -628,7 +628,7 @@ filling of the current paragraph."
   (local-set-key (kbd "C-c f") (lambda () (interactive) (reftex-reference "f")))
   (local-set-key (kbd "C-c C-g") nil)
   (local-set-key (kbd "s-a") 'TeX-command-run-all)
-  (local-set-key (kbd "C-c C-a") (lambda ()(interactive) (let ((LaTeX-default-environment "align*")) (LaTeX-environment nil))))
+  (local-set-key (kbd "C-c C-a") (lambda ()(interactive) (let ((LaTeX-default-environment "align")) (LaTeX-environment nil))))
   (local-set-key (kbd "s-p") (lambda ()(interactive)
 			       (save-excursion
 				 (search-backward "(")
