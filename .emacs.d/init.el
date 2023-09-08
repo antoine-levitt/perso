@@ -575,6 +575,7 @@ some other pops up with display-buffer), go back to only one window open"
           '(("\\\\R\\>" . "ℝ"))
           '(("\\\\Z\\>" . "ℤ"))
           '(("\\\\N\\>" . "ℕ"))
+          '(("\\\\C\\>" . "ℂ"))
 	  ))
 
 (add-hook 'TeX-update-style-hook 'magic-latex-buffer)
