@@ -403,6 +403,9 @@ some other pops up with display-buffer), go back to only one window open"
 ;; omit
 (setq dired-omit-files
       (concat dired-omit-files "\\|^\\..+$"))
+(add-to-list 'dired-omit-extensions ".log")
+(add-to-list 'dired-omit-extensions ".out")
+(add-to-list 'dired-omit-extensions ".synctex.gz")
 ;;clean dired default view : omit hidden files, don't display groups, use human-readable sizes
 (setq dired-listing-switches "-alhGv"
       dired-free-space-args "-Pkm"
