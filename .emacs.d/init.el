@@ -75,6 +75,7 @@
 	ivy-prescient
 	expand-region
 	quelpa
+	sqlite3
 	))
 (mapc #'(lambda (package)
           (unless (package-installed-p package)
