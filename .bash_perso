@@ -88,7 +88,7 @@ alias make='make -j3'
 #installer plus vite
 alias install='sudo apt-get install'
 #maj complète pour les debian-like
-alias apt-up='sudo apt update && sudo apt dist-upgrade'
+alias apt-up='sudo apt update; sudo apt dist-upgrade'
 #lancer matlab avec fichier de startup
 alias matlab='matlab -r "run ~/.matlab/startup.m"'
 alias matlabnw='DISPLAY='' matlab'
