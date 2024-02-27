@@ -618,7 +618,7 @@ filling of the current paragraph."
 			(?> "ge" nil nil)
 			(?, "int" nil nil)
 			))
-
+(require 'auctex)
 (defun my-tex-config ()
   (iimage-mode 0)
   (auto-fill-mode 1)
@@ -2071,9 +2071,13 @@ following commands are defined:
   (if julia-math-mode
       (set (make-local-variable 'LaTeX-math-insert-function) 'julia-math-insert)))
 
+(defun in-latexp ()
+  (or (eq major-mode 'latex-mode)
+      (eq major-mode 'LaTeX-mode)))
+
 (define-globalized-minor-mode global-math-mode julia-math-mode
   (lambda ()
-    (unless (eq major-mode 'latex-mode)
+    (unless (in-latexp)
       (julia-math-mode))))
 (global-math-mode 1)
 
@@ -2083,12 +2087,12 @@ following commands are defined:
 (define-key isearch-mode-map (LaTeX-math-abbrev-prefix) LaTeX-math-keymap)
 
 (defun isearch-setup-latex-math ()
-  (if (eq (current-mm) 'latex-mode)
+  (if (in-latexp)
       (set (make-local-variable 'LaTeX-math-insert-function) (lambda (s) (isearch-process-search-string (concat "\\" s) (concat "\\" s))))
     (set (make-local-variable 'LaTeX-math-insert-function) (lambda (s) (isearch-process-search-string (gethash (concat "\\" s) julia-mode-latexsubs) (gethash (concat "\\" s) julia-mode-latexsubs))))))
 
 (defun isearch-unsetup-latex-math ()
-  (if (eq (current-mm) 'latex-mode)
+  (if (in-latexp)
       (set (make-local-variable 'LaTeX-math-insert-function) 'TeX-insert-macro)
     (set (make-local-variable 'LaTeX-math-insert-function) 'julia-math-insert)))
 
