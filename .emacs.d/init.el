@@ -76,6 +76,8 @@
 	expand-region
 	quelpa
 	sqlite3
+	visual-regexp
+	visual-regexp-steroids
 	))
 (mapc #'(lambda (package)
           (unless (package-installed-p package)
@@ -2236,3 +2238,7 @@ following commands are defined:
   (delete-region (point) (mark))
   (yank))
 (global-set-key (kbd "C-M-y") 'replace-region-by-yank)
+
+(require 'visual-regexp)
+(require 'visual-regexp-steroids)
+(global-set-key (kbd "C-M-%") 'vr/query-replace)
