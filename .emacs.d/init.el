@@ -2231,3 +2231,8 @@ following commands are defined:
 				       path
 				       " -a \"" (plist-get mu4e-compose-parent-message ':path) "\""))
       (dired path))))
+(defun replace-region-by-yank ()
+  (interactive)
+  (delete-region (point) (mark))
+  (yank))
+(global-set-key (kbd "C-M-y") 'replace-region-by-yank)
