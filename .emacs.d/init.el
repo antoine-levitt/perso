@@ -2246,6 +2246,7 @@ following commands are defined:
 (require 'spaceline)
 
 (set-face-attribute 'powerline-active2 nil :inherit 'powerline-inactive0 :foreground nil :background nil)
+(set-face-attribute 'spaceline-highlight-face nil :inherit 'font-lock-builtin-face :foreground nil :background nil)
 (spaceline-spacemacs-theme)
 (spaceline-compile
   ; left side
