@@ -62,7 +62,7 @@
         mu4e-alert
         pdf-tools
         iedit
-        smart-mode-line
+        ;; smart-mode-line
         avy
         markdown-mode
 	guess-language
@@ -78,6 +78,7 @@
 	sqlite3
 	visual-regexp
 	visual-regexp-steroids
+	spaceline
 	))
 (mapc #'(lambda (package)
           (unless (package-installed-p package)
@@ -2242,3 +2243,55 @@ following commands are defined:
 (require 'visual-regexp)
 (require 'visual-regexp-steroids)
 (global-set-key (kbd "C-M-%") 'vr/query-replace)
+
+
+;; (setq sml/theme 'respectful)
+;; (setq sml/name-width 80)
+;; (setq sml/mode-width 30)
+;; (setq sml/line-number-format "%4l")
+;; (sml/setup)
+
+(require 'spaceline-config)
+(require 'spaceline)
+
+(spaceline-spacemacs-theme)
+(spaceline-compile
+  ; left side
+  '(
+    persp-name
+    (mu4e-alert-segment)
+    ;; (mu4e-alert-segment :when active)
+    (anzu :priority 95)
+    auto-compile
+    ((buffer-modified buffer-id remote-host)
+     :priority 98)
+    (process :when active)
+    ((flycheck-error flycheck-warning flycheck-info)
+     :when active
+     :priority 89)
+    (erc-track :when active)
+    (org-pomodoro :when active)
+    (org-clock :when active)
+    nyan-cat)
+  ; right side
+  '(      (minor-modes :when active
+                       :priority 9)
+  (major-mode :priority 79)
+which-function
+    (version-control :when active
+                     :priority 78)
+    (python-pyvenv :fallback python-pyenv)
+    (purpose :priority 94)
+    (battery :when active)
+    ;; (selection-info :priority 95)
+    input-method
+    ;; ((buffer-encoding-abbrev
+    ;;   point-position
+    ;;   line-column)
+    ;;  :separator " | "
+    ;;  :priority 96)
+    (global :when active)
+    ;; (buffer-position :priority 99)
+    (hud :priority 99)
+)
+)
