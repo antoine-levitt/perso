@@ -1801,15 +1801,6 @@ buffers; lets remap its faces so it uses the ones for mu4e."
 
 (require 'iedit)
 
-(setq sml/theme 'respectful)
-(setq sml/name-width 80)
-(setq sml/line-number-format "%4l")
-(sml/setup)
-
-
-
-
-
 (add-hook 'reftex-select-label-mode-hook 'reftex-reparse-document)
 
 (require 'julia-repl)
@@ -2278,8 +2269,8 @@ following commands are defined:
                        :priority 9)
   (major-mode :priority 79)
 which-function
-    (version-control :when active
-                     :priority 78)
+    ;; (version-control :when active
+    ;;                  :priority 78)
     (python-pyvenv :fallback python-pyenv)
     (purpose :priority 94)
     (battery :when active)
@@ -2293,5 +2284,5 @@ which-function
     (global :when active)
     ;; (buffer-position :priority 99)
     (hud :priority 99)
-)
-)
+))
+(setq spaceline-always-show-segments t)
