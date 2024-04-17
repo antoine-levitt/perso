@@ -2278,6 +2278,7 @@ which-function
     (battery :when active)
     ;; (selection-info :priority 95)
     input-method
+    line
     ;; ((buffer-encoding-abbrev
     ;;   point-position
     ;;   line-column)
