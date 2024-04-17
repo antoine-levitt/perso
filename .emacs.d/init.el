@@ -2267,10 +2267,12 @@ following commands are defined:
     (org-clock :when active)
     nyan-cat)
   ; right side
-  '(      (minor-modes :when active
+  '(
+    line
+      (minor-modes :when active
                        :priority 9)
   (major-mode :priority 79)
-which-function
+  which-function
     ;; (version-control :when active
     ;;                  :priority 78)
     (python-pyvenv :fallback python-pyenv)
@@ -2278,7 +2280,6 @@ which-function
     (battery :when active)
     ;; (selection-info :priority 95)
     input-method
-    line
     ;; ((buffer-encoding-abbrev
     ;;   point-position
     ;;   line-column)
