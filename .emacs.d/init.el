@@ -2247,15 +2247,25 @@ following commands are defined:
 (set-face-attribute 'powerline-active2 nil :inherit 'powerline-inactive0 :foreground nil :background nil)
 (set-face-attribute 'spaceline-highlight-face nil :inherit 'font-lock-builtin-face :foreground nil :background nil)
 (spaceline-spacemacs-theme)
+(spaceline-define-segment line-formatted
+  ""
+  ;; (format "%l")
+  (format-mode-line "%4l")
+ )
+
 (spaceline-compile
   ; left side
   '(
     persp-name
-    (mu4e-alert-segment)
     ;; (mu4e-alert-segment :when active)
     (anzu :priority 95)
     auto-compile
-    ((buffer-modified buffer-id remote-host)
+    (    (mu4e-alert-segment)
+line-formatted buffer-modified)
+    ((
+;; line-formatted
+;; buffer-modified
+ buffer-id remote-host)
      :priority 98)
     (process :when active)
     ((flycheck-error flycheck-warning flycheck-info)
@@ -2267,7 +2277,7 @@ following commands are defined:
     nyan-cat)
   ; right side
   '(
-    line
+    ;; line
       (minor-modes :when active
                        :priority 9)
   (major-mode :priority 79)
