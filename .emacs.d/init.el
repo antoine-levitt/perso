@@ -754,14 +754,13 @@ filling of the current paragraph."
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Org
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(require 'org-install)
+(require 'org)
 ;; (add-hook 'org-mode-hook 'auto-fill-mode)
 (add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
 (setq org-startup-indented t)
 (global-set-key "\C-cl" 'org-store-link)
 
 ;;bindings
-(require 'org)
 (define-key org-mode-map (kbd "C-c C-r") 'org-refile)
 (define-key org-mode-map (kbd "<C-tab>") nil)
 (define-key org-mode-map (kbd "M-j") 'org-meta-return)
