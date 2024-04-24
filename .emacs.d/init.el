@@ -2249,9 +2249,13 @@ following commands are defined:
 (spaceline-spacemacs-theme)
 (spaceline-define-segment line-formatted
   ""
-  ;; (format "%l")
-  (format-mode-line "%4l")
- )
+  (if (eq major-mode 'pdf-view-mode)
+      (format "%d/%d"
+              ;; `pdf-view-current-page' is a macro in an optional dependency
+              ;; any better solutions?
+              (eval `(pdf-view-current-page))
+              (pdf-cache-number-of-pages))
+    (format-mode-line "%4l")))
 
 (spaceline-compile
   ; left side
