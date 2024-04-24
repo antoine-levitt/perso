@@ -62,7 +62,6 @@
         mu4e-alert
         pdf-tools
         iedit
-        ;; smart-mode-line
         avy
         markdown-mode
 	guess-language
@@ -79,6 +78,7 @@
 	visual-regexp
 	visual-regexp-steroids
 	spaceline
+        smart-mode-line
 	))
 (mapc #'(lambda (package)
           (unless (package-installed-p package)
