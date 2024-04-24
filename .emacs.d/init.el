@@ -2235,18 +2235,13 @@ following commands are defined:
 (global-set-key (kbd "C-M-%") 'vr/query-replace)
 
 
-;; (setq sml/theme 'respectful)
-;; (setq sml/name-width 80)
-;; (setq sml/mode-width 30)
-;; (setq sml/line-number-format "%4l")
-;; (sml/setup)
-
 (require 'spaceline-config)
 (require 'spaceline)
 
 (set-face-attribute 'powerline-active2 nil :inherit 'powerline-inactive0 :foreground nil :background nil)
 (set-face-attribute 'spaceline-highlight-face nil :inherit 'font-lock-builtin-face :foreground nil :background nil)
 (spaceline-spacemacs-theme)
+
 (spaceline-define-segment line-formatted
   ""
   (if (eq major-mode 'pdf-view-mode)
@@ -2257,6 +2252,14 @@ following commands are defined:
               (pdf-cache-number-of-pages))
     (format-mode-line "%4l")))
 
+(require 'smart-mode-line)
+(setq sml/theme 'respectful)
+(setq sml/name-width 100)
+(sml/setup)
+(spaceline-define-segment sml-title
+  ""
+  (sml/generate-buffer-identification))
+
 (spaceline-compile
   ; left side
   '(
@@ -2266,11 +2269,8 @@ following commands are defined:
     auto-compile
     (    (mu4e-alert-segment)
 line-formatted buffer-modified)
-    ((
-;; line-formatted
-;; buffer-modified
- buffer-id remote-host)
-     :priority 98)
+    remote-host
+    sml-title
     (process :when active)
     ((flycheck-error flycheck-warning flycheck-info)
      :when active
