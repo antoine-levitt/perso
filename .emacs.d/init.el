@@ -1914,6 +1914,23 @@ buffers; lets remap its faces so it uses the ones for mu4e."
 					 (when (eobp)
 					   (mu4e~headers-quit-buffer))))))
 
+; prompt for kill for everything but mu4e processes
+(remove-hook 'kill-buffer-query-functions #'process-kill-buffer-query-function)
+(defun my-process-kill-buffer-query-function ()
+  (if (string= (buffer-name) " *mu4e-update*")
+      t ; always kill
+    (process-kill-buffer-query-function) ; prompt
+    ))
+(add-hook 'kill-buffer-query-functions #'my-process-kill-buffer-query-function)
+; when s-e U ing and there is a running process, overwrite it
+(global-set-key (kbd "s-e U")
+		(lambda ()
+		  (interactive)
+		  (when (mu4e-kill-update-mail)
+		    (sleep-for 0.1))
+		  (mu4e-update-mail-and-index nil)))
+
+
 ;; For the layout now called (apparently) "French French (legacy, alt.)", aka latin9 for setxkbmap
 (setq AL/algr-keys   "å€þý¶ÂøÊ±æðÛÎÔ¹«»©®ß¬")
 (setq AL/normal-keys "aetypqsdfghjklmwxcvbn")
