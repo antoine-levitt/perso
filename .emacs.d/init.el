@@ -1927,7 +1927,7 @@ buffers; lets remap its faces so it uses the ones for mu4e."
 		(lambda ()
 		  (interactive)
 		  (when (mu4e-kill-update-mail)
-		    (sleep-for 0.1))
+		    (sit-for 0.1))
 		  (mu4e-update-mail-and-index nil)))
 
 
