@@ -1460,8 +1460,6 @@ Ignores CHAR at point."
     ))
 
 
-;; Until I can be bothered to use the new gnus viewer
-(setq mu4e-view-use-old t)
 ;; mu4e
 (setq
  mu4e-maildir       "~/.emacs.d/mbsync"   ;; top-level Maildir
@@ -1475,14 +1473,16 @@ Ignores CHAR at point."
       mu4e-update-interval 40
       mu4e-view-show-images t
       mu4e-view-image-max-width 800
-      mu4e-sent-messages-behavior 'delete
       mu4e-hide-index-messages t
       mu4e-completing-read-function 'ivy-completing-read
       mu4e-compose-complete-only-personal nil
-      mu4e-headers-fields '((:human-date . 6)
+      mu4e-headers-fields '(
+			    (:flags . 4)
+			    (:human-date . 6)
                             ;; (:maildir . 10)
                             (:from-or-to . 22)
-                            (:subject . 100))
+                            (:subject . 100)
+)
       mu4e-headers-time-format "%R"
       mu4e-headers-date-format "%d/%m"
       mu4e-headers-auto-update nil
@@ -2320,3 +2320,8 @@ line-formatted buffer-modified)
     (hud :priority 99)
 ))
 (setq spaceline-always-show-segments t)
+
+
+(defvar mu4e-headers-list-mark      '("" . "") "Mailing list.")
+(defvar mu4e-headers-personal-mark  '("p" . "👨") "Personal.")
+
