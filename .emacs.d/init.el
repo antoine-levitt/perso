@@ -1071,20 +1071,23 @@ Ignores CHAR at point."
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;quickly switch buffers
 (defun switch-to-nth-buffer (n)
-  "Switches to nth most recent buffer. Ignores a bunch of stuff."
-  (catch 'tag
-    (mapcar (lambda (b)
-	      (unless
-		  (or
-		   (minibufferp b)
-		   (string-match "^ " (buffer-name b))
-		   (equal b (current-buffer)))
-		(if (= n 1)
-		    (progn
-		      (switch-to-buffer b)
-		      (throw 'tag nil))
-		  (setq n (- n 1)))))
-	    (buffer-list))))
+  (let ((done nil)
+	(buflist (buffer-list)))
+    (while (and (> n 0)
+		buflist)
+      (unless (or
+	       (minibufferp (car buflist))
+	       (string-match "^ " (buffer-name (car buflist)))
+	       (equal (car buflist) (current-buffer)))
+	; if buffer eligible for switching
+	(setq n (- n 1))
+	(when (= n 0)
+	  ; this huge hack is there because sometimes (eg when latex compiles a document)
+	  ; the current buffer is not in the buffer list
+	  (switch-to-buffer (current-buffer))
+	  (switch-to-buffer (car buflist))
+	  (setq done t)))
+      (setq buflist (cdr buflist)))))
 
 (defun switch-to-most-recent-buffer ()
   (interactive)
