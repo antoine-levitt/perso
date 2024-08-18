@@ -1679,17 +1679,17 @@ ALL-MAILS are the all the unread emails"
 
 (define-key mu4e-main-mode-map (kbd "c") 'mu4e-compose-new)
 (define-key mu4e-main-mode-map (kbd "r") (lambda () (interactive) (mu4e-headers-search "flag:unread AND (maildir:/INBOX OR maildir:/InriaBox/INBOX OR maildir:/OrsayBox/INBOX)" nil nil t nil nil)))
-(define-key mu4e-main-mode-map (kbd "i") (lambda () (interactive) (mu4e-headers-search "(maildir:/INBOX OR maildir:/InriaBox/INBOX OR maildir:/OrsayBox/INBOX)" nil nil t)))
+(define-key mu4e-main-mode-map (kbd "i") (lambda () (interactive) (mu4e-headers-search "(maildir:/INBOX OR maildir:/InriaBox/INBOX OR maildir:/OrsayBox/INBOX)" nil nil t nil nil)))
 (define-key mu4e-main-mode-map (kbd "g") (lambda () (interactive) (mu4e-headers-search "flag:unread" nil nil t nil nil)))
-(define-key mu4e-main-mode-map (kbd "d") (lambda () (interactive) (mu4e-headers-search "m:/\"[Google Mail]/.Drafts\"" nil nil t nil t)))
-(define-key mu4e-main-mode-map (kbd "s") (lambda () (interactive) (mu4e-headers-search "m:/\"[Google Mail]/.Sent Mail\" OR m:/InriaBox/Sent OR m:/OrsayBox/Sent" nil nil t)))
+(define-key mu4e-main-mode-map (kbd "d") (lambda () (interactive) (mu4e-headers-search "m:/\"[Google Mail]/.Drafts\"" nil nil t nil nil)))
+(define-key mu4e-main-mode-map (kbd "s") (lambda () (interactive) (mu4e-headers-search "m:/\"[Google Mail]/.Sent Mail\" OR m:/InriaBox/Sent OR m:/OrsayBox/Sent" nil nil t nil nil)))
 (define-key mu4e-main-mode-map (kbd "q") (lambda () (interactive) (mu4e-headers-search)))
-(define-key mu4e-main-mode-map (kbd "a") (lambda () (interactive) (mu4e-headers-search "" nil nil t)))
-(global-set-key (kbd "s-e") mu4e-main-mode-map)
+(define-key mu4e-main-mode-map (kbd "a") (lambda () (interactive) (mu4e-headers-search "" nil nil t nil nil)))
 
-(global-set-key (kbd "s-r") (lambda () (interactive) (when (> AL-mail-count 0) (mu4e-headers-search "flag:unread AND (maildir:/INBOX OR maildir:/InriaBox/INBOX OR maildir:/OrsayBox/INBOX)" nil nil t nil nil)))) ; last t: open first message
-(global-set-key (kbd "s-g") (lambda () (interactive) (mu4e-headers-search "flag:unread" nil nil t nil t))) ; last t: open first message
-(global-set-key (kbd "s-g") (lambda () (interactive) (mu4e-headers-search "flag:unread" nil nil t nil nil))) ; last t: open first message
+(global-set-key (kbd "s-e") mu4e-main-mode-map)
+(global-set-key (kbd "s-r") (kbd "s-e r"))
+;; last t: open first message
+(global-set-key (kbd "s-g") (kbd "s-e g"))
 (global-set-key (kbd "s-v") (lambda () (interactive) (mu4e-headers-search "flag:unread AND NOT (maildir:/INBOX OR maildir:/InriaBox/INBOX OR maildir:/OrsayBox/INBOX)" nil nil t nil nil)))
 (defun mu4e--main-view (&optional refresh) nil) ;; too extreme? Bof.
 (global-set-key (kbd "C-x m") 'mu4e-compose-new)
@@ -2258,8 +2258,8 @@ following commands are defined:
 (require 'spaceline-config)
 (require 'spaceline)
 
-(set-face-attribute 'powerline-active2 nil :inherit 'powerline-inactive0 :foreground nil :background nil)
-(set-face-attribute 'spaceline-highlight-face nil :inherit 'font-lock-builtin-face :foreground nil :background nil)
+(set-face-attribute 'powerline-active2 nil :inherit 'powerline-inactive0 :foreground 'unspecified :background 'unspecified)
+(set-face-attribute 'spaceline-highlight-face nil :inherit 'font-lock-builtin-face :foreground 'unspecified :background 'unspecified)
 (spaceline-spacemacs-theme)
 
 (spaceline-define-segment line-formatted
