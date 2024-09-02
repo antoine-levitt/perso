@@ -1464,6 +1464,7 @@ Ignores CHAR at point."
 
 
 ;; mu4e
+(setq mu4e-modeline-support nil) ;; TODO should remove mu4e alert and use this instead
 (setq
  mu4e-maildir       "~/.emacs.d/mbsync"   ;; top-level Maildir
  mu4e-sent-folder   "/[Google Mail]/.Sent Mail"       ;; folder for sent messages
@@ -1623,49 +1624,7 @@ ALL-MAILS are the all the unread emails"
             " "
             )))
 
-
-;;;; The default behavior is to mark and then go to the next message, which I don't like.
-(defmacro mu4e~headers-defun-mark-for (mark)
-  "Define a function mu4e~headers-mark-MARK."
-  (let ((funcname (intern (format "mu4e-headers-mark-for-%s" mark)))
-	(docstring (format "Mark header at point with %s." mark)))
-    `(progn
-       (defun ,funcname () ,docstring
-              (interactive)
-              (mu4e-mark-set ',mark))
-       (put ',funcname 'definition-name ',mark))))
-(mu4e~headers-defun-mark-for refile)
-(mu4e~headers-defun-mark-for something)
-(mu4e~headers-defun-mark-for delete)
-(mu4e~headers-defun-mark-for flag)
-(mu4e~headers-defun-mark-for move)
-(mu4e~headers-defun-mark-for read)
-(mu4e~headers-defun-mark-for trash)
-(mu4e~headers-defun-mark-for unflag)
-(mu4e~headers-defun-mark-for untrash)
-(mu4e~headers-defun-mark-for unmark)
-(mu4e~headers-defun-mark-for unread)
-(mu4e~headers-defun-mark-for action)
-(defmacro mu4e~view-defun-mark-for (mark)
-  "Define a function mu4e-view-mark-for-MARK."
-  (let ((funcname (intern (format "mu4e-view-mark-for-%s" mark)))
-	(docstring (format "Mark the current message for %s." mark)))
-    `(progn
-       (defun ,funcname () ,docstring
-              (interactive)
-              (mu4e~view-in-headers-context
-               (mu4e-mark-set ',mark)))
-       (put ',funcname 'definition-name ',mark))))
-(mu4e~view-defun-mark-for move)
-(mu4e~view-defun-mark-for trash)
-(mu4e~view-defun-mark-for refile)
-(mu4e~view-defun-mark-for delete)
-(mu4e~view-defun-mark-for flag)
-(mu4e~view-defun-mark-for unflag)
-(mu4e~view-defun-mark-for unmark)
-(mu4e~view-defun-mark-for something)
-(mu4e~view-defun-mark-for read)
-(mu4e~view-defun-mark-for unread)
+(setq mu4e-headers-advance-after-mark nil)
 
 (define-key mu4e-main-mode-map (kbd "q") 'bury-buffer) ;never quit
 (define-key mu4e-headers-mode-map (kbd "SPC") 'mu4e-headers-view-message)
