@@ -2292,7 +2292,8 @@ line-formatted buffer-modified)
 
 (defvar mu4e-headers-list-mark      '("" . "") "Mailing list.")
 (defvar mu4e-headers-personal-mark  '("p" . "👨") "Personal.")
-(setq shr-color-visible-luminance-min 80)
+(setq shr-use-colors nil)
+;; (setq shr-color-visible-luminance-min 70)
 (setq shr-use-fonts nil)
 ;;; TODO HACK HERE, find a way to do it that is not so tied to mu version
 (defun mu4e-view (msg)
