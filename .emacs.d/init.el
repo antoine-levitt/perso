@@ -1510,7 +1510,10 @@ Ignores CHAR at point."
       message-send-mail-function 'message-smtpmail-send-it ; can also do it async if needed, with smtpmail-async
       starttls-use-gnutls t
       starttls-gnutls-program "gnutls-cli"
+      message-dont-reply-to-names 'mu4e-personal-or-alternative-address-p
       )
+
+(setq mu4e-compose-post-hook nil) ;; I don't want it to restore the window configuration
 
 ;; Special dance to make it use different SMTP servers according to sender
 (require 'cl)
@@ -1565,6 +1568,7 @@ Ignores CHAR at point."
     val))
 
 (add-to-list 'mu4e-compose-hidden-headers "^In-Reply-To:")
+(add-to-list 'mu4e-compose-hidden-headers "^Message-ID:")
 (add-to-list 'mu4e-compose-hidden-headers "^MIME-Version:")
 (add-to-list 'mu4e-compose-hidden-headers "^Received:")
 (add-to-list 'mu4e-compose-hidden-headers "^X-TUID:")
@@ -1633,8 +1637,10 @@ ALL-MAILS are the all the unread emails"
 (define-key mu4e-headers-mode-map (kbd "i") 'mu4e-headers-mark-for-unread)
 (define-key mu4e-view-mode-map (kbd "i") 'mu4e-view-mark-for-unread)
 
-(define-key mu4e-view-mode-map (kbd "r") 'mu4e-compose-reply)
-(define-key mu4e-view-mode-map (kbd "f") 'mu4e-compose-forward)
+(define-key mu4e-headers-mode-map (kbd "r") 'mu4e-compose-reply)
+(define-key mu4e-headers-mode-map (kbd "R") 'mu4e-compose-wide-reply)
+(define-key mu4e-compose-minor-mode-map (kbd "R") 'mu4e-compose-wide-reply)
+(define-key mu4e-compose-minor-mode-map (kbd "f") 'mu4e-compose-forward)
 
 (define-key mu4e-main-mode-map (kbd "c") 'mu4e-compose-new)
 (define-key mu4e-main-mode-map (kbd "r") (lambda () (interactive) (mu4e-headers-search "flag:unread AND (maildir:/INBOX OR maildir:/InriaBox/INBOX OR maildir:/OrsayBox/INBOX)" nil nil t nil nil)))
@@ -1716,48 +1722,48 @@ buffers; lets remap its faces so it uses the ones for mu4e."
 ;; modified to also open dired and overwrite the files instead of renaming them
 ;; when called multiple times
 (defvar bulk-saved-attachments-dir "/tmp/mu4e")
-
+(setq mu4e-attachment-dir "/tmp/mu4e")
 (define-key mu4e-view-mode-map ">" 'mu4e-view-save-all-attachments)
+
 (defun cleanse-subject (sub)
   (replace-regexp-in-string
    "[^A-Z0-9]+"
    "-"
    (downcase sub)))
+(defun mu4e-view-save-all-attachments (&optional ask-dir)
+  "Save files from the current view buffer.
+This applies to all MIME-parts that are \"attachment-like\" (have a filename),
+regardless of their disposition.
 
-(defun mu4e-view-save-all-attachments (&optional arg)
-  "Save all MIME parts from current mu4e gnus view buffer."
-  ;; Copied from mu4e-view-save-attachments
+With ASK-DIR is non-nil, user can specify the target-directory; otherwise
+one is determined using `mu4e-attachment-dir'."
   (interactive "P")
-  (cl-assert (and (eq major-mode 'mu4e-view-mode)
-                  (derived-mode-p 'gnus-article-mode)))
-  (let* ((msg (mu4e-message-at-point))
-         (id (cleanse-subject (mu4e-message-field msg :subject)))
+  (let* ((parts (mu4e-view-mime-parts))
+         (id (cleanse-subject (mu4e-message-field (mu4e-message-at-point) :subject)))
          (attachdir (concat bulk-saved-attachments-dir "/" id))
-	 (parts (mu4e~view-gather-mime-parts))
-         (handles '())
-         (files '())
-         dir)
-    (mkdir attachdir t)
-    (dolist (part parts)
-      (let ((fname (or
-		    (cdr (assoc 'filename (assoc "attachment" (cdr part))))
-                    (seq-find #'stringp
-                              (mapcar (lambda (item) (cdr (assoc 'name item)))
-                                      (seq-filter 'listp (cdr part)))))))
-        (when fname
-          (push `(,fname . ,(cdr part)) handles)
-          (push fname files))))
-    (if files
-        (progn
-          (setq dir
-		(if arg (read-directory-name "Save to directory: ")
-		  attachdir))
-          (cl-loop for (f . h) in handles
-                   when (member f files)
-                   do (mm-save-part-to-file h
-					    (expand-file-name f dir)))
-	  (dired dir))
-      (mu4e-message "No attached files found"))))
+         (candidates  (seq-map
+                         (lambda (fpart)
+                           (cons ;; (filename . annotation)
+                            (plist-get fpart :filename)
+                            fpart))
+                         (seq-filter
+                          (lambda (part) (plist-get part :attachment-like))
+                          parts)))
+         (candidates (or candidates
+                         (mu4e-warn "No attachments for this message")))
+         (files (seq-map (lambda (c) (car c)) candidates)) ;; CHANGED
+         )
+    (pp candidates)
+    ;; we have determined what files to save, and where.
+    (seq-do (lambda (fname)
+              (let* ((part (cdr (assoc fname candidates)))
+                     (path (mu4e--uniqify-file-name
+                            (mu4e-join-paths
+                             attachdir
+                             (plist-get part :filename)))))
+                (mm-save-part-to-file (plist-get part :handle) path)))
+            files)
+    (dired attachdir)))
 
 
 (require 'iedit)
@@ -2077,7 +2083,7 @@ following commands are defined:
   (setq ispell-dictionary (cadr (assq (guess-language-buffer) guess-language-langcodes)))
   (message ispell-dictionary))
 
-(add-hook 'message-mode-hook (lambda () (setq message-signature 'my-signature)))
+(add-hook 'message-mode-hook (lambda () (setq message-signature nil)))
 (define-key message-mode-map (kbd "C-c C-z")  'my-insert-signature)
 (define-key message-mode-map (kbd "C-c C-w")  'my-insert-signature)
 (defun my-insert-signature ()
@@ -2286,4 +2292,73 @@ line-formatted buffer-modified)
 
 (defvar mu4e-headers-list-mark      '("" . "") "Mailing list.")
 (defvar mu4e-headers-personal-mark  '("p" . "👨") "Personal.")
+(setq shr-color-visible-luminance-min 80)
+(setq shr-use-fonts nil)
+;;; TODO HACK HERE, find a way to do it that is not so tied to mu version
+(defun mu4e-view (msg)
+  "Display the message MSG in a new buffer, and keep in sync with HDRSBUF.
+\"In sync\" here means that moving to the next/previous message
+in the the message view affects HDRSBUF, as does marking etc.
 
+As a side-effect, a message that is being viewed loses its
+`unread' marking if it still had that."
+  ;; update headers, if necessary.
+  (mu4e~headers-update-handler msg nil nil)
+  ;; Create a new view buffer (if needed) as it is not
+  ;; feasible to recycle an existing buffer due to buffer-specific
+  ;; state (buttons, etc.) that can interfere with message rendering
+  ;; in gnus.
+  ;;
+  ;; Unfortunately that does create its own issues: namely ensuring
+  ;; buffer-local state that *must* survive is correctly copied
+  ;; across.
+  (let ((linked-headers-buffer))
+    (when-let ((existing-buffer (mu4e-get-view-buffer nil nil)))
+      ;; required; this state must carry over from the killed buffer
+      ;; to the new one.
+      (setq linked-headers-buffer mu4e-linked-headers-buffer)
+      (if (memq mu4e-split-view '(horizontal vertical))
+          (delete-windows-on existing-buffer t))
+      (kill-buffer existing-buffer))
+    (setq gnus-article-buffer (mu4e-get-view-buffer nil t))
+    (with-current-buffer gnus-article-buffer
+      (when linked-headers-buffer
+        (setq mu4e-linked-headers-buffer linked-headers-buffer))
+      (let ((inhibit-read-only t)
+            (gnus-unbuttonized-mime-types '(".*/.*"))
+            (gnus-buttonized-mime-types
+             (append (list "multipart/signed" "multipart/encrypted")
+                     gnus-buttonized-mime-types))
+            ;; (gnus-inhibit-mime-unbuttonizing t) ;;;HACK
+	    )
+        (remove-overlays (point-min)(point-max) 'mu4e-overlay t)
+        (erase-buffer)
+        (insert-file-contents-literally
+         (mu4e-message-readable-path msg) nil nil nil t)
+        ;; some messages have ^M which causes various rendering
+        ;; problems later (#2260, #2508), so let's remove those
+        (article-remove-cr)
+        (setq-local mu4e--view-message msg)
+        (mu4e--view-render-buffer msg))
+      (mu4e-loading-mode 0)))
+  (unless (mu4e--view-detached-p gnus-article-buffer)
+    (with-current-buffer mu4e-linked-headers-buffer
+      ;; We need this here as we want to avoid displaying the buffer until
+      ;; the last possible moment --- after the message is rendered in the
+      ;; view buffer.
+      ;;
+      ;; Otherwise, `mu4e-display-buffer' may adjust the view buffer's
+      ;; window height based on a buffer that has no text in it yet!
+      (setq-local mu4e~headers-view-win
+                  (mu4e-display-buffer gnus-article-buffer nil))
+      (unless (window-live-p mu4e~headers-view-win)
+        (mu4e-error "Cannot get a message view"))
+      (select-window mu4e~headers-view-win)))
+  (with-current-buffer gnus-article-buffer
+    (let ((inhibit-read-only t))
+      (run-hooks 'mu4e-view-rendered-hook))
+    ;; support bookmarks.
+    (setq-local bookmark-make-record-function
+                #'mu4e--make-bookmark-record)
+    ;; only needed on some setups; #2683
+    (goto-char (point-min))))
