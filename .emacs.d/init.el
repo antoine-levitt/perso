@@ -1481,7 +1481,7 @@ Ignores CHAR at point."
       mu4e-completing-read-function 'ivy-completing-read
       mu4e-compose-complete-only-personal nil
       mu4e-headers-fields '(
-			    (:flags . 4)
+			    (:flags . 2)
 			    (:human-date . 6)
                             ;; (:maildir . 10)
                             (:from-or-to . 22)
@@ -1574,7 +1574,7 @@ Ignores CHAR at point."
 (add-to-list 'mu4e-compose-hidden-headers "^X-TUID:")
 (setq mu4e-view-fields '(:subject :from :to :cc  :date :attachments))
 (setq mu4e-view-fields '(:from :to :cc :subject :date :mailing-list :user-agent :attachments))
-(setq gnus-visible-headers "^Newsgroups:\\|^Subject:\\|^From:\\|^Date:\\|^Followup-To:\\|^Organization:\\|^Summary:\\|^Keywords:\\|^To:\\|^[BGF]?Cc:\\|^Posted-To:\\|^Mail-Copies-To:\\|^Mail-Followup-To:\\|^Apparently-To:\\|^Gnus-Warning:\\|^Resent-From:")
+(setq gnus-visible-headers "^Newsgroups:\\|^Subject:\\|^From:\\|^Date:\\|^Followup-To:\\|^Organization:\\|^Summary:\\|^Keywords:\\|^To:\\|^[BG]?Cc:\\|^Posted-To:\\|^Mail-Copies-To:\\|^Mail-Followup-To:\\|^Apparently-To:\\|^Gnus-Warning:\\|^Resent-From:")
 (add-to-list 'mu4e-view-actions '("View in browser" . mu4e-action-view-in-browser) t)
 
 (require 'mu4e-alert)
@@ -1637,9 +1637,10 @@ ALL-MAILS are the all the unread emails"
 (define-key mu4e-headers-mode-map (kbd "i") 'mu4e-headers-mark-for-unread)
 (define-key mu4e-view-mode-map (kbd "i") 'mu4e-view-mark-for-unread)
 
-(define-key mu4e-headers-mode-map (kbd "r") 'mu4e-compose-reply)
-(define-key mu4e-headers-mode-map (kbd "R") 'mu4e-compose-wide-reply)
-(define-key mu4e-compose-minor-mode-map (kbd "R") 'mu4e-compose-wide-reply)
+(define-key mu4e-headers-mode-map (kbd "r") 'mu4e-compose-wide-reply)
+(define-key mu4e-headers-mode-map (kbd "R") 'mu4e-compose-reply)
+(define-key mu4e-compose-minor-mode-map (kbd "r") 'mu4e-compose-wide-reply)
+(define-key mu4e-compose-minor-mode-map (kbd "R") 'mu4e-compose-reply)
 (define-key mu4e-compose-minor-mode-map (kbd "f") 'mu4e-compose-forward)
 
 (define-key mu4e-main-mode-map (kbd "c") 'mu4e-compose-new)
@@ -1661,29 +1662,42 @@ ALL-MAILS are the all the unread emails"
 (define-key mu4e-compose-mode-map (kbd "M-q") nil)
 (define-key mu4e-compose-mode-map (kbd "M-n") nil)
 
-;; redefine Subject header face
-(defun mu4e~compose-remap-faces ()
-  "Our parent `message-mode' uses font-locking for the compose
+;; redefine all faces in a pretty hacky way
+(defun mu4e--compose-remap-faces ()
+  "Remap `message-mode' faces to mu4e ones.
+
+Our parent `message-mode' uses font-locking for the compose
 buffers; lets remap its faces so it uses the ones for mu4e."
   ;; normal headers
-  (face-remap-add-relative 'message-header-name
-                           '((:inherit mu4e-header-key-face)))
-  (face-remap-add-relative 'message-header-other
-                           '((:inherit mu4e-header-value-face)))
+  (face-remap-add-relative 'message-header-name  'gnus-header-name)
+  (face-remap-add-relative 'message-header-other 'font-lock-comment-delimiter-face)
   ;; special headers
-  (face-remap-add-relative 'message-header-from
-                           '((:inherit mu4e-contact-face)))
-  (face-remap-add-relative 'message-header-to
-                           '((:inherit mu4e-contact-face)))
-  (face-remap-add-relative 'message-header-cc
-                           '((:inherit mu4e-contact-face)))
-  (face-remap-add-relative 'message-header-bcc
-                           '((:inherit mu4e-contact-face)))
-  (face-remap-add-relative 'message-header-subject
-                           '((:inherit font-lock-string-face)))
-  ;; citation
-  (face-remap-add-relative 'message-cited-text
-                           '((:inherit mu4e-cited-1-face))))
+  (face-remap-add-relative 'message-header-from 'font-lock-comment-delimiter-face)
+  (face-remap-add-relative 'message-header-cc   'font-lock-comment-delimiter-face)
+  (face-remap-add-relative 'message-header-bcc  'font-lock-comment-delimiter-face)
+)
+
+(set-face-attribute 'message-header-subject nil :foreground 'unspecified :inherit 'mu4e-context-face :weight 'bold)
+(set-face-attribute 'message-header-to nil :foreground 'unspecified :inherit 'myface :weight 'bold)
+
+(defface myface
+  '((((class color)
+      (background dark))
+     :foreground "#ff9800" :bold t)
+    (((class color)
+      (background light))
+     :foreground "#ff9800")
+    (t
+     :bold t))
+  "Face used for displaying Cc headers."
+  :group 'message-faces)
+
+(setq gnus-header-face-alist '(("From" nil myface)
+			       ("Subject" nil mu4e-context-face)
+			       ("Newsgroups:.*," nil gnus-header-newsgroups)
+			       ("To" nil font-lock-comment-delimiter-face)
+			       ("Cc" nil font-lock-comment-delimiter-face)
+			       ("" gnus-header-name font-lock-comment-delimiter-face)))
 
 (mu4e)
 
