@@ -2290,8 +2290,9 @@ line-formatted buffer-modified)
 (setq spaceline-always-show-segments t)
 
 
-(defvar mu4e-headers-list-mark      '("" . "") "Mailing list.")
-(defvar mu4e-headers-personal-mark  '("p" . "👨") "Personal.")
+(setq mu4e-headers-list-mark      '("" . ""))
+(setq mu4e-headers-personal-mark  '("p" . ""))
+(set-face-attribute 'mu4e-replied-face nil :foreground 'unspecified :inherit 'mu4e-header-face)
 (setq shr-use-colors nil)
 ;; (setq shr-color-visible-luminance-min 70)
 (setq shr-use-fonts nil)
