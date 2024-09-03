@@ -1574,7 +1574,7 @@ Ignores CHAR at point."
 (add-to-list 'mu4e-compose-hidden-headers "^X-TUID:")
 (setq mu4e-view-fields '(:subject :from :to :cc  :date :attachments))
 (setq mu4e-view-fields '(:from :to :cc :subject :date :mailing-list :user-agent :attachments))
-(setq gnus-visible-headers "^Newsgroups:\\|^Subject:\\|^From:\\|^Date:\\|^Followup-To:\\|^Organization:\\|^Summary:\\|^Keywords:\\|^To:\\|^[BG]?Cc:\\|^Posted-To:\\|^Mail-Copies-To:\\|^Mail-Followup-To:\\|^Apparently-To:\\|^Gnus-Warning:\\|^Resent-From:")
+(setq gnus-visible-headers "^Newsgroups:\\|^Subject:\\|^From:\\|^Date:\\|^Followup-To:\\|^Organization:\\|^Summary:\\|^Keywords:\\|^To:\\|^[BG]?Cc:\\|^Posted-To:\\|^Mail-Copies-To:\\|^Mail-Followup-To:\\|^Apparently-To:\\|^Gnus-Warning:")
 (add-to-list 'mu4e-view-actions '("View in browser" . mu4e-action-view-in-browser) t)
 
 (require 'mu4e-alert)
