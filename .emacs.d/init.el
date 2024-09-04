@@ -1645,8 +1645,9 @@ ALL-MAILS are the all the unread emails"
 
 (define-key mu4e-main-mode-map (kbd "c") 'mu4e-compose-new)
 (define-key mu4e-main-mode-map (kbd "r") (lambda () (interactive) (mu4e-headers-search "flag:unread AND (maildir:/INBOX OR maildir:/InriaBox/INBOX OR maildir:/OrsayBox/INBOX)" nil nil t nil nil)))
+(define-key mu4e-main-mode-map (kbd "z") (lambda () (interactive) (mu4e-headers-search "flag:unread AND NOT (maildir:/INBOX OR maildir:/InriaBox/INBOX OR maildir:/OrsayBox/INBOX)" nil nil t nil nil)))
 (define-key mu4e-main-mode-map (kbd "i") (lambda () (interactive) (mu4e-headers-search "(maildir:/INBOX OR maildir:/InriaBox/INBOX OR maildir:/OrsayBox/INBOX)" nil nil t nil nil)))
-(define-key mu4e-main-mode-map (kbd "g") (lambda () (interactive) (mu4e-headers-search "flag:unread" nil nil t nil nil)))
+(define-key mu4e-main-mode-map (kbd "g") (kbd "s-e r"))
 (define-key mu4e-main-mode-map (kbd "d") (lambda () (interactive) (mu4e-headers-search "m:/\"[Google Mail]/.Drafts\"" nil nil t nil nil)))
 (define-key mu4e-main-mode-map (kbd "s") (lambda () (interactive) (mu4e-headers-search "m:/\"[Google Mail]/.Sent Mail\" OR m:/InriaBox/Sent OR m:/OrsayBox/Sent" nil nil t nil nil)))
 (define-key mu4e-main-mode-map (kbd "q") (lambda () (interactive) (mu4e-headers-search)))
