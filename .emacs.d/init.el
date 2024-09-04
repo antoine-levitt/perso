@@ -1768,7 +1768,7 @@ one is determined using `mu4e-attachment-dir'."
                          (mu4e-warn "No attachments for this message")))
          (files (seq-map (lambda (c) (car c)) candidates)) ;; CHANGED
          )
-    (pp candidates)
+    (mkdir attachdir)
     ;; we have determined what files to save, and where.
     (seq-do (lambda (fname)
               (let* ((part (cdr (assoc fname candidates)))
