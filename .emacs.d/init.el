@@ -1637,9 +1637,20 @@ ALL-MAILS are the all the unread emails"
 (define-key mu4e-headers-mode-map (kbd "i") 'mu4e-headers-mark-for-unread)
 (define-key mu4e-view-mode-map (kbd "i") 'mu4e-view-mark-for-unread)
 
-(define-key mu4e-headers-mode-map (kbd "r") 'mu4e-compose-wide-reply)
+(defun supersede-or-compose-reply-ask-wide ()
+"Supersede own messages or ask whether to reply-to-all."
+(interactive)
+(if (mu4e-message-contact-field-matches-me (mu4e-message-at-point) :from)
+    (mu4e-compose-supersede)
+  (let ((tos (length (mu4e-message-field-at-point :to)))
+        (ccs (length (mu4e-message-field-at-point :cc))))
+    (mu4e-compose-reply
+     (and (> (+ tos ccs) 1)
+          t)))))
+
+(define-key mu4e-headers-mode-map (kbd "r") 'supersede-or-compose-reply-ask-wide)
 (define-key mu4e-headers-mode-map (kbd "R") 'mu4e-compose-reply)
-(define-key mu4e-compose-minor-mode-map (kbd "r") 'mu4e-compose-wide-reply)
+(define-key mu4e-compose-minor-mode-map (kbd "r") 'supersede-or-compose-reply-ask-wide)
 (define-key mu4e-compose-minor-mode-map (kbd "R") 'mu4e-compose-reply)
 (define-key mu4e-compose-minor-mode-map (kbd "f") 'mu4e-compose-forward)
 
