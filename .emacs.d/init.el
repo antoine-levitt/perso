@@ -1922,6 +1922,7 @@ one is determined using `mu4e-attachment-dir'."
     (AL/map-keys (cdr src) (cdr dest))))
 (AL/map-keys (string-to-list AL/algr-keys)(string-to-list AL/normal-keys))
 (define-key key-translation-map (kbd " ") (kbd "C-SPC"))
+(define-key key-translation-map (kbd "<dead-hook>") (kbd "C-j"))
 
 (require 'smartparens-config)
 (smartparens-global-mode 1)
