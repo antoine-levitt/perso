@@ -1914,8 +1914,8 @@ one is determined using `mu4e-attachment-dir'."
 
 
 ;; For the layout now called (apparently) "French French", aka fr for setxkbmap
-(setq AL/algr-keys   "æ«€¶ŧ←↓→øþ@ßðđŋħˀĸłµł»¢„“”")
-(setq AL/normal-keys "azertyuiopqsdfghjklmwxcvbn")
+(setq AL/algr-keys   "æ«€¶ŧ←↓→øþßðđŋħˀĸłµł»¢„“”")
+(setq AL/normal-keys "azertyuiopsdfghjklmwxcvbn")
 (defun AL/map-keys (src dest)
   (when src
     (define-key key-translation-map (char-to-string (car src)) (kbd (concat "C-" (char-to-string (car dest)))))
