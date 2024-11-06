@@ -79,6 +79,7 @@
 	visual-regexp-steroids
 	spaceline
         smart-mode-line
+	super-save
 	))
 (mapc #'(lambda (package)
           (unless (package-installed-p package)
@@ -348,12 +349,15 @@ some other pops up with display-buffer), go back to only one window open"
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Silent saves
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Note that this can not prevent
-;; the "Wrote %s" message, which is coded in C.
 (defadvice save-buffer (around save-be-quiet activate)
   "Be quiet."
-  (cl-letf (((symbol-function 'message) 'dummy-function))
-    ad-do-it))
+  (with-temp-message ""
+    (let ((inhibit-message t)
+          (inhibit-redisplay t)
+          (message-log-max nil))
+      ;; (cl-letf (((symbol-function 'message) 'dummy-function))
+	ad-do-it)
+      ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Word wrapping
@@ -1926,7 +1930,7 @@ one is determined using `mu4e-attachment-dir'."
 
 ;; For the layout now called (apparently) "French French", aka fr for setxkbmap
 (setq AL/algr-keys   "æ«€¶ŧ←↓→øþßðđŋħˀĸłµł»¢„“”")
-(setq AL/normal-keys "azertyuiopsdfghjklmwxcvbn")
+(setq AL/normal-keys "aaertyuiopsdfghjklmwxcvbn")
 (defun AL/map-keys (src dest)
   (when src
     (define-key key-translation-map (char-to-string (car src)) (kbd (concat "C-" (char-to-string (car dest)))))
@@ -2235,6 +2239,9 @@ following commands are defined:
 				       path
 				       " -a \"" (plist-get mu4e-compose-parent-message ':path) "\""))
       (dired path))))
+
+(setq vterm-kill-buffer-on-exit nil)
+
 (defun replace-region-by-yank ()
   (interactive)
   (delete-region (point) (mark))
@@ -2390,3 +2397,13 @@ As a side-effect, a message that is being viewed loses its
                 #'mu4e--make-bookmark-record)
     ;; only needed on some setups; #2683
     (goto-char (point-min))))
+
+
+
+
+(super-save-mode +1)
+(remove-mm-lighter 'super-save-mode)
+(setq super-save-auto-save-when-idle t)
+(setq super-save-remote-files nil)
+(setq super-save-silent t)
+
