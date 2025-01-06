@@ -2406,4 +2406,4 @@ As a side-effect, a message that is being viewed loses its
 (setq super-save-auto-save-when-idle t)
 (setq super-save-remote-files nil)
 (setq super-save-silent t)
-
+(mkdir "/tmp/mu4e" t)
