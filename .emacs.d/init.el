@@ -639,6 +639,7 @@ filling of the current paragraph."
   (local-set-key (kbd "C-c e") (lambda () (interactive) (reftex-reference "e")))
   (local-set-key (kbd "C-c f") (lambda () (interactive) (reftex-reference "f")))
   (local-set-key (kbd "C-c C-g") nil)
+  (local-set-key (kbd "C-c C-c") 'reftex-citation)
   (local-set-key (kbd "s-a") 'TeX-command-run-all)
   (local-set-key (kbd "C-c C-a") (lambda ()(interactive) (let ((LaTeX-default-environment "align*")) (LaTeX-environment nil))))
   (local-set-key (kbd "s-p") (lambda ()(interactive)
@@ -771,7 +772,7 @@ filling of the current paragraph."
 
 ;;settings
 (setq
- org-agenda-files (list "~/Dropbox/todo.org")
+ org-agenda-files (list "~/Nextcloud/todo.org")
  org-default-notes-file "~/.emacs.d/org/notes.org"
  org-completion-use-ido t
  org-agenda-span 'week
@@ -1014,10 +1015,10 @@ Ignores CHAR at point."
 
 (defun note ()
   (interactive)
-  (find-file "~/Dropbox/notes.org"))
+  (find-file "~/Nextcloud/notes.org"))
 (defun todo ()
   (interactive)
-  (find-file "~/Dropbox/todo.org"))
+  (find-file "~/Nextcloud/todo.org"))
 (global-set-key (kbd "s-n") 'note)
 (global-set-key (kbd "s-t") 'todo)
 (global-set-key (kbd "s-l") 'bury-buffer)
@@ -2321,7 +2322,10 @@ line-formatted buffer-modified)
     (hud :priority 99)
 ))
 (setq spaceline-always-show-segments t)
-
+(add-to-list 'sml/replacer-regexp-list '("^~/Nextcloud/" ":NC:") t)
+(add-to-list 'sml/replacer-regexp-list '("^~/Downloads/" ":Down:") t)
+(add-to-list 'sml/replacer-regexp-list '("^~/Desktop/" ":Desk:") t)
+(add-to-list 'sml/replacer-regexp-list '("^~/.julia/dev/" ":Jdev:") t)
 
 (setq mu4e-headers-list-mark      '("" . ""))
 (setq mu4e-headers-personal-mark  '("p" . ""))
