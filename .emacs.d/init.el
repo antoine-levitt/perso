@@ -454,6 +454,7 @@ some other pops up with display-buffer), go back to only one window open"
 ;;tags
 (setq tags-table-list nil
       tags-revert-without-query t)
+(define-key prog-mode-map (kbd "M-q") nil)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Matlab
