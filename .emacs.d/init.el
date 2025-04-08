@@ -973,9 +973,11 @@ Ignores CHAR at point."
 (define-key function-key-map (kbd "<insert>") 'event-apply-super-modifier)
 (define-key function-key-map (kbd "<insertchar>") 'event-apply-super-modifier)
 (define-key function-key-map (kbd "<f5>") 'event-apply-super-modifier)
+(define-key function-key-map (kbd "<menu>") 'event-apply-super-modifier)
 (global-set-key (kbd "<insertchar>") nil)
 (global-set-key (kbd "<insert>") nil)
 (global-set-key (kbd "<f5>") nil)
+(global-set-key (kbd "<menu>") nil)
 
 ;;shortcuts to two-keys commands I often use
 (global-set-key (kbd "s-s") 'save-buffer)
