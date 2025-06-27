@@ -2071,6 +2071,7 @@ one is determined using `mu4e-attachment-dir'."
 	(cond ((and (eq major-mode 'term-mode) (term-in-char-mode)) (term-send-raw-string sym))
 	      ((and (eq major-mode 'vterm-mode)) (vterm-insert sym))
 	      (t (insert sym)))))))
+(define-key julia-mode-map (kbd "TAB") 'julia-latexsub-or-indent)
 
 ;; unicode insertion of math symbols
 (define-minor-mode julia-math-mode
