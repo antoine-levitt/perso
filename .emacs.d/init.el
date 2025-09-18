@@ -2424,8 +2424,8 @@ As a side-effect, a message that is being viewed loses its
 
 (defun my-disable-locking-for-path ()
   "Disable file locking for certain paths."
-  (when (or (string-prefix-p "/run/" buffer-file-name)
-            (string-prefix-p "/ssh:" buffer-file-name) ;; TRAMP remote
+  (when (or (string-prefix-p "/run/" buffer-file-name) ; gvfs
+	    (file-remote-p buffer-file-name)
 )
     (setq-local create-lockfiles nil)))
 
