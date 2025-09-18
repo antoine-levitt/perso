@@ -85,6 +85,7 @@
 	spaceline
         smart-mode-line
 	super-save
+	php-mode
 	))
 (mapc #'(lambda (package)
           (unless (package-installed-p package)
