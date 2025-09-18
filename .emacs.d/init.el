@@ -5,9 +5,14 @@
 			  "hostname"))
     (set-frame-font "Noto Mono 16"))
 (if (string-match "lambda" (shell-command-to-string
-			  "hostname"))
+			    "hostname"))
     (set-frame-font "Noto Mono 16"))
-;; (set-frame-font "Noto Mono 22") ; good for projectors
+(if (string-match "epsilon" (shell-command-to-string
+			     "hostname"))
+    (set-frame-font "Noto Mono 16"))
+(if (string-match "mu" (shell-command-to-string
+			"hostname"))
+    (set-frame-font "Noto Mono 18"))
 
 ;; customize
 (custom-set-variables
@@ -2415,3 +2420,13 @@ As a side-effect, a message that is being viewed loses its
 (setq super-save-remote-files nil)
 (setq super-save-silent t)
 (mkdir "/tmp/mu4e" t)
+
+
+(defun my-disable-locking-for-path ()
+  "Disable file locking for certain paths."
+  (when (or (string-prefix-p "/run/" buffer-file-name)
+            (string-prefix-p "/ssh:" buffer-file-name) ;; TRAMP remote
+)
+    (setq-local create-lockfiles nil)))
+
+(add-hook 'find-file-hook #'my-disable-locking-for-path)
