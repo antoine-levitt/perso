@@ -9,7 +9,7 @@
     (set-frame-font "Noto Mono 16"))
 (if (string-match "epsilon" (shell-command-to-string
 			     "hostname"))
-    (set-frame-font "Noto Mono 16"))
+    (set-frame-font "Noto Mono 18"))
 (if (string-match "mu" (shell-command-to-string
 			"hostname"))
     (set-frame-font "Noto Mono 18"))
@@ -21,13 +21,14 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(custom-safe-themes
-   (quote
-    ("c74e83f8aa4c78a121b52146eadb792c9facc5b1f02c917e3dbb454fca931223" default)))
+   '("9b21c848d09ba7df8af217438797336ac99cbbbc87a08dc879e9291673a6a631" "3c83b3676d796422704082049fc38b6966bcad960f896669dfc21a7a37a748fa" "c74e83f8aa4c78a121b52146eadb792c9facc5b1f02c917e3dbb454fca931223" default))
  '(horizontal-scroll-bar-mode nil)
  '(inhibit-startup-echo-area-message (user-login-name))
  '(inhibit-startup-screen t)
  '(initial-scratch-message nil)
  '(menu-bar-mode nil)
+ '(package-selected-packages
+   '(0blayout vterm undo-tree smartparens smart-mode-line rainbow-delimiters quelpa pdf-tools mu4e-alert matlab-mode material-theme magic-latex-buffer julia-repl julia-mode ivy-prescient iedit highlight-indentation guess-language forge flx fix-word expand-region eterm-256color electric-operator cython-mode counsel avy auctex))
  '(scroll-bar-mode nil)
  '(tool-bar-mode nil)
  '(warning-suppress-log-types '((comp))))
