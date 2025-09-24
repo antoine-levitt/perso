@@ -13,6 +13,9 @@
 (if (string-match "mu" (shell-command-to-string
 			"hostname"))
     (set-frame-font "Noto Mono 18"))
+(if (string-match "omega" (shell-command-to-string
+			"hostname"))
+    (set-frame-font "Noto Mono 18"))
 
 ;; customize
 (custom-set-variables
