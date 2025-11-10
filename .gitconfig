@@ -16,3 +16,5 @@
 	helper = !/usr/bin/gh auth git-credential
 [credential]
 	helper = store
+[safe]
+	directory = /home/antoine/services-dev

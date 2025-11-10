@@ -570,10 +570,10 @@ some other pops up with display-buffer), go back to only one window open"
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Latex
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;don't ask to cache preamble
-(setq preview-auto-cache-preamble t)
-(setq preview-preserve-counters t)
-(setq preview-scale-function 1.6)
+;; ;;don't ask to cache preamble
+;; (setq preview-auto-cache-preamble t)
+;; (setq preview-preserve-counters t)
+;; (setq preview-scale-function 1.6)
 ;;use synctex for synchronisation with viewer
 (setq TeX-source-correlate-method 'synctex)
 
@@ -1705,12 +1705,13 @@ buffers; lets remap its faces so it uses the ones for mu4e."
   (face-remap-add-relative 'message-header-other 'font-lock-comment-delimiter-face)
   ;; special headers
   (face-remap-add-relative 'message-header-from 'font-lock-comment-delimiter-face)
-  (face-remap-add-relative 'message-header-cc   'font-lock-comment-delimiter-face)
-  (face-remap-add-relative 'message-header-bcc  'font-lock-comment-delimiter-face)
+  ;; (face-remap-add-relative 'message-header-cc   'font-lock-comment-delimiter-face)
+  ;; (face-remap-add-relative 'message-header-bcc  'font-lock-comment-delimiter-face)
 )
 
 (set-face-attribute 'message-header-subject nil :foreground 'unspecified :inherit 'mu4e-context-face :weight 'bold)
 (set-face-attribute 'message-header-to nil :foreground 'unspecified :inherit 'myface :weight 'bold)
+(set-face-attribute 'message-header-cc nil :foreground 'unspecified :inherit 'myface :weight 'bold)
 
 (defface myface
   '((((class color)
