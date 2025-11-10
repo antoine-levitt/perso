@@ -1539,7 +1539,7 @@ Ignores CHAR at point."
 (setq smtp-accounts
       '(
 	("." "smtp.gmail.com" "antoine.levitt@gmail.com" 587 nil)
-	("antoine.levitt@universite-paris-saclay.fr" "smtps.universite-paris-saclay.fr" "antoine.levitt" 465 ssl)
+	;; ("antoine.levitt@universite-paris-saclay.fr" "smtps.universite-paris-saclay.fr" "antoine.levitt" 465 ssl)
 	))
 (defun my-change-smtp ()
   (save-excursion
@@ -1557,11 +1557,13 @@ Ignores CHAR at point."
     (before change-smtp-by-message-from-field (recipient buffer &optional ask) activate)
   (with-current-buffer buffer (my-change-smtp)))
 
+;; ;; gmail saves copies automatically, but not the others
+;; (setq mu4e-sent-messages-behavior
+;;       (lambda ()
+;; 	(if (string= (message-sendmail-envelope-from) "antoine.levitt@universite-paris-saclay.fr")
+;; 	    'sent 'delete)))
 ;; gmail saves copies automatically, but not the others
-(setq mu4e-sent-messages-behavior
-      (lambda ()
-	(if (string= (message-sendmail-envelope-from) "antoine.levitt@universite-paris-saclay.fr")
-	    'sent 'delete)))
+(setq mu4e-sent-messages-behavior 'delete)
 
 (require 'mu4e)
 
