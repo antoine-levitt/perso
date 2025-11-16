@@ -3,7 +3,7 @@
 
 (if (string-match "beta" (shell-command-to-string
 			  "hostname"))
-    (set-frame-font "Noto Mono 16"))
+    (set-frame-font "DejaVu Sans Mono 16"))
 (if (string-match "lambda" (shell-command-to-string
 			    "hostname"))
     (set-frame-font "Noto Mono 16"))
@@ -30,8 +30,7 @@
  '(inhibit-startup-screen t)
  '(initial-scratch-message nil)
  '(menu-bar-mode nil)
- '(package-selected-packages
-   '(0blayout vterm undo-tree smartparens smart-mode-line rainbow-delimiters quelpa pdf-tools mu4e-alert matlab-mode material-theme magic-latex-buffer julia-repl julia-mode ivy-prescient iedit highlight-indentation guess-language forge flx fix-word expand-region eterm-256color electric-operator cython-mode counsel avy auctex))
+ '(package-selected-packages nil)
  '(scroll-bar-mode nil)
  '(tool-bar-mode nil)
  '(warning-suppress-log-types '((comp))))
@@ -1411,6 +1410,7 @@ Ignores CHAR at point."
       (let ((transient-mark-mode nil))
         (yank-advised-indent-function (region-beginning) (region-end)))))
 
+(require 'emacsql-sqlite)
 (require 'magit)
 (require 'forge)
 (global-set-key (kbd "C-x v s") 'magit-status)

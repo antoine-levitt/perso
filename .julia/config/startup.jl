@@ -20,5 +20,5 @@ using OhMyREPL
 
 using Revise
 
-ENV["JULIA_STACKTRACE_MINIMAL"] = true
-using AbbreviatedStackTraces
+# ENV["JULIA_STACKTRACE_MINIMAL"] = true
+# using AbbreviatedStackTraces
