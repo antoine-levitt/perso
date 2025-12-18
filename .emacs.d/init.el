@@ -1525,7 +1525,7 @@ Ignores CHAR at point."
       message-wash-forwarded-subjects t
       message-citation-line-function (lambda () (message-insert-formatted-citation-line nil nil (* 60 (timezone-zone-to-minute (current-time-zone))))) ; don't use the sender's timezone
       message-kill-buffer-on-exit t
-      message-send-mail-function 'message-smtpmail-send-it ; can also do it async if needed, with smtpmail-async
+      ;; message-send-mail-function 'message-smtpmail-send-it ; can also do it async if needed, with smtpmail-async
       starttls-use-gnutls t
       starttls-gnutls-program "gnutls-cli"
       message-dont-reply-to-names 'mu4e-personal-or-alternative-address-p
@@ -1533,37 +1533,42 @@ Ignores CHAR at point."
 
 (setq mu4e-compose-post-hook nil) ;; I don't want it to restore the window configuration
 
-;; Special dance to make it use different SMTP servers according to sender
-(require 'cl)
-(require 'smtpmail)
-(setq smtp-accounts
-      '(
-	("." "smtp.gmail.com" "antoine.levitt@gmail.com" 587 nil)
-	;; ("antoine.levitt@universite-paris-saclay.fr" "smtps.universite-paris-saclay.fr" "antoine.levitt" 465 ssl)
-	))
-(defun my-change-smtp ()
-  (save-excursion
-    (loop with from = (save-restriction
-                        (message-narrow-to-headers)
-                        (message-fetch-field "from"))
-          for (addr server user port stream) in smtp-accounts
-          when (string-match addr from)
-          do (progn (setq smtpmail-smtp-user user
-			  smtpmail-smtp-server server
-			  smtpmail-smtp-service port
-			  smtpmail-stream-type stream
-			  )))))
-(defadvice smtpmail-via-smtp
-    (before change-smtp-by-message-from-field (recipient buffer &optional ask) activate)
-  (with-current-buffer buffer (my-change-smtp)))
+(setq sendmail-program "/usr/bin/msmtp"
+      send-mail-function 'smtpmail-send-it
+      message-sendmail-f-is-evil t
+      message-sendmail-extra-arguments '("--read-envelope-from")
+      message-send-mail-function 'message-send-mail-with-sendmail)
 
-;; ;; gmail saves copies automatically, but not the others
-;; (setq mu4e-sent-messages-behavior
-;;       (lambda ()
-;; 	(if (string= (message-sendmail-envelope-from) "antoine.levitt@universite-paris-saclay.fr")
-;; 	    'sent 'delete)))
+;; ;; Special dance to make it use different SMTP servers according to sender
+;; (require 'cl)
+;; (require 'smtpmail)
+;; (setq smtp-accounts
+;;       '(
+;; 	("." "smtp.gmail.com" "antoine.levitt@gmail.com" 587 nil)
+;; 	("antoine.levitt@universite-paris-saclay.fr" "smtps.universite-paris-saclay.fr" "antoine.levitt" 465 ssl)
+;; 	))
+;; (defun my-change-smtp ()
+;;   (save-excursion
+;;     (loop with from = (save-restriction
+;;                         (message-narrow-to-headers)
+;;                         (message-fetch-field "from"))
+;;           for (addr server user port stream) in smtp-accounts
+;;           when (string-match addr from)
+;;           do (progn (setq smtpmail-smtp-user user
+;; 			  smtpmail-smtp-server server
+;; 			  smtpmail-smtp-service port
+;; 			  smtpmail-stream-type stream
+;; 			  )))))
+;; (defadvice smtpmail-via-smtp
+;;     (before change-smtp-by-message-from-field (recipient buffer &optional ask) activate)
+;;   (with-current-buffer buffer (my-change-smtp)))
+
 ;; gmail saves copies automatically, but not the others
-(setq mu4e-sent-messages-behavior 'delete)
+(setq mu4e-sent-messages-behavior
+      (lambda ()
+	(if (string= (message-sendmail-envelope-from) "antoine.levitt@universite-paris-saclay.fr")
+	    'sent 'delete)))
+;; (setq mu4e-sent-messages-behavior 'delete)
 
 (require 'mu4e)
 
