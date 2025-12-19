@@ -1,0 +1,82 @@
+# mbsyncrc based on
+# http://www.ict4g.net/adolfo/notes/2014/12/27/EmacsIMAP.html
+# https://stuff.sigvaldason.com/email.html
+# sudo apt install rustup, rustup default stable, git clone git@github.com:ltratt/pizauth.git, cd pizauth, make, sudo make install, pizauth show officesmtp
+# sudo apt install libsasl2-modules-kdexoauth2
+# install isync 1.5.1 with libsasl2-dev, libdb5.3-dev
+
+# ACCOUNT INFORMATION
+IMAPAccount gmail
+# Address to connect to
+Host imap.gmail.com
+User antoine.levitt@gmail.com
+SSLType IMAPS
+AuthMech XOAUTH2
+#SSLVersions SSLv3
+CertificateFile /etc/ssl/certs/ca-certificates.crt
+PassCmd "pizauth show gmail"
+
+IMAPAccount orsay
+Host outlook.office365.com
+User antoine.levitt@universite-paris-saclay.fr
+SSLType IMAPS
+AuthMechs XOAUTH2	
+PipelineDepth 1
+CertificateFile /etc/ssl/certs/ca-certificates.crt
+PassCmd "pizauth show orsay"
+
+# THEN WE SPECIFY THE LOCAL AND REMOTE STORAGE
+# - THE REMOTE STORAGE IS WHERE WE GET THE MAIL FROM (E.G., THE
+#   SPECIFICATION OF AN IMAP ACCOUNT)
+# - THE LOCAL STORAGE IS WHERE WE STORE THE EMAIL ON OUR COMPUTER
+
+# REMOTE STORAGE (USE THE IMAP ACCOUNT SPECIFIED ABOVE)
+IMAPStore gmail-remote
+Account gmail
+
+# REMOTE STORAGE (USE THE IMAP ACCOUNT SPECIFIED ABOVE)
+IMAPStore orsay-remote
+Account orsay
+
+# LOCAL STORAGE (CREATE DIRECTORIES with mkdir -p Maildir/gmail)
+MaildirStore gmail-local
+Path ~/.emacs.d/mbsync/
+Inbox ~/.emacs.d/mbsync/INBOX
+AltMap yes
+SubFolders Legacy       
+
+MaildirStore orsay-local
+Path ~/.emacs.d/mbsync/OrsayBox/
+Inbox ~/.emacs.d/mbsync/OrsayBox/INBOX
+AltMap yes
+SubFolders Legacy
+
+Channel gmail
+Master :gmail-remote:
+Slave :gmail-local:
+Patterns "INBOX"  "Dev" "LMO" "Math" "Pub" "[Google Mail]/*"
+# Patterns *
+Create Both
+Expunge Both
+SyncState *
+MaxMessages 500000
+
+Channel orsay
+Master :orsay-remote:
+Slave :orsay-local:
+Patterns "INBOX" "LMO" "Sent"
+Create Both
+Expunge Both
+SyncState *
+MaxMessages 500000
+
+
+# GROUPS PUT TOGETHER CHANNELS, SO THAT WE CAN INVOKE
+# MBSYNC ON A GROUP TO SYNC ALL CHANNELS
+#
+# FOR INSTANCE: "mbsync gmail" GETS MAIL FROM
+# "gmail-inbox", "gmail-sent", and "gmail-trash"
+#
+Group all
+Channel gmail
+Channel orsay
