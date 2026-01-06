@@ -1563,12 +1563,12 @@ Ignores CHAR at point."
 ;;     (before change-smtp-by-message-from-field (recipient buffer &optional ask) activate)
 ;;   (with-current-buffer buffer (my-change-smtp)))
 
-;; gmail saves copies automatically, but not the others
-(setq mu4e-sent-messages-behavior
-      (lambda ()
-	(if (string= (message-sendmail-envelope-from) "antoine.levitt@universite-paris-saclay.fr")
-	    'sent 'delete)))
-;; (setq mu4e-sent-messages-behavior 'delete)
+;; ;; gmail saves copies automatically, but not the others
+;; (setq mu4e-sent-messages-behavior
+;;       (lambda ()
+;; 	(if (string= (message-sendmail-envelope-from) "antoine.levitt@universite-paris-saclay.fr")
+;; 	    'sent 'delete)))
+(setq mu4e-sent-messages-behavior 'delete) ; smtp servers save a local copy
 
 (require 'mu4e)
 
