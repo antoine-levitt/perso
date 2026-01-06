@@ -1685,7 +1685,7 @@ ALL-MAILS are the all the unread emails"
 (define-key mu4e-main-mode-map (kbd "i") (lambda () (interactive) (mu4e-headers-search "(maildir:/INBOX OR maildir:/InriaBox/INBOX OR maildir:/OrsayBox/INBOX)" nil nil t nil nil)))
 (define-key mu4e-main-mode-map (kbd "g") (kbd "s-e r"))
 (define-key mu4e-main-mode-map (kbd "d") (lambda () (interactive) (mu4e-headers-search "m:/\"[Google Mail]/.Drafts\"" nil nil t nil nil)))
-(define-key mu4e-main-mode-map (kbd "s") (lambda () (interactive) (mu4e-headers-search "m:/\"[Google Mail]/.Sent Mail\" OR m:/InriaBox/Sent OR m:/OrsayBox/Sent" nil nil t nil nil)))
+(define-key mu4e-main-mode-map (kbd "s") (lambda () (interactive) (mu4e-headers-search "m:/\"[Google Mail]/.Sent Mail\" OR \"m:/OrsayBox/Sent Items\"" nil nil t nil nil)))
 (define-key mu4e-main-mode-map (kbd "q") (lambda () (interactive) (mu4e-headers-search)))
 (define-key mu4e-main-mode-map (kbd "a") (lambda () (interactive) (mu4e-headers-search "" nil nil t nil nil)))
 

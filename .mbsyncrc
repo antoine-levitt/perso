@@ -65,7 +65,7 @@ MaxMessages 500000
 Channel orsay
 Master :orsay-remote:
 Slave :orsay-local:
-Patterns "INBOX" "LMO" "Sent"
+Patterns "INBOX" "LMO" "Sent Items"
 Create Both
 Expunge Both
 SyncState *
