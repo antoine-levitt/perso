@@ -1482,6 +1482,17 @@ Ignores CHAR at point."
 
 
 ;; mu4e
+
+; mbsyncrc based on
+; http://www.ict4g.net/adolfo/notes/2014/12/27/EmacsIMAP.html
+; https://stuff.sigvaldason.com/email.html
+; sudo apt install libsasl2-dev libdb5.3-dev
+; install https://sourceforge.net/p/isync/isync/ci/master/tree/
+; sudo apt install rustup, rustup default stable, git clone git@github.com:ltratt/pizauth.git, cd pizauth, make, sudo make install, pizauth show officesmtp
+; sudo apt install libsasl2-modules-kdexoauth2
+; sudo apt install msmtp
+
+
 (setq mu4e-modeline-support nil) ;; TODO should remove mu4e alert and use this instead
 (setq
  mu4e-maildir       "~/.emacs.d/mbsync"   ;; top-level Maildir
@@ -2443,3 +2454,18 @@ As a side-effect, a message that is being viewed loses its
     (setq-local create-lockfiles nil)))
 
 (add-hook 'find-file-hook #'my-disable-locking-for-path)
+
+
+;; Copilot autocompletion
+(use-package copilot
+  :vc (:url "https://github.com/copilot-emacs/copilot.el"
+            :rev :newest
+            :branch "main")
+  :config
+  (setq copilot-indent-offset-warning-disable t)
+  :hook (prog-mode . copilot-mode)
+  :bind (:map copilot-mode-map
+              ("<tab>" . copilot-accept-completion)
+              ("C-<tab>" . copilot-next-completion)
+              )
+  )
