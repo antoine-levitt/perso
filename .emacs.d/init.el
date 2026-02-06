@@ -2469,3 +2469,32 @@ As a side-effect, a message that is being viewed loses its
               ("C-<tab>" . copilot-next-completion)
               )
   )
+
+;; I get this weird bug that drafts don't get deleted like they should.
+;; This ugly hack ensures it gets deleted
+(defun message-kill-buffer ()
+  "Kill the current buffer."
+  (interactive nil message-mode)
+  (when (or (not (buffer-modified-p))
+	    (not message-kill-buffer-query)
+	    (yes-or-no-p "Message modified; kill anyway? "))
+    (let ((actions message-kill-actions)
+	  (draft-article message-draft-article)
+	  (auto-save-file-name buffer-auto-save-file-name)
+	  (file-name buffer-file-name)
+	  (modified (buffer-modified-p)))
+      (setq buffer-file-name nil)
+      (kill-buffer (current-buffer))
+      (when (and (or (and auto-save-file-name
+			  (file-exists-p auto-save-file-name))
+		     (and file-name
+			  (file-exists-p file-name))
+		     ;; HACK: don't ask my opinion, just delete the draft
+		     ))
+	(ignore-errors
+	  (delete-file auto-save-file-name))
+	(let ((message-draft-article draft-article))
+	  (message-disassociate-draft)))
+      (message-do-actions actions)
+      ;; HACK
+      (delete-file file-name))))
