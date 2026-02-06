@@ -2463,7 +2463,7 @@ As a side-effect, a message that is being viewed loses its
             :branch "main")
   :config
   (setq copilot-indent-offset-warning-disable t)
-  :hook (prog-mode . copilot-mode)
+  ;; :hook (prog-mode . copilot-mode)
   :bind (:map copilot-mode-map
               ("<tab>" . copilot-accept-completion)
               ("C-<tab>" . copilot-next-completion)
