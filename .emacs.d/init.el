@@ -1514,7 +1514,7 @@ Ignores CHAR at point."
 			    (:human-date . 6)
                             ;; (:maildir . 10)
                             (:from-or-to . 22)
-                            (:subject . 100)
+                            (:subject . 90)
 )
       mu4e-headers-time-format "%R"
       mu4e-headers-date-format "%d/%m"
