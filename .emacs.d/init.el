@@ -89,6 +89,7 @@
         smart-mode-line
 	super-save
 	php-mode
+	gptel
 	))
 (mapc #'(lambda (package)
           (unless (package-installed-p package)
@@ -2498,3 +2499,28 @@ As a side-effect, a message that is being viewed loses its
       (message-do-actions actions)
       ;; HACK
       (delete-file file-name))))
+
+(defun message-send-and-exit (&optional arg)
+  "Send message like `message-send', then, if no errors, exit from mail buffer.
+The usage of ARG is defined by the instance that called Message.
+It should typically alter the sending method in some way or other."
+  (interactive "P" message-mode)
+  (let ((buf (current-buffer))
+	(position (point-marker))
+	(actions message-exit-actions))
+    (when (and (message-send arg)
+               (buffer-live-p buf))
+      (if message-kill-buffer-on-exit
+	  ;; AL use message-kill-buffer
+	  (message-kill-buffer)
+	;; Restore the point in the message buffer.
+	(save-window-excursion
+	  (switch-to-buffer buf)
+	  (set-window-point nil position)
+	  (set-marker position nil))
+	(message-bury buf)))))
+
+(require 'gptel)
+(gptel-make-gh-copilot "Copilot")
+(setq gptel-model 'claude-4.5-sonnet
+      gptel-backend (gptel-make-gh-copilot "Copilot"))
