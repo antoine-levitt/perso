@@ -1492,7 +1492,8 @@ Ignores CHAR at point."
 ; sudo apt install rustup, rustup default stable, git clone git@github.com:ltratt/pizauth.git, cd pizauth, make, sudo make install, pizauth show officesmtp
 ; sudo apt install libsasl2-modules-kdexoauth2
 ; sudo apt install msmtp
-
+; get mu
+; mu init -m /home/antoine/.emacs.d/mbsync/ --my-address antoine.levitt@inria.fr --my-address antoine.levitt@gmail.com --my-address antoine.levitt@universite-paris-saclay.fr
 
 (setq mu4e-modeline-support nil) ;; TODO should remove mu4e alert and use this instead
 (setq
