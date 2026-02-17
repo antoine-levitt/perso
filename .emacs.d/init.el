@@ -1500,7 +1500,7 @@ Ignores CHAR at point."
  mu4e-maildir       "~/.emacs.d/mbsync"   ;; top-level Maildir
  mu4e-sent-folder   "/[Google Mail]/.Sent Mail"       ;; folder for sent messages
  mu4e-drafts-folder "/[Google Mail]/.Drafts"     ;; unfinished messages
- mu4e-get-mail-command "timeout 30 mbsync all; true")
+ mu4e-get-mail-command "timeout 60 mbsync all; true")
 (load "~/.emacs.d/priv_mu4e.el") ;; set private variables
 
 (require 'timezone)
