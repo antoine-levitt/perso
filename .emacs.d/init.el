@@ -1505,7 +1505,7 @@ Ignores CHAR at point."
 
 (require 'timezone)
 (setq mu4e-use-fancy-chars t
-      mu4e-update-interval 40
+      mu4e-update-interval 70
       mu4e-view-show-images t
       mu4e-view-image-max-width 800
       mu4e-hide-index-messages t
