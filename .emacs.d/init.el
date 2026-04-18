@@ -1019,7 +1019,7 @@ Ignores CHAR at point."
 (defun open-shell-here ()
   (interactive)
   (launch-command "mate-terminal" ""))
-(global-set-key (kbd "s-h") 'open-shell-here)
+(global-set-key (kbd "s-<f9>") 'open-shell-here)
 
 (defun open-file-explorer-here ()
   (interactive)
