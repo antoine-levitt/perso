@@ -2457,21 +2457,6 @@ As a side-effect, a message that is being viewed loses its
 
 (add-hook 'find-file-hook #'my-disable-locking-for-path)
 
-
-;; Copilot autocompletion
-(use-package copilot
-  :vc (:url "https://github.com/copilot-emacs/copilot.el"
-            :rev :newest
-            :branch "main")
-  :config
-  (setq copilot-indent-offset-warning-disable t)
-  ;; :hook (prog-mode . copilot-mode)
-  :bind (:map copilot-mode-map
-              ("<tab>" . copilot-accept-completion)
-              ("C-<tab>" . copilot-next-completion)
-              )
-  )
-
 ;; I get this weird bug that drafts don't get deleted like they should.
 ;; This ugly hack ensures it gets deleted
 (defun message-kill-buffer ()
@@ -2523,5 +2508,23 @@ It should typically alter the sending method in some way or other."
 
 (require 'gptel)
 (gptel-make-gh-copilot "Copilot")
-(setq gptel-model 'claude-4.5-sonnet
+(setq gptel-model 'claude-4.6-sonnet
       gptel-backend (gptel-make-gh-copilot "Copilot"))
+
+;; Copilot autocompletion
+(use-package copilot
+  :ensure t
+  :config
+  (setq copilot-indent-offset-warning-disable t)
+  ;; :hook (prog-mode . copilot-mode)
+  :bind (:map copilot-mode-map
+              ("<tab>" . copilot-complete-or-accept)
+              )
+  )
+(copilot-install-server)
+(setq copilot-idle-delay 100000000)
+(defun copilot-complete-or-accept ()
+  (interactive)
+  (if (copilot--overlay-visible)
+	  (copilot-accept-completion)
+	(copilot-complete)))
