@@ -30,9 +30,7 @@ Workflow:
   and always leaves the session idle. Usually Julia takes the interrupt and `Main`
   survives; but a tight loop with no allocation never sees the signal, so the session
   is restarted instead and **`Main` is lost** — you must redo the `includet`/`using`
-  setup, and re-pay any precompile. So still keep exploratory evals cheap: validate a
-  fast method against an expensive reference (e.g. QuadGK) at a handful of points, not
-  across a grid of thousands.
+  setup, and re-pay any precompile. 
 - On a *shared* session an interrupt stops whatever is running, including another
   caller's eval. Give parallel subagents their own `JLREPL_ID`.
 - `~/.claude/tools/jlrepl.sh attach` opens the same live session so you can type in
@@ -42,4 +40,20 @@ Workflow:
   safe but not isolated). For independent parallel subagents, give each its own
   isolated session: `JLREPL_ID=<unique> ~/.claude/tools/jlrepl.sh eval '...'`.
 
-See the header of `~/.claude/tools/jlrepl.sh` for the full contract.
+See the header of `~/.claude/tools/jlrepl.sh** for the full contract.
+
+## Running code: avoid long runs
+Keep exploratory evals and tests cheap for quick development and
+iteration.
+- Do *not* attempt runs that you estimate will take more than
+one minute. If a test runs longer than that, there must be something
+wrong with it (you're accidentally testing too many parameters, the
+numerical parameters are too tight...). 
+- When working on DFTK, do not run the full test suite: that's what
+github's CI is for. Rather, figure out which targeted tests are
+relevant to your current work and run only them.
+- Exceptions are "production" runs (to get a numerically converged
+value),
+
+## Do not use memory but write to ~/.claude/CLAUDE.md
+If you find consistent problems in your workflow (issues with jlrepl, running tests, etc), surface them.
