@@ -22,6 +22,19 @@ Workflow:
   But jlrepl output is read verbatim into your context, so reduce before printing —
   slice/summarize big results (`extrema`, `size`, first few rows) rather than dumping
   whole arrays/tables/long stacktraces.
+- **Revise redefines structs.** Editing struct fields does not need a REPL restart —
+  modern Revise handles redefinition. Just re-run. Never recommend `restart` for a
+  struct change, and never write that warning into plans or docs.
+- **Interrupting an eval is safe, but not free.** Cancelling a `jlrepl.sh eval`
+  (Ctrl-C, a rejected tool call, a timeout) now stops the computation in the REPL too
+  and always leaves the session idle. Usually Julia takes the interrupt and `Main`
+  survives; but a tight loop with no allocation never sees the signal, so the session
+  is restarted instead and **`Main` is lost** — you must redo the `includet`/`using`
+  setup, and re-pay any precompile. So still keep exploratory evals cheap: validate a
+  fast method against an expensive reference (e.g. QuadGK) at a handful of points, not
+  across a grid of thousands.
+- On a *shared* session an interrupt stops whatever is running, including another
+  caller's eval. Give parallel subagents their own `JLREPL_ID`.
 - `~/.claude/tools/jlrepl.sh attach` opens the same live session so you can type in
   it too. `status`/`restart`/`kill` manage it. Plain `julia --project=. <file>`
   still works.
