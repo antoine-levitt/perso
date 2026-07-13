@@ -45,6 +45,8 @@ See the header of `~/.claude/tools/jlrepl.sh** for the full contract.
 ## Running code: avoid long runs
 Keep exploratory evals and tests cheap for quick development and
 iteration.
+- *Always* run quick checks with a timeout, so you aren't stuck when
+  something turns out to be an infinite loop.
 - Do *not* attempt runs that you estimate will take more than
 one minute. If a test runs longer than that, there must be something
 wrong with it (you're accidentally testing too many parameters, the
@@ -52,8 +54,6 @@ numerical parameters are too tight...).
 - When working on DFTK, do not run the full test suite: that's what
 github's CI is for. Rather, figure out which targeted tests are
 relevant to your current work and run only them.
-- Exceptions are "production" runs (to get a numerically converged
-value),
 
 ## Do not use memory but write to ~/.claude/CLAUDE.md
 If you find consistent problems in your workflow (issues with jlrepl, running tests, etc), surface them.
