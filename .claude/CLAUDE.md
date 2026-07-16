@@ -1,5 +1,10 @@
 # General guidance
 
+## Comments: write for the next reader, not the reviewer
+When fixing a simple bug, the default number of new comment lines is
+zero. Rationale goes in the commit message. Never a comment that only
+makes sense to someone who saw the diff.
+
 ## Avoid accretive editing
 A recent example of a diff you made on a tricky promotion bug
 
@@ -32,6 +37,9 @@ This is user-facing and it's rude for me to impose an AI on reviewers.
 When I tell you to "make a PR", make the changes to the branch, push,
 and then give me the github URL to open a PR so I can write the
 message myself.
+
+## I do not use .gitignore
+Don't blindly `git add` stuff, just what you want committed.
 
 # Julia-specific workflow
 
