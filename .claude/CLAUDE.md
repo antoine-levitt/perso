@@ -72,3 +72,28 @@ numerical parameters are too tight...)
 suite: that's what github's CI is for. Rather, figure out which
 targeted tests are relevant to your current work and run only them.
 
+# Writing Latex
+
+Do not attempt to compile latex files unless I ask you to; I will do it myself.
+
+# Email (mu + msmtp)
+
+- Read: `mu` (mu4e store, maildir `~/.emacs.d/mbsync`). Useful: `mu find flag:unread`,
+  `mu view <path>`, `mu extract --save-all --target-dir=. <path>`,
+  `mu find --format=sexp ...` for headers/paths.
+- Send: `msmtp -a <account> -t < msg.eml`. Accounts in `~/.msmtprc`: `orsay`
+  (antoine.levitt@universite-paris-saclay.fr, office365) and `gmail`. Pick the account
+  matching the address the mail was sent *to*.
+- A copy lands in "Sent Items" automatically (Exchange Online saves SMTP-AUTH submissions
+  server-side, mbsync pulls it down). No Fcc / local filing needed.
+- Reply threading: set `In-Reply-To` = original Message-ID and `References` = original
+  References + that Message-ID, keep `Re: <subject>`.
+- Always show me the drafted reply (and any signed attachment) for
+  approval before sending. NEVER send unverified email by yourself.
+
+## Signing a document
+- My signature: `~/home/antoine/sig.png`.
+- docx: unzip, inject an inline `<w:drawing>` referencing the PNG (add media file + a
+  rel in `word/_rels/document.xml.rels`), place it above the typed name; rezip. Preview by
+  `libreoffice --headless --convert-to pdf` then `pdftoppm -png` and look at it.
+- Send the signed PDF unless I ask for docx.
